@@ -1,0 +1,271 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	function validationOfForm(form) {
+	
+		var result = (
+				   isValid(form.gasNm, "가스명", null, null)
+				&& isValid(form.gasCd, "가스코드", null, null)
+		);
+		
+		if ( result === false ) {
+			return false;
+		}
+	}
+	// end of function
+	
+	
+	
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		
+		$("#currentPage").val(1);  
+		mainForm.submit();
+	};
+
+
+
+	function gotoPage(pageNo) {
+		
+		var form =  document.mainForm;			
+		
+		$("#currentPage").val(pageNo);      	
+        //validate checkt시 confirm 중복되는 부분 처리         
+    	mainForm.submit();
+    }	
+	
+	function doExcelUploadProcess(){
+        var f = new FormData(document.getElementById('form1'));        
+        form1.submit();    
+    }
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+		   
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">          
+		      
+      <!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal2">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">엑셀파일 등록</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="form1" name="form1" method="post" action="/gms/customer/uploadExcelFile" enctype="multipart/form-data">					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">파일선택</td>
+											<td  colspan=4><input type="file" id="fileInput" name="fileInput"> </td>
+											<td> <div id="result"></td>
+										</tr>
+										
+									</thead>
+									</table>
+									
+													
+									</form>
+									<div class="ln_solid"></div>
+														
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						              <a class="btn btn-info btn-sm" href="#" onclick="javascript:doExcelUploadProcess();"><i class="fas fa-pencil-alt"></i>엑셀업로드</a>
+						            </div>
+									<div id="test_char">
+									
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+      
+		
+		
+		  
+    	<div class="row">
+              <div class="col-1">
+               		<label>거래처명</label> 
+              </div>               
+              <div class="col-5">
+	              <form id="mainForm" name=""mainForm"" th:action="@{/gms/customer/list.do}" method="post">
+	              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+	               <input type="text" id="searchCustomerNm" name="searchCustomerNm" class="form-control" placeholder="search" th:value="${searchCustomerNm}">
+	           </div>               
+	           <div class="col-1">
+	                
+	                <a class="btn btn-navbar" href="#" onclick="javascript:goSearch();">
+	            		<i class="fas fa-search"></i></a>
+	          		</button>
+	           </form>
+              </div>
+             <div align=right class="col-5">
+              		<a class="btn btn-outline-primary btn-sm" href="/gms/customer/write.do"><i class="far fa-edit"></i>거래처등록</a>&nbsp;
+              		<a th:href="@{/gms/customer/excelDownload.do( searchCustomerNm=${searchCustomerNm}  )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>               
+              </div>
+              <!-- 
+              <div class="col-2">
+               		<a href="/gms/customer/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="far fa-edit"></i>등록</button></a> &nbsp;
+             
+              	<a th:href="@{/gms/customer/excelDownload.do( searchCustomerNm=${searchCustomerNm}  )}"><button type="button" class="btn  btn-primary btn-sm float-righ"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+              </div> -->
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <td th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|">
+		            <td th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|">
+		        </tr>	         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                <form id="deleteform" name="deleteform" th:action="@{/gms/customer/delete.do}" method="post">
+                	<input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+                	<input type="hidden" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">
+                	<input type="hidden" id="userId" name="userId" value="">
+                </form>
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th>순번</th>
+                      <th>거래처명</th>
+                      <!-- th>소유용기수</th> -->
+                      <th>사업자등록번호</th>
+                      <th>대표</th>
+                      <th>업태</th>
+                      <th>종목</th>
+                      <th>주소</th>
+                      <th>전화번호</th>
+                      <th>담당자</th>
+                      <th>등록일</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( customerList )}" th:each="row : ${customerList}" style="font-size:13.5px;">
+                      <td th:text="${totalCount-((currentPage-1)* rowPerPage) - customerList.indexOf(row)}"></td>
+                      <td>
+                      <a th:href="@{/gms/customer/update.do( customerId=${row.customerId} ,currentPage= ${currentPage},searchCustomerNm= ${searchCustomerNm})}" th:text="${row.customerNm}"></a>
+                      </td>
+                      <!-- td th:text="${row.bottleOwnCount}"></td> -->
+                      <td th:text="${row.businessRegId}"></td>
+                      <td  th:text="${row.customerRepNm}"></td>
+                      <td th:text="${row.customerBusiType}"></td>
+                      <td th:text="${row.customerItem}"></td>
+                      <td  th:text="${row.customerAddr}"></td>
+                      <td th:text="${row.customerPhone}"></td>
+                      <td th:text="${row.salesNm}"></td>
+                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( customerList )}">
+						<td colspan="10">조회된 결과가 없습니다.</td>
+					</tr>						
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">								
+			<div class="col-11">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a href="#" th:onclick="gotoPage([[ ${currentPage +1} ]])" aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			
+			<div class="col-1">			
+				<a  data-toggle="modal" data-target="#process-modal2" href=""><button type="button" class="btn btn-block btn-primary btn-sm"><i class="fas fa-upload"></i>엑셀등록</button></a>
+	        </div>
+		</div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

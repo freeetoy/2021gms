@@ -1,0 +1,443 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+
+<div class="wrapper">
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+var isOkay = false;
+$(document).ready(function(){
+	$("#businessRegId").on("focusout", function(){
+		if($(this).val() != ""){
+			checkName();
+		}
+	});	
+	
+});
+// 리스트 페이지 이동
+var goList = function(){
+	$("#listForm").submit();
+};
+
+// form 필드값 유효성 검사
+var validation = function(){
+	/*
+	var customerNm = $("#customerNm").val();
+	if(customerNm=="" || customerNm == null){
+		alert("거래처명을 입력해 주세요.");
+		$("#customerNm").focus();
+		isOkay = false;
+		return;
+	}
+	*/
+	var result = (
+			isValid(customerNm, "거래처명", null, null)
+		&& isValid(salesId, "영업 담당자", null, null)
+	);
+	
+	if ( result === false ) {
+		isOkay = false;
+		return;
+	}else{
+		isOkay = true;
+		return;
+}
+
+isOkay = true;
+}
+
+//서버에 버전 데이터 존재 여부 확인 요청
+var checkName = function(){
+	var businessRegId = $("#businessRegId").val();
+
+	var ajaxInfo ={
+		type:"POST",
+		url:"/gms/customer/CheckBusiId.do",
+		data:{
+			businessRegId : businessRegId
+		},
+		dataType: "json",
+	};
+	ajax = callAjax(ajaxInfo);
+	ajax.done(function(data){
+		if(data.result == "fail"){
+			alert(data.message);
+			$("#businessRegId").val("");
+			$("#businessRegId").focus();
+			isOkay = false;
+			return;
+		}
+	});
+};
+
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+//숫자 여부 검사
+function isNumber(input){
+	var chars = "0123456789";
+		return containsCharsOnly(input,chars);
+};
+
+function containsCharsOnly(input,chars) {
+	input = String(input);
+	for (var inx = 0; inx < input.length; inx++) {
+		if (chars.indexOf(input.charAt(inx)) == -1) {
+			return false;
+		}else{
+		}
+	};
+	return true;
+};
+
+// 입력된 내용을 작성한다.
+var goWrite = function(){
+	validation();	
+	
+	if(!isOkay){
+		return;
+	}
+	
+	var form = $("#writeForm");	
+	
+	form.submit();
+}
+	
+//입력된 내용을 작성한다.
+var goDelete = function(){
+	if(confirm("삭제하시겠습니까?")){	
+		
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/customer/delete.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "customerId");
+        hiddenField.setAttribute("value", [[ ${customer.customerId} ]]);
+
+        form.appendChild(hiddenField);      
+        document.body.appendChild(form);
+
+        form.submit();			
+	}              
+}
+
+var getBottle = function(){
+
+	var form = $("#mainForm");	
+	
+	form.submit();
+}
+
+
+$(function() {
+
+	  $('input[name="searchChargeDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      language: "kr",
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }	  	
+	  });
+
+	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+
+	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+
+	});	
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 수정</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-md-8">          
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+           
+              <div class="card">
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/customer/modify.do}" th:object="${customer}" method="post" >
+                <input type="hidden" id="customerId" name="customerId" th:value="${customer.customerId}">
+                <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+                <input type="hidden" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="card-footer">거래처명</th>
+                      <th><input type="text" class="form-control" id="customerNm" name="customerNm"  th:value="${customer.customerNm}"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">사업자등록번호</th>
+                      <th><input type="text" class="form-control" id="businessRegId" name="businessRegId" th:value="${customer.businessRegId}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 대표</th>
+                      <th><input type="text" class="form-control" id="customerRepNm" name="customerRepNm" th:value="${customer.customerRepNm}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 업태</th>
+                      <th><input type="text" class="form-control" id="customerBusiType" name="customerBusiType" th:value="${customer.customerBusiType}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 종목</th>
+                      <th><input type="text" class="form-control" id="customerItem" name="customerItem" th:value="${customer.customerItem}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 주소</th>
+                      <th><input type="text" class="form-control" id="customerAddr" name="customerAddr" th:value="${customer.customerAddr}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 연락처</th>
+                      <th><input type="text" class="form-control" id="customerPhone" name="customerPhone" th:value="${customer.customerPhone}"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">거래처 이메일</th>
+                      <th><input type="text" class="form-control" id="customerEmail" name="customerEmail" th:value="${customer.customerEmail}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">차량여부</th>
+                      <th>
+		      			<input type="radio" name="carYn" id="carYn" value="Y" th:if="${customer.carYn =='Y'}" checked="">     
+		      			<input type="radio" name="carYn" id="carYn" value="Y" th:unless="${customer.carYn =='Y'}"> 차량                
+		      			<input type="radio" name="carYn" id="carYn" value="G" th:if="${customer.carYn =='G'}" checked="">     
+		      			<input type="radio" name="carYn" id="carYn" value="G" th:unless="${customer.carYn =='G'}"> 가스                              
+                      	<input type="radio" name="carYn" id="carYn" value="N" th:if="${customer.carYn =='N'}" checked="">		
+                      	<input type="radio" name="carYn" id="carYn" value="N" th:unless="${customer.carYn =='N'}"> 고객		      		
+		      		 </th>  
+                    </tr>
+                    <tr>
+                      <th class="card-footer">대리점여부</th>
+                      <th>
+                      	<input type="radio" name="agencyYn" id="agencyYn" value="Y" th:if="${customer.agencyYn =='Y'}" checked="">     
+		      			<input type="radio" name="agencyYn" id="agencyYn" value="Y" th:unless="${customer.agencyYn =='Y'}"> 대리점                                
+                      	<input type="radio" name="agencyYn" id="agencyYn" value="N" th:if="${customer.agencyYn =='N'}" checked="">		
+                      	<input type="radio" name="agencyYn" id="agencyYn" value="N" th:unless="${customer.agencyYn =='N'}"> 비대리점		
+	      		
+		      		 </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상위대리점</th>
+                      <th>
+                       <select id="parentCustomerId" name="parentCustomerId" class="form-control">
+                        <option value="">상위대리점</option>
+                      	<option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					                th:if="${customer.parentCustomerId == row.customerId}" selected>
+					     </option>	
+					     <option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					                th:unless="${customer.parentCustomerId == row.customerId}">
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>         
+                    <tr>                                   
+                      <th class="card-footer">ECount코드</th>
+                      <th><input type="text" class="form-control" id="eCountCd" name="eCountCd" th:value="${customer.eCountCd}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">영업 담당자</th>
+                      <th>
+                       <select id="salesId" name="salesId" class="form-control">
+                        <option value="0">영업담당자</option>
+                      	<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					               th:if="${customer.salesId ==row.userId}" selected>
+					     </option>	
+					     <option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					               th:unless="${customer.salesId ==row.userId}">
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>    
+                    <tr>                                   
+                      <th class="card-footer">소유용기</th>
+                      <td>
+                      	<table>     
+                      	<tr th:if="${not #lists.isEmpty(ownBottleList )}" th:each="row : ${ownBottleList}">
+                      		<td   th:text="${row.productNm} + ' ' + ${row.productCapa}+ ' '+ ' (' + ${row.bottleOwnCount} + ')' ">
+                      	</tr>
+                      	</table>
+                      </td>
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">대여용기</th>
+                      <td>
+                      <table>     
+                      	<tr th:if="${not #lists.isEmpty(rentBottleList )}" th:each="row1 : ${rentBottleList}">
+                      		<td   th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' '+ ' (' + ${row1.bottleRentCount} + ')' ">
+                      	</tr>
+                      	</table>
+                      </td>
+                    </tr>
+                    <tr >                                   
+                      <th class="card-footer" valign="top">적요</th>
+                      <th ><textarea class="form-control" id="summary" name="summary" th:field="${customer.summary}"></textarea></th>
+                    </tr>
+                    
+                   
+                  </thead>                              
+                </table>
+              </div>
+            </div>
+            <div class="col-md-8">
+      			<div class="card-footer">
+                 <a href="#" th:onclick="history.back()" class="btn btn-secondary float-left">취소</a> &nbsp;&nbsp;
+                 <input type="button" value="삭제" onclick="javascript:goDelete()" class="btn btn-danger">
+		         <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">
+                </div>		     		
+            </form>   
+             </div>       
+            <div class="col-md-8">	           
+            	<table class="table table-hover">
+	         	</table>
+            </div>
+            <div class="col-md-8">
+            	<h3>거래처 상품 가격</h3>
+            </div>
+            <div class="col-md-8">
+	            <div class="card">    
+	           		<table class="table table-hover">	         	
+	         		<thead>
+	                   <tr>
+	                     <th>품명</th>
+	                     <th>용량</th>
+	                     <th>대여가격</th>
+	                     <th>판매가격</th>
+	                   </tr>
+	                 	</thead>
+	                 	<tbody>
+	                 	<tr th:if="${not #lists.isEmpty( customerPriceList )}" th:each="row : ${customerPriceList}">
+	                     <td th:text="${row.productNm}"></td>
+	                     <td th:text="${row.productCapa}"></td>
+	                     <td th:if="${row.productPrice> 0 && row.productPrice*100%100 == 0 }"  th:text="${#numbers.formatInteger(row.productPrice, 3, 'COMMA')}"></td>
+	                     <td th:if="${row.productPrice> 0 && row.productPrice*100%100 > 0 }"  th:text="${#numbers.formatDecimal(row.productPrice, 3, 'COMMA', 2,'POINT')}"></td> 
+	                     <td th:if="${row.productPrice <= 0 }"  th:text="${row.productPrice}"></td>
+	                     <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 %100 == 0  }"  th:text="${#numbers.formatInteger(row.productBottlePrice, 3, 'COMMA')}"></td>
+	                     <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 %100 >  0  }"  th:text="${#numbers.formatDecimal(row.productBottlePrice, 3, 'COMMA', 2,'POINT')}"></td> 
+						 <td th:if="${row.productBottlePrice <= 0 }"  th:text="${row.productBottlePrice}"></td>
+	                   </tr>
+	                 	</tbody>
+	              	</table>   
+	              </div>
+              </div>
+            <!-- /.card -->
+      		                   
+              <!-- /.card-header -->
+            <div class="col-md-8">	           
+            	<table class="table table-hover">
+	         	</table>
+            </div>
+            <div class="col-md-8">
+            	<h3>대여용기</h3>
+            </div>
+            
+			<div class="col-md-8">
+				<div class="row">        	
+	            <div class="col-1">
+	            	<label>날짜</label>                 		
+	            </div>               
+	            <div class="col-4">
+	              <form id="mainForm" name="mainForm"  method="post" action="/gms/customer/update.do">
+	              	<input type="hidden" id="customerId" name="customerId" th:value="${customer.customerId}">
+                	<input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+                	<input type="hidden" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">	
+	               <input type="text" class="form-control" name="searchChargeDt" th:value="${searchChargeDt}"/>			
+	            </div>               
+	            <div class="col-5">     
+	            	<button class="btn btn-navbar" type="button" onclick="javascript:getBottle()" >
+		            <i class="fas fa-search"></i>
+		          </button>          
+		          </form>
+	            </div>
+	            <div class="col-2">     
+	            	<a th:href="@{/gms/customer/excelDownloadBottle.do(searchChargeDt=${searchChargeDt},customerId=${customer.customerId} )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>   
+		           
+		          </button>          
+		          </form>
+	            </div>
+	         </div>
+	         <div class="col-md-8">	           
+            	<table class="table table-hover">
+	         	</table>
+            </div>
+	     
+             <div class="card">    
+           		<table class="table table-hover">	         	
+         		<thead>
+                   <tr>
+                     <th>용기코드</th>
+                     <th>용기바코드</th>
+                     <th>품명</th>
+                     <th>용량</th>
+                     <th>구분</th>
+                     <th>타입</th>
+                     <th>날짜</th>
+                   </tr>
+                 	</thead>
+                 	<tbody>
+                 	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}">
+                     <td th:text="${row.bottleId}"></td>
+                     <td th:text="${row.bottleBarCd}"></td>                     
+                     <td th:text="${row.productNm}"></td>
+                     <td th:text="${row.bottleCapa}"></td>
+                     <td th:text="${row.bottleWorkCdNm}"></td>
+                     <td th:if="${row.bottleType=='E'}" th:text="공병"></td>
+                     <td th:unless="${row.bottleType=='E'}" th:text="실병"></td>
+                     <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>
+                   </tr>
+                 	</tbody>
+              	</table>   
+              </div>
+            </div>
+           
+          	<!-- /.col-12 -->
+          </div>
+        </div>      
+        
+        
+        
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.BottleMapper">
+	
+	<resultMap id="BottleMap" type="com.gms.web.admin.domain.manage.BottleVO" >
+		<result property="bottleId"			column="Bottle_ID"			/>
+		<result property="bottleBarCd"		column="Bottle_BarCd"		/>		
+		<result property="productId"		column="Product_ID"			/>
+		<result property="productPriceSeq"	column="product_Price_Seq"	/>	
+		<result property="gasId"			column="Gas_ID"				/>
+		<result property="gasNm"			column="Gas_NM"				/>
+		<result property="gasCd"			column="Gas_CD"				/>
+		<result property="bottleCapa"		column="Bottle_Capa"		/>
+		<result property="chargeCapa"		column="Charge_Capa"		/>
+		<result property="bottleCreateDt"	column="Bottle_Create_Dt"	/>
+		<result property="bottleChargeDt"	column="Bottle_Charge_Dt"	/>
+		<result property="bottleVolumn"		column="Bottle_Volumn"		/>
+		<result property="bottleChargePrss"	column="Bottle_Charge_Prss"	/>
+		<result property="bottleOwnYn"		column="Bottle_Own_YN"		/>	
+		<result property="ownCustomerId"	column="Own_Customer_ID"	/>	
+		<result property="bottleWorkCd"		column="Bottle_Work_CD"		/>
+		<result property="bottleWorkCdNM"	column="Bottle_Work_CD_NM"	/>
+		<result property="bottleWorkId"		column="Bottle_Work_ID"		/>	
+		<result property="bottleWorkDt"		column="Bottle_Work_DT"		/>	
+		<result property="customerId"		column="Customer_ID"		/>	
+		<result property="customerNm"		column="Customer_Nm"		/>	
+		<result property="memberCompSeq"	column="Member_Comp_Seq"	/>
+		<result property="orderId"			column="Order_ID"			/>	
+		<result property="orderProductSeq"	column="Order_Product_Seq"	/>
+		<result property="bottleType"		column="Bottle_Type"		/>
+		<result property="createId"			column="CREATE_ID"			/>
+		<result property="createDt"			column="CREATE_DT"			/>
+		<result property="updateId"			column="UPDATE_ID"			/>		
+		<result property="updateDt"			column="UPDATE_DT"			/>
+	</resultMap>	
+
+	<resultMap id="BottleHistoryMap" type="com.gms.web.admin.domain.manage.BottleHistoryVO" >
+		<result property="bottleHistSeq"		column="Bottle_HIST_SEQ"	/>
+		<result property="bottleId"				column="Bottle_ID"			/>
+		<result property="bottleBarCd"			column="Bottle_BarCd"		/>	
+		<result property="productId"			column="Product_ID"			/>
+		<result property="productPriceSeq"		column="product_Price_Seq"	/>		
+		<result property="gasId"				column="Gas_ID"				/>
+		<result property="gasNm"				column="Gas_NM"				/>
+		<result property="gasCd"				column="Gas_CD"				/>
+		<result property="bottleCapa"			column="Bottle_Capa"		/>
+		<result property="chargeCapa"			column="Charge_Capa"		/>
+		<result property="bottleCreateDt"		column="Bottle_Create_Dt"	/>
+		<result property="bottleChargeDt"		column="Bottle_Charge_Dt"	/>
+		<result property="bottleVolumn"			column="Bottle_Volumn"		/>
+		<result property="bottleChargePrss"		column="Bottle_Charge_Prss"	/>
+		<result property="bottleOwnYn"			column="Bottle_Own_YN"		/>	
+		<result property="ownCustomerId"		column="Own_Customer_ID"	/>	
+		<result property="bottleWorkCd"			column="Bottle_Work_CD"		/>
+		<result property="bottleWorkCdNm"		column="Bottle_Work_CD_NM"	/>
+		<result property="bottleWorkId"			column="Bottle_Work_ID"		/>	
+		<result property="bottleWorkDt"			column="Bottle_Work_DT"		/>	
+		<result property="customerId"			column="Customer_ID"		/>	
+		<result property="customerNm"			column="Customer_Nm"		/>	
+		<result property="memberCompSeq"		column="Member_Comp_Seq"	/>
+		<result property="orderId"				column="Order_ID"			/>	
+		<result property="orderProductSeq"		column="Order_Product_Seq"	/>
+		<result property="bottleType"			column="Bottle_Type"		/>
+		<result property="deleteYn"				column="Delete_YN"			/>
+		<result property="createId"				column="CREATE_ID"			/>
+		<result property="createDt"				column="CREATE_DT"			/>
+		<result property="updateId"				column="UPDATE_ID"			/>		
+		<result property="updateDt"				column="UPDATE_DT"			/>
+	</resultMap>
+	
+	<sql id="BottleColumns">
+		  Bottle_BarCd
+		, Bottle_ID
+		, Product_ID
+		, Product_Price_Seq
+		, Gas_ID	
+		, Gas_CD	
+		, Bottle_Capa
+		, Charge_Capa
+		, Bottle_Create_Dt	
+		, Bottle_Charge_Dt	
+		, Bottle_Volumn
+		, Bottle_Charge_Prss	
+		, Bottle_Own_YN	
+		, Own_Customer_ID	
+		, Bottle_Work_CD
+		, Bottle_Work_ID
+		, Customer_ID
+		, Member_Comp_Seq	
+		, Order_ID
+		, Order_Product_Seq	
+		, Bottle_Type	
+		, Delete_YN
+		, Bottle_Work_DT	
+		, CREATE_ID
+		, CREATE_DT
+		, UPDATE_ID
+		, UPDATE_DT
+	</sql>
+	
+	<sql id="BottleSelectColumns">
+		  Bottle_ID
+		, Bottle_BarCd
+		, TB.Product_ID
+		, TB.Product_Price_Seq
+		, TB.Gas_ID	
+		, Gas_CD
+		, Product_Nm
+		, Bottle_Capa
+		, Charge_Capa
+		, Bottle_Create_Dt	
+		, Bottle_Charge_Dt	
+		, Bottle_Volumn
+		, Bottle_Charge_Prss	
+		, Bottle_Own_YN	
+		, Own_Customer_ID	
+		, Bottle_Work_CD
+		, Bottle_Work_ID
+		, TB.Customer_ID
+		, TB.Member_Comp_Seq	
+		, Order_ID
+		, Order_Product_Seq	
+		, Bottle_Type
+		, Bottle_Work_DT
+		, TB.CREATE_ID
+		, TB.CREATE_DT
+		, TB.UPDATE_ID
+		, TB.UPDATE_DT
+		, CD_NM Bottle_Work_CD_NM
+	</sql>
+	
+	<sql id="BottleHistorySelectColumns">
+		  Bottle_HIST_SEQ
+		, Bottle_ID
+		, Bottle_BarCd
+		, TB.Product_ID
+		, TB.Product_Price_Seq
+		, TB.Gas_ID	
+		, Gas_CD
+		, Product_Nm
+		, Bottle_Capa
+		, Charge_Capa
+		, Bottle_Create_Dt	
+		, Bottle_Charge_Dt	
+		, Bottle_Volumn
+		, Bottle_Charge_Prss	
+		, Bottle_Own_YN	
+		, Own_Customer_ID	
+		, Bottle_Work_CD
+		, Bottle_Work_ID
+		, TB.Customer_ID
+		, TB.Member_Comp_Seq	
+		, Order_ID
+		, Order_Product_Seq	
+		, Bottle_Type
+		, Bottle_Work_DT
+		, TB.CREATE_ID
+		, TB.CREATE_DT
+		, TB.UPDATE_ID
+		, TB.UPDATE_DT
+		, CD_NM Bottle_Work_CD_NM
+	</sql>
+
+	<insert id="insertBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		INSERT INTO TB_Bottle(
+			<include refid="BottleColumns" />
+		) VALUES (
+			  #{bottleBarCd}
+			, #{bottleId}
+			, #{productId}
+			, #{productPriceSeq}
+			, #{gasId}
+			, #{gasCd}
+			, #{bottleCapa}
+			, #{chargeCapa}
+			, #{bottleCreateDt}
+			, #{bottleChargeDt}
+			, #{bottleVolumn}
+			, #{bottleChargePrss}
+			, #{bottleOwnYn}
+			, #{ownCustomerId}
+			, #{bottleWorkCd}
+			, #{bottleWorkId}
+			, #{customerId}
+			, #{memberCompSeq}
+			, #{orderId}
+			, #{orderProductSeq}
+			, #{bottleType}
+			, 'N'
+			, NOW()
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertBottles" parameterType="java.util.List">
+		INSERT INTO TB_Bottle(
+			<include refid="BottleColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			  #{item.bottleBarCd}
+			, #{item.bottleId}
+			, #{item.productId}
+			, #{item.productPriceSeq}
+			, #{item.gasId}
+			, #{item.gasCd}
+			, #{item.bottleCapa}
+			, #{item.chargeCapa}
+			, #{item.bottleCreateDt}
+			, #{item.bottleChargeDt}
+			, #{item.bottleVolumn}
+			, #{item.bottleChargePrss}
+			, #{item.bottleOwnYn}
+			, #{item.ownCustomerId}
+			, #{item.bottleWorkCd}
+			, #{item.bottleWorkId}
+			, #{item.customerId}
+			, #{item.memberCompSeq}
+			, #{item.orderId}
+			, #{item.orderProductSeq}
+			, #{item.bottleType}
+			, 'N'
+			, NOW()
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		INSERT INTO TB_Bottle_Hist
+		SELECT b.history_seq,a.*
+			FROM TB_Bottle a,
+			(
+				SELECT c.Bottle_BarCd, IFNULL(max(d.Bottle_Hist_Seq)+1,1) history_seq 
+				FROM TB_Bottle c Left Join  TB_Bottle_Hist d ON c.Bottle_BarCd=d.Bottle_BarCd
+				WHERE c.Bottle_BarCd =#{bottleBarCd}
+			) b 
+		WHERE a.Bottle_BarCd = b.Bottle_BarCd 		
+	</insert>
+	
+	<insert id="insertBottleHistorys" parameterType="java.util.List">
+		INSERT INTO TB_Bottle_Hist
+		SELECT b.history_seq,a.*
+		FROM TB_Bottle a,
+		(
+			SELECT c.Bottle_BarCd, IFNULL(max(d.Bottle_Hist_Seq)+1,1) history_seq 
+			FROM TB_Bottle c Left Join  TB_Bottle_Hist d ON c.Bottle_BarCd=d.Bottle_BarCd
+			WHERE c.Bottle_BarCd in (
+			<foreach collection="list" item="item" separator=" , ">
+			#{item.bottleBarCd} 
+			</foreach>
+			)
+			GROUP BY C.Bottle_BarCd
+		) b 
+		WHERE a. Bottle_BarCd = b.Bottle_BarCd 			
+	</insert>
+	
+	<update id="updateBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			Bottle_ID		= #{bottleId}
+			, Product_ID		= #{productId}
+			, Product_Price_Seq	= #{productPriceSeq}
+			, Gas_ID			= #{gasId}
+			, Gas_CD			= #{gasCd}			
+			, Bottle_Capa		= #{bottleCapa}
+			, Charge_Capa		= #{chargeCapa}
+			, Bottle_Create_Dt	= #{bottleCreateDt}
+			, Bottle_Charge_Dt	= #{bottleChargeDt}
+			, Bottle_Volumn		= #{bottleVolumn}
+			, Bottle_Charge_Prss= #{bottleChargePrss}
+			, Bottle_Own_YN		= #{bottleOwnYn}
+			, Own_Customer_ID	= #{ownCustomerId}
+			, Delete_YN			= 'N'
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Bottle_BarCd = #{bottleBarCd}
+	</update>	
+
+	<update id="updateBottleWorkCd" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			  Bottle_Work_CD 	= #{bottleWorkCd}
+			, Bottle_Work_ID	= #{bottleWorkId}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(carCustomerId)">
+			, Customer_ID		= #{customerId}
+			</if>
+			, Bottle_Type		= #{bottleType}
+			, Bottle_Work_DT	= NOW()
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Bottle_BarCd = #{chBottleBarCd}
+	</update>	
+	
+	<update id="updateBottlesWorkCd" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			  Bottle_Work_CD 	= #{bottleWorkCd}
+			, Bottle_Work_ID	= #{bottleWorkId}
+			, Customer_ID		= #{customerId}
+			, Bottle_Type		= #{bottleType}
+			, Bottle_Work_DT	= NOW()
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			(Bottle_ID in
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+			 or Bottle_BarCd in
+			 <foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+			 )
+	</update>	
+	
+	<update id="updateBottlesWorkCdOnly" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			  Bottle_Work_CD 	= #{bottleWorkCd}
+			, Bottle_Work_ID	= #{bottleWorkId}
+			, Customer_ID		= #{customerId}
+			, Bottle_Type		= #{bottleType}
+			, Bottle_Work_DT	= NOW()
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Bottle_BarCd in
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+	</update>	
+	
+	<update id="updateBottleOrderId" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			Order_Id			= #{orderId}
+			, Order_Product_Seq	= #{orderProductSeq}
+			, Customer_Id		= #{customerId}
+			, Bottle_Work_CD 	= #{bottleWorkCd}
+			, Bottle_Work_ID	= #{bottleWorkId}
+			, Bottle_Work_DT	= NOW()	
+			, Bottle_Type		= #{bottleType}
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()	
+		WHERE
+			Bottle_BarCd = #{bottleBarCd}
+	</update>
+	
+	<update id="deleteBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			Delete_YN = 'Y'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Bottle_BarCD = #{bottleBarCd}
+	</update>
+	
+	<update id="deleteBottles" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			Delete_YN = 'Y'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Bottle_BarCD in  
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+	</update>
+
+	<update id="deleteCustomerIdOfBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			Customer_ID 	=  null
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Bottle_BarCD = #{bottleBarCd}
+	</update>
+	
+	<update id="deleteCustomerIdOfBottleHist" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle_hist
+		SET
+			Customer_ID 	=  null
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Bottle_BarCD 	= #{bottleBarCd}
+		AND
+			Customer_ID =  #{customerId}
+	</update>
+
+	<select id="selectBottleDetail" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle TB, TB_CODE TC, TB_Product TG
+		WHERE
+			(Bottle_ID = #{bottleId} OR Bottle_BarCd = #{bottleId})
+		AND
+			TB.Delete_YN = 'N'
+		AND 
+			TB.Bottle_Work_CD = TC.CD_ID	
+		AND 
+			TB.Product_ID = TG.Product_Id
+	</select>
+	
+	<select id="selectBottleDetailForBarCd" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
+		SELECT
+			Bottle_ID
+			, Bottle_BarCd
+			, TB.Product_ID
+			, TB.Product_Price_Seq
+			, TB.Gas_ID	
+			, Gas_CD
+			, Product_Nm
+			, Bottle_Capa
+			, Charge_Capa
+			, Bottle_Create_Dt	
+			, Bottle_Charge_Dt	
+			, Bottle_Volumn
+			, Bottle_Charge_Prss	
+			, Bottle_Own_YN	
+			, Own_Customer_ID	
+			, Bottle_Work_CD
+			, Bottle_Work_ID
+			, TB.Customer_ID
+			, TB.Member_Comp_Seq	
+			, Order_ID
+			, Order_Product_Seq	
+			, Bottle_Type
+			, Bottle_Work_DT
+			, CD_NM Bottle_Work_CD_NM
+			, DateDiff(Bottle_Charge_Dt, now()) menuType
+		FROM
+			TB_Bottle TB, TB_CODE TC, TB_Product TG
+		WHERE
+			Bottle_BarCd = #{bottleBarCd}
+		AND
+			TB.Delete_YN = 'N'
+		AND 
+			TB.Bottle_Work_CD = TC.CD_ID	
+		AND 
+			TB.Product_ID = TG.Product_Id
+		Limit 0,1
+	</select>
+	
+	<select id="selectBottleDetails" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle TB, TB_CODE TC, TB_Product TG
+		WHERE
+			(Bottle_ID in  
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+			OR 
+			Bottle_BarCd in 
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+			)
+		AND
+			TB.Delete_YN = 'N'
+		AND 
+			TB.Bottle_Work_CD = TC.CD_ID	
+		AND 
+			TB.Product_ID = TG.Product_Id
+		ORDER BY Product_Id, Bottle_Capa
+	</select>
+	
+	
+	<select id="selectBottleListByBarCds" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle TB, TB_CODE TC, TB_Product TG
+		WHERE
+			Bottle_BarCd in  
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+		AND
+			TB.Delete_YN = 'N'
+		AND 
+			TB.Bottle_Work_CD = TC.CD_ID	
+		AND 
+			TB.Product_ID = TG.Product_Id
+		ORDER BY Product_Id, Bottle_Capa
+	</select>
+
+	<select id="selectBottleList" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				<include refid="BottleSelectColumns" />
+			FROM
+				TB_Bottle TB, TB_CODE TC, TB_Product TG
+			WHERE
+				TB.Delete_YN = 'N'
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleBarCd)">
+			AND Bottle_BarCd	 LIKE CONCAT('%', CONCAT(#{searchBottleBarCd}, '%'))
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND TG.Product_ID=  #{searchProductId}
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+			</if>		
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+			AND Bottle_Work_CD =  #{searchWorkCd}
+			</if>			
+			AND TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Bottle_Work_DT DESC
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectBottleListAll" resultType="com.gms.web.admin.domain.manage.BottleVO" >
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				<include refid="BottleSelectColumns" />
+			FROM
+				TB_Bottle TB, TB_CODE TC, TB_Product TG
+			WHERE
+				TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Bottle_Work_DT DESC 		
+	</select>
+	
+	<select id="selectBottleListToExcel" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				Bottle_ID , Bottle_BarCd , Gas_CD , Product_Nm , Bottle_Capa , 
+				Charge_Capa ,Bottle_Create_Dt, Bottle_Charge_Dt , Bottle_Volumn , 
+				Bottle_Charge_Prss , Bottle_Own_YN , Own_Customer_ID , TB.Customer_ID,
+				Bottle_Type , CD_NM Bottle_Work_CD_NM ,Bottle_Work_DT,Bottle_Work_ID
+			FROM
+				TB_Bottle TB, TB_CODE TC, TB_Product TG
+			WHERE
+				TB.Delete_YN = 'N'
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND TG.Product_ID=  #{searchProductId}
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+			</if>	
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+			</if>	
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+			AND Bottle_Work_CD =  #{searchWorkCd}
+			</if>			
+			AND TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Bottle_Work_DT DESC 
+	</select>
+	
+	<select id="selectBottleCount" resultType="int" parameterType="java.util.Map">
+		SELECT
+			Count(Bottle_id)
+		FROM
+			TB_Bottle
+		WHERE
+			Delete_YN = 'N'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+		AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleBarCd)">
+		AND Bottle_BarCd	 LIKE CONCAT('%', CONCAT(#{searchBottleBarCd}, '%'))
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND Product_ID=  #{searchProductId}
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+		AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+		AND date_format(UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+		AND Bottle_Work_CD =  #{searchWorkCd}
+		</if>	
+	</select>
+	
+	<select id="selectBottleIdCheck" parameterType="com.gms.web.admin.domain.manage.BottleVO" resultType="int">
+		SELECT
+			Count(Bottle_id)
+		FROM
+			TB_Bottle
+		WHERE
+			Bottle_Id=#{bottleId}
+		AND
+			Delete_YN = 'N'
+	</select>
+
+	<select id="selectBottleBarCdCheck" parameterType="com.gms.web.admin.domain.manage.BottleVO" resultType="int">
+		SELECT
+			Count(Bottle_BarCd)
+		FROM
+			TB_Bottle
+		WHERE
+			Bottle_BarCd=#{bottleBarCd}
+		AND
+			Delete_YN = 'N'
+	</select>
+
+	<select id="selectBottleHistoryList" resultType="com.gms.web.admin.domain.manage.BottleHistoryVO" parameterType="String">
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				<include refid="BottleHistorySelectColumns" />
+			FROM
+				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+			WHERE
+				Bottle_BarCd=#{bottleBarCd}
+			AND TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Update_Dt DESC 
+	</select>
+	
+	<select id="selectCustomerBottleList" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="Integer">		
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle TB, TB_CODE TC, TB_Product TG
+		WHERE
+			Bottle_Work_CD in ('0308' , '0309', '0310')
+		AND
+			TB.Delete_YN = 'N'			
+		AND Customer_id = #{customerId}
+		AND TB.Bottle_Work_CD = TC.CD_ID	
+		AND TB.Product_ID = TG.Product_Id
+		Order By Bottle_Work_DT DESC
+	</select>
+	
+	<select id="selectSimpleCustomerBottleList" resultType="com.gms.web.admin.domain.manage.SimpleBottleVO" parameterType="Integer">		
+		SELECT
+			'' Bottle_Id, '' Bottle_BarCd, Product_Nm, concat(Product_Capa,' (',count(Bottle_Id),')') Bottle_Capa
+			,(SELECT Sum(Receivable_Amount) - Sum(Income_Amount)
+				FROM TB_Cash_Flow WHERE  Customer_id = TB.Customer_Id) Receivable_Amount
+		FROM
+			TB_Work_Bottle TB, TB_Product TP, tb_product_price PP
+		WHERE Customer_Id = #{customerId}	
+		AND	Bottle_Work_CD in ('0308' , '0309')
+		AND TB.Product_Id = TP.Product_Id 
+		AND TB.Product_Id = PP.Product_Id 
+		AND TB.Product_Price_Seq = PP.Product_Price_Seq 		
+		AND TB.Gas_Id  > 0 				
+		Group By Product_Nm, Product_Capa
+	</select>	
+	
+	<select id="selectCustomerBottleListDate" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="com.gms.web.admin.domain.manage.BottleVO">		
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+		WHERE
+			Bottle_Work_CD in ('0308' , '0309', '0310')
+		AND
+			TB.Delete_YN = 'N'			
+		AND Customer_id = #{customerId}
+		AND TB.Bottle_Work_CD = TC.CD_ID	
+		AND TB.Product_ID = TG.Product_Id
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+		AND date_format(TB.Update_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+		</if>	
+		Order By Bottle_Work_DT DESC
+	</select>
+	
+	<select id="selectLastBottleHist" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="String">		
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle_Hist TB
+		WHERE
+			Delete_YN = 'N'			
+		AND 
+			Bottle_Id = #{bottleId}		
+		Order By Bottle_Hist_Seq desc
+		Limit 1,1
+	</select>
+	
+	<select id="selectCustomerBottleRecent" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="Integer">		
+		SELECT
+			<include refid="BottleSelectColumns" />
+		FROM
+			TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+		WHERE
+			Bottle_Work_CD in ('0308', '0309', '0310')
+		AND
+			TB.Delete_YN = 'N'			
+		AND Customer_id = #{customerId}
+		AND TB.Bottle_Work_CD = TC.CD_ID	
+		AND TB.Product_ID = TG.Product_Id		
+		Order By Bottle_Work_DT DESC
+		Limit 0,1
+	</select>
+	
+	<select id="selectDummyBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO" resultType="com.gms.web.admin.domain.manage.BottleVO" >		
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle TB
+		WHERE
+			Product_id =  #{productId}
+		AND
+			Product_Price_Seq =  #{productPriceSeq}
+		AND
+			TB.Delete_YN = 'N'
+		AND
+			Dummy_YN = 'Y'
+	</select>
+	
+	<select id="selectDummyBottleList" resultType="com.gms.web.admin.domain.manage.BottleVO" >		
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle TB
+		WHERE
+			TB.Delete_YN = 'N'
+		AND
+			Dummy_YN = 'Y'
+	</select>
+	
+	<select id="selectSimpleDummyBottleList" resultType="com.gms.web.admin.domain.manage.SimpleBottleVO" >		
+		SELECT
+			Bottle_Id, Bottle_BarCd, Product_Nm, Product_Capa Bottle_Capa,TB.Product_Id, TB.Product_Price_Seq
+		FROM
+			TB_Bottle TB, TB_Product TP, TB_Product_Price PP 
+		WHERE
+			TB.Delete_YN = 'N'
+		AND
+			Dummy_YN = 'Y'
+		AND TB.Product_ID = TP.Product_ID
+		AND TB.Product_ID = PP.Product_ID
+		AND TB.Product_Price_Seq = PP.Product_Price_Seq
+		AND TP.Product_Status >0 
+		AND PP.Product_Status > 0
+		Order by TP.Product_ID ,  TB.Product_Price_Seq
+	</select>
+	
+	<select id="selectBottleHistCountOfCustomer" resultType="int" parameterType="java.util.Map">
+		SELECT
+			Count(Bottle_BarCD)
+		FROM
+			TB_Bottle_Hist
+		WHERE
+			Delete_YN = 'N'
+		AND
+			Customer_Id = #{ownCustomerId}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+		AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND Product_ID=  #{searchProductId}
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+		AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+		AND date_format(UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+		AND Bottle_Work_CD =  #{searchWorkCd}
+		</if>	
+	</select>
+	
+	<select id="selectBottleHisListOfCustomer" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				<include refid="BottleSelectColumns" />
+			FROM
+				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+			WHERE
+				TB.Delete_YN = 'N'
+			AND
+				Customer_Id = #{ownCustomerId}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND TG.Product_ID=  #{searchProductId}
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+			</if>		
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+			AND Bottle_Work_CD =  #{searchWorkCd}
+			</if>			
+			AND TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Bottle_Work_DT DESC
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectBottleHistListToExcelOfCustomer" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
+		SELECT A.*, B.Customer_Nm
+		FROM (
+			SELECT
+				<include refid="BottleSelectColumns" />
+			FROM
+				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+			WHERE
+				TB.Delete_YN = 'N'
+			AND
+				Customer_Id = #{ownCustomerId}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
+			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
+			AND TG.Product_ID=  #{searchProductId}
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
+			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
+			</if>		
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
+			AND Bottle_Work_CD =  #{searchWorkCd}
+			</if>			
+			AND TB.Bottle_Work_CD = TC.CD_ID	
+			AND TB.Product_ID = TG.Product_Id
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
+		ORDER BY Bottle_Work_DT DESC 
+	</select>
+	
+	<update id="updateBottleAfterDelete" parameterType="com.gms.web.admin.domain.manage.OrderBottleVO">
+		UPDATE TB_Bottle A, TB_BOttle_Hist B
+		SET
+			  A.Bottle_Work_CD 	= B.Bottle_Work_CD 
+			, A.Bottle_Work_ID	= B.Bottle_Work_ID
+			, A.Customer_ID		= B.Customer_ID	
+			, A.Bottle_Type		= B.Bottle_Type
+			, A.Bottle_Work_DT	= B.Bottle_Work_DT
+			, A.UPDATE_ID 		= #{updateId}
+			, A.UPDATE_DT 		= NOW()
+		WHERE
+			A.Bottle_BarCd =  #{bottleBarCd}
+			AND A.Bottle_BarCd = B.Bottle_BarCd
+			AND B.Bottle_Hist_Seq = (SELECT max(Bottle_Hist_Seq) from tb_bottle_hist where Bottle_BarCd = #{bottleBarCd})
+	</update>	
+</mapper>

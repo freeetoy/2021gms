@@ -1,0 +1,253 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="~{gms/layout/basic}">
+
+
+<div class="wrapper">
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+var isOkay = false;
+$(document).ready(function(){
+	$("#businessRegId").on("focusout", function(){
+		if($(this).val() != ""){
+			checkName();
+		}
+	});
+	
+	
+	
+});
+// 리스트 페이지 이동
+var goList = function(){
+	$("#listForm").submit();
+};
+
+// form 필드값 유효성 검사
+var validation = function(){
+	/*
+	var customerNm = $("#customerNm").val();
+	if(customerNm=="" || customerNm == null){
+		alert("거래처명을 입력해 주세요.");
+		$("#customerNm").focus();
+		isOkay = false;
+		return;
+	}
+	*/
+	var result = (
+				isValid(customerNm, "거래처명", null, null)
+			&& isValid(customerAddr, "거래처주소", null, null)		
+			&& isValid(salesId, "영업 담당자", null, null)
+	);
+	
+	if ( result === false ) {
+		isOkay = false;
+		return;
+	}else{
+		isOkay = true;
+		return;
+	}
+	
+	isOkay = true;
+}
+
+//서버에 버전 데이터 존재 여부 확인 요청
+var checkName = function(){
+	var businessRegId = $("#businessRegId").val();
+
+	var ajaxInfo ={
+		type:"POST",
+		url:"/gms/customer/CheckBusiId.do",
+		data:{
+			businessRegId : businessRegId
+		},
+		dataType: "json",
+	};
+	ajax = callAjax(ajaxInfo);
+	ajax.done(function(data){
+		if(data.result == "fail"){
+			alert(data.message);
+			$("#businessRegId").val("");
+			$("#businessRegId").focus();
+			isOkay = false;
+			return;
+		}
+	});
+};
+
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+//숫자 여부 검사
+function isNumber(input){
+	var chars = "0123456789";
+		return containsCharsOnly(input,chars);
+};
+
+function containsCharsOnly(input,chars) {
+	input = String(input);
+	for (var inx = 0; inx < input.length; inx++) {
+		if (chars.indexOf(input.charAt(inx)) == -1) {
+			return false;
+		}else{
+		}
+	};
+	return true;
+};
+
+// 입력된 내용을 작성한다.
+var goWrite = function(){
+	validation();
+	
+	//alert("isOkay=="+isOkay);
+	if(!isOkay){
+		return;
+	}
+	
+	var form = $("#writeForm");	
+	
+	form.submit();
+}
+
+$(document).ready(function(){	
+	
+	
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 등록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+         
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/customer/register.do}" th:object="${customer}" method="post" >
+                
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="card-footer">거래처명</th>
+                      <th><input type="text" class="form-control" id="customerNm" name="customerNm" placeholder="거래처명"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">사업자등록번호</th>
+                      <th><input type="text" class="form-control" id="businessRegId" name="businessRegId" placeholder="사업자등록번호"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 대표</th>
+                      <th><input type="text" class="form-control" id="customerRepNm" name="customerRepNm" placeholder="거래처대표"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 업태</th>
+                      <th><input type="text" class="form-control" id="customerBusiType" name="customerBusiType" placeholder="거래처 업태"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">거래처 종목</th>
+                      <th><input type="text" class="form-control" id="customerItem" name="customerItem" placeholder="거래처 종목"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 주소</th>
+                      <th><input type="text" class="form-control" id="customerAddr" name="customerAddr" placeholder="거래처 주소"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 연락처</th>
+                      <th><input type="text" class="form-control" id="customerPhone" name="customerPhone" placeholder="거래처 연락처"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">거래처 이메일</th>
+                      <th><input type="text" class="form-control" id="customerEmail" name="customerEmail" placeholder="거래처 이메일"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">차량여부</th>
+                      <th>
+		      			<input type="radio" name="carYn" id="carYn" value="Y" > 차량      
+		      			<input type="radio" name="carYn" id="carYn" value="G" > 가스                                
+                      	<input type="radio" name="carYn" id="carYn" value="N" checked=""> 고객		      		
+		      		 </th>   
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">ECount코드</th>
+                      <th><input type="text" class="form-control" id="eCountCd" name="eCountCd" placeholder="ECount"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">대리점여부</th>
+                      <th>
+		      			<input type="radio" name="agencyYn" id="agencyYn" value="Y" > 대리점                                   
+                      	<input type="radio" name="agencyYn" id="agencyYn" value="N" checked=""> 비대리점		      		
+		      		 </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상위대리점</th>
+                      <th>
+                       <select id="parentCustomerId" name="parentCustomerId" class="form-control">
+                        <option value="">상위대리점</option>
+                      	<option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					               >
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>         
+                    <tr>
+                      <th class="card-footer">영업 담당자</th>
+                      <th>
+                       <select id="salesId" name="salesId" class="form-control">
+                        <option value="">영업담당자</option>
+                      	<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					               >
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>         
+                  </thead>
+                </table>             
+            </div>
+ 
+      		<div class="card-footer">      			
+                 <a href="/gms/customer/list.do" class="btn btn-secondary float-left">취소</a>
+		          <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">
+                     	
+              </div>	
+            </form>   
+          	<!-- /.col-12 -->
+          </div>
+        </div>      
+        
+        
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

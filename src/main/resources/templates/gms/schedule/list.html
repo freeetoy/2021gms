@@ -1,0 +1,179 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	// end of function
+	
+	var fn_deleteUser = function(userId){
+		var form = document.deleteform;	
+		               		
+		if(confirm("삭제하시겠습니까?")){	
+			
+			$("#userId").val(userId);  			
+			
+			
+	        form.submit();			
+		}                  		
+	}
+
+
+
+	function gotoPage(pageNo) {
+		
+		var form =  document.mainForm;			
+		
+		$("#currentPage").val(pageNo);  
+    	
+        //validate checkt시 confirm 중복되는 부분 처리 
+        
+    	mainForm.submit();
+    }
+	
+	
+	var deleteVacation = function(scheduleSeq){
+		console.log(scheduleSeq);            
+		var strMessage= "삭제하시겠습니까?";
+		//if(productStatus==1) strMessage = "판매중지하시겠습니까?";
+		if(confirm(strMessage)){	
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/schedule/delete.do");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "scheduleSeq");
+	        hiddenField.setAttribute("value", scheduleSeq);
+	        form.appendChild(hiddenField);
+	        
+	        document.body.appendChild(form);
+
+	        form.submit();			
+		}                  		
+	}
+	
+	
+$(document).ready(function(){
+	
+	$(".btn_search").click(function()  
+    {
+		alert("Fff");
+		mainForm.submit();
+      
+    });
+	
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>휴가 </h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">          
+        
+    	<div class="row">
+              <div class="col-2">
+              <!-- 
+              <form id="mainForm" name="mainForm"  method="post" th:action="@{/gms/schedule/list.do}">
+	              <select id="searchYear" name="searchYear" class="form-control">
+	                    <option value="">년도</option>				    
+				        <option th:each="row : ${searchYears}"
+				                th:text="${row}"
+				                th:value="${row}"
+				                th:if="${searchYear ==row}" selected>					             
+				        </option>	
+				        <option th:each="row : ${searchYears}"
+				                th:text="${row}"
+				                th:value="${row}"
+				                th:unless="${searchYear ==row}">					             
+				        </option>					        				
+	                 </select>
+	                  -->
+              </div>               
+             
+             <div class="col-8">
+             <!--<input type="button" class="btn btn-default btn-success" id="btn_search" name="btn_search" value="검색" />     -->
+             </div> 
+             </form>
+              <div class="col-2">
+               		<a href="/gms/schedule/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="far fa-edit"></i> 휴가등록</button></a>
+              </div>
+        </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                <form id="deleteform" name="deleteform" th:action="@{/gms/user/delete.do}" method="post">
+                	<input type="hidden" id="userId" name="userId" value="">
+                </form>
+                  <thead>
+                    <tr>
+                      <th>순번</th>
+                      <th>휴가종류</th>
+                      <th>휴가일</th>
+                      <th>휴가구분</th>
+                      <th>등록일</th>
+                      <th>삭제</th>                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( scheduleList )}" th:each="row : ${scheduleList}"  style="font-size:14px;">
+                      <td th:text="${scheduleList.indexOf(row)+1}"></td>
+                      <td th:text="${row.scheduleTypeNm}"></td>
+                      <td th:if="${row.scheduleStartDt == row.scheduleEndDt}"  th:text="${row.scheduleStartDt}"></td> 
+                      <td th:unless="${row.scheduleStartDt == row.scheduleEndDt}"  th:text="|${row.scheduleStartDt} ~ ${row.scheduleEndDt}|"></td>
+                      <td th:text="${row.vacationGubunNm}"></td>
+                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>
+                      <td th:if="${row.dateDiffs > 0 }" > 
+                      <a class="btn btn-danger btn-xs" href="#" th:onclick="deleteVacation([[ ${row.scheduleSeq} ]])">
+                              <i class="fas fa-trash"></i>삭제 </a>      
+                      <td th:unless="${row.dateDiffs > 0 }" >                     
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( scheduleList )}">
+						<td colspan="6">조회된 결과가 없습니다.</td>
+					</tr>						
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

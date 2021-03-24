@@ -1,0 +1,625 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script src="/dist/js/jquery.popupWindow.js"></script>
+<script type="text/javascript">	
+
+var goUpdate = function(orderId){		
+	/*
+	//alert("goUpdate "+orderId);
+	console.log("goUpdate orderId ="+orderId);
+	var form = $("#mainForm");	
+
+	$("#orderId").val(orderId);
+	
+	//document.getElementById("priceCount").value = totalCount;
+	form.action="/gms/order/update.do";
+	form.submit();
+	*/
+	
+	var form = document.createElement("form");
+	form.setAttribute("charset","UTF-8");
+	form.setAttribute("method","post");
+	form.setAttribute("action","/gms/order/update.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]");
+	//form.setAttribute("action","/gms/order/update.do");
+		
+	var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", "orderId");
+    hiddenField.setAttribute("value", orderId);
+
+    form.appendChild(hiddenField);          
+    document.body.appendChild(form);
+
+    form.submit();	
+	
+}
+
+var gotoPage = function(pageNo) {	
+
+	$("#currentPage").val(pageNo);  
+
+	var form = document.mainForm;	
+	document.mainForm.action="/gms/order/list.do";
+	document.mainForm.submit();      		
+}
+
+	
+var goDelete = function(orderId){
+		
+	if(confirm("삭제하시겠습니까?")){	
+		
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/order/delete.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "orderId");
+        hiddenField.setAttribute("value", orderId);
+
+        form.appendChild(hiddenField);      
+        document.body.appendChild(form);
+
+        form.submit();			
+	}                  		
+}
+	
+	
+	
+	
+	$(function() {
+		
+		  $('input[name="searchOrderDt"]').daterangepicker({
+		      autoUpdateInput: false,
+		      locale: {
+		          cancelLabel: 'Clear'
+		      }
+		  });
+		
+		  $('input[name="searchOrderDt"]').on('apply.daterangepicker', function(ev, picker) {
+		      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+		  });
+		
+		  $('input[name="searchOrderDt"]').on('cancel.daterangepicker', function(ev, picker) {
+		      $(this).val('');
+		  });
+		
+		  $('input[name="depositCheckDt"]').daterangepicker({
+			    singleDatePicker: true,
+			    showDropdowns: true,
+			    autoUpdateInput: false,
+			      locale: {
+			          cancelLabel: 'Clear'
+			      }
+			  });
+
+			  $('input[name="depositCheckDt"]').on('apply.daterangepicker', function(ev, picker) {
+			      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+			  });
+
+			  $('input[name="depositCheckDt"]').on('cancel.daterangepicker', function(ev, picker) {
+			      $(this).val('');
+			  });
+		  
+		});	
+
+$(document).ready(function(){ 
+	
+	$(".btn_select_process").click(function()  
+	{
+		
+		var orderId = $(this).attr('orderId'); 
+
+					    
+			var ajaxInfo ={
+					type:"POST",
+					url:"/gms/order/detail.do",
+					data:{
+						orderId : orderId
+					},
+					dataType: "json",
+				};
+				
+				ajax = callAjax(ajaxInfo);
+				
+				ajax.done(function(data){
+					console.log(data);
+					var Ampm = "오전";
+					if(data.order.deliveryReqAmpm=='P' ) Ampm = "오후" ;
+					
+					$("#chOrderId").val(data.order.orderId);
+					
+					$("#mcustomerNm").val(data.order.customerNm);			
+					$("#deliveryReqDt").val(moment(data.order.deliveryReqDt).format('YYYY/MM/DD') + ' ' +Ampm);			
+					$("#OrderEtc").val(data.order.orderEtc);			
+					
+					//console.log(data.order.customerNm);
+					
+					if(data.order.orderProcessCd =='0210'){			
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_2").prop('disabled', true);
+						$("#btn_process_3").prop('disabled', true);
+					}if(data.order.orderProcessCd =='0220'){
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_1").html("접수완료");
+						$("#btn_process_1").prop('disabled', true);
+						$("#btn_process_3").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0230'){
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_1").html("접수완료");
+						$("#btn_process_2").html("생산완료");						
+						$("#btn_process_1").prop('disabled', true);
+						$("#btn_process_2").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0250'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_6").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0260'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0270'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_6").html("세금계산서완료");	
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_6").prop('disabled', true);	
+					}else if(data.order.orderProcessCd =='0280'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_6").html("세금계산서완료");	
+						$("#btn_process_7").html("입금완료");	
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_6").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);		
+					}
+					
+					if(data.orderProduct.length > 0) {
+						$("table.mod-doc-list").find('tr').remove();
+			
+						var newRow = $("<tr>");	
+						var cols = "";
+						cols += '<td>품명</td>';
+						cols += '<td>용량</td>';
+						cols += '<td>수량</td>';
+						cols += '<td>기타</td>';
+						cols += '<td>용기교한</td></tr>';
+
+						newRow.append(cols);
+						$("table.mod-doc-list").append(newRow);
+
+						for(var i=0;i<data.orderProduct.length;i++){
+					        	var newRow1 = $("<tr>");
+					        	var cols1 = "";	
+					        	cols1 += '<th>'+data.orderProduct[i].productNm+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].productCapa+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].orderCount+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].orderProductEtc+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].bottleChangeYn+'</th>';
+					        	cols1 += '</tr>'     ;    
+					        	newRow1.append(cols1);
+						        $("table.mod-doc-list").append(newRow1);
+						        
+						        newRow1 = "";
+					        }     
+					}
+			       })
+			       .fail(function(){
+				  console.log("fail");
+			       });
+
+
+				//$("#view_button1").show();
+				//$("#view_button").hide();
+			});
+	
+	// 진행 확인 버튼 클릭
+    $(".btn_process_check").click(function()  
+    {
+    
+       var select_pid = $(this).attr('id'); 
+       var msg = '';
+       var orderProcessCd = '';
+
+       var orderId = $('#chOrderId').val();
+       
+       
+       switch (select_pid){
+
+          case 'btn_process_1':
+            msg = "'주문확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0220");
+            orderProcessCd ='0220';
+            break;
+          case 'btn_process_2':
+            msg = "'생산 확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0230");
+            orderProcessCd ='0230';
+            break;
+          case 'btn_process_3':
+            msg = "'판매 확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0250");
+            orderProcessCd ='0250';
+            break;  
+          default:
+            break;
+
+       }     
+       
+		if(confirm(msg)){
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/order/changeProcess.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "chOrderId");
+	        hiddenField.setAttribute("value", orderId);
+
+	        form.appendChild(hiddenField);  
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "orderProcessCd");
+	        hiddenField1.setAttribute("value", orderProcessCd);
+
+	        form.appendChild(hiddenField1);      
+	        document.body.appendChild(form);
+	        
+	        form.submit();	
+			//chForm.action="/gms/order/changeProcess.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]";
+      		//chForm.submit();
+		}
+	});
+
+ 	// 거래명세서 출력
+    $(".btn_order_print").click(function()  
+    {
+    
+       var orderId = $(this).attr('orderId'); 
+
+       $.popupWindow('/gms/order/popupOrder.do?orderId=' + orderId, {
+              width: 1300,
+              height: 500,
+              center: 'screen',
+              scrollbars: 'true'
+          });
+
+
+
+    });
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		mainForm.action="/gms/order/list.do";
+		form.submit();
+	};
+
+
+
+});
+	
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>주문 목록</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Simple Tables</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">        
+    
+    	<!--  process modat start -->  
+		<div class="modal modal-info fade" id="process-modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">주문 정보</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="chForm" name="chForm" th:object="${order}" method="post">
+					              <input type="hidden" id="chOrderId" name="chOrderId" value="">
+					              <input type="hidden" id="orderProcessCd" name="orderProcessCd" value="">	
+					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">거래처명</td>
+											<td  colspan=5><input type="text" class="form-control" id="mcustomerNm"  name="mcustomerNm"  disabled> </td>
+										</tr>
+										<tr>
+											<td class="card-footer">납품요청일</td>
+											<td  colspan=5><input type="text" class="form-control" id="deliveryReqDt"  name="deliveryReqDt" disabled> </td>
+										</tr>
+									</thead>
+									</table>
+									<!-- 
+									<div class="form-group">
+										<label for="country" class="col-sm-2 control-label">거래처명:</label>
+										<div class="col-sm-10">
+											<input type="text"  id="deliveryReqDt"  name=""deliveryReqDt""  placeholder="" value="" disabled> 
+										</div>
+									</div>							
+									<div class="form-group">
+										<label class="control-label col-md-2 col-sm-2 col-xs-12">납품요청일</label>
+										<div class="col-sm-10">
+											<input type="text"  id="deliveryReqDt"  name=""deliveryReqDt""  placeholder="" value="" disabled> 
+										</div>
+									</div>
+									 -->
+									<div class="form-group">
+										<label >주문정보</label>
+										<div>
+											<table id="myTable" class="table mod-doc-list">
+												<tr>
+												<td>품명</td>
+												<td>용량</td>
+												<td>수량</td>
+												<td>기타</td>
+												<td>용기교환</td>
+												</tr>
+												<tr>
+													<td  style="padding-left: 0px;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<table id="myTable" class="table order-info">
+										<tr>
+											<td class="card-footer">기타사항</td>
+											<td colspan=5><input type="text" class="form-control" id="orderEtc"  name=""orderEtc""  placeholder="" value="" disabled> </td>
+										</tr>
+										
+									</table>
+											
+									<div class="form-group" id="view_sale_finish_date_check" style="display: none;">
+										<label class="control-label col-md-2 col-sm-2 col-xs-12">영업확인일</label>
+										<div class="col-md-8 col-sm-8 col-xs-12">
+											<input type="text"  id="datepicker6"  name="sale_finish_date"  class="form-control datepicker6"  placeholder="날짜 선택" value="2019/11/29"> 
+										</div>
+										<div class="col-md-2 col-sm-2 col-xs-12">
+										</div>
+									</div>
+									</form>
+									<div class="ln_solid"></div>
+									<div class="form-group" id="view_button" >
+										<div align="center">
+											<button type="button"  id="btn_process_1" class="btn btn-info btn btn btn_process_check">접수확인</button>
+											<button type="button" id="btn_process_2" class="btn btn-info btn btn_process_check">생산확인</button>
+											<button type="button" id="btn_process_3" class="btn btn-info btn btn_process_check">판매확인</button>
+										</div>
+									</div>
+									<div class="form-group" id="view_button1" style="display: none;" >
+										<div align="center">
+											<button type="button"  id="btn_process_5" class="btn btn-info btn btn btn_process_check">거래명세서확인</button>
+											<button type="button" id="btn_process_6" class="btn btn-info btn btn_process_check">세금게산서확인</button>
+											<button type="button" id="btn_process_7" class="btn btn-info btn btn_process_check">입금확인</button>
+										</div>
+									</div>
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+    	
+    	<div class="row">        	
+    		
+            <div class="col-1">
+            <form id="mainForm" name="mainForm"  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="orderId" name="orderId" value="">
+               		<label>접수 기간</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" name="searchOrderDt" th:value="${searchOrderDt}"/>			
+            </div>               
+            <div class="col-3">               
+            </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
+    	<div class="row">
+    		
+           	<div class="col-1">
+               		<label >거래처명</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" id="searchCustomerNm" name="searchCustomerNm" class="form-control" th:value="${searchCustomerNm}">
+            </div>  
+            
+              <div class="col-5">
+                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+              </div>  
+                       
+              <div class="col-1">
+               		<a href="/gms/order/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm">주문 등록</button></a>
+              </div>
+              <div class="col-1">
+               		<a href="/gms/order/excelDownload.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm">엑셀받기</button></a>
+              </div>
+              </form>  
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	       </br>
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr align="center">
+                      <th>순번</th>
+                      <th>거래처</th>
+                      <th>품명</th>
+                      <th>용량</th>
+                      <th>접수자</th>
+                      <th>상태</th>
+                      <th>요청일자</th>
+                      <th>접수일</th>
+                      <th>진행확인</th>
+                      <th>관리</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                 
+                  	<tr th:if="${not #lists.isEmpty( orderList )}" th:each="row : ${orderList}" style="font-size:13px;">
+                      <td th:text="${totalCount-((currentPage-1)*10) - orderList.indexOf(row)}"></td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:text="${row.orderProductNm}"></td>
+                      <td th:text="${row.orderProductCapa}"></td>
+                      <td th:text="|${row.createNm}(${row.createId})|"></td>
+                      <th th:if="${row.orderProcessCdNm=='0210'}" th:text="${row.orderProcessCdNm}">
+                      <th th:unless="${row.orderProcessCdNm=='0210'}" style="color: red" th:text="${row.orderProcessCdNm}">
+                      </th>
+                      <td th:text="${#calendars.format( row.deliveryReqDt, 'yyyy-MM-dd' )}"></td>
+		     		  <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>  
+                      <td>                      
+						<a class="btn_select_process btn btn-success btn-xs" th:orderId="${row.orderId}" data-toggle="modal" data-target="#process-modal" href="#"><i class="fas fa-pencil-alt"></i>진행확인</a>
+					  </td>
+					  <td>  	
+					  <a class="btn btn-info btn-xs" href="#" th:onclick="javascript:goUpdate([[ ${row.orderId} ]])"><i class="fas fa-pencil-alt"></i>수정 </a>
+						<a class="btn btn-danger btn-xs" href="#" th:onclick="goDelete([[ ${row.orderId} ]])">
+                              <i class="fas fa-trash"></i>삭제</a>
+                          <a class="btn_order_print btn btn-secondary btn-xs" th:orderId="${row.orderId}"  href="#" >
+                              <i class="fas fa-folder"></i>거래명세서</a>
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( orderList )}">
+						<td colspan="10">조회된 결과가 없습니다.</td>
+					</tr>		
+										
+                  </tbody>					
+                </table>                
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">								
+			<div class="col-12">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a th:href="@{/gms/order/list.do(currentPage=${currentPage -1})}" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a th:href="@{/gms/order/list.do(currentPage=${currentPage +1})}" aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			<div class="col-md-2">
+			</div>
+			</div>
+		</div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+  </th:block>
+
+</body>
+</html>

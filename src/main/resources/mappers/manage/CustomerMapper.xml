@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.CustomerMapper">
+
+	<resultMap id="CustomerMap" type="com.gms.web.admin.domain.manage.CustomerVO" >
+		<result property="customerId"			column="Customer_ID"		/>
+		<result property="memberCompSeq"		column="Member_Comp_Seq"	/>		
+		<result property="customerNm"			column="Customer_Nm"		/>
+		<result property="businessRegId"		column="Business_Reg_ID"	/>
+		<result property="customerRepNm"		column="Customer_Rep_Nm"	/>
+		<result property="customerBusiType"		column="Customer_Busi_Type"	/>
+		<result property="customerItem"			column="Customer_Item"		/>
+		<result property="customerAddr"			column="Customer_Addr"		/>
+		<result property="customerPhone"		column="Customer_Phone"		/>	
+		<result property="customerEmail"		column="Customer_Email"		/>	
+		<result property="salesId"				column="Sales_ID"			/>
+		<result property="salesNm"				column="Sales_Nm"			/>
+		<result property="customerStatus"		column="Customer_Status"	/>		
+		<result property="carYn"				column="Car_YN"				/>	
+		<result property="agencyYn"				column="Agency_YN"			/>		
+		<result property="parentCustomerId"		column="Parent_Customer_ID"	/>
+		<result property="eCountCd"				column="ECount_CD"			/>	
+		<result property="bottleOwnCount"		column="Bottle_Own_Count"	/>	
+		<result property="bottleRentCount"		column="Bottle_Rent_Count"	/>	
+		<result property="summary"				column="Summary"			/>	
+		<result property="createId"				column="CREATE_ID"		/>
+		<result property="createDt"				column="CREATED_DT"		/>
+		<result property="updateId"				column="UPDATE_ID"		/>		
+		<result property="updateDt"				column="UPDATE_DT"		/>
+	</resultMap>
+	
+	<resultMap id="CustomerPriceMap" type="com.gms.web.admin.domain.manage.CustomerPriceVO" >
+		<result property="customerId"			column="Customer_ID"		/>
+		<result property="productId"			column="Product_ID"			/>		
+		<result property="productPriceSeq"		column="Product_Price_Seq"	/>
+		<result property="productPrice"			column="Product_Price"		/>	
+		<result property="productBotltePrice"	column="Product_Bottle_Price"		/>	
+		<result property="createId"				column="CREATE_ID"			/>
+		<result property="createDt"				column="CREATED_DT"			/>
+		<result property="updateId"				column="UPDATE_ID"			/>		
+		<result property="updateDt"				column="UPDATE_DT"			/>
+	</resultMap>
+	
+	<resultMap id="CustomerSimpleMap" type="com.gms.web.admin.domain.manage.CustomerSimpleVO" >
+		<result property="customerId"			column="Customer_ID"		/>
+		<result property="customerNm"			column="Customer_Nm"		/>
+	</resultMap>
+	
+	<sql id="InsertCustomerColumns">
+		 Member_Comp_Seq	        
+		, Customer_Nm	
+		, Business_Reg_ID        
+		, Customer_Rep_Nm        
+		, Customer_Busi_Type
+		, Customer_Item	
+		, Customer_Addr	
+		, Customer_Phone	
+		, Customer_Email	
+		, Sales_ID
+		, Customer_Status
+		, Car_Yn
+		, Agency_Yn
+		, Parent_Customer_ID
+		, ECount_CD
+		, Bottle_Own_Count
+		, Bottle_Rent_Count
+		, Summary
+		, CREATE_ID	
+		, CREATE_DT	
+		, UPDATE_ID	
+		, UPDATE_DT
+	</sql>
+	<sql id="CustomerColumns">
+		  Customer_ID	
+		, A.Member_Comp_Seq	        
+		, Customer_Nm	
+		, Business_Reg_ID        
+		, Customer_Rep_Nm        
+		, Customer_Busi_Type
+		, Customer_Item	
+		, Customer_Addr	
+		, Customer_Phone	
+		, Customer_Email	
+		, Sales_ID
+		, User_Nm Sales_Nm
+		, Customer_Status
+		, Car_YN
+		, Agency_Yn
+		, Parent_Customer_ID
+		, ECount_CD
+		, Bottle_Own_Count
+		, Bottle_Rent_Count
+		, Summary
+		, A.CREATE_ID	
+		, A.CREATE_DT	
+		, A.UPDATE_ID	
+		, A.UPDATE_DT
+	</sql>
+	<sql id="InsertCustomerPriceColumns">
+		 Customer_ID	        
+		, Product_ID	
+		, Product_Price_Seq        
+		, Product_Price
+		, Product_Bottle_Price
+		, CREATE_ID	
+		, CREATE_DT	
+		, UPDATE_ID	
+		, UPDATE_DT
+	</sql>
+	
+	<sql id="CustomerProduct">
+		 Customer_ID	        
+		, Product_ID	
+		, Product_Price_Seq        
+		, Bottle_Own_Count
+		, Bottle_Rent_Count
+		, CREATE_ID	
+		, CREATE_DT	
+		, UPDATE_ID	
+		, UPDATE_DT
+	</sql>
+	
+	<sql id="CustomerBottle">
+		Work_Dt
+		, Customer_ID	        
+		, Product_ID	
+		, Product_Price_Seq        
+		, Rent_Count
+		, Back_Count
+		, Inventory_Count
+		, Sales_ID
+		, CREATE_ID	
+		, CREATE_DT	
+		, UPDATE_ID	
+		, UPDATE_DT
+	</sql>
+	
+	<insert id="insertCustomer" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		INSERT INTO TB_CUSTOMER(
+			<include refid="InsertCustomerColumns" />
+		) VALUES (
+			 #{memberCompSeq}
+			, #{customerNm}
+			, #{businessRegId}
+			, #{customerRepNm}
+			, #{customerBusiType}
+			, #{customerItem}
+			, #{customerAddr}
+			, #{customerPhone}
+			, #{customerEmail}
+			, #{salesId}
+			, '2'
+			, #{carYn}
+			, #{agencyYn}
+			, #{parentCustomerId}
+			, #{eCountCd}
+			, #{bottleOwnCount}
+			, #{bottleRentCount}
+			, #{summary}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertCustomers" parameterType="java.util.List">
+		INSERT INTO TB_CUSTOMER(
+			<include refid="InsertCustomerColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			 #{item.memberCompSeq}
+			, #{item.customerNm}
+			, #{item.businessRegId}
+			, #{item.customerRepNm}
+			, #{item.customerBusiType}
+			, #{item.customerItem}
+			, #{item.customerAddr}
+			, #{item.customerPhone}
+			, #{item.customerEmail}
+			, #{item.salesId}
+			, '2'
+			, #{item.carYn}
+			, #{item.agencyYn}
+			, #{item.parentCustomerId}
+			, #{item.eCountCd}
+			, #{item.bottleOwnCount}
+			, #{item.bottleRentCount}
+			, #{item.summary}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert>
+
+	<insert id="insertCustomerPrice" parameterType="com.gms.web.admin.domain.manage.CustomerPriceVO">
+		INSERT INTO TB_CUSTOMER_PRODUCT_PRICE(
+			<include refid="InsertCustomerPriceColumns" />
+		) VALUES (
+			 #{customerId}
+			, #{productId}
+			, #{productPriceSeq}
+			, #{productPrice}
+			, #{productBottlePrice}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+		
+	<insert id="insertCustomerPrices" parameterType="java.util.List">
+		INSERT INTO TB_CUSTOMER_PRODUCT_PRICE(
+			<include refid="InsertCustomerPriceColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			 #{item.customerId}
+			, #{item.productId}
+			, #{item.productPriceSeq}
+			, #{item.productPrice}
+			, #{item.productBottlePrice}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertCustomerBottle" parameterType="com.gms.web.admin.domain.manage.CustomerBottleVO">
+		INSERT INTO TB_Customer_Bottle(
+			<include refid="CustomerBottle" />
+		) VALUES (
+			#{workDt}
+			, #{customerId}
+			, #{productId}
+			, #{productPriceSeq}
+			, #{rentCount}
+			, #{backCount}
+			, #{inventoryCount}
+			, #{salesId}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert> 
+	
+	<insert id="insertCustomerBottles" parameterType="java.util.List">
+		INSERT INTO TB_Customer_Bottle(
+			<include refid="CustomerBottle" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			#{item.workDt}
+			, #{item.customerId}
+			, #{item.productId}
+			, #{item.productPriceSeq}
+			, #{item.rentCount}
+			, #{item.backCount}
+			, #{item.inventoryCount}
+			, #{item.salesId}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert> 
+	
+	<select id="selectCustomerDetail" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.CustomerVO">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A Left Join TB_USER B on A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'		
+		AND
+			CUSTOMER_ID = #{customerId}
+	</select>
+	
+	<select id="selectCustomerDetailByNm" parameterType="String" resultType="com.gms.web.admin.domain.manage.CustomerVO">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A Left Join TB_USER B on A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'		
+		AND
+			CUSTOMER_NM = <![CDATA[#{customerNm}]]> 
+	</select>
+	
+	<select id="selectCustomerDetailByNmBusi" parameterType="String" resultType="com.gms.web.admin.domain.manage.CustomerVO">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A Left Join TB_USER B on A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'		
+		AND
+			CUSTOMER_NM = <![CDATA[#{customerNm}]]> 
+		AND 
+			Business_Reg_ID = #{businessRegId}		
+	</select>
+
+	<update id="updateCustomer" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		UPDATE TB_CUSTOMER
+		SET
+			  Customer_NM			= #{customerNm}
+			, Business_Reg_ID		= #{businessRegId}
+			, Customer_Rep_Nm		= #{customerRepNm}
+			, Customer_Busi_Type	= #{customerBusiType}
+			, Customer_Item			= #{customerItem}
+			, Customer_Addr			= #{customerAddr}
+			, Customer_Phone		= #{customerPhone}
+			, Customer_Email		= #{customerEmail}
+			, Sales_ID				= #{salesId}
+			, Car_YN				= #{carYn}
+			, Agency_YN				= #{agencyYn}
+			, Parent_Customer_ID	= #{parentCustomerId}
+			, ECount_CD				= #{eCountCd}
+			, Summary				= #{summary}
+			, UPDATE_ID				= #{updateId}
+			, UPDATE_DT				= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+	
+	<update id="updateCustomerExcel" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		UPDATE TB_CUSTOMER
+		SET
+			  Customer_NM		= #{customerNm}
+			, Business_Reg_ID	= #{businessRegId}
+			, Customer_Rep_Nm	= #{customerRepNm}
+			, Customer_Busi_Type= #{customerBusiType}
+			, Customer_Item		= #{customerItem}
+			, Customer_Addr		= #{customerAddr}
+			, Customer_Phone	= #{customerPhone}
+			, Customer_Email	= #{customerEmail}
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+
+	<update id="deleteCustomer" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		UPDATE TB_CUSTOMER
+		SET
+			  Customer_Status = '0'
+			, UPDATE_ID 	= #{updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+	
+	<update id="updateCustomerBottleCount" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		UPDATE TB_CUSTOMER
+		SET
+			  Bottle_Own_Count	= Bottle_Own_Count + #{bottleOwnCount}			
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+	
+	<update id="updateCustomerBottleRentCount" parameterType="com.gms.web.admin.domain.manage.CustomerVO">
+		UPDATE TB_CUSTOMER
+		SET
+			  Bottle_Rent_Count	= Bottle_Rent_Count + #{bottleRentCount}			
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+
+	<select id="selectCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="java.util.Map">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A Left Join  TB_USER B On ( A.Sales_ID = B.User_ID AND B.Delete_YN='N')
+		WHERE
+			Customer_Status != '0'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+			order by create_dt desc 
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectCustomerCount" resultType="int" parameterType="java.util.Map">
+		SELECT
+			Count(Customer_id)
+		FROM
+			TB_CUSTOMER
+		WHERE
+			Customer_Status != '0'	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+	</select>
+	
+	<select id="selectBusinessRegId" parameterType="com.gms.web.admin.domain.manage.CustomerVO" resultType="int">
+		SELECT
+			Count(Customer_id)
+		FROM
+			TB_CUSTOMER
+		WHERE
+			Customer_Status != '0'
+		AND
+			Business_Reg_ID=#{businessRegId}
+	</select>
+	
+	<select id="searchCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="String">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A  Left Join  TB_USER B On A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+		ORDER BY Customer_Nm Asc 
+	</select>
+
+	<select id="searchCustomerListExcel" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="String">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A  Left Join  TB_USER B On A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+		ORDER BY A.Creat_Dt desc 
+	</select>
+	
+	<select id="selectCustomerListCar" resultType="com.gms.web.admin.domain.manage.CustomerVO">
+		SELECT
+			<include refid="CustomerColumns" />
+		FROM
+			TB_CUSTOMER A  Left Join  TB_USER B On A.Sales_ID = B.User_ID
+		WHERE
+			Customer_Status != '0'		
+		AND 
+			Car_YN = 'Y'
+		ORDER BY A.Customer_Nm desc 
+	</select>
+
+	<select id="selectCustomerPriceList" resultType="com.gms.web.admin.domain.manage.CustomerPriceExtVO" parameterType="Integer">
+		SELECT
+			a.Customer_ID, a.Product_ID, a.Product_Price_Seq,a.Product_Price, a.Product_Bottle_Price,b.Product_Capa, c.Product_Nm
+		FROM
+			TB_CUSTOMER_PRODUCT_PRICE a, TB_PRODUCT_PRICE b, TB_PRODUCT c
+		WHERE
+			CUSTOMER_ID = #{customerId}
+		AND a.Product_ID = b.Product_ID
+		AND b.Product_ID = c.Product_ID
+		AND a.Product_Price_Seq = b.Product_Price_Seq
+		AND b.Product_Status != 0
+		AND c.Product_Status != 0
+	</select>
+	
+	<select id="searchCustomerSimpleList" resultType="com.gms.web.admin.domain.manage.CustomerSimpleVO" parameterType="String">
+		SELECT
+			CUSTOMER_ID, Customer_NM
+		FROM
+			TB_CUSTOMER A
+		WHERE
+			Customer_Status != '0'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>		
+		ORDER BY Customer_Nm Asc 
+	</select>
+	
+	<select id="searchCustomerSimpleListString" resultType="String" parameterType="String">
+		SELECT
+			GROUP_CONCAT(Customer_NM)
+		FROM
+			TB_CUSTOMER A
+		WHERE
+			Customer_Status != '0'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+		AND 
+			Car_YN = 'N'
+		ORDER BY Customer_Nm Asc 
+	</select>
+	
+	<select id="selectCarSimpleList" resultType="com.gms.web.admin.domain.manage.CustomerSimpleVO" parameterType="String">
+		SELECT
+			CUSTOMER_ID, Customer_NM
+		FROM
+			TB_CUSTOMER A
+		WHERE
+			Customer_Status != '0'
+		AND 
+			Car_YN = #{carYn}
+		ORDER BY Customer_Nm Asc 
+	</select>
+	
+	<select id="selectAgencyCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerSimpleVO">
+		SELECT
+			CUSTOMER_ID, Customer_NM
+		FROM
+			TB_CUSTOMER A
+		WHERE
+			Customer_Status != '0'
+		AND 
+			Agency_YN = 'Y'
+		ORDER BY Customer_Nm Asc 
+	</select>
+	
+	<select id="selectCustomerPriceListAll" resultType="com.gms.web.admin.domain.manage.CustomerPriceVO" >
+		SELECT
+			<include refid="InsertCustomerPriceColumns" />
+		FROM
+			TB_CUSTOMER_PRODUCT_PRICE a		
+	</select>
+	
+	<select id="selectCustomerProductPriceList" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.CustomerPriceVO" >
+		SELECT
+			<include refid="InsertCustomerPriceColumns" />
+		FROM
+			TB_CUSTOMER_PRODUCT_PRICE a		
+		WHERE
+			Product_ID = #{productId}
+	</select>
+	
+	<select id="selectCustomerPriceListAllNow" resultType="com.gms.web.admin.domain.manage.CustomerPriceVO" >
+		SELECT
+			<include refid="InsertCustomerPriceColumns" />
+		FROM
+			TB_CUSTOMER_PRODUCT_PRICE a		
+		WHERE 
+			DATE_FORMAT(Update_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+		AND Customer_ID IN (
+			SELECT Customer_ID 
+			FROM TB_Work_Report 
+			WHERE DATE_FORMAT(create_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+			union
+			SELECT Customer_ID 
+			FROM TB_Order
+			WHERE DATE_FORMAT(create_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+		)
+	</select>
+	
+	<update id="updateCustomerPrice" parameterType="com.gms.web.admin.domain.manage.CustomerPriceVO">
+		UPDATE TB_CUSTOMER_PRODUCT_PRICE	
+		SET 
+			Product_Price = #{productPrice}
+			, Product_Bottle_Price = #{productBottlePrice}
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+		AND
+			Product_ID =  #{productId}
+		AND
+			 Product_Price_Seq = #{productPriceSeq}
+	</update>
+	
+	<update id="deleteCustomerPrice" parameterType="Integer">
+		DELETE
+		FROM  TB_CUSTOMER_PRODUCT_PRICE		
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+	
+	<delete id="deleteCustomerPrices" parameterType="java.util.List">
+		DELETE
+		FROM  TB_CUSTOMER_PRODUCT_PRICE		
+		WHERE
+			CUSTOMER_ID in
+		(
+		<foreach collection="list" item="item" separator=" , ">			
+			 #{item.customerId}
+		</foreach>
+		)
+	</delete>
+		
+		
+	<select id="selectCustomerProduct" resultType="com.gms.web.admin.domain.manage.CustomerProductVO" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		SELECT
+			<include refid="CustomerProduct" />
+		FROM
+			TB_CUSTOMER_PRODUCT
+		WHERE
+			CUSTOMER_ID = #{customerId}
+		AND
+			Product_ID =  #{productId}
+		AND
+			 Product_Price_Seq = #{productPriceSeq}			
+	</select>
+	
+	<select id="selectCustomerProductList" resultType="com.gms.web.admin.domain.manage.CustomerProductVO" parameterType="Integer">
+		SELECT a.Product_ID, b.Product_Nm, a.Product_Price_Seq, c.Product_Capa, Bottle_Own_Count, Bottle_Rent_Count
+		FROM 
+			TB_CUSTOMER_PRODUCT a, TB_PRODUCT b, TB_PRODUCT_PRICE c
+		WHERE a.Customer_ID = #{customerId}
+		AND   a.Product_ID = b.Product_ID
+		AND   b.Product_ID = c.Product_ID
+		AND   a.Product_Price_Seq = c.Product_Price_Seq			
+	</select>
+	
+	<insert id="insertCustomerProduct" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		INSERT INTO TB_CUSTOMER_PRODUCT(
+			<include refid="CustomerProduct" />
+		) VALUES (
+			 #{customerId}
+			, #{productId}
+			, #{productPriceSeq}
+			, #{bottleOwnCount}
+			, #{bottleRentCount}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertCustomerProducts" parameterType="java.util.List">
+		INSERT INTO TB_CUSTOMER_PRODUCT(
+			<include refid="CustomerProduct" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			 #{item.customerId}
+			, #{item.productId}
+			, #{item.productPriceSeq}
+			, #{item.bottleOwnCount}
+			, #{item.bottleRentCount}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert>
+	
+	<update id="deleteCustomerProduct" parameterType="Integer">
+		DELETE
+		FROM  TB_CUSTOMER_PRODUCT		
+		WHERE
+			CUSTOMER_ID = #{customerId}
+	</update>
+	
+	<update id="updateCustomerProductOwnCount" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		UPDATE TB_CUSTOMER_PRODUCT
+		SET
+			  Bottle_Own_Count	= Bottle_Own_Count + #{bottleOwnCount}			
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+		AND
+			Product_ID =  #{productId}
+		AND
+			 Product_Price_Seq = #{productPriceSeq}
+	</update>
+	
+	<update id="updateCustomerProductRentCount" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		UPDATE TB_CUSTOMER_PRODUCT
+		SET
+			  Bottle_Rent_Count	= Bottle_Rent_Count + #{bottleRentCount}			
+			, UPDATE_ID			= #{updateId}
+			, UPDATE_DT			= NOW()
+		WHERE
+			CUSTOMER_ID = #{customerId}
+		AND
+			Product_ID =  #{productId}
+		AND
+			 Product_Price_Seq = #{productPriceSeq}
+	</update>
+	
+	
+	<select id="selectCustomerBottleList" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.CustomerBottleVO">
+		SELECT
+			CB.Product_ID,Product_Nm,CB.Product_Price_Seq, Product_Capa,Sum(Rent_Count)-sum(Back_Count) Inventory_Count
+		FROM
+			TB_CUSTOMER_BOTTLE CB, TB_Product TP, TB_Product_Price PP
+		WHERE
+			CUSTOMER_Id = #{customerId}
+		AND 
+			CB.Product_ID = TP.Product_ID
+		AND CB.Product_Price_Seq = PP.Product_Price_Seq
+		AND TP.Product_ID = PP.Product_ID
+		Group By Product_ID,Product_Price_Seq
+	</select>
+</mapper>

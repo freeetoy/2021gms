@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.CashFlowMapper">
+<resultMap id="OrderMap" type="com.gms.web.admin.domain.manage.OrderExtVO" >
+		<result property="cashFlowSeq"			column="Cash_Flow_Seq"		/>
+		<result property="customerId"			column="Customer_ID"		/>
+		<result property="customerNm"			column="Customer_Nm"		/>
+		<result property="incomeAmount"			column="Income_Amount"		/>
+		<result property="receivableAmount"		column="Receivable_Amount"	/>
+		<result property="incomeWay"			column="Income_Way"			/>	
+		<result property="deleteYn"				column="Delete_YN"			/>	
+		<result property="createId"				column="CREATE_ID"			/>
+		<result property="createDt"				column="CREATE_DT"			/>
+		<result property="updateId"				column="UPDATE_ID"			/>		
+		<result property="updateDt"				column="UPDATE_DT"			/>
+	</resultMap>	
+	
+	<sql id="CashFlowColumns">
+		 Cash_Flow_Seq         
+		 , Customer_ID  
+		 , Income_Amount    
+		 , Receivable_Amount 		  
+		 , Income_Way		   
+		 , Delete_YN
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<sql id="CashFlowInsertColumns">
+		 Customer_ID  
+		 , Income_Amount    
+		 , Receivable_Amount 		  
+		 , Income_Way		  
+		 , Delete_YN 
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<insert id="insertCashFlow" parameterType="com.gms.web.admin.domain.manage.CashFlowVO">
+		INSERT INTO TB_Cash_Flow(
+			<include refid="CashFlowInsertColumns" />
+		) VALUES (
+			#{customerId}
+			, #{incomeAmount}	
+			, #{receivableAmount}	
+			, #{incomeWay}		
+			, 'N'	
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<update id="updateCashFlow" parameterType="com.gms.web.admin.domain.manage.CashFlowVO">
+		UPDATE TB_Cash_Flow
+		SET
+			  Income_Amount		= #{incomeAmount}
+			, Receivable_Amount	= #{receivableAmount}
+			, Income_Way		= #{incomeWay}
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Cash_Flow_Seq 		= #{cashFlowSeq}
+	</update>
+	
+	<update id="deleteCashFlow" parameterType="com.gms.web.admin.domain.manage.CashFlowVO">
+		UPDATE TB_Cash_Flow
+		SET
+			Delete_YN = 'Y'
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Cash_Flow_Seq 		= #{cashFlowSeq}
+	</update>
+	
+	<select id="selectCashFlowCount" parameterType="java.util.Map" resultType="int">
+		SELECT
+			count(Cash_Flow_Seq)
+		FROM
+			TB_Cash_Flow
+		WHERE
+			Customer_ID =  #{customerId}	
+		AND
+			Delete_YN 	= 'N'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
+		AND date_format(Create_Dt,'%Y/%m/%d  %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
+		</if>			
+	</select>
+	
+	<select id="selectCashFlowList" resultType="com.gms.web.admin.domain.manage.CashFlowVO" parameterType="java.util.Map">
+		SELECT
+			Cash_Flow_Seq         
+			 , TF.Customer_ID  
+			 , Customer_Nm
+			 , Income_Amount    
+			 , Receivable_Amount 		  
+			 , Income_Way		   
+			 , TF.Delete_YN
+			 , TF.Create_ID        
+			 , TF.Create_Dt        
+			 , TF.Update_ID        
+			 , TF.Update_Dt   
+		FROM
+			TB_Cash_Flow TF, TB_Customer TC
+		WHERE
+			TF.Customer_ID =  #{customerId}	
+		AND
+			TF.Customer_Id  = TC.Customer_Id
+		AND
+			Delete_YN 	= 'N'		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
+		AND date_format(TF.Create_Dt,'%Y/%m/%d  %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
+		</if>		
+		ORDER BY TF.Create_Dt DESC 
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectAllCashFlowCount" parameterType="java.util.Map" resultType="int">
+		SELECT
+			count(Cash_Flow_Seq)
+		FROM
+			TB_Cash_Flow TF, TB_Customer TC
+		WHERE
+			TF.Customer_Id  = TC.Customer_Id
+		AND
+			TF.Delete_YN 	= 'N'	
+		AND
+			Customer_Status = 2
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
+		AND date_format(TF.Create_Dt,'%Y/%m/%d  %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
+		</if>			
+	</select>
+	
+	<select id="selectAllCashFlowList" resultType="com.gms.web.admin.domain.manage.CashFlowVO" parameterType="java.util.Map">
+		SELECT
+			Cash_Flow_Seq         
+		 , TF.Customer_ID  
+		 , Customer_Nm
+		 , Income_Amount    
+		 , Receivable_Amount 		  
+		 , Income_Way		   
+		 , TF.Delete_YN
+		 , TF.Create_ID        
+		 , TF.Create_Dt        
+		 , TF.Update_ID        
+		 , TF.Update_Dt   
+		FROM
+			TB_Cash_Flow TF, TB_Customer TC
+		WHERE
+			TF.Customer_Id  = TC.Customer_Id
+		AND
+			TF.Delete_YN 	= 'N'		
+		AND
+			Customer_Status = 2
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
+		AND date_format(TF.Create_Dt,'%Y/%m/%d %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
+		</if>		
+		ORDER BY TF.Create_Dt DESC 
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectCashFlow" resultType="com.gms.web.admin.domain.manage.CashFlowVO" parameterType="int">
+		SELECT
+			Cash_Flow_Seq         
+			 , TF.Customer_ID  
+			 , Customer_Nm
+			 , Income_Amount    
+			 , Receivable_Amount 		  
+			 , Income_Way		   
+			 , Delete_YN
+			 , TF.Create_ID        
+			 , TF.Create_Dt        
+			 , TF.Update_ID        
+			 , TF.Update_Dt   
+		FROM
+			TB_Cash_Flow  TF, TB_Customer TC
+		WHERE
+			Cash_Flow_Seq =  #{cashFlowSeq}			
+		AND
+			TF.Delete_YN 	= 'N'
+		AND
+			TF.`Customer_ID` = TC.`Customer_ID`
+	</select>
+	
+	<select id="selectCashFlowSum" resultType="com.gms.web.admin.domain.manage.CashSumVO" parameterType="com.gms.web.admin.domain.manage.CashFlowVO">
+		SELECT
+			Sum(Income_Amount) incomeAmountSum , Sum(Receivable_Amount) receivableAmountSum, Sum(Receivable_Amount)- Sum(Income_Amount) receivableAmountNet
+		FROM
+			TB_Cash_Flow
+		WHERE
+			Customer_ID =  #{customerId}	
+		AND
+			Delete_YN 	= 'N'		
+	</select>
+</mapper>

@@ -1,0 +1,844 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script src="/dist/js/jquery.popupWindow.js"></script>
+<script type="text/javascript">	
+
+function checkAll(){
+    
+    if( $("#checkAll").is(':checked') ) {
+        $("input[name=check_id]").prop("checked", true);
+
+	} else {	
+	        $("input[name=check_id]").prop("checked", false);	
+	}
+}
+var goUpdate = function(orderId){		
+	/*
+	//alert("goUpdate "+orderId);
+	console.log("goUpdate orderId ="+orderId);
+	var form = $("#mainForm");	
+
+	$("#orderId").val(orderId);
+	
+	//document.getElementById("priceCount").value = totalCount;
+	form.action="/gms/order/update.do";
+	form.submit();
+	*/
+	
+	var form = document.createElement("form");
+	form.setAttribute("charset","UTF-8");
+	form.setAttribute("method","post");
+	form.setAttribute("action","/gms/order/update.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=[[ ${searchOrderProcessCd} ]]");
+	//form.setAttribute("action","/gms/order/update.do");
+		
+	var hiddenField = document.createElement("input");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", "orderId");
+    hiddenField.setAttribute("value", orderId);
+
+    form.appendChild(hiddenField);          
+    document.body.appendChild(form);
+
+    form.submit();	
+	
+}
+
+var gotoPage = function(pageNo) {
+
+	$("#currentPage").val(pageNo);  
+
+	//mainForm.submit();    
+	var form = document.mainForm;	
+	document.mainForm.action="/gms/order/list.do";
+	document.mainForm.submit();   
+   		
+}
+	
+var goDelete = function(orderId){
+		
+	if(confirm("삭제하시겠습니까?")){	
+		
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/order/delete.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=[[ ${searchOrderProcessCd} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "orderId");
+        hiddenField.setAttribute("value", orderId);
+
+        form.appendChild(hiddenField);      
+        document.body.appendChild(form);
+
+        form.submit();			
+	}                  		
+}
+		
+	
+$(function() {
+	
+	  $('input[name="searchOrderDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      language: "kr",
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }	  	
+	  });
+	
+	  $('input[name="searchOrderDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchOrderDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	
+	  $('input[name="depositCheckDt"]').daterangepicker({
+		    singleDatePicker: true,
+		    showDropdowns: true,
+		    autoUpdateInput: false,
+		      locale: {
+		          cancelLabel: 'Clear'
+		      }
+		  });
+
+		  $('input[name="depositCheckDt"]').on('apply.daterangepicker', function(ev, picker) {
+		      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+		  });
+
+		  $('input[name="depositCheckDt"]').on('cancel.daterangepicker', function(ev, picker) {
+		      $(this).val('');
+		  });
+	  
+	});	
+
+
+$(document).ready(function(){ 
+	
+	$(".btn_select_process").click(function()  
+	{
+		
+		var orderId = $(this).attr('orderId'); 
+					    
+			var ajaxInfo ={
+					type:"POST",
+					url:"/gms/order/detail.do",
+					data:{
+						orderId : orderId
+					},
+					dataType: "json",
+				};
+				
+				ajax = callAjax(ajaxInfo);
+				
+				ajax.done(function(data){
+					//console.log(data);
+					var Ampm = "오전";
+					if(data.order.deliveryReqAmpm=='P' ) Ampm = "오후" ;
+					
+					$("#chOrderId").val(data.order.orderId);
+					
+					$("#mcustomerNm").val(data.order.customerNm);			
+					$("#deliveryReqDt").val(moment(data.order.deliveryReqDt).format('YYYY/MM/DD') + ' ' +Ampm);			
+					$("#orderEtc").val(data.order.orderEtc);			
+					$("#orderTotalAmount").val(numberWithCommas(data.order.orderTotalAmount));	
+					//console.log(data.order.OrderTotalAmount);
+					
+					if(data.order.orderProcessCd =='0210'){			
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_2").prop('disabled', true);
+						$("#btn_process_3").prop('disabled', true);
+					}if(data.order.orderProcessCd =='0220'){
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_1").html("접수완료");
+						$("#btn_process_1").prop('disabled', true);
+						$("#btn_process_3").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0230'){
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_1").html("접수완료");
+						$("#btn_process_2").html("생산완료");						
+						$("#btn_process_1").prop('disabled', true);
+						$("#btn_process_2").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0240'){
+						$("#view_button").show();
+						$("#view_button1").hide();
+						
+						$("#btn_process_1").html("접수완료");
+						$("#btn_process_2").html("생산완료");						
+						$("#btn_process_1").prop('disabled', true);
+						$("#btn_process_2").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0250'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_6").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0260'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);
+					}else if(data.order.orderProcessCd =='0270'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_6").html("세금계산서완료");	
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_6").prop('disabled', true);	
+					}else if(data.order.orderProcessCd =='0280'){
+						$("#view_button1").show();
+						$("#view_button").hide();
+						
+						$("#btn_process_5").html("거래명세서완료");
+						$("#btn_process_6").html("세금계산서완료");	
+						$("#btn_process_7").html("입금완료");	
+						$("#btn_process_5").prop('disabled', true);
+						$("#btn_process_6").prop('disabled', true);
+						$("#btn_process_7").prop('disabled', true);		
+					}
+					
+					if(data.orderProduct.length > 0) {
+						$("table.mod-doc-list").find('tr').remove();
+			
+						var newRow = $("<tr>");	
+						var cols = "";
+						cols += '<td>품명</td>';
+						cols += '<td>용량</td>';
+						cols += '<td>수량</td>';
+						cols += '<td>적요</td>';
+						cols += '<td>용기교환</td>';
+						cols += '<td>용기판매</td></tr>';
+
+						newRow.append(cols);
+						$("table.mod-doc-list").append(newRow);
+
+						for(var i=0;i<data.orderProduct.length;i++){
+							var newRow1 = $("<tr >");
+							if(data.order.orderProcessCd =='0240' ) newRow1 = $("<tr style='color: blue'>"); 
+							else{
+								if(data.orderProduct[i].salesCount <=0) newRow1 = $("<tr style='color: blue'>"); 
+							}
+							var cols1 = "";
+							if(data.orderProduct[i].productNm==null || data.orderProduct[i].productNm=='') cols1 += '<th></th>';
+							else cols1 += '<th>'+data.orderProduct[i].productNm+'</th>';
+				        	if(data.orderProduct[i].productCapa==null || data.orderProduct[i].productCapa=='') cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].productCapa+'</th>';	
+				        	if(data.orderProduct[i].productNm==null || data.orderProduct[i].productNm=='') cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].orderCount+'</th>';
+				        	if(data.orderProduct[i].orderProductEtc==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].orderProductEtc+'</th>';
+				        	if(data.orderProduct[i].bottleChangeYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].bottleChangeYn+'</th>';
+				        	if(data.orderProduct[i].bottleSaleYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].bottleSaleYn+'</th>';
+				        	cols1 += '</tr>'     ;    
+				        	newRow1.append(cols1);
+					        $("table.mod-doc-list").append(newRow1);
+					        
+				        }     
+					}
+			       })
+			       .fail(function(){
+				  console.log("fail");
+			       });
+				
+
+				//$("#orderAmountView").show();
+				//$("#view_button").hide();
+			});
+	
+	// 진행 확인 버튼 클릭
+    $(".btn_process_check").click(function()  
+    {
+    
+       var select_pid = $(this).attr('id'); 
+       var msg = '';
+       var orderProcessCd = '';
+
+       var orderId = $('#chOrderId').val();       
+       
+       switch (select_pid){
+
+          case 'btn_process_1':
+            msg = "'주문확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0220");
+            orderProcessCd ='0220';
+            break;
+          case 'btn_process_2':
+            msg = "'생산 확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0230");
+            orderProcessCd ='0230';
+            break;
+          case 'btn_process_3':
+            msg = "'판매 확인' 하시겠습니까?";
+            $("#orderProcessCd").val("0250");
+            orderProcessCd ='0250';
+            break;  
+          case 'btn_process_5':
+              msg = "'거래명세서 확인' 하시겠습니까?";
+              $("#orderProcessCd").val("0260");
+              orderProcessCd ='0260';
+              break;
+            case 'btn_process_6':
+              msg = "'세금계산서 확인' 하시겠습니까?";
+              $("#orderProcessCd").val("0270");
+              orderProcessCd ='0270';
+              break;
+            case 'btn_process_7':
+              msg = "'입금 확인' 하시겠습니까?";
+              $("#orderProcessCd").val("0280");
+              orderProcessCd ='0280';
+              break;  
+          default:
+            break;
+
+       }     
+       
+
+		if(confirm(msg)){
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/order/changeProcess.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=[[ ${searchOrderProcessCd} ]]");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "chOrderId");
+	        hiddenField.setAttribute("value", orderId);
+
+	        form.appendChild(hiddenField);  
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "orderProcessCd");
+	        hiddenField1.setAttribute("value", orderProcessCd);
+
+	        form.appendChild(hiddenField1);      
+	        document.body.appendChild(form);
+	        
+	        form.submit();	
+			//chForm.action="/gms/order/changeProcess.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]";
+      		//chForm.submit();
+		}
+	});
+
+    $(".btn_order_change_all").click(function()  
+    {
+    	var checkedValue = ""; 
+    	var chki=0;
+    	var inputElements = document.getElementsByClassName('IdCheckbox');
+    	for(var i=0; inputElements[i]; ++i){
+    	      if(inputElements[i].checked){	
+    	    	  
+    	    	   //checkedValue +="'";
+    	           checkedValue += (inputElements[i].value);
+    	           chki++;
+    	           //break;
+    	           checkedValue +=",";
+    	      }
+    	}
+    	
+    	if(chki < 1){
+    		alert('변경할 주문을 선택 하세요.');
+    		return false;
+    		
+    	}
+    	var orderProcessCd =  $("#searchWorkCd1").val();
+    	
+    	if(confirm("정말로 상태를 변경하시겠습니까?")){
+
+    		var form = document.createElement("form");
+    		form.setAttribute("charset","UTF-8");
+    		form.setAttribute("method","post");
+    		form.setAttribute("action","/gms/order/changeOrdersProcess.do?currentPage=[[ ${currentPage} ]]&searchCustomerNm=[[ ${searchCustomerNm} ]]&searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=[[ ${searchOrderProcessCd} ]]");
+    		
+    		var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "orderIds");
+            hiddenField.setAttribute("value", checkedValue);
+
+            form.appendChild(hiddenField);
+            
+            var hiddenField1 = document.createElement("input");
+            hiddenField1.setAttribute("type", "hidden");
+            hiddenField1.setAttribute("name", "orderProcessCd");
+            hiddenField1.setAttribute("value", orderProcessCd);
+
+            form.appendChild(hiddenField1);
+           
+            document.body.appendChild(form);
+
+            form.submit();			
+    		
+    	}else{
+
+    		return false;
+    	}
+	});
+    
+ 	// 거래명세서 출력
+    $(".btn_order_print").click(function()  
+    {    
+       var orderId = $(this).attr('orderId'); 
+
+       $.popupWindow('/gms/order/popupOrder.do?orderId=' + orderId, {
+              width: 1300,
+              height: 700,
+              center: 'screen',          
+              scrollbars: 'true'
+          });
+    });
+	
+	$(".btn_order_print_all").click(function()  
+   	{		
+		var searchOrderProcessCd = $('#searchOrderProcessCd').val();	
+		var searchCustomerNm = $('#searchCustomerNm').val();	
+		var searchOrderDt = $('#searchOrderDt').val();	
+		var searchOrderProcessCd = $('#searchOrderProcessCd').val();	
+		
+		if(searchOrderDt=="" || searchOrderDt == null){
+			alert("접수기간을 입력하세요");
+			$('#searchOrderDt').focus();
+		}else { 		
+	      	$.popupWindow('/gms/order/popupOrderAll.do?searchCustomerNm='+searchCustomerNm+'&searchOrderDt='+searchOrderDt+'&searchOrderProcessCd='+searchOrderProcessCd, {
+	             width: 1300,
+	             height: 700,
+	             center: 'screen',          
+	             scrollbars: 'true'
+	        });
+		}
+   	});
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+	$(".btn-navbar").click(function()  
+    {
+		var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/order/list.do";
+		form.submit();
+      
+    });
+
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		mainForm.action="/gms/order/list.do";
+		form.submit();
+	};
+
+
+});
+	
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>주문 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">        
+    
+    	<!--  process modat start -->  
+		<div class="modal modal-info fade" id="process-modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">주문 정보</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="chForm" name="chForm" th:object="${order}" method="post">
+					              <input type="hidden" id="chOrderId" name="chOrderId" value="">
+					              <input type="hidden" id="orderProcessCd" name="orderProcessCd" value="">	
+					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">거래처명</td>
+											<td  colspan=5><input type="text" class="form-control" id="mcustomerNm"  name="mcustomerNm"  disabled> </td>
+										</tr>
+										<tr>
+											<td class="card-footer">납품요청일</td>
+											<td  colspan=5><input type="text" class="form-control" id="deliveryReqDt"  name="deliveryReqDt" disabled> </td>
+										</tr>
+									</thead>
+									</table>
+									<!-- 
+									<div class="form-group">
+										<label for="country" class="col-sm-2 control-label">거래처명:</label>
+										<div class="col-sm-10">
+											<input type="text"  id="deliveryReqDt"  name=""deliveryReqDt""  placeholder="" value="" disabled> 
+										</div>
+									</div>							
+									<div class="form-group">
+										<label class="control-label col-md-2 col-sm-2 col-xs-12">납품요청일</label>
+										<div class="col-sm-10">
+											<input type="text"  id="deliveryReqDt"  name=""deliveryReqDt""  placeholder="" value="" disabled> 
+										</div>
+									</div>
+									 -->
+									<div class="form-group">
+										<label >주문정보</label>
+										<div>
+											<table id="myTable" class="table mod-doc-list">
+												<tr>
+												<td>품명</td>
+												<td>용량</td>
+												<td>수량</td>
+												<td>기타</td>
+												<td>용기교환</td>
+												<td>용기판매</td>
+												</tr>
+												<tr>
+													<td  style="padding-left: 0px;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<table id="myTable" class="table order-info">
+										<tr>
+											<td class="card-footer">기타</td>
+											<td colspan=5><input type="text" class="form-control" id="orderEtc"  name="orderEtc"  placeholder="" value="" disabled> </td>
+										</tr>		
+										<tr>
+											<td class="card-footer" id="orderAmountView">주문액</td>
+											<td colspan=5><input type="text" class="form-control" id="orderTotalAmount"  name="orderTotalAmount"  placeholder="" value="" disabled> </td>
+										</tr>										
+									</table>
+											
+									<div class="form-group" id="view_sale_finish_date_check" style="display: none;">
+										<label class="control-label col-md-2 col-sm-2 col-xs-12">영업확인일</label>
+										<div class="col-md-8 col-sm-8 col-xs-12">
+											<input type="text"  id="datepicker6"  name="sale_finish_date"  class="form-control datepicker6"  placeholder="날짜 선택" value="2019/11/29"> 
+										</div>
+										<div class="col-md-2 col-sm-2 col-xs-12">
+										</div>
+									</div>
+									</form>
+									<div class="ln_solid"></div>
+									<div class="form-group" id="view_button" >
+										<div align="center">
+											<button type="button"  id="btn_process_1" class="btn btn-info btn btn btn_process_check">접수확인</button>
+											<button type="button" id="btn_process_2" class="btn btn-info btn btn_process_check">생산확인</button>
+											<button type="button" id="btn_process_3" class="btn btn-info btn btn_process_check">판매확인</button>
+										</div>
+									</div>
+									<div class="form-group" id="view_button1" style="display: none;" >
+										<div align="center">
+											<button type="button"  id="btn_process_5" class="btn btn-info btn btn btn_process_check">거래명세서확인</button>
+											<button type="button" id="btn_process_6" class="btn btn-info btn btn_process_check">세금게산서확인</button>
+											<button type="button" id="btn_process_7" class="btn btn-info btn btn_process_check">입금확인</button>
+										</div>
+									</div>
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+		
+		<!--  process modat1 start(일괄처리 -->  
+		<div class="modal modal-info fade" id="process-modal1">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">진행 상태 변경</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<div  class="card-body">
+								<form id="chForm1" name="chForm1" th:object="${order}" method="post">					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td>
+											<select id="searchWorkCd1" name="searchWorkCd1" class="form-control">
+							                    <option value="">작업</option>				    
+										        <option th:each="row : ${codeList}"
+										                th:text="${row.cdNm}"
+										                th:value="${row.cdId}">					             
+										        </option>	
+							                 </select>
+											</td>
+										</tr>
+										
+									</thead>
+									</table>
+									
+									</form>
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+						              <a class="btn_order_change_all btn-info btn-sm" href="#" ><i class="fas fa-pencil-alt"></i>상태변경</a>
+						            </div>
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+    	
+    	<div class="row">        	
+    		
+            <div class="col-1">
+            <form id="mainForm" name="mainForm"  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="orderId" name="orderId" value="">
+               		<label>접수기간</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" id="searchOrderDt" name="searchOrderDt" th:value="${searchOrderDt}"/>			
+            </div>               
+            <div class="col-3">               
+            </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
+    	<div class="row">
+    		
+           	<div class="col-1">
+               		<label >거래처명</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" id="searchCustomerNm" name="searchCustomerNm" class="form-control" th:value="${searchCustomerNm}">
+            </div>  
+            <div class="col-2">
+               	<select id="searchOrderProcessCd" name="searchOrderProcessCd" class="form-control">
+                    <option value="">상태</option>				    
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:if="${searchOrderProcessCd ==row.cdId}" selected>					             
+			        </option>	
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:unless="${searchOrderProcessCd ==row.cdId}">					             
+			        </option>					        				
+                 </select>
+              </div>    
+              <div class="col-1">
+                <button class="btn btn-navbar" type="button"><i class="fas fa-search"></i></button>           
+              </div>  
+                       
+              <!-- >div class="col-1">
+               		
+              </div-->
+              <div align=right class="col-4">
+              	<a class="btn btn-outline-primary btn-sm" href="/gms/order/write.do"><i class="far fa-edit"></i>주문등록</a>&nbsp;
+              		<a th:href="@{/gms/order/excelDownload.do( searchCustomerNm=${searchCustomerNm},searchOrderDt= ${searchOrderDt},searchOrderProcessCd=${searchOrderProcessCd} )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>      
+              	
+              	<!-- a href="/gms/order/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="far fa-edit"></i>주문등록</button></a>
+              	<a th:href="@{/gms/order/excelDownload.do( searchCustomerNm=${searchCustomerNm},searchOrderDt= ${searchOrderDt}  )}"><button type="button" class="btn btn-primary btn-sm float-righ"><i class="fas fa-download"></i>엑 셀</button></a> -->
+              </div>
+              </form>  
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <th th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|"></th>
+		            <th th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|"></th>		           
+		        </tr>         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll();"/></th>
+                      <th>순번</th>
+                      <th>거래처</th>
+                      <th>상품명</th>
+                      <th>용량</th>
+                      <th>주문액</th>
+                      <th>접수자</th>
+                      <th>상태</th>
+                      <th>요청일</th>
+                      <th>접수일</th>
+                      <th>진행확인</th>
+                      <th align="center">관리</th>
+                    </tr>
+                  </thead>                  
+                 
+                  	<tr th:if="${not #lists.isEmpty( orderList )}" th:each="row : ${orderList}" style="font-size:13px;">
+                  	  <td>
+                      <input class="IdCheckbox"  name="check_id" type="checkbox" th:value="${row.orderId}"></td>                     
+                      <td th:text="${totalCount-((currentPage-1)*rowPerPage) - orderList.indexOf(row)}"></td>
+                      <th><a th:href="@{/gms/customer/update.do( customerId=${row.customerId})}" th:text="${row.CustomerNm}"></a></th>
+                      <th th:text="${row.orderProductNm}"></th>
+                      <td th:text="${row.orderProductCapa}"></td>
+                      <td align="right" th:if="${row.orderTotalAmount > 999 && row.orderTotalAmount*100%100 > 0}" th:text="${#numbers.formatDecimal(row.orderTotalAmount,3,'COMMA',2,'POINT')}"></td>
+                      <td align="right" th:if="${row.orderTotalAmount > 999 && row.orderTotalAmount*100%100 == 0}" th:text="${#numbers.formatInteger(row.orderTotalAmount,3,'COMMA')}"></td>
+                      <td align="right" th:unless="${row.orderTotalAmount > 999}" th:text="${row.orderTotalAmount}"></td>
+                      <td th:text="|${row.createNm}(${row.createId})|"></td>
+                      <th th:if="${row.orderProcessCd=='0210'}" ><h6><span class="badge badge-danger">주문접수</span></h6>
+                      <th th:if="${row.orderProcessCd=='0220'}" ><h6><span class="badge badge-danger">주문접수완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0230'}" ><h6><span class="badge badge-secondary">생산완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0240'}" ><h6><span class="badge badge-primary">납품완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0250'}" ><h6><span class="badge badge-success">판매완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0260'}" ><h6><span class="badge badge-warning">거래명세서완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0270'}" ><h6><span class="badge badge-warning">세금계산완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0280'}" ><h6><span class="badge badge-warning">입금완료</span></h6>
+                      <th th:if="${row.orderProcessCd=='0290'}" ><h6><span class="badge badge-info">거래완료</span> </h6>
+                      <!-- 
+                      <th th:if="${row.orderProcessCd=='0210'|| row.orderProcessCd=='0220'}" style="color: red"  th:text="${row.orderProcessCdNm}"><
+                      <th th:unless="${row.orderProcessCd=='0210' || row.orderProcessCd=='0220'}" th:text="${row.orderProcessCdNm}">
+                      </th>
+                       -->
+                      <td th:text="${#calendars.format( row.deliveryReqDt, 'yyyy-MM-dd' )}"></td>
+		     		  <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>  
+                      <td>                      
+						<a class="btn_select_process btn btn-success btn-xs" th:orderId="${row.orderId}" data-toggle="modal" data-target="#process-modal" href="#"><i class="fas fa-check-circle"></i>진행확인</a>
+					  </td>
+					  <td>  	
+					    <a class="btn btn-info btn-xs" href="#" th:onclick="javascript:goUpdate([[ ${row.orderId} ]])"><i class="fas fa-pencil-alt"></i>수정 </a>
+						<a class="btn btn-danger btn-xs" href="#" th:onclick="goDelete([[ ${row.orderId} ]])">
+                              <i class="fas fa-trash"></i>삭제</a>
+                        <a class="btn_order_print btn btn-secondary btn-xs" th:orderId="${row.orderId}"  href="#" >
+                              <i class="fas fa-print"></i>거래명세서</a>
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( orderList )}">
+						<td colspan="11">조회된 결과가 없습니다.</td>
+					</tr>	
+										
+                  				
+                </table>                
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">	
+         <div class="col-1">
+         		<a id="select_del" class="btn_select_order btn-primary btn-sm" data-toggle="modal" data-target="#process-modal1"  href="#"><i class="fas fa-check-circle"></i>진행</a>            	
+         	</div>									
+			<div class="col-10">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a href="#" th:onclick="gotoPage([[ ${currentPage +1} ]])" aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			<div class="col-1">
+			<a class="btn_order_print_all btn btn-secondary btn-xs"  href="#" >
+                              <i class="fas fa-print"></i>거래명세서일괄</a>
+			</div>
+			</div>
+		</div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+  </th:block>
+
+</body>
+</html>

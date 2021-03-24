@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.statistics.StatisticsAgencyMapper">
+	<resultMap id="StatisticsProductMap" type="com.gms.web.admin.domain.statistics.StatisticsAgencyVO" >		
+		<result property="statDt"				column="Stat_Dt"				/>
+		<result property="customerId"			column="Customer_ID"			/>
+		<result property="productId"			column="Product_ID"				/>
+		<result property="productPriceSeq"		column="Product_Price_Seq"		/>
+		<result property="bottleOwnCount"		column="Bottle_Own_Count"		/>
+		<result property="bottleRentCount"		column="Bottle_Rent_Count"		/>
+		<result property="rentAmount"			column="Rent_Amount"			/>
+		<result property="createId"				column="CREATE_ID"				/>
+		<result property="createDt"				column="CREATE_DT"				/>
+	</resultMap>
+	
+	<sql id="StatisticsAgencyolumns">
+		 Stat_Dt       
+		 , Customer_ID
+		 , Product_ID   
+		 , Product_Price_Seq  
+		 , Bottle_Own_Count	
+		 , Bottle_Rent_Count    
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+
+	<insert id="insertDailyStatisticsAgency">
+		INSERT INTO TB_Daily_Stat_Agency(
+			<include refid="StatisticsAgencyolumns" />
+		)
+		SELECT DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, TP.Customer_ID, Product_ID, Product_Price_Seq, TP.Bottle_Own_Count, TP.Bottle_Rent_Count,'admin', now()
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID
+		AND (TP.Bottle_Own_Count >0 ||  TP.Bottle_Rent_Count >0 )
+	</insert>
+	
+	<insert id="insertMonthlyStatisticsAgency">
+		INSERT INTO TB_Monthly_Stat_Agency(
+			<include refid="StatisticsAgencyolumns" />
+		)
+		SELECT LEFT(Stat_Dt,7) 
+			, Customer_ID
+		 	, Product_ID   
+		 	, Product_Price_Seq  
+			, SUM(Bottle_Own_Count)   
+			, SUM(Bottle_Rent_Count) 
+			, 'admin'
+			, NOW()
+		FROM TB_Daily_Stat_Agency
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY Product_ID,LEFT(Stat_Dt,7)
+	</insert>
+	
+	<select id="selectStatisticsAgencyCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="java.util.Map">		
+		SELECT sa.Customer_ID, tc.Customer_Nm, Parent_Customer_Id
+		FROM TB_Daily_Stat_Agency sa, TB_Customer tc
+		WHERE sa.Customer_Id = tc.Customer_ID		
+		AND sa.Stat_Dt = #{searchStatDt} 
+		GROUP BY sa.Customer_ID			
+	</select>
+	
+	<select id="selectStatisticsAgencyProductList" resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO" parameterType="java.util.Map">		
+		SELECT sa.Product_ID, sa.Product_Price_Seq , tp.Product_Nm, pp.Product_Capa
+		FROM TB_Daily_Stat_Agency sa,TB_Product tp, TB_Product_Price pp 
+		WHERE sa.Product_ID = tp.Product_ID
+		AND sa.Product_ID = pp.Product_ID
+		AND sa.Product_Price_Seq = pp.Product_Price_Seq
+		AND sa.Stat_Dt = #{searchStatDt} 
+		GROUP by sa.Product_ID, sa.Product_Price_Seq
+	</select>
+	
+	<select id="selectDailylStatisticsAgencyList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO" parameterType="java.util.Map">		
+		SELECT
+			Stat_Dt       
+		 , sa.Customer_ID
+		 , sa.Product_ID   
+		 , sa.Product_Price_Seq  
+		 , sa.Bottle_Own_Count	
+		 , sa.Bottle_Rent_Count
+		FROM TB_Daily_Stat_Agency sa
+		WHERE sa.Stat_Dt = #{searchStatDt} 
+		Order By sa.Product_ID , sa.Product_Price_Seq
+		<!-- 
+		SELECT tb.Product_ID, p.Product_Nm, tb.Product_Price_Seq, tb.Product_Capa
+				,tc1.Bottle_Own_Count, tc1.Bottle_Rent_Count, tc1.Customer_Id, tc1.Customer_Nm
+		FROM  TB_Product_Price tb Left Join 
+		(
+			SELECT Product_Id, Product_Price_Seq,TP.Bottle_Own_Count,TP.Bottle_Rent_Count,TP.Customer_Id,Customer_Nm
+			FROM TB_Daily_Stat_Agency TP, tb_customer TC
+			WHERE TC.Agency_YN =  'Y'
+			AND TP.Customer_ID = TC.Customer_ID
+			AND TP.Stat_Dt = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			Group by Product_Id, Product_Price_Seq, TP.Customer_Id
+		) tc1 on ( tb.Product_ID = tc1.Product_ID and tb.Product_Price_Seq = tc1.Product_Price_Seq)
+		, TB_Product p
+		WHERE tb.Product_ID` = p.Product_ID
+		 -->
+	</select>
+	
+	<select id="selectMontlylStatisticsAgencyList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO" parameterType="java.util.Map">		
+		SELECT
+			Stat_Dt       
+		 , sa.Customer_ID
+		 , sa.Product_ID   
+		 , sa.Product_Price_Seq  
+		 , sa.Bottle_Own_Count	
+		 , sa.Bottle_Rent_Count
+		FROM TB_Monthly_Stat_Agency sa
+		WHERE sa.Stat_Dt = #{searchStatDt} 
+		Order By sa.Product_ID , sa.Product_Price_Seq
+	</select>
+	
+	<!-- select id="selectTodayStatisticsAgencyList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">	
+		SELECT p.Product_ID, p.Product_Price_Seq, Customer_ID, Parent_Customer_ID,Bottle_Own_Count,Bottle_Rent_Count
+		FROM 
+			(SELECT tp.Product_ID,pp.Product_Price_Seq
+			FROM TB_Product tp, TB_Product_Price pp 
+			WHERE tp.Product_ID = pp.Product_ID
+			AND tp.Gas_ID > 0
+			AND tp.Product_Status!= '0' 
+			AND pp.Product_Status!= '0') p left join
+			(SELECT Product_ID,product_price_seq,cp.Customer_ID,tc.Parent_Customer_ID,cp.Bottle_Own_Count,cp.Bottle_Rent_Count  
+			FROM TB_Customer_Product cp, TB_Customer tc 
+			WHERE TC.Agency_YN =  'Y'
+			AND cp.Customer_ID = TC.Customer_ID
+			AND (cp.Bottle_Own_Count+cp.Bottle_Rent_Count !=0 )) A on (p.Product_ID = a.Product_ID AND p.Product_Price_Seq = a.Product_Price_Seq)
+	</select>	-->
+	<select id="selectTodayStatisticsAgencyList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
+		SELECT DATE_FORMAT(curdate(),'%Y/%m/%d') Stat_Dt, 
+		TP.Customer_ID, 
+		Parent_Customer_ID,
+		Product_ID, 
+		Product_Price_Seq, 
+		TP.Bottle_Own_Count, 
+		TP.Bottle_Rent_Count
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID
+		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+	</select> 
+	
+	<select id="selectTodayStatisticsAgencyCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO">		
+		SELECT TP.Customer_ID, TC.Customer_Nm, Parent_Customer_Id
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID		
+		AND (TP.Bottle_Own_Count + TP.Bottle_Rent_Count !=0 )
+		GROUP By TP.Customer_ID 
+	</select>
+	
+	<select id="selectTodayStatisticsAgencyProductList" resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">		
+		SELECT TCP.Product_ID, TCP.Product_Price_Seq  , tp.Product_Nm, pp.Product_Capa
+		FROM TB_Customer_Product TCP, TB_Customer TC, TB_Product tp, TB_Product_Price pp 
+		WHERE TC.Agency_YN =  'Y'
+		AND TCP.Customer_ID = TC.Customer_ID		
+		and TCP.Product_ID = tp.Product_ID
+		AND TCP.Product_ID = pp.Product_ID
+		AND TCP.Product_Price_Seq = pp.Product_Price_Seq
+		AND (TCP.Bottle_Own_Count + TCP.Bottle_Rent_Count !=0 )
+		GROUP by TCP.Product_ID, TCP.Product_Price_Seq
+	</select>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.statistics.StatisticsUserMapper">
+	<resultMap id="StatisticsUserMap" type="com.gms.web.admin.domain.statistics.StatisticsUserVO" >
+		<result property="userId"				column="User_ID"				/>
+		<result property="statDt"				column="Stat_Dt"				/>
+		<result property="saleCount"			column="Sale_Count"				/>
+		<result property="saleAmount"			column="Sale_Amount"			/>
+		<result property="rentCount"			column="Rent_Count"				/>
+		<result property="rentAmount"			column="Rent_Amount"			/>
+		<result property="createId"				column="CREATE_ID"				/>
+		<result property="createDt"				column="CREATE_DT"				/>
+	</resultMap>
+	
+	<sql id="StatisticsUserColumns">
+		 User_ID         
+		 , Stat_Dt  
+		 , Sale_Count    
+		 , Sale_Amount 	
+		 , Rent_Count    
+		 , Rent_Amount  
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+	
+	<insert id="inserDailyStatisticsUser">
+		INSERT INTO TB_Daily_Stat_User(
+			<include refid="StatisticsUserColumns" />
+		) 
+		SELECT A.user_id,A.Stat_Dt,Sale_Count,Sale_Amount,Rent_Count,Rent_Amount,'admin',now()
+		FROM 
+		(			
+			SELECT tb.user_id, DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Sale_Count, IFNULL(Order_Amount,0) Sale_Amount,'admin', NOW()
+			FROM  tb_user tb left join 
+			(
+				SELECT TWR.User_ID, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
+				FROM TB_Work_Bottle TWB, tb_work_report TWR 
+				WHERE Bottle_Work_Cd in ('0308')
+				AND TWB.Work_Report_Seq = TWR.Work_Report_Seq
+				AND DATE_FORMAT(TWB.Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
+				Group by User_ID
+			) tc on tb.User_ID = tc.User_ID
+			WHERE User_Part_CD='01'  and tb.Delete_YN= 'N' 
+		)A,
+		( 
+			SELECT tb.User_ID, DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Rent_Count, IFNULL(Order_Amount,0) Rent_Amount,'admin', NOW()
+			FROM  tb_user tb left join 
+			(
+				SELECT TWR.User_ID, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
+				FROM TB_Work_Bottle TWB, tb_work_report TWR
+				WHERE Bottle_Work_Cd in ('0309')
+				AND TWB.Work_Report_Seq = TWR.Work_Report_Seq
+				AND DATE_FORMAT(TWB.Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
+				Group by User_ID
+			) tc on tb.User_ID = tc.User_ID
+			WHERE User_Part_CD='01'  and tb.Delete_YN= 'N' 
+		) B
+		WHERE A.User_ID= B.User_ID	
+	</insert>
+	
+	<insert id="inserMonthlyStatisticsUser">
+		INSERT INTO TB_Monthly_Stat_User(
+			<include refid="StatisticsUserColumns" />
+		)
+		SELECT User_ID
+			 , LEFT(Stat_Dt,7) 
+			, SUM(Sale_Count)   
+			, SUM(Sale_Amount)  	
+			, SUM(Rent_Count)   
+			, SUM(Rent_Amount)   
+			, 'admin'
+			, NOW()
+		FROM TB_Daily_Stat_User
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY User_ID,LEFT(Stat_Dt,7)
+	</insert>
+	
+	
+	
+</mapper>

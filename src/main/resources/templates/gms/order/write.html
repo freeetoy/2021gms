@@ -1,0 +1,456 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+$(function() { 
+	  $('input[name="deliveryReqDt"]').daterangepicker({
+	    singleDatePicker: true,
+	    showDropdowns: true,
+	    autoUpdateInput: false,
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+
+	  $('input[name="deliveryReqDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+	  });
+
+	  $('input[name="deliveryReqDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });	  
+	 
+	});
+
+
+$(document).ready(function(){ 
+	
+	var counter = 0;
+	var totalCount = 1;
+	
+	init_add(0);
+	$("#addrow").on("click", function () {
+
+		//alert("addrow");
+		counter++;
+		totalCount++;
+		//console.log("1counter=="+counter); 
+		//console.log("1 totalCount=="+totalCount); 
+		if (counter > 11){
+
+		  alert('더 이상 추가 할수 없습니다.');
+		  return false;
+
+		}
+
+		var newRow = $("<tr>");
+		var cols = "";
+
+		cols += '<td style="padding-left:5px;">';
+		cols += '<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:200px"></select>'; 
+		cols += '</td><td>';
+		cols += ' <select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:80px"><option value=0>옵션</option></select> ';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="orderCount_' + counter + '" name="orderCount_' + counter + '" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="1" max="99999" value=1>';
+		cols += '</td><td>';  
+		cols += ' <input type="text" class="form-control" id="orderProductEtc_' + counter + '" name="orderProductEtc_' + counter + '" " >';
+		cols += '</td><td>';  
+		cols += ' <input type="checkbox" class="form-control" id="bottleChangeYn_' + counter + '"  name="bottleChangeYn_' + counter + '" ">';
+		cols += '</td><td>'; 
+		cols += ' <input type="checkbox" class="form-control" id="bottleSaleYn_' + counter + '"  name="bottleSaleYn_' + counter + '" ">';
+		cols += '</td><td>'; 
+		cols += ' <input type="button" class="ibtnDel btn btn-md btn-danger" id="addrow" value="삭제" />';
+		cols += '</td>';
+		cols +='</tr>';
+
+		newRow.append(cols);
+		$("table.doc-list").append(newRow);
+		$("#productCount").val(counter+1);
+		init_add(counter);
+
+		init_add_storage(counter);
+
+	});
+
+	// 품명 선택 변경
+
+    $('#productId_0').change( function(){
+
+		var select_pumname = $('#productId_0').val();
+
+		init_storage_list(select_pumname,0,"ins");
+	});
+	
+    //수정시 row 추가
+
+     var mod_counter = 0;
+    
+    // row 삭제
+    $("table.doc-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();       
+       
+        counter -= 1
+        totalCount-=1
+        $("#productCount").val(counter);
+		console.log("3 totalCount=="+totalCount); 
+    });
+
+
+    $("table.doc-list").on("click", ".ibtnDelMod", function (event) {
+        $(this).closest("tr").remove();       
+       
+        mod_counter -= 1
+        totalCount -= 1
+        $("#productCount").val(mod_counter);
+
+		console.log("4 totalCount=="+totalCount); 
+    });
+    
+
+    function init_mod_storage(mod_counter) {
+        // body...      
+		 $('#productId_' + mod_counter).change( function(){      		
+				var mod_select_pumname = $('#productId_' + mod_counter).val();		
+				init_storage_list(mod_select_pumname,mod_counter,'mod');		
+		});
+      }
+    
+    function init_add(pid){
+
+        $.ajax({
+  	  	url: '/gms/product/nlist.do',
+  	  	type: 'POST',  	  	
+  	  	dataType: 'json',
+
+       })
+  	 .done(function(data){
+  		//console.log(data);       
+  		var i=0;
+  		$('#productId_' + pid).append('<option value=0>상품</option>');
+		for(i=0; i< data.length;i++) {
+			//console.log(data[i]);      
+			$('#productId_' + pid).append('<option value='+data[i].productId+'>'+data[i].productNm+'</option>')			
+		}
+  	 
+       })
+       .fail(function(){
+  			console.log("fail");
+       });
+    } 
+    
+    
+    function init_add_storage(counter) {
+    	// body...
+    		$('#productId_' + counter).change( function(){
+    			var select_pumname = $('#productId_' + counter).val();
+
+    			init_storage_list(select_pumname,counter,'ins');
+    		});
+    	}
+    
+ // 입력된 내용을 작성한다.
+    $("#save").on("click", function () {
+    	//validation();
+
+        if($("#orderTypeCd").val() == ""){
+            alert("주문타입을 선택하세요" );
+            return;
+        }
+		var orderType = $("#orderTypeCd").val();
+        
+        if($("#customerId").val() == ""){
+            alert("거래처를 선택하세요" );
+            return;
+        }
+        //alert("priceCnt==="+priceCnt);
+        if($("#deliveryReqDt").val() == ""){
+            alert("납품요청일를 선택하세요" );
+            return;
+        }
+        
+        if(orderType == "0101" || orderType == "0102" || orderType == "0103"){
+	        if($("#productId_0").val() == "0" || $("#productPriceSeq_0").val() == "0" || $("#orderCount_0").val() == ""){
+	            //alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+	            alert('상품을 선택 하세요');
+	            return ;
+	        }
+	        $("#productCount").val(counter++);
+        }	
+    	
+    	
+    	var checkedValue = ""; 
+		var chki=0;
+		//var inputElements = document.getElementsByClassName('IdCheckbox');
+		for(var i=0; i < totalCount; ++i){
+			 //alert("checke ")
+			var inputElements = 'bottleChangeYn_'+1;
+		      if( $('input:checkbox[id="bottleChangeYn"]').is(":checked") ){	
+		    	  
+		    	  // document.getElementById("bottleChangeYn_"+i).val('Y');
+		    	  // alert("checke "+i)
+		      }
+		}
+		var i=0;
+		$('input:checkbox[id="bottleChangeYn"]').each(function() {
+	
+		      //this.checked = true; //checked 처리
+
+		      if(this.checked){//checked 처리된 항목의 값
+		            
+		      this.value='Y'
+		    	  alert(i+"==="+this.value); 		      
+		      //document.getElementsByNmae("bottleChangeYn_"+i).value = this.value;		      
+		      //alert(i+"==="+document.getElementsByNmae("bottleChangeYn_"+i).value); 
+		      }
+			i++;
+		 });		 
+
+    	var form = $("#writeForm");	
+
+    	//document.getElementById("priceCount").value = counter+mod_counter;
+    	document.getElementById("productCount").value = totalCount;
+    	
+    	//alert("save");
+    	form.submit();
+    });
+    
+    function init_storage_list(pumname,sel_pid,type){   
+		
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ pumname ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+		 
+			if(type == "ins"){
+		    	var i=0;
+		    	$('#productPriceSeq_' + sel_pid).find('option').remove(); 
+				//$('#productCapa_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {					
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')					
+				}
+			}else if(type == "mod"){
+				console.log("this is mod =="+sel_pid);
+				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					console.log("tdata[i].productCapa =="+data[i].productCapa);
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
+				}
+			}  		
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+
+	} 
+
+    
+	$("#btn_com_search").click(function()  
+   	{    	
+	  var searchCustomerNm = $("#searchCustomerNm").val();
+
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+
+	      })
+	      .done(function(data){
+	    	$('#customerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#customerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'_'+ data[i].businessRegId+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+
+
+    $('select[name=orderTypeCd]').change(function() {
+		
+		//$('#customerId1').val($(this).val());
+		var orderType = $(this).val();
+		
+		if(orderType=='0104' || orderType=='0105' || orderType=='0105' ){
+		 	$("table.doc-list").closest("table").remove();
+		//console.log("customerId change ="+totalCount); 
+		}
+	});
+
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>주문 등록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-9">
+            <div class="card">          
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+              
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/order/register.do}" method="post" >
+              <input type="hidden" id="productCount" name="productCount" value="">
+              	<div class="form-group">	
+			        
+			        <table class="table table-hover">
+				        <thead>
+	                    <tr>
+	                      <td class="card-footer">주문종류</td>
+	                      <td colspan=3>
+	                      	<select id="orderTypeCd" name="orderTypeCd" class="form-control">
+	                    	<option value="">주문타입</option>				    
+				        	<option th:each="row : ${codeList}"
+				                th:text="${row.cdNm}"
+				                th:value="${row.cdId}"
+				                th:if="${'0101' ==row.cdId}" selected>	
+				            </option>		
+			                <option th:each="row : ${codeList}"
+				                th:text="${row.cdNm}"
+				                th:value="${row.cdId}"
+				                th:unless="${'0101' ==row.cdId}">				             
+				        	</option>	
+	                 		</select>
+							</td>
+	                    </tr>
+	                    <tr>                                   
+	                      <td class="card-footer">거래처</td>
+	                      <td>
+	                      	<select id="customerId" name="customerId" class="form-control">
+		                      <option value="">거래처 목록</option>
+		                    	<option th:each="row : ${customerList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					               >
+						     </option>		
+					    	</select>	   
+						  </td>
+						  <td ><input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+						  </td>
+	            		  <td >
+	                		 <input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+	                		</td>
+	                    </tr>   
+	                    <tr>                                   
+	                      <td class="card-footer">납품요청일</td>
+	                      <td ><input type="text"  id="deliveryReqDt" name="deliveryReqDt"  class="form-control">
+	                      </td>     
+	                      <td colspan=2><input type="radio"  name="deliveryReqAmpm" id="deliveryReqAmpm" value="A" checked="">  오전                                   
+	                      	<input type="radio"  name="deliveryReqAmpm" id="deliveryReqAmpm" value="P"> 오후
+	
+	            		  </td>                
+	                    </tr>                   
+	                    <tr>
+	                      <td class="card-footer">비고</td>
+	                      <td colspan=3><input type="text" class="form-control" id="orderEtc" name="orderEtc" placeholder="기타사항"> </thd>   
+	                    </tr>                   
+	                     </thead>   
+			         </table>
+			       </div>  
+			        
+		        
+                <div class="form-group">	
+			        <div class="col-md-9">
+			        <table class="table table-hover">
+			         </table>
+			        </div>
+		        </div>
+                <div class="form-group">
+                	
+	                   <label class="control-label col-10">상품정보</label>
+	                   
+	                       <table id="myTable" class="table doc-list">
+		                       <tr>
+		                         <td>상품</td>
+		                         <td>용량</td>
+		                         <td>수량</td>
+		                         <td>적요</td>
+		                         <td>용기교환</td>
+		                         <td>용기판매</td>
+		                         <td></td>
+		                       </tr>
+		                       <tr>
+		                       <td  style="padding-left: 5px;">                                           
+		                         <select id="productId_0" name="productId_0" class="form-control" style="width:200px">
+			                        
+							    </select>	   
+		                       </td>
+		                       <td> 
+		                       		<select id="productPriceSeq_0" name="productPriceSeq_0" class="form-control" style="width:80px">
+				                        <option value="0">옵션</option>			                      	
+								    </select>	   
+		                        
+		                       </td>   
+		                       <td>
+	                             <input type="number" id="orderCount_0" name="orderCount_0" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="1" max="99999" value=0> 
+	                           </td>	                      
+		                       <td> 
+		                         <input type="text" class="form-control" id="orderProductEtc_0" name="orderProductEtc_0">
+		                       </td> 
+		                       <td> 
+		                         <input type="checkbox" class="form-control" id="bottleChangeYn_0" name="bottleChangeYn_0">
+			                   </td> 
+			                   <td> 
+		                         <input type="checkbox" class="form-control" id="bottleSaleYn_0" name="bottleSaleYn_0">
+			                   </td> 
+		                       <td>
+		                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
+		                       
+		                       </td>
+		                       </tr>
+		                     </table>                	
+                	</div>
+           
+            </div>
+            <!-- /.card -->
+            
+	            <div class="card-footer">
+	                 <a href="#" th:onclick="history.back()"  class="btn btn-secondary float-left">취소</a>
+			         <input type="button" id="save" value="저장"  class="btn btn-success float-right">
+	            </div>	
+	       
+	            </form>             	
+        	</div>
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ 
+  </th:block>
+  
+
+  

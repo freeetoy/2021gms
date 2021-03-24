@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.common.LoginMapper">
+
+<resultMap id="UserInfoMap" type="com.gms.web.admin.domain.common.LoginUserVO" >
+		<result property="userId"						column="USER_ID"	    		/>
+		<result property="userNm"						column="USER_NM"				/>
+		<result property="userPartCd"					column="USER_PART_CD"	    	/>
+		<result property="userAuthority"				column="USER_AUTHORITY"	    	/>
+		<result property="userPasswd"					column="USER_PASSWD"	    	/>	</resultMap>
+	
+	
+	<!-- 사용자 정보 조회 -->
+	<select id="selectUserInfo" parameterType="com.gms.web.admin.domain.common.LoginUserVO" resultMap="UserInfoMap">
+		/* 사용자 정보 조회  :   selectAdminUserInfo*/
+       SELECT TA.USER_ID
+			 	,TA.USER_NM
+			 	,TA.USER_PART_CD
+			 	,TA.USER_AUTHORITY
+			 	,TA.USER_PASSWD
+		FROM TB_USER TA
+		WHERE 
+			TA.USER_ID = #{userId}
+       <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(idCheckYn)">
+		  	AND TA.USER_PASSWD = #{userPasswd}
+       </if>       	  
+       AND	DELETE_YN = 'N'
+	</select> 
+	
+	<update id="updateUserLastConnect" parameterType="com.gms.web.admin.domain.common.LoginUserVO">
+		UPDATE TB_USER
+		SET
+			  Last_Connect_Dt = NOW()			
+		WHERE
+			USER_ID = #{userId}
+	</update>
+	
+
+
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gms.web.admin.mapper.manage.GasMapper">
+
+	<resultMap id="GasMap" type="com.gms.web.admin.domain.manage.GasVO" >
+		<result property="gasId"				column="GAS_ID"			/>
+		<result property="memberCompSeq"		column="Member_Comp_Seq"		/>		
+		<result property="gasNm"				column="Gas_NM"			/>
+		<result property="gasCd"				column="GAS_CD"			/>
+		<result property="deleteYn"				column="DELETE_YN"		/>		
+		<result property="createId"				column="CREATE_ID"		/>
+		<result property="createDt"				column="CREATE_DT"		/>
+		<result property="updateId"				column="UPDATE_ID"		/>		
+		<result property="updateDt"				column="UPDATE_DT"		/>
+	</resultMap>
+	
+	<sql id="GasColumns">
+		  gas_id
+		, member_comp_seq
+		, gas_nm
+		, gas_cd
+		, delete_yn
+		, create_id
+		, create_dt
+		, update_id
+		, update_dt
+	</sql>
+	
+	
+	<insert id="insertGas" parameterType="com.gms.web.admin.domain.manage.GasVO">
+		INSERT INTO TB_GAS (
+			<include refid="GasColumns" />
+		) VALUES (
+			  #{gasId}
+			, #{memberCompSeq}
+			, #{gasNm}
+			, #{gasCd}
+			, IFNULL(#{deleteYn}, 'N')
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+
+	<select id="selectGasDetail" parameterType="integer" resultType="com.gms.web.admin.domain.manage.GasVO">
+		SELECT
+			<include refid="GasColumns" />
+		FROM
+			TB_GAS
+		WHERE
+			delete_yn = 'N'
+		AND
+			GAS_ID = #{gasId}
+	</select>
+	
+	<select id="selectGasDetailByNm" parameterType="String" resultType="com.gms.web.admin.domain.manage.GasVO">
+		SELECT
+			<include refid="GasColumns" />
+		FROM
+			TB_GAS
+		WHERE
+			delete_yn = 'N'
+		AND
+			GAS_Nm = #{gasNm}
+	</select>
+	
+	<select id="selectGasDetailByCd" parameterType="String" resultType="com.gms.web.admin.domain.manage.GasVO">
+		SELECT
+			<include refid="GasColumns" />
+		FROM
+			TB_GAS
+		WHERE
+			delete_yn = 'N'
+		AND
+			GAS_CD = #{gasCd}
+	</select>
+
+	<update id="updateGas" parameterType="com.gms.web.admin.domain.manage.GasVO">
+		UPDATE TB_GAS
+		SET
+			  Gas_NM 	= #{gasNm}
+			, GAS_CD 	= #{gasCd}
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			GAS_ID = #{gasId}
+	</update>
+
+	<update id="deleteGas" parameterType="integer">
+		UPDATE TB_GAS
+		SET
+			  delete_yn = 'Y'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			GAS_ID = #{gasId}
+	</update>
+
+	<select id="selectGasList" resultType="com.gms.web.admin.domain.manage.GasVO">
+		SELECT
+			<include refid="GasColumns" />
+		FROM
+			TB_GAS
+		WHERE
+			delete_yn = 'N'
+	</select>
+
+</mapper>

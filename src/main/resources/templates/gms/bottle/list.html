@@ -1,0 +1,1248 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">	
+
+function checkAll(){
+       
+    if( $("#checkAll").is(':checked') ) {
+        $("input[name=check_id]").prop("checked", true);
+
+	} else {	
+	        $("input[name=check_id]").prop("checked", false);	
+	}
+}
+
+	
+function validationOfForm(form) {	
+	
+	return ture;
+}
+	
+
+
+function fn_modifyBottleWorkCd(){				
+		
+		var form = $("#chForm");	
+		
+		var carCustomerId = $('#carCustomerId').val();	
+		var bottleWorkCd = $('#bottleWorkCd').val();			
+		
+		//chForm.carCustomer.val(carCustomerId);
+		
+		if(bottleWorkCd=='0301' || bottleWorkCd == '0306' || bottleWorkCd == '0307'){
+			$("#carCustomerId").val(carCustomerId);
+		}
+				
+    	chForm.action="/gms/bottle/changeWorkCd.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchDt=[[ ${searchDt} ]]";
+    	chForm.submit();
+	}
+	
+var fn_deleteBottle = function(bottleBarCd){
+		
+	if(confirm("삭제하시겠습니까?")){	
+		
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/bottle/delete.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchDt=[[ ${searchDt} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "bottleBarCd");
+        hiddenField.setAttribute("value", bottleBarCd);
+
+        form.appendChild(hiddenField);      
+        document.body.appendChild(form);
+
+        form.submit();			
+	}                  		
+}
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+var fn_ChangeBottleWorkCd = function(bottleBarCd){
+
+	//$("table.table-hover").find('tr').remove();
+	
+	var ajaxInfo ={
+		type:"POST",
+		url:"/gms/bottle/detail.do",
+		data:{
+			bottleBarCd : bottleBarCd
+		},
+		dataType: "json",
+	};
+	
+	ajax = callAjax(ajaxInfo);
+	
+	ajax.done(function(data){
+				
+		$("#bottleId").val(data.bottleId);
+		$("#chBottleBarCd").val(data.bottleBarCd);
+		
+		$('select[id="bottleWorkCd"]').find('option:contains(data.bottleWorkCd)').attr("selected",true);
+
+		$("#bottleWorkCd").val(data.bottleWorkCd);		
+		
+		$('select[id="bottleType"]').find('option:contains(data.bottleType)').attr("selected",true);
+
+		$("#bottleType").val(data.bottleType);		
+			
+		if(data.result == "fail"){
+			alert("용기가 존재하지 않습니다");			
+			return;
+		}		
+	});	
+};
+
+    
+var goUpdate = function(bottleBarCd){		
+	
+	var form = $("#mainForm");	
+
+	$("#bottleBarCd").val(bottleBarCd);
+   	
+   	//document.getElementById("priceCount").value = totalCount;
+   	mainForm.action="/gms/bottle/update.do";
+   	form.submit();
+}
+
+// 입력된 내용을 작성한다.
+function goSearch(){	
+	
+	var form = document.mainForm;	
+	$("#currentPage").val(1);  
+	form.currentPage.value=1;
+	form.action="/gms/bottle/list.do?currentPage=1";
+	form.submit();
+};
+
+
+
+function gotoPage(pageNo) {
+	
+	var form =  document.mainForm;			
+	
+	$("#currentPage").val(pageNo);  
+	 mainForm.action="/gms/bottle/list.do";
+       //validate checkt시 confirm 중복되는 부분 처리 
+      
+   	mainForm.submit();
+   }
+
+
+$(function() {
+
+  $('input[name="searchDt"]').daterangepicker({
+      autoUpdateInput: false,
+      startDate: new Date(),
+      language: "kr",
+      locale: {
+          cancelLabel: 'Clear'
+      }	  	
+  });
+
+  $('input[name="searchDt"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+  });
+
+  $('input[name="searchDt"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+  });
+
+});	
+
+
+function fn_deleteBottles()
+{
+	/*
+	var checked_len = $("input[name='check_id[]']:checked").length;
+	alert("checked_len="+checked_len);
+	if(checked_len <1){
+		alert('삭제할 항목을 선택 하세요.');
+			return false;
+	}
+	*/
+	var checkedValue = ""; 
+	var chki=0;
+	var inputElements = document.getElementsByClassName('IdCheckbox');
+	for(var i=0; inputElements[i]; ++i){
+	      if(inputElements[i].checked){	
+	    	  
+	    	   //checkedValue +="'";
+	           checkedValue += (inputElements[i].value);
+	           chki++;
+	           //break;
+	           checkedValue +=",";
+	      }
+	}
+	
+	if(chki < 1){
+		alert('삭제할 항목을 선택 하세요.');
+		return false;
+		
+	}
+	console.log("chki="+chki);	
+	console.log("checkeValue="+checkedValue);		
+	
+	if(confirm("정말로 삭제 하시겠습니까?")){
+
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/bottle/deleteChecked.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchDt=[[ ${searchDt} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "bottleIds");
+        hiddenField.setAttribute("value", checkedValue);
+
+        form.appendChild(hiddenField);
+       
+        document.body.appendChild(form);
+
+        form.submit();			
+		
+	}else{
+		alert("취소하였습니다");
+		return false;
+	}
+}
+
+
+function doExcelUploadProcess(){
+	/*
+       var f = new FormData(document.getElementById('form1'));
+       
+       var ajaxInfo ={
+       		url: "/uploadExcelFile",
+               data: f,
+               processData: false,
+               contentType: false,
+               type: "POST",
+   			dataType: "json",
+   		};
+   		
+   		ajax = callAjax(ajaxInfo);
+   		
+   		ajax.done(function(data){
+   			console.log(data);
+   			//document.getElementById('result').innerHTML = JSON.stringify(data);
+   		});
+   		*/
+	form1.submit();
+}
+
+function doExcelUploadProcessGMS(){
+	   		
+	form2.submit();
+}
+	
+	
+	
+$(document).ready(function(){	
+	 var bottleIds = "";
+	 $("#view_car").hide();
+	 $("#view_type").show();
+	 $("#view_cust").hide();
+	
+	 $(".btn_select_process").click(function()  
+	{
+		
+		$("#view_custom").hide();
+		var bottleId = $(this).attr('bottleId'); 
+		
+		$("#searchCustomerNm").val("");
+		
+		var ajaxInfo ={
+				type:"POST",
+				url:"/gms/bottle/detail.do",
+				data:{
+					bottleId : bottleId
+				},
+				dataType: "json",
+			};
+			
+			ajax = callAjax(ajaxInfo);
+			
+			ajax.done(function(data){
+				//console.log(data);
+
+				$("#bottleId").val(data.bottleId);
+				$("#chBottleBarCd").val(data.bottleBarCd);				
+				$('select[id="bottleWorkCd"]').find('option:contains(data.bottleWorkCd)').attr("selected",true);
+				$("#bottleWorkCd").val(data.bottleWorkCd);						
+				$('select[id="bottleType"]').find('option:contains(data.bottleType)').attr("selected",true);
+				$("#bottleType").val(data.bottleType);		
+					
+				if(data.result == "fail"){
+					alert("용기가 존재하지 않습니다");			
+					return;
+				}				
+			});				
+   });
+	 
+	$('#bottleWorkCd').change( function(){
+
+		var bottleWorkCd = $('#bottleWorkCd').val();	
+		
+		if(bottleWorkCd=='0301' || bottleWorkCd=='0306' || bottleWorkCd=='0307' || bottleWorkCd=='0308' || bottleWorkCd=='0309' || bottleWorkCd=='0310'){		
+			//$("#view_custom").carCustomerId
+			if(bottleWorkCd=='0308' || bottleWorkCd=='0309' || bottleWorkCd=='0310'){
+				var ajaxInfo ={
+	         			type:"POST",
+	         			url:"/gms/common/customerList.do",			
+	         			dataType: "json",
+	         		};
+	         			
+	         			ajax = callAjax(ajaxInfo);
+	         			
+	         			ajax.done(function(data){
+	         				console.log(data);
+
+	         				for(i=0; i< data.length;i++) {
+	         					console.log(data[i]);      
+	         					$('#carCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+	         				}			
+	         				
+	         		})
+	         		       .fail(function(){
+	         			  console.log("fail");
+	         		});
+				
+			}
+			$("#view_custom").show();
+		}else
+			$("#view_custom").hide();
+			
+	});
+
+	 
+   $(".btn_select_process1").click(function()  
+	{
+	   	$("table.mod-doc-list1").find('tr').remove();
+	   	$('select[id="bottleType1"]').find('option:contains("")').attr("selected",true);
+		$("#bottleType1").val("");		
+		$("#view_car").hide();
+		$("#view_cust").hide();
+		bottleIds="";
+	   
+	    var newRow1 = $("<tr>");
+	    var cols1 = "";	
+	    cols1 += '<td>용기코드</td>';
+	    cols1 += '<td>용기바코드</td>';
+	    cols1 += '<td>가스</td>';
+	    cols1 += '<td>충전기한</td>';
+	    cols1 += '</tr>'     ;    
+	    newRow1.append(cols1);
+		$("table.mod-doc-list1").append(newRow1);		
+	  
+		//console.log("start btn_select_process1}");	
+	
+   });
+   
+   $(".btn_select_process2").click(function()  
+	{
+		console.log("start btn_select_process2}");
+
+  	});		   
+	    
+   $("#btn_search").click(function()  
+	{
+	
+	 	var strCustomerNm = $("#strCustomerNm").val();		
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/common/customerList.do?searchCustomerNm="+strCustomerNm,			
+			dataType: "json",
+		};
+			
+			ajax = callAjax(ajaxInfo);
+			
+			ajax.done(function(data){
+				//console.log(data);
+				 $('#customerId1').find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					//console.log(data[i]);      
+					$('#customerId1').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+				}			
+				
+		})
+		       .fail(function(){
+			  console.log("fail");
+		});
+	
+	  });
+			    
+	    
+	$(".btn_bottle_search").click(function()  
+ 	{
+  		
+  		//$("#mcustomerNm").val
+  		var bottleId = $("#selbottleId").val(); 
+  		
+		var ajaxInfo ={
+				type:"POST",
+				url:"/gms/bottle/detail.do",
+				data:{
+					bottleId : bottleId
+				},
+				dataType: "json",
+			};
+			
+			ajax = callAjax(ajaxInfo);
+			
+			ajax.done(function(data){
+				//console.log(data);
+					
+	    var newRow1 = $("<tr>");
+	    var cols1 = "";	
+	    cols1 += '<th>'+data.bottleId+'</th>';
+	    cols1 += '<th>'+data.bottleBarCd+'</th>';
+	    cols1 += '<th>'+data.productNm+'</th>';
+	    cols1 += '<th>'+data.bottleChargeDt.substring(0,10)+'</th>';
+	    cols1 += '</tr>'     ;    
+	    newRow1.append(cols1);
+		$("table.mod-doc-list1").append(newRow1);
+				 
+		bottleIds +=bottleId+",";
+		//$("#bottlIds").val(data.order.orderId);
+		
+		$("#bottleIds").val(bottleIds);
+			})
+		       .fail(function(){
+			  console.log("fail");
+		});
+			$("#selbottleId").val(""); 
+
+				//$("#orderAmountView").show();
+				//$("#view_button").hide();
+ 	});
+	    	
+		
+	// 진행 확인 버튼 클릭
+    $(".btn_process_check").click(function()  
+    {
+   	   var customerFlag= false;
+       var select_pid = $(this).attr('id'); 
+       var msg = '';
+       var bottleWorkCd = '';
+       $("#view_car").hide();
+       
+       
+       if(bottleIds ==''){
+    	   alert("용기를 선택하세요");
+    	   return ;
+       }             
+       
+       switch (select_pid){
+          case 'btn_process_1':
+            msg = "'입고' 하시겠습니까?";
+            bottleWorkCd ='0301';
+            $("#view_car").show();
+            $("#view_type").show();
+            $("#view_cust").hide();
+            break;
+          case 'btn_process_2':
+            msg = "'충전' 하시겠습니까?";
+            bottleWorkCd ='0305';
+            $("#view_car").hide();
+            $("#view_type").show();
+            $("#view_cust").hide();
+            break;
+          case 'btn_process_3':
+            msg = "'상차' 하시겠습니까?";
+            bottleWorkCd ='0307';
+            $("#view_car").show();
+            $("#view_type").show();
+            $("#view_cust").hide();
+            break;  
+          case 'btn_process_4':
+             msg = "'출고' 하시겠습니까?";;
+             bottleWorkCd ='0306';
+             $("#view_car").show();
+             $("#view_type").show();
+             $("#view_cust").hide();
+             break;
+           case 'btn_process_5':
+             msg = "'판매' 하시겠습니까?";
+             bottleWorkCd ='0308';
+             break;
+           case 'btn_process_6':
+             msg = "'회수' 하시겠습니까?";
+             $("#view_type").show();
+             $("#view_cust").show();
+             $("#view_car").hide();
+             bottleWorkCd ='0310';
+             var ajaxInfo ={
+         			type:"POST",
+         			url:"/gms/common/customerList.do",			
+         			dataType: "json",
+         		};
+         			
+         			ajax = callAjax(ajaxInfo);
+         			
+         			ajax.done(function(data){
+         				//console.log(data);
+         				for(i=0; i< data.length;i++) {         					  
+         					$('#customerId1').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+         				}			         				
+         		})
+       		       .fail(function(){
+       			  console.log("fail");
+         		});
+             break;  
+           case 'btn_process_7':
+              msg = "'충전기한확인' 하시겠습니까?";
+              bottleWorkCd ='0304';
+              $("#view_type").show();
+              $("#view_cust").hide();
+              break;  
+           case 'btn_process_8':
+               msg = "'대여' 하시겠습니까?";
+               bottleWorkCd ='0309';
+               break;  
+          default:
+            break;
+
+       }           
+       
+       var bottleType = $("#bottleType1").val(); 
+      
+		if(bottleType ==''){
+			alert("용기타입을 선택해주세요");
+			return;			
+		}
+      
+       if(bottleWorkCd=='0301' || bottleWorkCd=='0307'|| bottleWorkCd=='0306'){	   	 
+    	   var customerId = $("#customerId").val();   
+			if(customerId ==''){
+				alert("차량은 선택해주세요");
+				return;				
+			}
+       }else if(bottleWorkCd=='0310'){
+    	   var customerId1 = $("#customerId1").val();   
+			if(customerId1 ==''){
+				alert("거래처를 선택해주세요");
+				return;				
+			}
+       }       
+      
+       if(bottleWorkCd=='0301'){
+    	  // $("#view_car").show();
+    	   console.log("bottleWorkCd11 ="+bottleWorkCd);
+       }
+      	setTimeout(500);
+		if(confirm(msg)){
+			
+			var form = document.createElement("form");
+			
+			var customerId = $("#customerId").val(); 
+			var bottleType = $("#bottleType1").val(); 	
+			
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/bottle/changeBottlesWorkCd.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchDt=[[ ${searchDt} ]]");			
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "bottleWorkCd");
+	        hiddenField1.setAttribute("value", bottleWorkCd);
+
+	        form.appendChild(hiddenField1);     
+	        
+	        var hiddenField2 = document.createElement("input");
+	        hiddenField2.setAttribute("type", "hidden");
+	        hiddenField2.setAttribute("name", "bottleIds");
+	        hiddenField2.setAttribute("value", bottleIds);
+	        
+	        form.appendChild(hiddenField2);    
+			
+	        var hiddenField4 = document.createElement("input");
+	        hiddenField4.setAttribute("type", "hidden");
+	        hiddenField4.setAttribute("name", "bottleType");
+	        hiddenField4.setAttribute("value", bottleType);
+
+	        form.appendChild(hiddenField4);   
+	        
+	        if(bottleWorkCd=='0301' || bottleWorkCd=='0307'|| bottleWorkCd=='0306'){	   	 
+		    	  
+				if(customerId ==''){
+					alert("차량은 선택해주세요");
+					return;
+				}else {				
+			        
+			        var hiddenField3 = document.createElement("input");
+			        hiddenField3.setAttribute("type", "hidden");
+			        hiddenField3.setAttribute("name", "customerId");
+			        hiddenField3.setAttribute("value", customerId);
+
+			        form.appendChild(hiddenField3);    		 
+				}
+	        }else if(bottleWorkCd=='0310'){
+	        	if(customerId1 ==''){
+					alert("거래처를 선택해주세요");
+					return;
+				}else {				
+			        
+			        var hiddenField3 = document.createElement("input");
+			        hiddenField3.setAttribute("type", "hidden");
+			        hiddenField3.setAttribute("name", "customerId");
+			        hiddenField3.setAttribute("value", customerId1);
+
+			        form.appendChild(hiddenField3);    		 
+				}
+	        }
+			
+			document.body.appendChild(form);
+	        
+	        form.submit();			
+		}
+      
+	});
+	
+	
+	$("#btn_com_search").click(function()  
+   	{    	
+	  var searchCustomerNm = $("#searchCustomerNm").val();
+
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+
+	      })
+	      .done(function(data){
+	    	$('#carCustomerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#carCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+
+    
+    $(".btn-navbar").click(function()  
+    {
+		var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/bottle/list.do";
+		form.submit();
+      
+    });
+    
+    $("#btn_com_search1").click(function()  
+   	{    	
+	  var searchCustomerNm = $("#searchCustomerNm1").val();
+
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+
+	      })
+	      .done(function(data){
+	    	$('#ownCustomerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#ownCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+    
+    $('select[name=ownCustomerId]').change(function() {
+    	/*
+    	var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/bottle/list.do";
+		form.submit();
+		*/
+    });
+});
+	
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>용기 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">        
+     <!-- modal start-->   
+        <div class="modal fade" id="modal-default">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">용기 상태 변경</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="chForm" name="chForm" th:object="${bottle}" method="post">
+              
+              <div class="card-body">
+            	<table class="table table-hover">
+                  <thead>
+                  <tr>
+                      <th class="card-footer" width="100">용기 코드</th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleId" name="bottleId" placeholder="용기 코드" ></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer" width="100">용기 바코드</th>
+                      <th colspan=3><input type="text" class="form-control" id="chBottleBarCd" name="chBottleBarCd" placeholder="용기 바코드" ></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상태</th>
+                      <th colspan=3>
+	                      <select id="bottleWorkCd" name="bottleWorkCd" class="form-control">
+	                          <option value="">상태</option>				    
+						        <option th:each="row : ${codeList}"
+						                th:text="${row.cdNm}"
+						                th:value="${row.cdId}"
+						               >
+						        </option>					
+	                        </select>
+					  </th>   
+                    </tr>
+                    <tr id="view_custom" style="display: none;">
+                      <th class="card-footer">거래처</th>
+                      <th width="350">
+	                      <select id="carCustomerId" name="carCustomerId" class="form-control">
+			                    <option value="">거래처(차량)선택</option>				    
+						        <option th:each="row : ${carList}"
+						                th:text="${row.customerNm}"
+						                th:value="${row.customerId}">					             
+						        </option>												              				
+			                 </select>
+					  </th>   
+					  <td ><input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+					  </td>
+	           		  <td >
+	               		 <input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+	               		</td>
+                    </tr>
+                    <tr>
+                      <th class="card-footer" width="100">용기타입</th>
+                      <th colspan=3>
+                      <select id="bottleType" name="bottleType" class="form-control">
+                          <option value="E">공병</option>
+                          <option value="F">실병</option>	
+                        </select>
+					  </th>   
+                    </tr>
+                  </thead>                              
+                </table>       
+                
+              </div>            
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <a class="btn btn-info btn-sm" href="#" onclick="javascript:fn_modifyBottleWorkCd();"><i class="fas fa-pencil-alt"></i>상태변경</a>
+            </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+      <!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">용기</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="bForm" name="bForm" th:object="${order}" method="post">
+					              <input type="hidden" id="orderId" name="orderId" value="">	
+					              <input type="hidden" id="bottlIds" name="bottlIds" value="">	
+					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">용기검색<br>(용기코드/바코드)</td>
+											<td  colspan=4><input type="text" class="form-control" id="selbottleId"  name="selbottleId"> </td>
+											<td><a class="btn_bottle_search btn btn-success btn-sm" href="#"><i class="fas fa-search"></i>검색</a></td>
+										</tr>
+										
+									</thead>
+									</table>
+									<div class="form-group" id="view_car" >
+										<div align="center">
+											<select id="customerId" name="customerId" class="form-control">
+							                    <option value="">차량선택</option>				    
+										        <option th:each="row : ${carList}"
+										                th:text="${row.customerNm}"
+										                th:value="${row.customerId}">					             
+										        </option>												              				
+							                 </select>
+										</div>
+									</div>
+									<div class="form-group" id="view_cust" >
+										<div align="center">
+											<table class="table customer-info">									
+												<tr>
+												<td width="500">
+												<select id="customerId1" name="customerId1" class="form-control">
+							                        <option value="0">거래처 선택</option>			                      	
+											    </select>	
+											    </td>
+											    <td width="200">
+										    	<input type="text" id="strCustomerNm" name="strCustomerNm" class="form-control" placeholder="">
+												</td>
+												<td>
+										    	<button class="btn btn-navbar1" id="btn_search" type="button">
+									            <i class="fas fa-search"></i>
+									          </button>	          
+									          </td>
+									          </tr>
+									          </table>
+										</div>		
+									</div>
+									<div class="form-group" id="view_type" >
+										<div align="center">
+											<select id="bottleType1" name="bottleType1" class="form-control">
+												<option value="">용기타입</option>	
+										        <option value="E">공병</option>	
+										        <option value="F">실병</option>							              				
+							                 </select>
+					                     </div>
+									</div>
+									
+									<div class="form-group">
+										<label >용기정보</label>
+										<div>
+											<table id="myTable" class="table mod-doc-list1">
+												<tr>
+												<td>용기코드</td>
+												<td>용기바코드</td>
+												<td>가스</td>
+												<td>충전기한</td>
+												</tr>
+												<tr>
+													<td  style="padding-left: 0px;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<table id="myTable" class="table order-info">
+										<tr>
+											<div align="center">
+											<button type="button" id="btn_process_1" class="btn btn-info btn btn btn_process_check">입고</button>
+											<button type="button" id="btn_process_2" class="btn btn-info btn btn_process_check">충전</button>
+											<button type="button" id="btn_process_3" class="btn btn-info btn btn_process_check">상차</button>
+											<button type="button" id="btn_process_4" class="btn btn-info btn btn btn_process_check">출고</button>
+											<!--  button type="button" id="btn_process_5" class="btn btn-info btn btn_process_check">판매</button>-->
+											<button type="button" id="btn_process_6" class="btn btn-info btn btn_process_check">회수</button>
+											<button type="button" id="btn_process_7" class="btn btn-info btn btn_process_check">충전기한확인</button>
+										</div>
+										</tr>										
+									</table>									
+									
+									</form>
+									<div class="ln_solid"></div>
+									<div id="view_button" >
+										<div align="center">
+											<button type="button"  class="close" data-dismiss="modal" >Close</button>
+										</div>
+									</div>
+									
+									
+									<div id="test_char">
+									</div>
+									
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+    	      
+      <!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal2">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">엑셀파일 등록</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="form1" name="form1" method="post" action="/uploadExcelFile"enctype="multipart/form-data">					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">파일선택</td>
+											<td  colspan=4><input type="file" id="fileInput" name="fileInput"> </td>
+											<td> <div id="result"></td>
+										</tr>										
+									</thead>
+									</table>								
+													
+									</form>
+									<div class="ln_solid"></div>
+														
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						              <a class="btn btn-info btn-sm" href="#" onclick="javascript:doExcelUploadProcess();"><i class="fas fa-pencil-alt"></i>엑셀업로드</a>
+						            </div>
+									<div id="test_char">
+									
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+		
+		 <!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal3">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">엑셀파일 등록</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="form2" name="form2" method="post" action="/uploadExcelFileGMS"enctype="multipart/form-data">					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">파일선택</td>
+											<td  colspan=4><input type="file" id="fileInput1" name="fileInput1"> </td>
+											<td> <div id="result"></td>
+										</tr>										
+									</thead>
+									</table>								
+													
+									</form>
+									<div class="ln_solid"></div>
+														
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						              <a class="btn btn-info btn-sm" href="#" onclick="javascript:doExcelUploadProcessGMS();"><i class="fas fa-pencil-alt"></i>엑셀업로드</a>
+						            </div>
+									<div id="test_char">
+									
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+      
+      
+        <div class="row">        	
+            <div class="col-1">
+            	<label>거래처</label>                 		
+            </div>               
+            <div class="col-3">
+              <form id="mainForm" name="mainForm"  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="bottleBarCd" name="bottleBarCd" th:value="${ownCustomerId}">
+              <select id="ownCustomerId" name="ownCustomerId" class="form-control">
+                    <option value="">거래처 목록</option>
+                  	<option th:each="row : ${customerList}"
+	                th:text="${row.customerNm}"
+	                th:value="${row.customerId}"
+	                th:if="${ownCustomerId ==row.customerId}" selected>		     		
+			     	<option th:each="row : ${customerList}"
+	                th:text="${row.customerNm}"
+	                th:value="${row.customerId}"
+	                th:unless="${ownCustomerId ==row.customerId}">	
+			     	</option>   
+	    	</select>	                 	
+            </div>               
+            <div class="col-3"><input type="text" class="form-control" id="searchCustomerNm1" name="searchCustomerNm1" th:value="${searchCustomerNm1}">
+            </div>
+            <div class="col-1"><input type="button" class="btn btn-default btn-success" id="btn_com_search1" value="검색" />               
+            </div>
+            <div align=right class="col-4">
+              		<a class="btn btn-outline-primary btn-sm" href="/gms/bottle/write.do"><i class="far fa-edit"></i>용기등록</a>&nbsp;
+              		<a th:href="@{/gms/bottle/excelDownload.do( currentPage=${currentPage} ,searchBottleId=${searchBottleId},searchProductId= ${searchProductId} ,searchDt=${searchDt},searchWorkCd=${searchWorkCd},ownCustomerId=${ownCustomerId},menuType=1 )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>               
+              </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+         <div class="row">
+            <div class="col-1">
+               		<label>처리일자</label> 
+            </div>               
+            <div class="col-3">              
+               <input type="text" class="form-control" name="searchDt" th:value="${searchDt}"/>			
+            </div>               
+            <div class="col-5">               
+            </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+    	<div class="row">
+           	<div class="col-1">
+           		<label>용기코드</label>               		
+            </div>               
+            <div class="col-2">              
+               <input type="text" id="searchBottleId" name="searchBottleId" class="form-control"  th:value="${searchBottleId}">
+            </div>  
+            <div class="col-1">
+           		<label>바코드</label>               		
+            </div>  
+             <div class="col-2">              
+               <input type="text" id="searchBottleBarCd" name="searchBottleBarCd" class="form-control"  th:value="${searchBottleBarCd}">
+            </div> 
+            <div class="col-2">            
+               	<select id="searchProductId" name="searchProductId" class="form-control">
+               		<option value="">가스 선택</option>
+                   	<option th:each="row : ${productList}"
+		                th:text="${row.productNm}"
+		                th:value="${row.productId}"
+		              	th:if="${searchProductId ==row.productId}" selected>	
+			     	</option>	
+			     	<option th:each="row : ${productList}"
+		                th:text="${row.productNm}"
+		                th:value="${row.productId}"
+		              	th:unless="${searchProductId ==row.productId}">	
+			     	</option>   				
+                 </select>
+              </div>      
+              			
+              <div class="col-2">
+               	<select id="searchWorkCd" name="searchWorkCd" class="form-control">
+                    <option value="">작업</option>				    
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:if="${searchWorkCd ==row.cdId}" selected>					             
+			        </option>	
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:unless="${searchWorkCd ==row.cdId}">					             
+			        </option>					        				
+                 </select>
+              </div>                   
+              <div class="col-2">
+                <button class="btn btn-navbar" type="button">
+		            <i class="fas fa-search"></i>
+		          </button>
+           		</form>
+              </div>             
+              <!-- div class="col-1">
+               		<a href="/gms/bottle/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm">용기 등록</button></a>
+              </div-->
+              
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <td th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|">
+		            <td th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|">
+		        </tr>	         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll();"/></th>
+                      <th>용기코드</th>
+                      <th>바코드</th>
+                      <th>가스</th>
+                      <th>용량</th>
+                      <th>작업</th>
+                      <th>거래처</th>
+                      <th>작업자</th>
+                      <th>처리일</th>
+                      <th>관리</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <form name="checkForm" id="checkForm">
+                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" style="font-size:13.5px;">
+                      <td>
+                      <input class="IdCheckbox"  name="check_id" type="checkbox" th:value="${row.bottleBarCd}"></td>
+                      <th th:text="${row.bottleId}"></th>
+                      <th>
+                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
+                      </th>
+                      <td th:text="${row.productNm}"></td>
+                      <td th:text="${row.bottleCapa}"></td>
+                      <td th:text="${row.bottleWorkCdNm}"></td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:text="${row.updateId}"></td>
+                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>  
+                      <td>                      
+						<a class="btn_select_process btn btn-info btn-xs" th:bottleId="${row.bottleId}" data-toggle="modal" data-target="#modal-default"  href="#"><i class="fas fa-check-circle"></i>상태변경 </a>
+						<a class="btn btn-danger btn-xs" href="#" th:onclick="fn_deleteBottle([[ ${row.bottleBarCd} ]])">
+                              <i class="fas fa-trash"></i>삭제</a>
+                      </td>                     
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( bottleList )}">
+						<td colspan="9">조회된 결과가 없습니다.</td>
+					</tr>			
+					</form>			
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">		
+         	<div class="col-1">
+         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteBottles()"><i class="fas fa-trash"></i>선택삭제</a>            	
+         	</div>						
+			<div class="col-9">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a href="#" th:onclick="gotoPage([[ ${currentPage +1} ]])"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			
+			<div th:if="${session.LoginUser.userAuthority=='99'}" class="col-2" align='right'>
+				 <a class="btn_select_process1 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal1" href="#"><i class="fas fa-check-circle"></i>용기변경</a> 
+            	<a class="btn_select_process2 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal2" href="#"><i class="fas fa-upload"></i>엑셀등록</a>
+            	
+			<div th:unless="${session.LoginUser.userAuthority=='99'}" class="col-2" align='right'>
+		</div>
+		<!-- 
+		<div th:if="${session.LoginUser.userAuthority=='99'}"  class="row">		
+         	<div class="col-12">
+         	<br>
+         	<a class="btn_select_process3 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal3" href="#"><i class="fas fa-upload"></i>엑셀등록(구)</a>
+         	
+         	</div>
+         </div>	
+          -->
+		</div>
+        <br>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

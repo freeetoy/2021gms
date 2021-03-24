@@ -1,0 +1,103 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="~{gms/layout/basic}">
+<th:block layout:fragment="content">
+<link href='/fullcalendar/core/main.css' rel='stylesheet' />
+<link href='/fullcalendar/daygrid/main.css' rel='stylesheet' />
+<link href='/fullcalendar/timegrid/main.css' rel='stylesheet' />
+<link href='/fullcalendar/list/main.css' rel='stylesheet' />
+<script src='/fullcalendar/core/main.js'></script>
+<script src='/fullcalendar/interaction/main.js'></script>
+<script src='/fullcalendar/daygrid/main.js'></script>
+<script src='/fullcalendar/timegrid/main.js'></script>
+<script src='/fullcalendar/list/main.js'></script>
+
+<script>
+$(document).ready(function() {
+	/*
+	    var events = [];
+	    var ajaxData;
+	    var ajaxInfo ={
+				type:"POST",
+				url:"/gms/calendar/getEvent.do",				
+				dataType: "json",
+			};
+			
+			ajax = callAjax(ajaxInfo);		
+			
+			ajax.done(function(data){
+				
+				ajaxData = data;
+				console.log(data);
+				for(i=0; i< data.length;i++) {
+					events.push({title: data[i].schedulTitle,
+	                    start: data[i].scheduleStartDt,
+	                     end: data[i].scheduleEndDt});
+		        }	
+				
+				
+			});
+ */
+});
+
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+
+</script>
+<style>
+
+  body {
+        padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+</style>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>휴가</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+	<section class="content">      
+		<div class="row">	
+          <div class="col-md-9">
+            <div class="card card-primary">
+              <div class="card-body p-0">
+                <!-- THE CALENDAR -->
+                <div id="calendar"></div>
+              
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>    
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<script type="text/javascript" >
+    var jsonList = '[[${list}]]'
+</script>
+
+<script type="text/javascript" th:src="@{/fullcalendar/schedule.js}"></script>
+</html>
+</th:block>

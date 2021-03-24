@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.ScheduleMapper">
+	<resultMap id="ScheduleMap" type="com.gms.web.admin.domain.manage.ScheduleVO" >
+		<result property="scheduleSeq"		column="Schedule_Seq"		/>
+		<result property="userId"			column="User_ID"			/>		
+		<result property="userNm"			column="User_Nm"			/>		
+		<result property="scheduleTitle"	column="Schedule_Title"		/>
+		<result property="scheduleType"		column="Schedule_Type"		/>	
+		<result property="scheduleTypeNm"	column="Schedule_TypeNm"	/>	
+		<result property="scheduleStartDt"	column="Schedule_Start_Dt"	/>
+		<result property="scheduleEndDt"	column="Schedule_End_Dt"	/>
+		<result property="scheduleEndDt2"	column="Schedule_End_Dt2"	/>
+		<result property="vacationGubun"	column="Vacation_Gubun"		/>
+		<result property="vacationGubunNm"	column="Vacation_GubunNm"	/>
+		<result property="deleteYn"			column="Delete_YN"			/>
+		<result property="dateDiffs"		column="Date_Diffs"			/>
+		<result property="createId"			column="CREATE_ID"			/>
+		<result property="createDt"			column="CREATE_DT"			/>
+		<result property="updateId"			column="UPDATE_ID"			/>		
+		<result property="updateDt"			column="UPDATE_DT"			/>
+	</resultMap>	
+	
+	<sql id="ScheduleColumns">
+		  Schedule_Seq
+		, TS.User_ID
+		, User_Nm
+		, Schedule_Title
+		, Schedule_Type
+		, Schedule_Start_Dt	
+		, Schedule_End_Dt
+		, Vacation_Gubun	
+		, TS.Delete_YN	
+		, TS.CREATE_ID
+		, TS.CREATE_DT
+		, TS.UPDATE_ID
+		, TS.UPDATE_DT
+	</sql>
+	
+	<sql id="ScheduleInsertColumns">
+		  User_ID
+		, Schedule_Title
+		, Schedule_Type
+		, Schedule_Start_Dt	
+		, Schedule_End_Dt
+		, Vacation_Gubun	
+		, Delete_YN	
+		, CREATE_ID
+		, CREATE_DT
+		, UPDATE_ID
+		, UPDATE_DT
+	</sql>
+	<insert id="insertSchedule" parameterType="com.gms.web.admin.domain.manage.ScheduleVO">
+		INSERT INTO TB_Schedule(
+			<include refid="ScheduleInsertColumns" />
+		) VALUES (
+			  #{userId}
+			, #{scheduleTitle}
+			, #{scheduleType}
+			, #{scheduleStartDt}
+			, #{scheduleEndDt}
+			, #{vacationGubun}
+			, 'N'
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<update id="updateBottle" parameterType="com.gms.web.admin.domain.manage.ScheduleVO">
+		UPDATE TB_Schedule
+		SET
+			Schedule_Title		= #{scheduleTitle}
+			, Schedule_Type		= #{scheduleType}
+			, Schedule_Start_Dt	= #{scheduleStartDt}
+			, Schedule_End_Dt	= #{scheduleEndDt}
+			, Vacation_Gubun	= #{vacationGubun}			
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Schedule_Seq = #{scheduleSeq}
+	</update>	
+	
+	<update id="deleteSchedule" parameterType="com.gms.web.admin.domain.manage.ScheduleVO">
+		UPDATE TB_Schedule
+		SET
+			Delete_YN = 'Y'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Schedule_Seq = #{scheduleSeq}
+	</update>
+	
+	<select id="selectScheduleDetail" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.ScheduleVO">
+		SELECT
+			<include refid="ScheduleColumns" />
+		FROM
+			TB_Schedule TB
+		WHERE
+			Schedule_Seq = #{scheduleSeq}		
+	</select>
+	
+	<select id="selectScheduleList"  resultType="com.gms.web.admin.domain.manage.ScheduleVO">
+		SELECT
+			Schedule_Seq
+			, TS.User_ID
+			, User_Nm
+			, Schedule_Title
+			, Schedule_Type
+			, Schedule_Start_Dt	
+			, Schedule_End_Dt
+			, date_add(Schedule_End_Dt, interval 1 day)  Schedule_End_Dt2
+			, Vacation_Gubun	
+			, TS.Delete_YN	
+			, TS.CREATE_ID
+			, TS.CREATE_DT
+			, TS.UPDATE_ID
+			, TS.UPDATE_DT
+		FROM
+			TB_Schedule TS, TB_User TU
+		WHERE
+			Schedule_Start_Dt <![CDATA[ >= ]]> date_add(sysdate(), interval -12 month) 
+		AND	
+			Schedule_End_Dt <![CDATA[<=]]> date_add(sysdate(), interval 12 month) 	
+		AND
+			TS.User_ID = TU.User_ID
+		AND
+			TS.Delete_YN	= 'N'
+		AND
+			TU.Delete_YN	= 'N'
+	</select>
+	
+	<select id="selectScheduleListUser" parameterType="com.gms.web.admin.domain.manage.ScheduleVO"  resultType="com.gms.web.admin.domain.manage.ScheduleVO">
+		SELECT
+			Schedule_Seq
+			, TS.User_ID
+			, User_Nm
+			, Schedule_Title
+			, Schedule_Type
+			, IF(Schedule_Type =1,'정기휴가','공휴') scheduleTypeNm
+			, Schedule_Start_Dt	
+			, Schedule_End_Dt
+			, Vacation_Gubun	
+			,
+			CASE
+	         	WHEN Vacation_Gubun = '1'
+	         	THEN '전일'
+	         	WHEN Vacation_Gubun = '2'
+	         	THEN '오전반차'
+	         	ELSE '오후반차'
+       		END AS Vacation_GubunNm
+       		, DateDiff(Schedule_Start_Dt,TS.Create_Dt) DateDiffs
+			, TS.Delete_YN	
+			, TS.CREATE_ID
+			, TS.CREATE_DT
+			, TS.UPDATE_ID
+			, TS.UPDATE_DT
+		FROM
+			TB_Schedule TS, TB_User TU
+		WHERE
+			TS.User_id = #{userId}
+		AND
+			TS.Delete_YN	= 'N'
+		AND
+			TU.Delete_YN	= 'N'
+		AND
+			TS.User_ID = TU.User_ID		
+	</select>
+	
+	
+	<select id="selectScheduleCheck" resultType="int" parameterType="com.gms.web.admin.domain.manage.ScheduleVO">
+		SELECT
+			Count(Schedule_Seq)
+		FROM
+			TB_Schedule TB
+		WHERE
+			User_Id = #{userId}
+		AND
+			Schedule_Start_Dt = #{scheduleStartDt}	
+		AND
+			Delete_YN = 'N'		
+	</select>
+
+</mapper>

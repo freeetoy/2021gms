@@ -1,0 +1,185 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	function validationOfForm(form) {		 
+		form
+		var result = (
+				   isValid(userNm, "사용자명", null, null)
+				&& isValid(userId, "아이디", null, null)
+				&& isValid(userPhone, "연락처", null,null)
+				&& isValid(userPasswd, "비밀번호", null, "password")
+				&& isValid(userPasswdCfd, "비밀번호확인", null, "password")
+		);
+		
+		if ( result === false ) {
+			return false;
+		}
+	}
+	// end of function
+	
+// 입력된 내용을 작성한다.
+var goWrite = function(){
+	//validation();
+	var userNm = $("#userNm").val();
+	if(userNm=="" || userNm == null){
+		alert("사죵자명을 입력해 주세요.");
+		$("#userNm").focus();
+		isOkay = false;
+		return;
+	}
+	
+	var userPhone = $("#userPhone").val();
+	if(userPhone=="" || userPhone == null){
+		alert("연략처를 입력해 주세요.");
+		$("#userPhone").focus();
+		isOkay = false;
+		return;
+	}
+	
+	var userPasswd = $("#userPasswd").val();
+	if(userPasswd=="" || userPasswd == null){
+		alert("비밀번호를 입력해 주세요.");
+		$("#userPasswd").focus();
+		isOkay = false;
+		return;
+	}
+	
+	var userPasswdCfd = $("#userPasswdCfd").val();
+	if(userPasswdCfd=="" || userPasswdCfd == null){
+		alert("비밀번호확인을 입력해 주세요.");
+		$("#userPasswdCfd").focus();
+		isOkay = false;
+		return;
+	}
+	
+	if(userPasswd != userPasswdCfd){
+		alert("비밀번호와 비밀번호확인이 일치하지 않습니다.");
+		$("#userPasswdCfd").focus();
+		isOkay = false;
+		return;
+	}
+	/*
+	var result = (
+			   isValid(userPhone, "연락처", null, null)
+			&& isValid(userPasswd, "비밀번호", null, "password")
+			&& isValid(userPasswdCfd, "비밀번호확인", null, "password")
+	);
+	
+	if ( result === false ) {
+		return;	
+	}
+	
+	if(!isOkay){
+		return;
+	}
+	*/
+	var form = $("#writeForm");
+		
+	form.submit();
+}
+	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>사용자 수정</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-8">
+            <div class="card">             
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+              
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/user/modify.do}" th:object="${user}" method="post" >
+                <input type="hidden" name="userId" id="userId" th:value="${user.userId}">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="card-footer">사용자명</th>
+                      <th ><input type="text" class="form-control" id="userNm" name="userNm" th:value="${user.userNm}"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">아이디</th>
+                      <th th:text="${user.userId}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">연략처</th>
+                      <th><input type="text" class="form-control" id="userPhone" name="userPhone" th:value="${user.userPhone}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">부서</th>
+                      <th>
+		      			<input type="radio" name="userPartCd" id="userPartCd" value="01" th:if="${user.userPartCd =='01'}" checked="">                                     
+                      	<input type="radio" name="userPartCd" id="userPartCd" value="01" th:unless="${user.userPartCd =='01'}" >  영업팀  
+                      	<input type="radio" name="userPartCd" id="userPartCd" value="02" th:if="${user.userPartCd =='02'}" checked=""> 
+                      	<input type="radio" name="userPartCd" id="userPartCd" value="02" th:unless="${user.userPartCd =='02'}"> 회계팀
+		      			<input type="radio" name="userPartCd" id="userPartCd" value="03"th:if="${user.userPartCd =='03'}" checked=""> 
+		      			<input type="radio" name="userPartCd" id="userPartCd" value="03"th:unless="${user.userPartCd =='03'}" > 관리팀
+		      		  </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">권한</th>
+                      <th>
+		      			<input type="radio" name="userAuthority" id="userAuthority" value="01" th:if="${user.userAuthority =='01'}" checked="">                                     
+                      	<input type="radio" name="userAuthority" id="userAuthority" value="01" th:unless="${user.userAuthority =='01'}">  사용자  
+                      	<input type="radio" name="userAuthority" id="userAuthority" value="99" th:if="${user.userAuthority =='99'}" checked=""> 
+                      	<input type="radio" name="userAuthority" id="userAuthority" value="99" th:unless="${user.userAuthority =='99'}"> 관리자
+		      		
+		      		 </th>   
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">이카운트코드</th>
+                      <th><input type="text" class="form-control" id="eCountUserCd" name="eCountUserCd" th:value="${user.eCountUserCd}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">비밀번호</th>
+                      <th><input type="password" class="form-control" id="userPasswd" name="userPasswd" th:value="${user.userPasswd}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">비밀번호확인</th>
+                      <th><input type="password" class="form-control" id="userPasswdCfd" name="userPasswdCfd" th:value="${user.userPasswd}"> </th>   
+                    </tr>
+                    
+                  </thead>
+                              
+                </table>
+              
+            </div>
+            <!-- /.card -->           
+            
+            <div class="card-footer">
+            	
+                 <a href="#" th:onclick="history.back()"  class="btn btn-secondary float-left">취소</a>
+		          <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">
+                
+             </div>	     		
+            </form>   
+          	
+         </div>      
+        <!-- /.row -->       
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

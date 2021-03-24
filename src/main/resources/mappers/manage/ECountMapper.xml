@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.ECountMapper">
+<resultMap id="ECountMap" type="com.gms.web.admin.domain.manage.ECountVO" >
+		<result property="customerId"		column="Customer_ID"		/>	
+		<result property="customerNm"		column="Customer_Nm"		/>		
+		<result property="salesNm"			column="Sales_Nm"			/>	
+		<result property="productId"		column="Product_ID"			/>
+		<result property="productNm"		column="Product_Nm"			/>	
+		<result property="productCapa"		column="product_Capa"		/>
+		<result property="orderCount"		column="Order_Count"		/>		
+		<result property="productPrice"		column="Product_Price"		/>
+		<result property="supplyPrice"		column="Supply_Price"		/>
+		<result property="vat"				column="VAT"				/>
+		<result property="eCountCd"			column="ECOUNT_CD"			/>
+		<result property="eCountCdS"		column="ECOUNT_CDS"			/>
+		<result property="bottleSaleYn"		column="Bottle_Sale_YN"		/>
+		<result property="bottleWorkCd"		column="Bottle_Work_Cd"		/>
+	</resultMap>	
+
+
+	 <select id="selectECount" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >		
+		SELECT 
+			TC.ECount_CD Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS, PT.Product_Nm, PP.Product_Capa, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
+			WB.Order_Count, WB.Product_Price, WB.Order_Count*WB.Product_Price Supply_Price,WB.Order_Count*WB.Product_Price*0.1 VAT,Bottle_Work_Cd
+		FROM 
+			(
+				SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq,TB.Create_ID,Bottle_Sale_YN, Product_Price, Bottle_Work_Cd
+				FROM TB_Work_Bottle TB,tb_work_report TW
+				WHERE Bottle_Work_Cd in ('0308','0309','0314', '0316')
+				AND TB.Work_Report_Seq = TW.Work_Report_Seq
+				AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')=  #{searchDt}
+				<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+				AND TB.Create_ID =  #{searchUserId}
+				</if>	
+				Group By Work_Report_Seq,Product_ID, Product_Price_Seq ,TB.Create_ID,Bottle_Sale_YN, Product_Price, Bottle_Work_Cd
+			) WB,TB_Work_Report WR ,TB_Product PT, TB_Product_Price PP, TB_Customer TC, TB_User TU
+		WHERE 
+			WB.Work_Report_Seq = WR.Work_Report_Seq
+		AND 
+			WR.Delete_YN = 'N'		
+		AND 
+			WB.Product_ID = PT.Product_ID
+		AND 
+			WB.Product_ID = PP.Product_ID 
+		AND 
+			WB.Product_Price_Seq = PP.Product_Price_Seq 
+		AND 
+			WR.Customer_ID = TC.Customer_ID
+		AND 
+			WB.Create_ID = TU.User_Id
+		Order By WB.Work_Report_Seq desc
+	</select>
+</mapper>

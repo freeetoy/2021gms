@@ -1,0 +1,1165 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script src="/dist/js/jquery.popupWindow.js"></script>
+<script type="text/javascript">	
+
+$(function() { 
+	  $('input[name="searchDt"]').daterangepicker({
+	    singleDatePicker: true,
+	    showDropdowns: true,
+	    autoUpdateInput: false,
+	    startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+
+	  $('input[name="searchDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+	  });
+
+	  $('input[name="searchDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	  
+	 
+	});
+	
+	
+
+$(document).ready(function(){ 	
+	
+ 	
+    $(".btn_select_process").click(function()  
+	{				
+		var orderId = $(this).attr('orderId'); 
+					    
+			var ajaxInfo ={
+					type:"POST",
+					url:"/gms/order/detail.do",
+					data:{
+						orderId : orderId
+					},
+					dataType: "json",
+				};
+				
+				ajax = callAjax(ajaxInfo);
+				
+				ajax.done(function(data){
+					
+					var Ampm = "오전";
+					if(data.order.deliveryReqAmpm=='P' ) Ampm = "오후" ;
+					
+					$("#chOrderId").val(data.order.orderId);
+					
+					$("#mcustomerNm").val(data.order.customerNm);			
+					$("#deliveryReqDt").val(moment(data.order.deliveryReqDt).format('YYYY/MM/DD') + ' ' +Ampm);			
+					$("#orderEtc").val(data.order.orderEtc);			
+					$("#orderTotalAmount").val(numberWithCommas(data.order.orderTotalAmount));	
+					console.log(data.order.OrderTotalAmount);
+					
+					if(data.orderProduct.length > 0) {
+						$("table.mod-doc-list").find('tr').remove();
+			
+						var newRow = $("<tr>");	
+						var cols = "";
+						cols += '<td>품명</td>';
+						cols += '<td>용량</td>';
+						cols += '<td>수량</td>';
+						cols += '<td>기타</td>';
+						cols += '<td>용기교환</td></tr>';
+
+						newRow.append(cols);
+						$("table.mod-doc-list").append(newRow);
+
+						for(var i=0;i<data.orderProduct.length;i++){
+					        	var newRow1 = $("<tr>");
+					        	var cols1 = "";	
+					        	cols1 += '<th>'+data.orderProduct[i].productNm+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].productCapa+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].orderCount+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].orderProductEtc+'</th>';
+					        	cols1 += '<th>'+data.orderProduct[i].bottleChangeYn+'</th>';
+					        	cols1 += '</tr>'     ;    
+					        	newRow1.append(cols1);
+						        $("table.mod-doc-list").append(newRow1);
+						        
+						        newRow1 = "";
+					        }     
+					}
+			})
+			       .fail(function(){
+				  console.log("fail");
+			});
+				
+
+				//$("#orderAmountView").show();
+				//$("#view_button").hide();
+		});
+    	
+  //Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+  
+	 var bottlesIds = "";
+   	$(".btn_select_process1").click(function()  
+	{		
+		$("table.mod-doc-list1").find('tr').remove();			
+		
+		var newRowlist1 = $("<tr>");	
+		var colslist1 = "";
+	
+		colslist1 += '<td>용기코드</td>';
+		colslist1 += '<td>용기바코드</td>';
+		colslist1 += '<td>가스</td>';
+		colslist1 += '<td>용량</td>';
+		colslist1 += '<td>충전기한</td>';
+		colslist1 += '</tr>';
+		
+		newRowlist1.append(colslist1);
+		$("table.mod-doc-list1").append(newRowlist1);		
+		
+		$("#btn_process_6").show();
+		$("#btn_process_5").show();
+		$("#btn_process_8").show();
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/common/customerList.do",			
+			dataType: "json",
+		};
+			
+		ajax = callAjax(ajaxInfo);
+		
+		ajax.done(function(data){
+			
+			for(i=0; i< data.length;i++) {
+				$('#customerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+			}							
+		})
+	       .fail(function(){
+		  console.log("fail");
+		});
+		
+		
+   });
+   	
+   	$(".btn_select_process3").click(function()  
+	{		
+		$("table.mod-doc-list1").find('tr').remove();			
+				
+			var newRowlist1 = $("<tr>");	
+			var colslist1 = "";
+			
+			colslist1 += '<td>용기코드</td>';
+			colslist1 += '<td>용기바코드</td>';
+			colslist1 += '<td>가스</td>';
+			colslist1 += '<td>용량</td>';
+			colslist1 += '<td>충전기한</td>';
+			colslist1 += '</tr>';
+				
+			newRowlist1.append(colslist1);
+			$("table.mod-doc-list1").append(newRowlist1);			
+
+			$("#btn_process_5").hide();
+			$("#btn_process_8").hide();
+			$("#btn_process_6").show();
+			
+			var ajaxInfo ={
+				type:"POST",
+				url:"/gms/common/customerList.do",			
+				dataType: "json",
+			};
+					
+			ajax = callAjax(ajaxInfo);
+				
+			ajax.done(function(data){
+					
+				for(i=0; i< data.length;i++) {
+					$('#customerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+				}							
+			})
+			.fail(function(){
+			console.log("fail");
+		});
+				
+		
+	});
+
+   $(".btn_select_process2").click(function()  
+	{		
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/common/customerList.do",			
+			dataType: "json",
+		};
+			
+		ajax = callAjax(ajaxInfo);
+		
+		ajax.done(function(data){			
+			for(i=0; i< data.length;i++) {				 
+				$('#customerId1').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+			}						
+		})
+	       .fail(function(){
+		  console.log("fail");
+		});
+		
+		var ajaxInfo1 ={
+				type:"POST",
+				url:"/gms/common/ngasProducts.do",			
+				dataType: "json",
+			};
+				
+			ajax1 = callAjax(ajaxInfo1);
+			
+			ajax1.done(function(data){				
+				for(i=0; i< data.length;i++) {					
+					$('#productId').append('<option value='+data[i].productId+'>'+data[i].productNm+'</option>')
+				}						
+			})
+		       .fail(function(){
+			  console.log("fail");
+			});
+		
+   });
+   
+   $('#productId').change( function(){
+
+		var pid = $('#productId').val();
+
+		getCapaList(pid);
+	});
+   
+   
+   function getCapaList(pid){
+		
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ pid ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	    
+	    	var i=0;
+	    	$('#productPriceSeq').find('option').remove(); 
+			//$('#productCapa_' + sel_pid).find('option').remove(); 
+			for(i=0; i< data.length;i++) {
+				console.log(data[i]);      
+				$('#productPriceSeq').append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')				
+			}
+					
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+
+	} 
+   
+   
+   $("#btn_search").click(function()  
+	{	
+	 	var strCustomerNm = $("#strCustomerNm").val();
+	
+	 	$("table.mod-doc-list1").find('tr').remove();			
+		
+		var newRowlist1 = $("<tr>");	
+		var colslist1 = "";
+	
+		colslist1 += '<td>용기코드</td>';
+		colslist1 += '<td>용기바코드</td>';
+		colslist1 += '<td>가스</td>';
+		colslist1 += '<td>용량</td>';
+		colslist1 += '<td>충전기한</td>';
+		colslist1 += '</tr>';
+		
+		newRowlist1.append(colslist1);
+		$("table.mod-doc-list1").append(newRowlist1);
+		
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/common/customerList.do?searchCustomerNm="+strCustomerNm,			
+			dataType: "json",
+		};
+			
+			ajax = callAjax(ajaxInfo);
+			
+			ajax.done(function(data){
+				console.log(data);
+				 $('#customerId').find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					console.log(data[i]);      
+					$('#customerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+				}			
+				
+		})
+		       .fail(function(){
+			  console.log("fail");
+		});
+	
+	  });
+	    
+	$("#btn_search1").click(function()  
+	{
+	
+	 	var strCustomerNm = $("#strCustomerNm1").val();	
+	 
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/common/customerList.do?searchCustomerNm="+strCustomerNm,			
+			dataType: "json",
+		};
+			
+		ajax = callAjax(ajaxInfo);
+			
+		ajax.done(function(data){
+				
+			$('#customerId1').find('option').remove(); 
+			for(i=0; i< data.length;i++) {					     
+				$('#customerId1').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
+			}			
+				
+		})
+		 .fail(function(){
+			console.log("fail");
+		});
+	
+	});
+			    
+	$("#btn_com_search1").click(function()  
+	{    	
+	  var searchCustomerNm = $("#searchCustomerNm1").val();
+	
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+	
+	      })
+	      .done(function(data){
+	    	$('#customerId2').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#customerId2').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	});
+    
+	$(".btn_bottle_search").click(function()  
+	{
+ 		var bottleId = $("#bottleId").val(); 
+ 		
+			var ajaxInfo ={
+					type:"POST",
+					url:"/gms/bottle/detail.do",
+					data:{
+						bottleId : bottleId
+					},
+					dataType: "json",
+				};
+				
+				ajax = callAjax(ajaxInfo);
+				
+				ajax.done(function(data){						
+					
+				    var newRow1 = $("<tr>");
+				    var cols1 = "";	
+				    cols1 += '<th>'+data.bottleId+'</th>';
+				    cols1 += '<th>'+data.bottleBarCd+'</th>';
+				    cols1 += '<th>'+data.productNm+'</th>>';
+				    cols1 += '<th>'+data.bottleCapa+'</th>>';
+				    cols1 += '<th>'+data.bottleChargeDt.substring(0,10)+'</th>';
+				    cols1 += '</tr>'     ;    
+				    newRow1.append(cols1);
+					$("table.mod-doc-list1").append(newRow1);
+							 
+					bottlesIds +=bottleId+",";
+					//$("#bottlIds").val(data.order.orderId);
+					
+					$("#bottlesIds").val(bottlesIds);
+				})
+			       .fail(function(){
+				  console.log("fail");
+			});
+				$("#bottleId").val(""); 
+
+ 				//$("#orderAmountView").show();
+ 				//$("#view_button").hide();
+ 		});
+		    	
+			
+	// 진행 확인 버튼 클릭
+    $(".btn_process_check").click(function()  
+    {
+    
+       var select_pid = $(this).attr('id'); 
+       var msg = '';
+       var bottleWorkCd = '';
+      
+       customerId= $("#customerId").val();           
+       
+       if(customerId ==0){
+    	   alert("거래처를 선택해주세요");
+    	   return;
+       }
+
+       if(bottlesIds ==''){
+    	   alert("용기를 선택해주세요");
+    	   return;
+       }
+
+       switch (select_pid){
+          case 'btn_process_1':
+            msg = "'입고' 하시겠습니까?";
+            bottleWorkCd ='0301';
+            break;
+          case 'btn_process_2':
+            msg = "'충전' 하시겠습니까?";
+            bottleWorkCd ='0305';
+            break;
+          case 'btn_process_3':
+            msg = "'상차' 하시겠습니까?";
+            bottleWorkCd ='0307';
+            break;  
+          case 'btn_process_4':
+             msg = "'출고' 하시겠습니까?";;
+             bottleWorkCd ='0306';
+             break;
+           case 'btn_process_5':
+             msg = "'판매' 하시겠습니까?";
+             bottleWorkCd ='0308';
+             break;
+           case 'btn_process_6':
+             msg = "'회수' 하시겠습니까?";
+             bottleWorkCd ='0310';
+             break;  
+           case 'btn_process_7':
+              msg = "'기타' 하시겠습니까?";
+              bottleWorkCd ='0311';
+              break;  
+           case 'btn_process_8':
+	              msg = "'대여' 하시겠습니까?";
+	              bottleWorkCd ='0309';
+	              break;  
+           case 'btn_process_9':
+	              msg = "'판매회수' 하시겠습니까?";
+	              bottleWorkCd ='0315';
+	              break;  
+          default:
+            break;
+
+       }                       
+      
+		if(confirm(msg)){
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/report/registerAll.do");			
+	        
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "bottleWorkCd");
+	        hiddenField.setAttribute("value", bottleWorkCd);
+	        form.appendChild(hiddenField);   
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "customerId");
+	        hiddenField1.setAttribute("value", customerId);
+
+	        form.appendChild(hiddenField1);     
+	        
+	        var hiddenField2 = document.createElement("input");
+	        hiddenField2.setAttribute("type", "hidden");
+	        hiddenField2.setAttribute("name", "bottlesIds");
+	        hiddenField2.setAttribute("value", bottlesIds);
+
+	        form.appendChild(hiddenField2);  
+	        
+	        var hiddenField3 = document.createElement("input");
+	        hiddenField3.setAttribute("type", "hidden");
+	        hiddenField3.setAttribute("name", "userId");
+	        hiddenField3.setAttribute("value", $("#searchUserId").val());
+
+	        form.appendChild(hiddenField3); 
+	        
+	        document.body.appendChild(form);
+	        
+	        form.submit();				
+		}
+      
+	});
+    
+    
+	$(".btn_process_sale").click(function()  
+    {
+		
+		var msg = '판매를 하시겠습니까?';       
+       	var bottleWorkCd = '0308';
+       	customerId= $("#customerId1").val();
+       	   
+       	productId= $("#productId").val();
+       	productPriceSeq= $("#productPriceSeq").val();       	
+    	productCount= $("#productCount").val();
+       	
+       	if(customerId ==0){
+    	   alert("거래처를 선택해주세요");
+    	   return;
+       	}
+      
+		if(confirm(msg)){
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/report/noGasSales.do");			
+	        
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "bottleWorkCd");
+	        hiddenField.setAttribute("value", bottleWorkCd);
+	        form.appendChild(hiddenField);   
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "customerId");
+	        hiddenField1.setAttribute("value", customerId);
+	        form.appendChild(hiddenField1);  
+	        
+	        var hiddenField2 = document.createElement("input");
+	        hiddenField2.setAttribute("type", "hidden");
+	        hiddenField2.setAttribute("name", "productId");
+	        hiddenField2.setAttribute("value", productId);
+	        form.appendChild(hiddenField2);  
+	        
+	        var hiddenField3 = document.createElement("input");
+	        hiddenField3.setAttribute("type", "hidden");
+	        hiddenField3.setAttribute("name", "productPriceSeq");
+	        hiddenField3.setAttribute("value", productPriceSeq);
+	        form.appendChild(hiddenField3);  
+	        
+	        var hiddenField4 = document.createElement("input");
+	        hiddenField4.setAttribute("type", "hidden");
+	        hiddenField4.setAttribute("name", "productCount");
+	        hiddenField4.setAttribute("value", productCount);
+	        form.appendChild(hiddenField4);  
+	        
+	        var hiddenField5 = document.createElement("input");
+	        hiddenField5.setAttribute("type", "hidden");
+	        hiddenField5.setAttribute("name", "userId");
+	        hiddenField5.setAttribute("value", $("#searchUserId").val());
+
+	        form.appendChild(hiddenField5); 
+	        
+	        
+	        document.body.appendChild(form);
+	        
+	        form.submit();				
+		}
+      
+	});
+    
+    $(".btn_process_cash").click(function()  
+	{
+ 			
+		var msg = '입금/미수를 등록하시겠습니까?';       
+		var bottleWorkCd = '0308';
+		var customerId= $("#customerId2").val(); 	       	   
+ 	       	
+		if(customerId ==0){
+			alert("거래처를 선택해주세요");
+			return;
+		}
+ 	       	
+		var receivableAmount= $("#receivableAmount").val();
+		var incomeAmount= $("#incomeAmount").val();       	
+		var incomeWay= $("#incomeWay").val();
+		
+		if(incomeAmount == null || incomeAmount == '' || incomeAmount ==0){
+			alert("입금액을 입력해주세요");
+			return;
+		}
+		 	      
+		if(confirm(msg)){
+ 				
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/report/registerCash.do");			
+ 		        
+			var hiddenField = document.createElement("input");
+			hiddenField.setAttribute("type", "hidden");
+			hiddenField.setAttribute("name", "customerId");
+			hiddenField.setAttribute("value", customerId);
+			form.appendChild(hiddenField);   
+ 		        
+			var hiddenField1 = document.createElement("input");
+			hiddenField1.setAttribute("type", "hidden");
+			hiddenField1.setAttribute("name", "receivableAmount");
+			hiddenField1.setAttribute("value", receivableAmount);
+			form.appendChild(hiddenField1);  
+ 		        
+			var hiddenField2 = document.createElement("input");
+			hiddenField2.setAttribute("type", "hidden");
+			hiddenField2.setAttribute("name", "incomeAmount");
+			hiddenField2.setAttribute("value", incomeAmount);
+			form.appendChild(hiddenField2);  
+ 		        
+			var hiddenField3 = document.createElement("input");
+			hiddenField3.setAttribute("type", "hidden");
+			hiddenField3.setAttribute("name", "incomeWay");
+			hiddenField3.setAttribute("value", incomeWay);
+			form.appendChild(hiddenField3);  
+ 		        
+			var hiddenField5 = document.createElement("input");
+			hiddenField5.setAttribute("type", "hidden");
+			hiddenField5.setAttribute("name", "createId");
+			hiddenField5.setAttribute("value", $("#searchUserId").val());
+
+			form.appendChild(hiddenField5); 
+			document.body.appendChild(form);
+ 		        
+			form.submit();				
+		}
+ 	      
+ 	});
+    
+ // 근무일지 출력
+    $(".btn_print").click(function()  
+    {
+ 	   var searchDt = $('#searchDt').val();
+ 	   var searchUserId = $('#searchUserId').val();
+ 	   
+       $.popupWindow('/gms/report/print.do?searchDt='+searchDt+"&searchUserId="+searchUserId, {
+    	   width: 1300,
+           height: 700,
+           center: 'screen',          
+           scrollbars: 'true'
+          });
+    });
+ 
+ 
+    $(".btn_ecount").click(function()  
+    {
+ 	   var searchDt = $('#searchDt').val();
+ 	   
+ 	   var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/excelDownloadEcount.do");			
+	    
+		var hiddenField = document.createElement("input");
+      	hiddenField.setAttribute("type", "hidden");
+      	hiddenField.setAttribute("name", "searchDt");
+      	hiddenField.setAttribute("value", searchDt);
+      	form.appendChild(hiddenField);   
+      
+      	document.body.appendChild(form);
+        
+        form.submit();		
+    });
+    
+    $(".btn_ecount_user").click(function()  
+    {
+ 	   var searchDt = $('#searchDt').val();
+ 	   var searchUserId =  $("#searchUserId").val()
+ 	   
+ 	   var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/excelDownloadEcount.do");			
+	    
+		var hiddenField = document.createElement("input");
+      	hiddenField.setAttribute("type", "hidden");
+      	hiddenField.setAttribute("name", "searchDt");
+      	hiddenField.setAttribute("value", searchDt);
+      	form.appendChild(hiddenField);   
+      	
+      	var hiddenField1 = document.createElement("input");
+      	hiddenField1.setAttribute("type", "hidden");
+      	hiddenField1.setAttribute("name", "searchUserId");
+      	hiddenField1.setAttribute("value", searchUserId);
+      	form.appendChild(hiddenField1);   
+      
+      	document.body.appendChild(form);
+        
+        form.submit();		
+    });
+    
+    
+    $(".btn_select_delete").click(function()  
+	{
+		var workReportSeq = $(this).attr('workReportSeq'); 				
+		var searchUserId = $("#searchUserId").val(); 	
+		var searchDt = $('#searchDt').val();
+		
+		if(confirm("삭제하시겠습니까?")){	
+    		
+    		var form = document.createElement("form");
+    		form.setAttribute("charset","UTF-8");
+    		form.setAttribute("method","post");
+    		form.setAttribute("action","/gms/report/delete.do");
+    		
+    		var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "workReportSeq");
+            hiddenField.setAttribute("value", workReportSeq);
+
+            form.appendChild(hiddenField); 
+    		
+    		var hiddenField1 = document.createElement("input");
+            hiddenField1.setAttribute("type", "hidden");
+            hiddenField1.setAttribute("name", "searchDt");
+            hiddenField1.setAttribute("value", searchDt);
+
+            form.appendChild(hiddenField1);     
+            
+            var hiddenField2 = document.createElement("input");
+	        hiddenField2.setAttribute("type", "hidden");
+	        hiddenField2.setAttribute("name", "searchUserId");
+	        hiddenField2.setAttribute("value", $("#searchUserId").val());
+
+	        form.appendChild(hiddenField2); 
+	        
+            document.body.appendChild(form);
+
+            form.submit();			
+    	}                  
+	});	
+});
+	
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>업무 일지</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">           	
+    	
+    	<!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">용기정보</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="bForm" name="bForm" th:object="${workReport}" action="/gms/report/registerAll.do" method="post">
+					              <input type="hidden" id="bottlesIds" name="bottlesIds" value="">	
+					              
+									<table id="myTable" class="table customer-info">									
+										<tr>
+											<td width="80" class="card-footer">거래처</td>
+											<td  colspan=3  width="350">
+											<select id="customerId" name="customerId" class="form-control">
+						                        <option value="0">거래처 선택</option>			                      	
+										    </select>	
+										    </td>
+										    <td class="card-footer">
+										    <input type="text" id="strCustomerNm" name="strCustomerNm" class="form-control" placeholder="">
+											</td>
+										   	<td class="card-footer">
+										    	<button class="btn btn-navbar" id="btn_search" type="button">
+									            <i class="fas fa-search"></i>
+									          </button>
+		          
+											</td>
+										</tr>				
+										<tr>
+											<td class="card-footer">용기검색</td>
+											<td  colspan=3><input type="text" class="form-control" id="bottleId"  name="bottleId"> </td>
+											<td colspan=2><a class="btn_bottle_search btn btn-success btn-sm" href="#"><i class="fas fa-search"></i>검색</a>  (용기코드/바코드)</td>
+										</tr>					
+									</table>
+									
+									
+									<div class="form-group">
+										<label >주문정보</label>
+										<div>
+											<table id="myTable" class="table mod-doc-list1">
+												<tr>
+												<td>용기코드</td>
+												<td>용기바코드</td>
+												<td>가스</td>
+												<td>용량</td>
+												<td>충전기한</td>
+												</tr>
+												<tr>
+													<td  style="padding-left: 0px;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<table id="myTable" class="table order-info">
+										<tr>
+											<div align="center">
+											<!-- <button type="button" id="btn_process_1" class="btn btn-info btn btn btn_process_check">입고</button>
+											<button type="button" id="btn_process_2" class="btn btn-info btn btn_process_check">충전</button>
+											<button type="button" id="btn_process_3" class="btn btn-info btn btn_process_check">상차</button>
+											<button type="button" id="btn_process_4" class="btn btn-info btn btn btn_process_check">출고</button> -->
+											<button type="button" id="btn_process_5" class="btn btn-info btn btn_process_check">판매</button>
+											<button type="button" id="btn_process_9" class="btn btn-info btn btn_process_check">판매회수</button>
+											<button type="button" id="btn_process_8" class="btn btn-info btn btn_process_check">대여</button>
+											<button type="button" id="btn_process_6" class="btn btn-info btn btn_process_check">회수</button>
+											<!--<button type="button" id="btn_process_7" class="btn btn-info btn btn_process_check">기타</button>-->
+										</div>
+										</tr>										
+									</table>
+									
+									</form>
+									<div class="ln_solid"></div>
+									<div id="view_button" >
+										<div align="center">
+											<button type="button"  class="close" data-dismiss="modal" >Close</button>
+										</div>
+									</div>
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+		
+		<!--  process modat2 start -->  
+		<div class="modal modal-info fade" id="process-modal2">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">단품판매</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="bForm" name="bForm" th:object="${workReport}" action="/gms/report/registerAll.do" method="post">
+					              <input type="hidden" id="bottlesIds" name="bottlesIds" value="">	
+					              
+									<table id="myTable" class="table customer-info">									
+										<tr>
+											<td width="80" class="card-footer">거래처</td>
+											<td  colspan=3  width="350">
+											<select id="customerId1" name="customerId1" class="form-control">
+						                        <option value="0">거래처 선택</option>			                      	
+										    </select>	
+										    </td>
+										    <td class="card-footer">
+										    <input type="text" id="strCustomerNm1" name="strCustomerNm1" class="form-control" placeholder="">
+											</td>
+										   	<td class="card-footer">
+										    	<button class="btn btn-navbar" id="btn_search1" type="button">
+									            <i class="fas fa-search"></i>
+									          </button>
+		          
+											</td>
+										</tr>				
+										<tr>
+											<td class="card-footer">상 품</td>
+											<td  colspan=2>
+											<select id="productId" name="productId" class="form-control" >
+						                        <option value="0">상품선택</option>			                      	
+										    </select>	
+											</td>
+											<td> 
+					                       		<select id="productPriceSeq" name="productPriceSeq" class="form-control" style="width:100px">
+							                        <option value="0">옵션</option>			                      	
+											    </select>	 					                        
+					                       </td>   
+					                       <td> 
+					                       		<input type="text" id="productCount" name="productCount" class="form-control" placeholder="수량"> 
+					                        
+					                       </td>   
+										</tr>					
+									</table>
+									
+									<table id="myTable" class="table order-info">
+										<tr>
+											<div align="center">
+											<button type="button" id="btn_process_0" class="btn btn-info btn btn_process_sale">판매</button>
+										</div>
+										</tr>										
+									</table>
+											
+									
+									</form>
+									<div class="ln_solid"></div>
+									<div id="view_button" >
+										<div align="center">
+											<button type="button"  class="close" data-dismiss="modal" >Close</button>
+										</div>
+									</div>
+									
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+		
+		<!-- modal start-->   
+		<div class="modal modal-info fade" id="process-modal3">
+			<div class="modal-dialog modal-lg">
+        
+	          <div class="modal-content">
+	            <div class="modal-header">
+	              <h4 class="modal-title">수금현황 변경</h4>
+	              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                <span aria-hidden="true">&times;</span>
+	              </button>
+	            </div>
+	              <div class="card-body">
+	            	<table class="table table-hover">
+	            	<form id="cForm" name="cForm" th:object="${workReport}" action="/gms/report/registerCash" method="post">
+	                  <thead>
+	                  <tr>
+	                      <th class="card-footer" width="100">거래처</th>
+	                      <th style="width:250px">
+	                      <select id="customerId2" name="customerId2" class="form-control">
+		                      <option value="0">거래처 목록</option>
+		                    	<option th:each="row : ${customerList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					                th:if="${customerId2 ==row.customerId}" selected>					             
+						        </option>	
+						        <option th:each="row : ${customerList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+				                	th:unless="${customerId2 ==row.customerId}">				             
+						        </option>	
+							    </select>	                      
+				              
+				            <td style="width:150px">
+				            	<input type="text" class="form-control" id="searchCustomerNm1" name="searchCustomerNm1" >
+				            </td>  
+				            <td>	
+				            	<button class="btn btn-navbar" id="btn_com_search1" type="button">
+					            <i class="fas fa-search"></i>
+					          </button>
+							</td>  
+	                      </th>
+	                    </tr>
+	                     <tr>                                   
+	                      <th class="card-footer" width="100">미수금액</th>
+	                      <th><input type="text" class="form-control" id="receivableAmount" name="receivableAmount" placeholder="미수금" value="0"></th>
+	                      <td colspan=2></td>   
+	                    </tr>
+	                    <tr>                                   
+	                      <th class="card-footer" width="100">입금</th>
+	                      <th><input type="text" class="form-control" id="incomeAmount" name="incomeAmount" placeholder="입금" value="0"></th>
+	                      <td colspan=2></td>   
+	                    </tr>
+	                    
+	                    <tr>
+	                      <th class="card-footer" width="100">입금수단</th>
+	                      <th>
+	                      <select id="incomeWay" name="incomeWay" class="form-control">
+	                          <option value="CASH">현금</option>
+	                          <option value="CARD">카드</option>	
+	                        </select>
+						  </th>
+						  <td colspan=2></td>   
+	                    </tr>
+	                  </thead>                              
+	                </table>       
+	                
+	              </div>            
+	            <div class="modal-footer justify-content-between">
+	              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	              <a class="btn btn-info btn_process_cash" ><i class="fas fa-pencil-alt"></i>저장</a>
+	            </div>
+	            </form>
+	          </div>
+	          <!-- /.modal-content -->
+	        </div>
+	        <!-- /.modal-dialog -->
+	      </div>
+	      <!-- /.modal -->
+    	
+        <div class="row">
+            <div class="col-1">
+            <form id="mainForm" name="mainForm"  method="post">
+              <input type="hidden" id="orderId" name="orderId" value="">
+               		<label>접수기간</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" name="searchDt" id="searchDt" th:value="${searchDt}"/>			
+            </div>               
+            <div class="col-3">         
+            	<select id="searchUserId" name="searchUserId" class="form-control">  
+            	<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					                th:if="${searchUserId ==row.userId}" selected>
+				<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					                th:unless="${searchUserId ==row.userId}" >	             
+				</option>		
+            	</select>   
+            </div>         
+            <div class="col-1">         
+            	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
+            </div>
+            <div class="col-3" align=right>
+         	
+         	<a class="btn_print btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
+                              <i class="fas fa-print"></i>프린트</a>
+         	</div>	
+             </form> 
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
+    	
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr>
+                      <th>순번</th>
+                      <th>거래처</th>
+                      <th>납품</th>
+                      <th>회수</th>                      
+                      <th>금액</th>
+                      <th>수금액</th>
+                      <th>삭제</th>
+                    </tr>
+                  </thead>
+                  <tbody>                 
+                  	<tr th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}" style="font-size:13px;">
+                      <td th:text="${workList.indexOf(row)+1}"></td>
+                      <th><a th:href="@{/gms/report/update.do( workReportSeq=${row.workReportSeq})}" th:text="${row.CustomerNm}"></a></th>
+                      <!-- td th:text="${row.CustomerNm}"></td> -->
+                      <td >
+                      	<table>     
+                      	<tr th:if="${not #lists.isEmpty(row.salesBottles )}" th:each="row1 : ${row.salesBottles}"  >
+                      		<td th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' ">
+                      	</tr>
+                      	</table>
+                      </td>
+                      <td>
+                    	<table>     
+                      	<tr th:if="${not #lists.isEmpty(row.backBottles )}" th:each="row2 : ${row.backBottles}" >
+                      		<td  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm} + ')'">
+                      	</tr>
+                      	</table>
+                      </td>
+                      <td align="right" th:if="${row.orderAmount > 0 && row.orderAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.orderAmount, 3, 'COMMA')}">
+                      <td align="right" th:if="${row.orderAmount > 0 && row.orderAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.orderAmount, 3, 'COMMA', 2,'POINT')}">
+                      <td align="right" th:if="${row.orderAmount == 0 }" th:text="${row.orderAmount}">
+                      <td align="right" th:if="${row.receivedAmount > 0 && row.receivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA')} + ${row.incomeWay} ">
+                      <td align="right" th:if="${row.receivedAmount > 0 && row.receivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.receivedAmount, 3, 'COMMA', 2,'POINT')} + ${row.incomeWay} ">
+		     		  <td align="right" th:if="${row.receivedAmount == 0 }" th:text="${row.receivedAmount} +  ${row.incomeWay} "></td>	
+		     		  </td>
+		     		  <td><a class="btn_select_delete btn btn-danger btn-xs" th:workReportSeq="${row.workReportSeq}" th:customerNm1="${row.customerNm}"   href="#"><i class="fas fa-trash"></i>삭제</a></td>    
+                 
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( workList )}">
+						<td colspan="6">조회된 결과가 없습니다.</td>
+					</tr>												  
+                  </tbody>					
+                </table>                
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        <div class="row">	
+        	<div class="col-5">
+        		<a class="btn_select_process1 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal1" href="#"><i class="fas fa-check-circle"></i> 가스 판매&납품/회수</a>
+        		<a class="btn_select_process2 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal2" href="#"><i class="fas fa-check-circle"></i> 단품판매</a>
+        		<a class="btn_select_process2 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal3" href="#"><i class="fas fa-check-circle"></i> 입금/미수</a>
+        		<!--  <a class="btn_select_process3 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal1" href="#"><i class="fas fa-check-circle"></i> 회수</a>-->
+        	</div>
+        	<div class="col-5" align="right">
+	        	<a class="btn_ecount_user btn btn-primary btn-sm float-right"   th:userId="${session.userId}"  href="#" ><i class="fas fa-file-excel"></i> ECount엑셀받기(사용자별)</a>
+	         		<!-- <a th:href="@{/gms/excelDownloadEcount.do}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> ECount엑셀받기</button></a>     -->     	
+	        </div>
+	        <div class="col-2">
+	        	<a class="btn_ecount btn btn-primary btn-sm float-right"   th:userId="${session.userId}"  href="#" ><i class="fas fa-file-excel"></i> ECount엑셀받기</a>
+        	</div>
+        </div>
+        <div class="row">
+	        <div class="col-12"><Br>
+	        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+     </section>
+    <!-- /.content -->
+  </div>
+ 
+  </th:block>
+
+</body>
+</html>

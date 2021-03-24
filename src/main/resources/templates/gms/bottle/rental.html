@@ -1,0 +1,341 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">	
+
+function checkAll(){   
+    
+    if( $("#checkAll").is(':checked') ) {
+
+        $("input[name=check_id]").prop("checked", true);
+
+	} else {
+	
+	        $("input[name=check_id]").prop("checked", false);	
+	}
+}
+
+	
+function validationOfForm(form) {
+
+	return ture;
+}
+	
+
+
+function fn_modifyBottleWorkCd(){				
+		
+	var form = $("#chForm");	
+   	chForm.action="/gms/bottle/changeWorkCd.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]";
+   	chForm.submit();
+}
+	
+var fn_deleteBottle = function(bottleId){
+		
+	if(confirm("삭제하시겠습니까?")){	
+		
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/bottle/delete.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]");
+		
+		var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "bottleId");
+        hiddenField.setAttribute("value", bottleId);
+
+        form.appendChild(hiddenField);      
+        document.body.appendChild(form);
+
+        form.submit();			
+	}                  		
+}
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+	    
+	var goUpdate = function(bottleBarCd){		
+		
+		var form = $("#mainForm");	
+
+		$("#bottleBarCd").val(bottleBarCd);
+    	
+    	//document.getElementById("priceCount").value = totalCount;
+    	mainForm.action="/gms/bottle/update.do";
+    	form.submit();
+	}
+	
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		mainForm.action="/gms/bottle/sales.do";
+		form.submit();
+	};
+
+
+
+	function gotoPage(pageNo) {
+		
+		var form =  document.mainForm;			
+		
+		$("#currentPage").val(pageNo);  
+		 mainForm.action="/gms/bottle/rental.do";
+        //validate checkt시 confirm 중복되는 부분 처리 
+       
+    	mainForm.submit();
+    }
+	
+
+	$(function() {
+	
+	  $('input[name="searchChargeDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	
+	});	
+
+	
+	function fn_deleteBottles()
+	{
+		/*
+		var checked_len = $("input[name='check_id[]']:checked").length;
+		alert("checked_len="+checked_len);
+		if(checked_len <1){
+			alert('삭제할 항목을 선택 하세요.');
+				return false;
+		}
+		*/
+		var checkedValue = ""; 
+		var chki=0;
+		var inputElements = document.getElementsByClassName('IdCheckbox');
+		for(var i=0; inputElements[i]; ++i){
+		      if(inputElements[i].checked){	
+		    	  
+		    	   //checkedValue +="'";
+		           checkedValue += (inputElements[i].value);
+		           chki++;
+		           //break;
+		           checkedValue +=",";
+		      }
+		}
+		
+		if(chki < 1){
+			alert('삭제할 항목을 선택 하세요.');
+			return false;
+			
+		}	
+		
+		if(confirm("정말로 삭제 하시겠습니까?")){
+
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/bottle/deleteChecked.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "bottleIds");
+	        hiddenField.setAttribute("value", checkedValue);
+
+	        form.appendChild(hiddenField);
+	       
+	        document.body.appendChild(form);
+
+	        form.submit();			
+			
+		}else{
+
+			return false;
+		}
+
+	}
+$(document).ready(function(){
+	$(".btn-navbar").click(function()  
+    {
+		var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/bottle/rental.do";
+		mainForm.submit();
+      
+    });
+});
+
+	</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>용기 대여</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+   
+    <section class="content">         
+    <!-- modal start--> 
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+    	<div class="row">
+           	<div class="col-1">
+               		<label>용기코드</label> 
+            </div>               
+            <div class="col-3">   
+            <form id="mainForm" name=""mainForm""  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="bottleBarCd" name="bottleBarCd" value="">           
+               <input type="text" id="searchBottleId" name="searchBottleId" class="form-control" th:value="${searchBottleId}">
+            </div>            
+            <div class="col-2">
+               	<select id="searchProductId" name="searchProductId" class="form-control">
+               		<option value="">가스 선택</option>
+                   	<option th:each="row : ${productList}"
+		                th:text="${row.productNm}"
+		                th:value="${row.productId}"
+		              	th:if="${searchProductId ==row.productId}" selected>	
+			     	</option>	
+			     	<option th:each="row : ${productList}"
+		                th:text="${row.productNm}"
+		                th:value="${row.productId}"
+		              	th:unless="${searchProductId ==row.productId}">	
+			     	</option>   				
+                 </select>
+              </div>                          
+             <div class="col-4">
+                <button class="btn btn-navbar" type="button">
+		            <i class="fas fa-search"></i>
+		          </button>
+		           </form>
+              </div>
+              <div class="col-2">
+              	<a th:href="@{/gms/bottle/excelDownload.do( currentPage=${currentPage} ,searchBottleId=${searchBottleId},searchProductId= ${searchProductId} ,searchChargeDt=${searchChargeDt},menuType=4)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>               
+              </div>             
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <td th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|">
+		            <td th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|">
+		        </tr>	         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th>순번</th>
+                      <th>용기코드</th>
+                      <th>바코드</th>
+                      <th>가스</th>
+                      <th>용량</th>
+                      <th>작업</th>
+                      <th>거래처</th>
+                      <th>처리일</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                 
+                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" style="font-size:14px;">
+                      <td th:text="${totalCount-((currentPage-1)*10) - bottleList.indexOf(row)}"></td>
+                      <td th:text="${row.bottleId}"></td>
+                      <td>
+                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
+                      </td>
+                      <td th:text="${row.productNm}"></td>
+                      <td th:text="${row.bottleCapa}"></td>
+                      <td th:text="${row.bottleWorkCdNm}"></td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td> 
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( bottleList )}">
+						<td colspan="8">조회된 결과가 없습니다.</td>
+					</tr>			</form>			
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">								
+			<div class="col-12">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a href="#" th:onclick="gotoPage([[ ${currentPage +1} ]])"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+                              <i class="fas fa-trash"></i>선택삭제</a-->   
+			</div>
+		</div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

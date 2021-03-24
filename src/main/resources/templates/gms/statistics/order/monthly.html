@@ -1,0 +1,163 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+$(document).ready(function(){ 
+	 $("#searchStatDt").val('[[${searchStatDt}]]' );
+
+
+});
+	
+	
+$(function() {
+	
+	  $('input[name="searchStatDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });	
+	
+});	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>주문 현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">
+    
+      <div class="container-fluid">
+       
+         
+        <div class="row">       		 
+            <div class="col-1">                      
+               		<label>기간</label>
+            </div>               
+            <div class="col-4">    
+            <form id="mainForm" name="mainForm"  method="post">            
+               <input type="text" class="form-control" id="searchStatDt" name="searchStatDt" value=""/>			
+            </div>               
+            <div class="col-3">
+                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+            </div>  
+            <div class="col-2" align=right>
+               		<a th:href="@{/gms/statistics/order/excelDown.do(searchStatDt=${searchStatDt},periodType=2)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+            </div>
+            </form>  
+         </div>       
+    	
+        <div class="row">	
+	        <div class="col-12">	        
+	       	</br>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-10">
+          <div class="card card-primary">
+              <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link " id="custom-tabs-one-home-tab" href="/gms/statistics/order/daily.do" role="tab" aria-controls="custom-tabs-one-home" aria-selected=false>일별</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-one-profile-tab"  href="/gms/statistics/order/monthly.do" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="true">월별</a>
+                  </li>
+                 
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                  <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                     
+					<!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr style="font-size:13px;">
+                      <th>날짜</th>
+                      <th align="right" >주문건수</th>
+                      <th align="right" >주문금액</th>
+                      <th align="right" >완료건수</th>
+                      <th align="right" >완료금액</th>
+                      <th align="right" >취소주문</th>
+                      <th align="right" >회수요청</th>
+                      <th align="right" >점검요청</th>
+                      <th align="right" >기타요청</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( statList )}" th:each="row : ${statList}" style="font-size:14px;">
+                      <td th:text="${row.statDt}"></td>
+                      <td align="right" th:if="${row.orderTotalCount> 999 }" th:text="${#numbers.formatInteger(row.orderTotalCount, 3, 'COMMA')}">
+                      <td align="right" th:unless="${row.orderTotalCount> 999 }" th:text="${row.orderTotalCount}">                      
+                      <td align="right" th:if="${row.orderTotalAmount > 0 && row.orderTotalAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.orderTotalAmount, 3, 'COMMA')}">
+                      <td align="right" th:if="${row.orderTotalAmount > 0 && row.orderTotalAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.orderTotalAmount, 3, 'COMMA', 2,'POINT')}">
+                      <td align="right" th:if="${row.orderTotalAmount == 0 }" th:text="${row.orderTotalAmount}">
+                      </td>      
+                      <td align="right" th:if="${row.orderCompletedCount> 999 }" th:text="${#numbers.formatInteger(row.orderCompletedCount, 3, 'COMMA')}">
+                      <td align="right" th:unless="${row.orderCompletedCount> 999 }" th:text="${row.orderCompletedCount}">        
+                      <td align="right" th:if="${row.orderCompletedAmount > 0 && row.orderCompletedAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.orderCompletedAmount, 3, 'COMMA')}">
+                      <td align="right" th:if="${row.orderCompletedAmount > 0 && row.orderCompletedAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.orderCompletedAmount, 3, 'COMMA', 2,'POINT')}">
+                      <td align="right" th:if="${row.orderCompletedAmount == 0 }" th:text="${row.orderCompletedAmount}">
+                      </td>                     
+                      <td align="right" th:text="${row.orderCancelCount}"></td>
+                      <td align="right" th:text="${row.orderRetrievedCount}"></td>
+                      <td align="right" th:text="${row.orderCheckCount}"></td>
+                      <td align="right" th:text="${row.orderEtcCount}"></td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( statList )}">
+						<td colspan="7">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body --> 
+                  </div>
+                  
+                  
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
+          
+            <div class="card">
+             
+              
+              
+            </div>
+            <!-- /.card -->
+          </div>
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

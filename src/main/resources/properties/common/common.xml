@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+	<!-- 공통화면 -->
+	<entry key="common.page.title">GMS System</entry>
+	<entry key="common.Member.Comp.Daehan">1</entry>
+	<entry key="common.Member.Comp.Daehan.name">(주)대한특수가스</entry>
+	<entry key="common.Member.Comp.Daehan.businessNum">2348102444</entry>
+	<entry key="common.index.page">/start</entry>
+	
+	
+	<entry key="common.crypto.key">daehangaskey1234</entry>
+	<entry key="common.ROW.PER.PAGE">15</entry>
+	
+	<entry key="common.user.Authority.user">01</entry>
+	<entry key="common.user.Authority.manager">99</entry>
+
+	<entry key="common.user.part.sales">01</entry>
+	<entry key="common.user.part.account">02</entry>
+	<entry key="common.user.part.manage">03</entry>
+	
+	<!-- Menu ID 정의 -->
+	<entry key="common.menu.order">order</entry>
+	<entry key="common.menu.trasnaction">transact</entry>
+	<entry key="common.menu.bottle">bottle</entry>
+	<entry key="common.menu.boottle.test">bottlet</entry>
+	<entry key="common.menu.boottle.sales">bottles</entry>
+	<entry key="common.menu.boottle.rental">rental</entry>
+	<entry key="common.menu.customer">customer</entry>
+	<entry key="common.menu.customer.price">price</entry>
+	<entry key="common.menu.customer.cbottle">cbottle</entry>
+	<entry key="common.menu.customer.cproduct">cproduct</entry>
+	<entry key="common.menu.gas">gas</entry>
+	<entry key="common.menu.product">product</entry>
+	<entry key="common.menu.stat_order">sorder</entry>
+	<entry key="common.menu.stat_sales">ssales</entry>
+	<entry key="common.menu.stat_product">sproduct</entry>
+	<entry key="common.menu.stat_customer">scustomer</entry>
+	<entry key="common.menu.stat_bottle">sbottle</entry>
+	<entry key="common.menu.stat_agency">sagency</entry>
+	<entry key="common.menu.user">user</entry>
+	<entry key="common.menu.calendar">calendar</entry>
+	<entry key="common.menu.assign">assign</entry>
+	<entry key="common.menu.diary">diary</entry>
+	<entry key="common.menu.vacation">vacation</entry>
+	<entry key="common.menu.self">self</entry>
+	<entry key="common.menu.cash">cash</entry>	
+
+	<entry key="common.user.SALES">01</entry>
+	
+	<entry key="Bottle.Type.Empty">E</entry>
+	<entry key="Bottle.Type.FULL">F</entry>
+	
+	<entry key="Order.Request.AM">A</entry>
+	<entry key="Order.Request.PM">P</entry>
+	
+	<entry key="Schedule.Type.Private">1</entry>
+	<entry key="Schedule.Type.Public">2</entry>
+	<entry key="Schedule.Type.Holiday">3</entry>	
+	
+	<entry key="Schedule.vacation.All">1</entry>
+	<entry key="Schedule.vacation.AM">2</entry>
+	<entry key="Schedule.vacation.PM">3</entry>	
+	
+	<!-- 코드  정의 -->	
+	<entry key="common.bottle.status">0300</entry>
+	<entry key="common.bottle.status.come">0301</entry>		<!-- 입고 -->
+	<entry key="common.bottle.status.vacuum">0302</entry>	<!-- 진공배기 -->
+	<entry key="common.bottle.status.hole">0303</entry> 	<!-- 누출확인 -->
+	<entry key="common.bottle.status.chargeDt">0304</entry>	<!-- 충전기한 확인 -->
+	<entry key="common.bottle.status.charge">0305</entry>	<!-- 충전 -->
+	<entry key="common.bottle.status.out">0306</entry>		<!-- 출고 -->
+	<entry key="common.bottle.status.incar">0307</entry>	<!-- 상차-  -->
+	<entry key="common.bottle.status.sale">0308</entry>		<!-- 판매 -->
+	<entry key="common.bottle.status.rent">0309</entry>		<!-- 대여 -->
+	<entry key="common.bottle.status.back">0310</entry> 	<!-- 회수 -->
+	<entry key="common.bottle.status.freeback">0311</entry> <!-- 무료회수 -->
+	<entry key="common.bottle.status.buyback">0312</entry> 	<!-- 매입 -->
+	<entry key="common.bottle.status.freechange">0313</entry> 	<!-- 무상교체 -->
+	<entry key="common.bottle.status.salesgas">0314</entry> 	<!-- 가스판매 -->
+	<entry key="common.bottle.status.salesBack">0315</entry> 	<!-- 판매회수 -->
+	<entry key="common.bottle.status.agencyRent">0316</entry> 	<!-- 공장대여 -->
+	<entry key="common.bottle.status.agencyBack">0317</entry> 	<!-- 대여회수 -->
+	<entry key="common.bottle.status.tcharge">0318</entry> 	<!-- Tank충전 -->
+	<entry key="common.bottle.status.0311">0320</entry> 	<!-- 기타 -->
+	<entry key="common.bottle.status.0312">0330</entry> 	<!-- 입금 -->
+	<entry key="common.bottle.status.0399">0399</entry>		<!-- 폐기 -->
+	<entry key="common.bottle.status.new">0388</entry> 		<!-- 신규 -->
+	
+	
+	<entry key="common.bottle.status.title.come">입고</entry>				<!-- 입고 -->
+	<entry key="common.bottle.status.title.vacuum">진공배기</entry>		<!-- 진공배기 -->
+	<entry key="common.bottle.status.title.hole">누출확인</entry> 			<!-- 누출확인 -->
+	<entry key="common.bottle.status.title.chargeDt">충전기한확인</entry>	<!-- 충전기한 확인 -->
+	<entry key="common.bottle.status.title.charge">충전</entry>			<!-- 충전 -->
+	<entry key="common.bottle.status.title.out">출고</entry>				<!-- 출고 -->
+	<entry key="common.bottle.status.title.incar">상차</entry>			<!-- 상차-  -->
+	<entry key="common.bottle.status.title.sales">판매</entry>			<!-- 판매 -->
+	<entry key="common.bottle.status.title.rental">대여</entry>			<!-- 대여 -->
+	<entry key="common.bottle.status.title.back">회수</entry> 			<!-- 회수 -->
+	<entry key="common.bottle.status.title.freeback">무료회수</entry> 		<!-- 무료회수 -->
+	<entry key="common.bottle.status.title.buyback">매입</entry> 			<!-- 매입 -->
+	<entry key="common.bottle.status.title.discard">폐기</entry>			<!-- 폐기 -->
+	<entry key="common.bottle.status.title.new">신규</entry> 				<!-- 신규 -->
+	<entry key="common.bottle.status.title.masssales">대량판매</entry>		<!-- 대량판매 -->
+	<entry key="common.bottle.status.title.massrental">대량대여</entry>	<!-- 대량대여 -->
+	<entry key="common.bottle.status.title.massback">대량회수</entry> 		<!-- 대량회수 -->
+	<entry key="common.bottle.status.title.freechange">무상교체</entry> 	<!-- 무상교체 -->
+	<entry key="common.bottle.status.title.salesgas">가스판매</entry> 		<!-- 가스판매 -->
+	<entry key="common.bottle.status.title.salesBack">판매회수</entry> 	<!-- 판매회수 -->
+	<entry key="common.bottle.status.title.agencyRent">공장대여</entry> 	<!-- 공장대여 -->
+	<entry key="common.bottle.status.title.agencyBack">대여회수</entry> 	<!-- 대여회수 -->
+	
+	<entry key="common.code.order.type">0100</entry>
+	<entry key="common.code.order.type.order">0101</entry>
+	<entry key="common.code.order.type.cancel">0102</entry>
+	<entry key="common.code.order.type.auto">0103</entry>
+	<entry key="common.code.order.type.back">0104</entry>
+	<entry key="common.code.order.type.check">0105</entry>
+	<entry key="common.code.order.type.bill">0106</entry>
+	<entry key="common.code.order.type.etc">0107</entry>
+	
+	<entry key="common.code.order.process">0200</entry>
+	<entry key="common.code.order.process.receive">0210</entry>		<!-- 주문접수 -->
+	<entry key="common.code.order.process.02">0220</entry>		<!-- 주문접수완료 -->
+	<entry key="common.code.order.process.03">0230</entry>		<!-- 생산완료 -->
+	<entry key="common.code.order.process.delivery">0240</entry>		<!-- 납품완료 -->
+	<entry key="common.code.order.process.05">0250</entry>		<!-- 판매완료 -->
+	<entry key="common.code.order.process.06">0260</entry>		<!-- 거래명세서완료 -->
+	<entry key="common.code.order.process.07">0270</entry>		<!-- 세금계산서완료 -->
+	<entry key="common.code.order.process.08">0280</entry>		<!-- 입금완료 -->
+	<entry key="common.code.order.process.09">0290</entry>		<!-- 거래완료 -->
+	<entry key="common.code.order.process.99">0299</entry>		<!-- 삭제 -->
+	
+	
+	<!-- <entry key="excel.bottle.title">용기,바코드/RFID,가스,품명,용기체적,가스용량,충전용량,충전기한,충전압력	,제조일,거래처,작업,소유</entry> -->
+	<!-- <entry key="excel.bottle.title">용기번호,바코드번호,가스종류,충전용량,제조월,	충전기한,용기체적,사업자등록번호,GMP여부(Y/N),품명,충전압력,용기소유</entry> -->
+	<entry key="excel.bottle.title">바코드번호,용기번호,가스종류,품명,용기체적,충전용량,충전압력,거래처,작업구분,용기타입,용기제조일,충전기한,작업일,작업자,삭제요청,GMP</entry>
+	<entry key="excel.bottle.charge.title">순번,바코드번호,용기번호,가스종류,품명,충전용량,충전압력,충전기한확인,진공배기,누출확인,용기타입,충전기한,작업자,삭제요청</entry>
+	<entry key="excel.order.title">순번,거래처명,상품명,용량,주문액,접수자,상태,요청일자,접수일</entry>
+	<entry key="excel.customer.title">거래처명,거래처주소,거래처사업자등록번호,거래처전화,대표자,업태,종목,이메일</entry>
+	<entry key="excel.ecount.title">일자,순번,거래처코드,거래처명,담당자,출하창고,거래유형,통화,환율,수금내역,비고,품목코드,품목명,규격,수량,단가,외화금액,공급가액,부가세,적요,단가(VAT포함),생산전표생성,Ecount</entry>
+	<entry key="excel.customer.bottle.title">용기,바코드/RFID,품명,가스용량,구분,타입,날짜</entry>
+	
+	<entry key="excel.stat.order.title">날짜,주문건수,주문금액,완료건수,완료금액,취소주문,회수요청,점검요청,기타요청</entry>
+	<entry key="excel.stat.sales.title">날짜,판매건수,판매금액,대여건수,대여금액,입금액</entry>
+	<entry key="excel.stat.bottle.title">날짜,입고,충전,판매,대여,회수</entry>
+	<entry key="excel.stat.product.title">날짜,판매건수,판매금액,대여건수,대여금액</entry>
+	<entry key="excel.stat.customer.title">날짜,판매건수,판매금액,입금액,미수금액</entry>
+	
+	<entry key="o2.medical.productId">1</entry>
+	<entry key="o2.medical.35.productPriceSeq">6</entry>
+	<entry key="o2.medical.40.productPriceSeq">7</entry>
+	
+	<entry key="order.etc.message.work">업무일지추가</entry>
+	<entry key="order.etc.message.customer">현장주문</entry>
+	<entry key="order.etc.message.noOrder">주문없이추가</entry>
+	
+	<entry key="product.LN2.divide.productId">52</entry>
+	<entry key="product.LN2.divide.bottle.productPriceSeq">2</entry>
+	<entry key="product.LN2.divide.new.productId">60</entry>
+		
+	<entry key="cash.receivable.limit">10000000</entry>
+	
+	<entry key="ecount.dealtype.tax.include">11</entry> 	<!--부가세율 적용  -->
+	<entry key="ecount.dealtype.tax.notinclude">12</entry>	<!--부가세율 미적용  -->
+</properties>

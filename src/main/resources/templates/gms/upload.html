@@ -1,0 +1,78 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content">
+<script type="text/javascript">	
+function doExcelUploadProcessGMS(){
+	   		
+	form2.submit();
+}
+	
+	
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>오늘의 거래 현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+   
+    <section class="content">         
+   
+    	
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        
+        
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+               <form id="form2" name="form2" method="post" action="/uploadFileJar"enctype="multipart/form-data">
+		        	<table id="myTable" class="table order-info">
+					<thead>
+						<tr>
+							<td class="card-footer">파일선택</td>
+							<td><input type="file" id="fileInput1" name="fileInput1"> </td>
+							<td> <div id="result"></td>
+						</tr>										
+					</thead>
+					</table>								
+				<div class="ln_solid"></div>
+														
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						              <a class="btn btn-info btn-sm" href="#" onclick="javascript:doExcelUploadProcessGMS();"><i class="fas fa-pencil-alt"></i>엑셀업로드</a>
+						            </div>
+									<div id="test_char">								
+        
+        </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

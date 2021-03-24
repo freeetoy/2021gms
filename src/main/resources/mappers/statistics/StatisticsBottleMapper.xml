@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.statistics.StatisticsBottleMapper">
+	<resultMap id="StatisticsBottleMap" type="com.gms.web.admin.domain.statistics.StatisticsBottleVO" >		
+		<result property="statDt"					column="Stat_Dt"					/>
+		<result property="bottleInputCount"			column="Bottle_Input_Count"			/>
+		<result property="bottleChargeCount"		column="Bottle_Charge_Count"		/>
+		<result property="bottleSalesCount"			column="Bottle_Sales_Count"			/>
+		<result property="bottleRentalCount"		column="Bottle_Rental_Count"		/>
+		<result property="bottleBackCount"			column="Bottle_Back_Count"			/>
+		<result property="bottleDiscardCount"		column="Bottle_Discard_Count"		/>
+		<result property="createId"					column="CREATE_ID"					/>
+		<result property="createDt"					column="CREATE_DT"					/>
+	</resultMap>
+	
+	<sql id="StatisticsBottleColumns">
+		 Stat_Dt  
+		 , Bottle_Input_Count    
+		 , Bottle_Charge_Count 	 
+		 , Bottle_Sales_Count    
+		 , Bottle_Rental_Count    
+		 , Bottle_Back_Count 	 
+		 , Bottle_Discard_Count  
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+
+	<insert id="inserDailyStatisticsBottle">
+		INSERT INTO TB_Daily_Stat_Bottle(
+			<include refid="StatisticsBottleColumns" />
+		) 
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), IFNULL(input_count,0),IFNULL(charge_count,0),IFNULL(sales_count,0),IFNULL(rental_count,0),IFNULL(back_count,0),IFNULL(discard_count,0),'admin',now()
+		from 
+		(	SELECT count(Bottle_BarCd) input_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0388' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) a,
+		(	SELECT count(Bottle_BarCd) charge_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0305' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) b,
+		(	SELECT count(Bottle_BarCd) sales_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0308' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) c,
+		(	SELECT count(Bottle_BarCd) rental_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0309' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
+		(	SELECT count(Bottle_BarCd) back_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd in ('0310', '0311','0312') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
+		(	SELECT count(Bottle_BarCd) discard_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0399' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) f
+	</insert>
+	
+	<insert id="inserMonthlyStatisticsBottle">
+		INSERT INTO TB_Monthly_Stat_Bottle(
+			<include refid="StatisticsBottleColumns" />
+		)
+		SELECT LEFT(Stat_Dt,7), 
+			SUM(Bottle_Input_Count)    
+			 , SUM(Bottle_Charge_Count) 	 
+			 , SUM(Bottle_Sales_Count)    
+			 , SUM(Bottle_Rental_Count)  
+			 , SUM(Bottle_Back_Count) 	 
+			 , SUM(Bottle_Discard_Count) 
+			 , 'admin'
+			 , NOW()
+		FROM TB_Daily_Stat_Bottle
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY LEFT(Stat_Dt,7)
+	</insert>
+	
+	
+	<select id="selectDailylStatisticsBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsBottleColumns" />
+		FROM
+			TB_Daily_Stat_Bottle
+		WHERE
+			0 = 0
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+	
+	<select id="selectMontlylStatisticsBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsBottleColumns" />
+		FROM
+			TB_Monthly_Stat_Bottle
+		WHERE
+			0 = 0	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+</mapper>

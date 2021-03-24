@@ -1,0 +1,549 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+
+function validationOfForm(form) {
+	
+	var priceCnt= $("#priceCnt").val() ;
+	//alert("priceCnt==="+priceCnt);
+	if($("#customerId").val() == "="){
+		alert("거래처를 선택하세요" );
+	}
+	if($("#productId_0").val() == "0" || $("#productCapa_0").val() == "0" || $("#productPrice_0").val() == "" || $("#productBottlePrice_0").val() == ""){
+		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+		alert('상품 및 가격정보를 입력 하세요');      
+		return false;
+	}
+	
+	//var customerId= document.mainForm.
+	
+}
+// end of function
+
+function doExcelUploadProcess(){
+		
+    form1.submit();
+}
+    
+$(document).ready(function(){ 
+	
+	var counter = 0;
+	var totalCount = 1;
+
+	init_add(0);
+	$("#addrow").on("click", function () {
+
+		//alert("addrow");
+		counter++;
+		totalCount++;
+		
+		var newRow = $("<tr>");
+		var cols = "";
+
+		cols += '<td style="padding-left:0px;">';
+		cols += '<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:250px"></select>'; 
+		cols += '</td><td>';
+		cols += ' <select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:120px"><option value=0>옵션</option></select> ';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="bottleRentCount_' + counter + '" name="bottleRentCount_' + counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="bottleOwnCount_' + counter + '" name="bottleOwnCount_' + counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+		cols += '</td><td>';
+		cols += ' <input type="button" class="ibtnDel btn btn-md btn-danger" id="addrow" value="삭제" />';
+		cols += '</td>';
+		cols +='</tr>';
+
+		newRow.append(cols);
+		$("table.doc-list").append(newRow);
+		$("#priceCount").val(counter+1);
+		init_add(counter);
+
+		init_add_storage(counter);
+	});
+
+	//상품추가
+
+    $('#productId_0').change( function(){
+
+		var select_pumname = $('#productId_0').val();
+
+		init_storage_list(select_pumname,0,"ins");
+	});
+
+   //수정시 row 추가
+     var mod_counter = 0;
+
+    $("table.doc-list").on("click", ".ibtnAddMod", function (event) {
+
+        
+        var newRow = $("<tr>");
+        var cols = "";
+
+        cols += '<td style="padding-left:0px;">';
+        cols += '<select class="form-control" id="productId_' + mod_counter +  '" name="productId_' + mod_counter + '" style="width:250px"></select>';
+        cols += '</td><td>';
+        cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq_' + mod_counter + '" style="width:120px"></select> ';
+		cols += '</td><td>';
+        cols += '<input type="number" class="form-control" id="bottleRentCount_' + mod_counter + '" name="bottleRentCount_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+        cols += '</td><td>';
+        cols += '<input type="number" class="form-control" id="bottleOwnCount_' + mod_counter + '" name="bottleOwnCount_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+        cols += '</td><td>';       
+        cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
+        cols += '</td>';
+        cols +='</tr>';
+
+        newRow.append(cols);
+        $("table.doc-list").append(newRow);
+
+        $("#priceCount").val(mod_counter);
+        init_add(mod_counter);
+
+        init_mod_storage(mod_counter);
+        console.log("totalCount="+totalCount);
+        
+        mod_counter++;       
+        totalCount++;
+        
+    });
+    
+    
+    // row 삭제
+    $("table.doc-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();       
+
+        counter -= 1
+        totalCount-=1
+        $("#priceCount").val(counter);
+    });
+
+
+
+    $("table.doc-list").on("click", ".ibtnDelMod", function (event) {
+        $(this).closest("tr").remove();       
+
+        mod_counter -= 1
+        totalCount -= 1
+        $("#priceCount").val(mod_counter);
+    });
+    
+
+    function init_mod_storage(mod_counter) {
+        // body...      
+		 $('#productId_' + mod_counter).change( function(){      		
+				var mod_select_pumname = $('#productId_' + mod_counter).val();		
+				init_storage_list(mod_select_pumname,mod_counter,'mod');		
+		});
+      }
+    
+    function init_add(pid){
+
+        $.ajax({
+  	  	url: '/gms/product/nlist.do',
+  	  	type: 'POST',  	  	
+  	  	dataType: 'json',
+
+       })
+  	 .done(function(data){
+  		 
+	  		var i=0;
+	  		$('#productId_' + pid).append('<option value=0>상품</option>');
+			for(i=0; i< data.length;i++) {
+				$('#productId_' + pid).append('<option value='+data[i].productId+'>'+data[i].productNm+'</option>')			
+			}
+  	 
+       })
+       .fail(function(){
+  			console.log("fail");
+       });
+
+    } 
+    
+    
+    function init_add_storage(counter) {
+    	// body...
+   		$('#productId_' + counter).change( function(){
+   			var select_pumname = $('#productId_' + counter).val();
+
+   			init_storage_list(select_pumname,counter,'ins');
+   		});
+   	}
+    
+   
+ // 입력된 내용을 작성한다.
+    $("#save").on("click", function () {
+
+    	$("#priceCount").val(counter++);
+    	
+    	var form = $("#writeForm");	
+
+    	//document.getElementById("priceCount").value = counter+mod_counter;
+    	document.getElementById("priceCount").value = totalCount;
+    	console.log("totalCount="+totalCount);
+
+    	for(i=0 ; i < totalCount ; i++){ 
+	    	
+	    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
+	    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+	    		alert('상품을 선택 하세요');     
+	    		return false;
+	    	}
+	    		
+		}
+    	form.submit();
+    });
+    
+    function init_storage_list(pumname,sel_pid,type){
+		
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ pumname ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+		  
+			if(type == "ins"){
+		    	var i=0;
+				//$('#productCapa_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+					
+				}
+			}else if(type == "mod"){
+				
+				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
+				}
+			}  		
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+
+	} 
+    
+    $('select[name=customerId]').change(function() {
+		
+		$('#customerId1').val($(this).val());
+		$("table.doc-list").find('tr').remove();
+		
+		$.ajax({
+			url: '/gms/customer/cProductBottleList.do',
+			type: 'POST',
+			data: 'customerId='+ $(this).val() ,
+			dataType: 'json',
+		 })
+		.done(function(data){	           
+			var counter = 0;
+	        var cols = "";
+	    	var i=0;
+			
+			if(data.length > 0) {				
+		 	
+			 	var newRow = $("<tr>");		        
+				
+				cols += '<td>상품</td>';
+				cols += '<td>용량</td>';
+				cols += '<td>대여</td>';
+				cols += '<td>보유</td>';
+				cols += '<td></td></tr>';
+
+				newRow.append(cols);
+		        $("table.doc-list").append(newRow);
+		        
+				for(i=0; i< data.length;i++) {
+
+					var newRow = $("<tr>");
+			        
+		            cols = "";			
+					
+					cols += '<td style="padding-left:0px;">';
+					cols += '	<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:250px" readonly>'; 
+					cols += '	<option value="' + data[i].productId +'" selected>' + data[i].productNm + '</option>';
+					cols += '	</select>';
+					cols += '</td><td>';
+					cols += '	<select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:120px" readonly>';
+					cols += '	<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
+					cols += '	</select> ';
+					cols += '</td><td>';				
+					cols += '	<input type="number" class="form-control" id="bottleRentCount_' + counter + '" name="bottleRentCount_' + counter + '" value="' + data[i].bottleRentCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '</td><td>';				
+					cols += '	<input type="number" class="form-control" id="bottleOwnCount_' + counter + '" name="bottleOwnCount_' + counter + '" value="' + data[i].bottleOwnCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '</td><td>';  
+	
+					if (counter < 1){	
+						cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	
+					}else{	
+						//cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow_' + counter+'" value="삭제" />';	
+					}
+					cols += '</td>';
+					cols +='</tr>';
+	
+		            newRow.append(cols);
+		            $("table.doc-list").append(newRow);
+		            
+		            //initProduct(counter);		            
+		            //initModProductCapa(counter);
+		            counter++;
+		            mod_counter = counter;
+		            
+		            totalCount =counter;
+		            console.log("totalCount="+totalCount);
+		            
+				}
+			}else{
+				var newRow = $("<tr>");		        
+				
+				cols += '<td>상품</td>';
+				cols += '<td>용량</td>';
+				cols += '<td>대여</td>';
+				cols += '<td>보유</td>';
+				cols += '<td></td></tr>';
+
+				newRow.append(cols);
+		        $("table.doc-list").append(newRow);
+		        
+				totalCount =1 ;
+		        
+		        var newRow = $("<tr>");
+				var cols = "";
+				
+				cols += '<td>';
+				cols += '<select class="form-control" id="productId_0" name="productId_0" style="width:250px"></select>'; 
+				cols += '</td><td>';
+				cols += ' <select class="form-control" id="productPriceSeq_0" name="productPriceSeq_0" style="width:120px"><option value=0>옵션</option></select> ';
+				cols += '</td><td>';
+				cols += '<input type="number" class="form-control" id="bottleRentCount_0" name="bottleRentCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+		        cols += '</td><td>';
+		        cols += '<input type="number" class="form-control" id="bottleOwnCount_0" name="bottleOwnCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="0">';
+		        cols += '</td><td>';      
+				cols += '<input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';
+				cols += '</td>';
+				cols +='</tr>';
+
+				newRow.append(cols);
+				$("table.doc-list").append(newRow);
+				
+				init_add(counter);
+
+		        init_mod_storage(counter);
+	            
+			}
+		})
+		.fail(function(){
+			console.log("fail");
+		 });	
+	});
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 용기 등록</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+    	<!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal2">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">엑셀파일 등록</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+								<form id="form1" name="form1" method="post" action="/gms/cbottle/uploadExcelFile"enctype="multipart/form-data">					              
+									<table id="myTable" class="table order-info">
+									<thead>
+										<tr>
+											<td class="card-footer">파일선택</td>
+											<td  colspan=4><input type="file" id="fileInput" name="fileInput"> </td>
+											<td> <div id="result"></td>
+										</tr>										
+									</thead>
+									</table>								
+													
+									</form>
+									<div class="ln_solid"></div>
+														
+									<div class="modal-footer justify-content-between">
+						              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						              <a class="btn btn-info btn-sm" href="#" onclick="javascript:doExcelUploadProcess();"><i class="fas fa-pencil-alt"></i>엑셀업로드</a>
+						            </div>
+									<div id="test_char">
+									
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
+		
+		
+        <div class="row">
+    	
+              <div class="col-1">
+               	<label>거래처</label> 
+              </div>               
+              <div class="col-4">
+              <form id="mainForm" name=""mainForm"" th:action="@{/gms/customer/bottle.do}" method="post">
+              <select id="customerId" name="customerId" class="form-control">
+	                      <option value="0">거래처 목록</option>
+	                    	<option th:each="row : ${customerList}"
+				                th:text="${row.customerNm}"
+				                th:value="${row.customerId}"
+				               >
+				     </option>		
+			    </select>	   
+			   </div>
+              <div class="col-2">
+              	<input type="text" id="searchCustomerNm" name="searchCustomerNm" class="form-control" placeholder="search" th:value="${searchCustomerNm}">
+              </div>               
+              <div class="col-1">
+                <button class="btn btn-navbar" type="submit">
+		            <i class="fas fa-search"></i>
+		          </button>
+           		</form>
+              </div>             
+              <div class="col-2" align=right>
+              	 
+               </div>
+         </div>
+         <div class="row">	
+	        <div class="col-10">	        	
+	        <table class="table table-hover">	
+	         </table>
+	        </div>
+        </div>
+         <div class="row">	
+	        <div class="col-8">
+	        	
+	        	<div class="form-group">
+	        		<table id="myTable" class="table bottle-list">
+	        			<tr>
+                         <td style="padding-left:50px;">상품</td>
+                         <td>용량</td>
+                         <td>재고</td>
+                       </tr>
+	         		</table>
+	         	</div>
+	         	
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-10">
+            <div class="card">
+             
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+              <div class="col-10">
+              <form name="writeForm" id="writeForm" class="form-horizontal" th:action="@{/gms/customer/bottleRegister.do}"  method="post" onsubmit="return validationOfForm(this)">
+              <input type="hidden" id="priceCount" name="priceCount" value="">
+              <input type="hidden" id="customerId1" name="customerId1" value="">
+              <input type="hidden" id="searchCustomerNm1" name="searchCustomerNm1" th:value="${searchCustomerNm}">
+                <div class="form-group">	
+			        <div class="col-10">
+			        <table class="table table-hover">
+			         </table>
+			        </div>
+		        </div>
+                <div class="form-group">
+                   <label class="control-label col-10">용기정보</label>
+                   <div class="col-md-12 col-sm-10 col-xs-10">
+                       <table id="myTable" class="table doc-list">
+	                       <tr>
+	                         <td>상품</td>
+	                         <td>용량</td>
+	                         <td>대여</td>
+	                         <td>보유</td>
+	                         <td></td>
+	                       </tr>
+	                       <tr>
+	                       <td  style="padding-left: 0px;">                                           
+	                         <select id="productId_0" name="productId_0" class="form-control" style="width:250px">
+		                        
+						    </select>	   
+	                       </td>
+	                       <td> 
+	                       		<select id="productPriceSeq_0" name="productPriceSeq_0" class="form-control" style="width:120px">
+			                        <option value="0">옵션</option>			                      	
+							    </select>	 	                        
+	                       </td>   
+	                       <td> 
+	                         <input type="number" class="form-control" id="bottleRentCount_0" name="bottleRentCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value=0>
+	                       </td> 
+	                       <td> 
+	                         <input type="number" class="form-control" id="bottleOwnCount_0" name="bottleOwnCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value=0>
+	                       </td>	                       
+	                       <td>
+	                       	<input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />	                       
+	                       </td>
+	                       </tr>
+	                     </table>
+                     </div>
+                 </div>
+                
+              </div>
+            </div>
+            <!-- /.card -->
+            <div class="row">	
+		        <div class="col-10">	        	
+		        <table class="table table-hover">	
+		        <tr><td style='color: red'>(이미 등록된 용기는 대여수와 보유수를 0으로 등록하면 삭제가 됩니다)</td></tr>
+		         </table>
+		        </div>
+	        </div>
+            <div class="card-footer">
+            	<div class="col-10">
+                 <a href="/gms/user/list.do" class="btn btn-secondary float-left">취소</a>
+		         <input type="button" id="save" value="저장"  class="btn btn-success float-right">
+                </div>		
+               </div>	
+            </form>             	
+        </div>
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ 
+  </th:block>
+  
+
+  

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.statistics.StatisticsOrderMapper">
+	<resultMap id="StatisticsOrderMap" type="com.gms.web.admin.domain.statistics.StatisticsOrderVO" >		
+		<result property="statDt"					column="Stat_Dt"					/>
+		<result property="orderTotalCount"			column="Order_Total_Count"			/>
+		<result property="orderTotalAmount"			column="Order_Total_Amount"			/>
+		<result property="orderProductCount"		column="Order_Product_Count"		/>
+		<result property="orderAutoCount"			column="Order_Auto_Count"		/>
+		<result property="orderCancelCount"			column="Order_Cancel_Count"			/>
+		<result property="orderRetrievedCount"		column="Order_Retrieved_Count"		/>
+		<result property="orderCheckCount"			column="Order_Check_Count"			/>
+		<result property="orderEtcCount"			column="Order_Etc_Count"			/>
+		<result property="createId"					column="CREATE_ID"					/>
+		<result property="createDt"					column="CREATE_DT"					/>
+	</resultMap>
+	
+	<resultMap id="StatisticsSalesMap" type="com.gms.web.admin.domain.statistics.StatisticsSalesVO" >		
+		<result property="statDt"					column="Stat_Dt"					/>
+		<result property="salesCount"				column="Sales_Count"				/>
+		<result property="salesAmount"				column="Sales_Amount"				/>
+		<result property="rentalCount"				column="Rental_Count"				/>
+		<result property="rentalAmount"				column="Rental_Amount"				/>
+		<result property="IncomeAmount"				column="Income_Amount"				/>
+		<result property="createId"					column="CREATE_ID"					/>
+		<result property="createDt"					column="CREATE_DT"					/>
+	</resultMap>
+	
+	<sql id="StatisticsOrderColumns">
+		 Stat_Dt  
+		 , Order_Total_Count    
+		 , Order_Total_Amount 	 
+		 , Order_Completed_Count
+		 , Order_Completed_Amount
+		 , Order_Product_Count    
+		 , Order_Cancel_Count 	 
+		 , Order_Auto_Count 	
+		 , Order_Retrieved_Count        
+		 , Order_Check_Count
+		 , Order_Etc_Count
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+	
+	<sql id="StatisticsSalesColumns">
+		 Stat_Dt  
+		 , Sales_Count    
+		 , Sales_Amount 	 
+		 , Rental_Count    
+		 , Rental_Amount 	
+		 , Income_Amount 	
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+
+	<insert id="inserDailyStatisticsOrder">
+		INSERT INTO TB_Daily_Stat_Order(
+			<include refid="StatisticsOrderColumns" />
+		) 
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), order_total_count,IFNULL(order_total_amount,0), order_completed_count, IFNULL(order_completed_amount,0),order_product_count, 
+				order_cancel_count, order_auto_count, order_retrieved_count, order_check_count,order_etc_count, 'admin',now()
+		FROM 
+		(SELECT count(order_id) order_total_count FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) aa,
+		(SELECT sum(`Order_Total_Amount`) order_total_amount FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) ab,
+		(SELECT count(order_id) order_completed_count FROM tb_order WHERE order_process_cd in ('0240', '0250', '0260', '0260','0280','0290') AND DATE_FORMAT(Order_Delivery_Dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) bb,
+		(SELECT sum(`Order_Total_Amount`) order_completed_amount FROM tb_order WHERE order_process_cd in ('0240', '0250', '0260', '0260','0280','0290') AND DATE_FORMAT(Order_Delivery_Dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) bc,
+		(SELECT count(order_id) order_product_count FROM tb_order WHERE order_type_cd='0101' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) a,
+		(SELECT count(order_id) order_cancel_count  FROM tb_order WHERE order_type_cd='0102' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) b ,
+		(SELECT count(order_id) order_auto_count  FROM tb_order WHERE order_type_cd='0103' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) c,
+		(SELECT count(order_id) order_retrieved_count  FROM tb_order WHERE order_type_cd='0104' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
+		(SELECT count(order_id) order_check_count  FROM tb_order WHERE order_type_cd='0105' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
+		(SELECT count(order_id) order_etc_count  FROM tb_order WHERE order_type_cd='0106' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) f
+	</insert>
+	
+	<insert id="inserMonthlyStatisticsOrder">
+		INSERT INTO TB_Monthly_Stat_Order(
+			<include refid="StatisticsOrderColumns" />
+		)		
+		SELECT LEFT(Stat_Dt,7), 
+			SUM(Order_Total_Count)    
+			 , SUM(Order_Total_Amount) 	 
+			 , SUM(Order_Completed_Count)    
+			 , SUM(Order_Completed_Amount) 	 
+			 , SUM(Order_Product_Count)   
+			 , SUM(Order_Cancel_Count) 	 
+			 , SUM(Order_Auto_Count) 	
+			 , SUM(Order_Retrieved_Count)        
+			 , SUM(Order_Check_Count)
+			 , SUM(Order_Etc_Count)
+			 , 'admin'
+			 , NOW()
+		FROM TB_Daily_Stat_Order
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY LEFT(Stat_Dt,7)
+	</insert>
+	
+	
+	<select id="selectDailylStatisticsOrderList" resultType="com.gms.web.admin.domain.statistics.StatisticsOrderVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsOrderColumns" />
+		FROM
+			TB_Daily_Stat_Order
+		WHERE
+			0 = 0
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+	
+	<select id="selectMontlylStatisticsOrderList" resultType="com.gms.web.admin.domain.statistics.StatisticsOrderVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsOrderColumns" />
+		FROM
+			TB_Monthly_Stat_Order
+		WHERE
+			0 = 0	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+	
+	
+	
+	<insert id="insertDailyStatisticsSales">
+		INSERT INTO TB_Daily_Stat_Sales(
+			<include refid="StatisticsSalesColumns" />
+		) 
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), Sales_Count,IFNULL(Sales_Amount,0) Sales_Amount, Rental_Count, IFNULL(Rental_Amount,0) Rental_Amount, IFNULL(Income_Amount,0) Income_Amount, 'admin',now()
+		FROM 
+		(
+			SELECT Count(Work_Seq) Sales_Count, Sum(Product_Price) Sales_Amount
+			FROM TB_Work_Bottle
+			WHERE Bottle_Work_Cd in ( '0308' , '0314')
+			AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		) A,
+		(
+			SELECT Count(Work_Seq) Rental_Count, Sum(Product_Price) Rental_Amount
+			FROM TB_Work_Bottle
+			WHERE Bottle_Work_Cd in ( '0309' ,'0316' )
+			AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')			 
+		) B,
+		(
+			SELECT Sum(Received_Amount) Income_Amount
+			FROM TB_Work_Report
+			WHERE DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')		
+			AND Delete_YN = 'N'	 
+		) C
+	</insert>	
+	
+	<insert id="insertMonthlyStatisticsSales">
+		INSERT INTO TB_Monthly_Stat_Sales(
+			<include refid="StatisticsSalesColumns" />
+		)		
+		SELECT LEFT(Stat_Dt,7) 
+			 , SUM(Sales_Count) 	 
+			 , SUM(Sales_Amount)    
+			 , SUM(Rental_Count) 	 
+			 , SUM(Rental_Amount)   
+			 , SUM(Income_Amount)  
+			 , 'admin',now()
+		FROM TB_Daily_Stat_Sales
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY LEFT(Stat_Dt,7)
+	</insert>
+	
+	<select id="selectDailylStatisticsSalesList" resultType="com.gms.web.admin.domain.statistics.StatisticsSalesVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsSalesColumns" />
+		FROM
+			TB_Daily_Stat_Sales
+		WHERE
+			0 = 0
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Stat_Dt DESC 
+	</select>
+	
+	<select id="selectMontlylStatisticsSalesList" resultType="com.gms.web.admin.domain.statistics.StatisticsSalesVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsSalesColumns" />
+		FROM
+			TB_Monthly_Stat_Sales
+		WHERE
+			0 = 0	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Stat_Dt DESC 
+	</select>
+</mapper>

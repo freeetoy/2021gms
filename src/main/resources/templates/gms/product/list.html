@@ -1,0 +1,168 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	
+	// end of function
+	
+	var fn_modifyProduct = function(productId, productPriceSeq, productStatus){
+		//console.log(productId+"=="+productPriceSeq+"=="+productStatus);        
+		var strPriceSeq1 = "하위 모든 상품에 적용이 됩니다."
+		var strMessage= "삭제하시겠습니까?";
+		if(productStatus==1) strMessage = "판매중지하시겠습니까?";
+		if(productPriceSeq==1){
+			strMessage = strPriceSeq1 + strMessage;
+		}
+		if(confirm(strMessage)){	
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/product/modifyPrice.do");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "productId");
+	        hiddenField.setAttribute("value", productId);
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "productPriceSeq");
+	        hiddenField1.setAttribute("value", productPriceSeq);
+	        
+	        var hiddenField2 = document.createElement("input");
+	        hiddenField2.setAttribute("type", "hidden");
+	        hiddenField2.setAttribute("name", "productStatus");
+	        hiddenField2.setAttribute("value", productStatus);
+
+	        form.appendChild(hiddenField);
+	        form.appendChild(hiddenField1);
+	        form.appendChild(hiddenField2);
+	        
+	        document.body.appendChild(form);
+
+	        form.submit();			
+		}                  		
+	}
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>상품 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        <div class="row">
+              <div class="col-11">
+              </div>               
+             
+              <div class="col-1">
+               		<a th:if="${session.LoginUser.userAuthority=='99'}" href="/gms/product/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="far fa-edit"></i>추가</button></a>
+              </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+             
+              
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr >
+                      <th>순번</th>
+                      <th>상품명</th>
+                      <th>용량</th>
+                      <th>대여가격</th>
+                      <th>대여ECount</th>
+                      <th>판매가격</th>
+                      <th>판매ECount</th>
+                      <th>등록자</th>
+                      <th>등록일</th>
+                      <th>상태</th>
+                      <th th:if="${session.LoginUser.userAuthority=='99'}" >관리</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}" style="font-size:14px;">
+                      <td th:text="${productList.indexOf(row)+1}"></td>
+                      <th th:if="${row.productPriceSeq == 1}" th:rowspan="${row.productPriceCount}" valign="top">
+                      <a th:href="@{/gms/product/update.do( productId=${row.productId} )}" th:text="${row.ProductNm}"></a>
+                      </th>
+                      <th th:if="${row.productPriceSeq == 1}" th:text="|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${row.productCapa}|">
+                      <th th:unless="${row.productPriceSeq == 1}" th:text="${row.productCapa}">
+                      </th>
+                      <td th:if="${row.productPrice > 0 && row.productPrice * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productPrice,3,'COMMA')}"></td>
+                      <td th:if="${row.productPrice > 0 && row.productPrice * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productPrice,3,'COMMA',2,'POINT')}"></td>
+                      <td th:text="${row.eCountCd}"></td>
+                      <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productBottlePrice, 3,'COMMA')}"></td>
+                      <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productBottlePrice, 3,'COMMA',2,'POINT')}"></td>
+                      <td th:text="${row.eCountCdS}"></td>
+                      <td th:text="${row.createId}"></td>
+                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>
+                      <td th:if="${row.productStatus=='2'}">판매중
+                      <td th:if="${row.productStatus=='1'}">판매중지
+                      <td th:if="${row.productStatus=='0'}">삭제
+                      </td>
+                      <td th:if="${session.LoginUser.userAuthority=='99' && row.productStatus=='1'}" > 
+                      <a class="btn btn-success btn-xs" href="#"  th:if="${row.productStatus=='1'}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]],2)"><i class="fas fa-ban"></i>판매</a>
+                      <td th:unless="${session.LoginUser.userAuthority=='99' && row.productStatus=='1'}" > 
+                      <a class="btn btn-danger btn-xs" href="#"  th:if="${row.productOrderCount==0}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]], 0)"><i class="fas fa-trash"></i>상품삭제</a>
+                      <a class="btn btn-success btn-xs" href="#"  th:unless="${row.productOrderCount==0}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]],1)"><i class="fas fa-ban"></i>판매중지</a>
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( productList )}">
+						<td colspan="8">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        <!-- /.row -->
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

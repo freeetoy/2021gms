@@ -1,0 +1,752 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.OrderMapper">
+	<resultMap id="OrderMap" type="com.gms.web.admin.domain.manage.OrderExtVO" >
+		<result property="orderId"				column="Order_ID"				/>
+		<result property="memberCompSeq"		column="Member_Comp_Seq"		/>
+		<result property="orderTypeCd"			column="Order_Type_CD"			/>
+		<result property="deliveryReqDt"		column="Delivery_Req_Dt"		/>
+		<result property="orderEtc"				column="Order_Etc"				/>
+		<result property="orderProductNm"		column="Order_Product_Nm"		/>		
+		<result property="orderProductCapa"		column="Order_Product_Capa"		/>
+		<result property="deliveryReqAmpm"		column="Delivery_Req_AmPm"		/>
+		<result property="customerId"			column="Customer_ID"			/>
+		<result property="customerNm"			column="Customer_NM"			/>
+		<result property="orderProcessCd"		column="Order_Process_CD"		/>
+		<result property="orderProcessCdNm"		column="Order_Process_CD_NM"	/>
+		<result property="orderTotalAmount"		column="Order_Total_Amount"		/>
+		<result property="depositCheckDt"		column="Deposit_Check_Dt"		/>
+		<result property="depositAmount"		column="Deposit_Amount"			/>
+		<result property="depositBankCd"		column="Deposit_Bank_Cd"		/>
+		<result property="salesId"				column="Sales_ID"				/>
+		<result property="createNm"				column="Create_Nm"				/>
+		<result property="createId"				column="CREATE_ID"				/>
+		<result property="createDt"				column="CREATE_DT"				/>
+		<result property="updateId"				column="UPDATE_ID"				/>		
+		<result property="updateDt"				column="UPDATE_DT"				/>
+	</resultMap>	
+
+	<resultMap id="OrderProductMap" type="com.gms.web.admin.domain.manage.OrderProductVO" >
+		<result property="orderId"				column="Order_ID"			/>
+		<result property="orderProductSeq"		column="Order_Product_Seq"	/>
+		<result property="productId"			column="Product_ID"			/>
+		<result property="productNm"			column="Product_Nm"			/>
+		<result property="productPriceSeq"		column="Product_Price_Seq"	/>
+		<result property="productCapa"			column="Product_Capa"		/>
+		<result property="orderCount"			column="Order_Count"		/>		
+		<result property="orderProductEtc"		column="Order_Product_ETC"	/>
+		<result property="bottleChangeYn"		column="Bottle_Change_YN"	/>
+		<result property="bottleSaleYn"			column="Bottle_Sale_YN"	/>
+		<result property="orderAmount"			column="Order_Amount"		/>
+		<result property="bottleBarCd"			column="Bottle_BarCD"			/>
+		<result property="gasID"				column="GAS_ID"				/>
+		<result property="orderBottleSeq"		column="Order_Bottle_Seq"	/>
+		<result property="Sales_Count"			column="SalesCount"	/>
+		<result property="createId"				column="CREATE_ID"			/>
+		<result property="createDt"				column="CREATE_DT"			/>
+		<result property="updateId"				column="UPDATE_ID"			/>		
+		<result property="updateDt"				column="UPDATE_DT"			/>	
+	</resultMap>
+	
+	<resultMap id="OrderBottleMap" type="com.gms.web.admin.domain.manage.OrderBottleVO" >
+		<result property="orderBottleSeq"		column="Order_Bottle_Seq"	/>
+		<result property="orderId"				column="Order_ID"			/>
+		<result property="orderProductSeq"		column="Order_Product_Seq"	/>
+		<result property="productId"			column="Product_ID"			/>		
+		<result property="productPriceSeq"		column="Product_Price_Seq"	/>
+		<result property="bottleBarCd"			column="Bottle_BarCD"		/>		
+		<result property="createId"				column="CREATE_ID"			/>
+		<result property="createDt"				column="CREATE_DT"			/>
+		<result property="updateId"				column="UPDATE_ID"			/>		
+		<result property="updateDt"				column="UPDATE_DT"			/>	
+	</resultMap>
+	
+	<sql id="OrderColumns">
+		 Order_ID         
+		 , Member_Comp_Seq  
+		 , Order_Type_CD    
+		 , Delivery_Req_Dt 		  
+		 , Delivery_Req_AmPm
+		 , Order_Etc        
+		 , Order_Product_Nm   
+		 , Order_Product_Capa 
+		 , Customer_ID      
+		 , Order_Process_CD 
+		 , Order_Total_Amount
+		 , Order_Delivery_Dt
+		 , Deposit_Check_Dt 
+		 , Deposit_Amount   
+		 , Deposit_Bank_Cd  
+		 , Sales_ID         
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<sql id="OrderSelectColumns">
+		  Order_ID         
+		 , A.Member_Comp_Seq  
+		 , Order_Type_CD    
+		 , Delivery_Req_Dt 		  
+		 , Delivery_Req_AmPm
+		 , Order_Etc        
+		 , Order_Product_Nm   
+		 , Order_Product_Capa 
+		 , A.Customer_ID     
+		 , Customer_Nm 
+		 , Order_Process_CD 
+		 , CD_NM Order_Process_CD_NM
+		 , Order_Total_Amount 
+		 , Deposit_Check_Dt 
+		 , Deposit_Amount   
+		 , Deposit_Bank_Cd  
+		 , A.Sales_ID
+		 , D.User_Nm Create_Nm
+		 , A.Create_ID        
+		 , A.Create_Dt        
+		 , A.Update_ID        
+		 , A.Update_Dt   
+	</sql>
+	
+	<sql id="OrderProductColumns">
+		  Order_ID         
+		 , Order_Product_Seq
+		 , Product_ID       
+		 , Product_Price_Seq
+		 , Order_Count   
+		 , Order_Product_ETC
+		 , Bottle_Change_YN 
+		 , Bottle_Sale_YN 
+		 , Order_Amount 
+		 , Bottle_BarCD  
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	<sql id="OrderProductSelectColumns">
+		  Order_ID         
+		 , Order_Product_Seq
+		 , A.Product_ID       
+		 , Product_Nm       
+		 , A.Product_Price_Seq
+		 , Product_Capa     
+		 , Order_Count   
+		 , Order_Product_ETC
+		 , Bottle_Change_YN 
+		 , A.Bottle_Sale_YN 
+		 , Order_Amount 
+		 , Bottle_BarCD    
+		 , GAS_ID 
+		 , Order_Count-IFNULL(Registered_Count,0) Sales_Count
+		 , A.Create_ID        
+		 , A.Create_Dt        
+		 , A.Update_ID        
+		 , A.Update_Dt   
+	</sql>
+	
+	<sql id="OrderBottleInsertColumns">
+		Order_ID         
+		 , Order_Product_Seq
+		 , Product_ID       
+		 , Product_Price_Seq
+		 , Bottle_BarCD  
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<sql id="OrderBottleColumns">
+		Order_Bottle_Seq
+		 , Order_ID         
+		 , Order_Product_Seq
+		 , Product_ID       
+		 , Product_Price_Seq
+		 , Bottle_BarCD  
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<insert id="insertOrder" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		INSERT INTO TB_Order(
+			<include refid="OrderColumns" />
+		) VALUES (
+			#{orderId}
+			, #{memberCompSeq}	
+			, #{orderTypeCd}	
+			, #{deliveryReqDt}					
+			, #{deliveryReqAmpm}		
+			, #{orderEtc}
+			, #{orderProductNm}				
+			, #{orderProductCapa}
+			, #{customerId}
+			, #{orderProcessCd}
+			, #{orderTotalAmount}
+			, #{orderDeliveryDt}
+			, #{depositCheckDt}
+			, #{depositAmount}
+			, #{depositBankCd}
+			, #{salesId}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertOrderProduct" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		INSERT INTO TB_Order_Product(
+			<include refid="OrderProductColumns" />
+		) VALUES (
+			  #{orderId}
+			, #{orderProductSeq}	
+			, #{productId}	
+			, #{productPriceSeq}					
+			, #{orderCount}	
+			, #{orderProductEtc}
+			, #{bottleChangeYn}		
+			, #{bottleSaleYn}		
+			, #{orderAmount}		
+			, #{bottleBarCd}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertOrderProducts" parameterType="java.util.List" >
+    	INSERT INTO TB_Order_Product(
+			<include refid="OrderProductColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			#{item.orderId}
+			, #{item.orderProductSeq}	
+			, #{item.productId}	
+			, #{item.productPriceSeq}					
+			, #{item.orderCount}	
+			, #{item.orderProductEtc}
+			, #{item.bottleChangeYn}
+			, #{item.bottleSaleYn}			
+			, #{item.orderAmount}		
+			, #{item.bottleBarCd}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+    	)
+    	</foreach>
+	</insert>
+	<insert id="insertOrderBottle" parameterType="com.gms.web.admin.domain.manage.OrderBottleVO">
+		INSERT INTO TB_Order_Bottle(
+			<include refid="OrderBottleInsertColumns" />
+		) VALUES (
+			#{orderId}
+			, #{orderProductSeq}	
+			, #{productId}	
+			, #{productPriceSeq}		
+			, #{bottleBarCd}
+			, #{createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertOrderBottles" parameterType="java.util.List">
+		INSERT INTO TB_Order_Bottle(
+			<include refid="OrderBottleInsertColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			#{item.orderId}
+			, #{item.orderProductSeq}	
+			, #{item.productId}	
+			, #{item.productPriceSeq}		
+			, #{item.bottleBarCd}
+			, #{item.createId}			
+			, NOW()
+			, NULL
+			, NOW()
+		)
+    	</foreach>
+	</insert>
+	
+	<update id="updateOrder" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			Delivery_Req_Dt			= #{deliveryReqDt}
+			, Delivery_Req_AmPm		= #{deliveryReqAmpm}
+			, Order_Etc				= #{orderEtc}
+			, Order_Product_Nm		= #{orderProductNm}
+			, Order_Product_Capa	= #{orderProductCapa}
+			, Customer_ID			= #{customerId}
+			, Order_Total_Amount	= #{orderTotalAmount}
+			, UPDATE_ID 			= #{updateId}
+			, UPDATE_DT 			= NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>
+	
+	<update id="updateOrderAdditionBottles" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			Order_Product_Nm		= #{orderProductNm}
+			, Order_Product_Capa	= #{orderProductCapa}
+			, Order_Total_Amount	= #{orderTotalAmount}
+			, UPDATE_ID 			= #{updateId}
+			, UPDATE_DT 			= NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>
+	
+	<update id="updateOrderTotalAmount" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			Order_Total_Amount	= #{orderTotalAmount}
+			, UPDATE_ID 			= #{updateId}
+			, UPDATE_DT 			= NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>
+	
+	<update id="updateOrderProductAmount" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order_Product
+		SET
+			Order_Amount	= #{orderAmount}
+			, UPDATE_ID 			= #{updateId}
+			, UPDATE_DT 			= NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>
+	
+	<update id="updateOrdersProcessCd" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			  Order_Process_CD 	= #{orderProcessCd}
+			  <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(salesId)">
+			  ,SALES_ID = #{salesId}
+			   </if>
+			  <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(orderDeliveryDt)">
+			  ,Order_Delivery_Dt = #{orderDeliveryDt}
+			  </if>
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Order_ID in
+			<foreach collection="orderList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach> 
+	</update>	
+	
+	<update id="updateOrderProcessCd" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			  Order_Process_CD 	= #{orderProcessCd}
+			  <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(salesId)">
+			  ,SALES_ID = #{salesId}
+			  </if>
+			  <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(orderDeliveryDt)">
+			  ,Order_Delivery_Dt = #{orderDeliveryDt}
+			  </if>
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Order_ID = #{chOrderId}
+	</update>	
+	
+	<update id="updateOrderBottleId" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		UPDATE TB_Order_Product
+		SET
+			  Bottle_BarCD 	= #{bottleBarCd}
+			, UPDATE_ID 	= #{updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			Order_ID = #{orderId}
+		AND
+			Order_Product_Seq = #{orderProductSeq}	
+	</update>	
+	
+	<update id="updateOrderProductCount" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		UPDATE TB_Order_Product
+		SET
+			  Order_Count 	= #{orderCount}
+			, Order_Amount 	= #{orderAmount}
+			, UPDATE_ID 	= #{updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			Order_ID = #{orderId}
+		AND
+			Order_Product_Seq = #{orderProductSeq}	
+	</update>	
+	
+	<update id="updateOrderBottle" parameterType="com.gms.web.admin.domain.manage.OrderBottleVO">		
+		UPDATE TB_Order_Bottle
+		SET
+			  Bottle_BarCD 	= #{bottleBarCd}
+			, UPDATE_ID 	= #{updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			Order_Bottle_Seq = #{orderBottleSeq}
+	</update>	
+	
+	<update id="updateOrderBottles" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=" , ">
+		UPDATE TB_Order_Bottle
+		SET
+			  Bottle_BarCD 	= #{item.bottleBarCd}
+		WHERE
+			Order_Bottle_Seq = #{item.orderBottleSeq}
+		</foreach>
+	</update>	
+	
+	<update id="deleteOrder" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			Order_Process_CD = '0299'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>	
+	<update id="deleteOrderProducts" parameterType="Integer">
+		DELETE FROM  TB_Order_Product		
+		WHERE
+			Order_ID = #{orderId}		
+	</update>	
+	
+	<update id="deleteOrderProduct" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		DELETE FROM  TB_Order_Product		
+		WHERE
+			Order_ID = #{orderId}		
+		AND
+			Order_Product_Seq =#{orderProductSeq}	
+	</update>
+
+	<update id="deleteOrderProductByProduct" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		DELETE FROM  TB_Order_Product		
+		WHERE
+			Order_ID = #{orderId}		
+		AND
+			Product_Id =#{productId}
+		AND
+			Product_Price_Seq =#{productPriceSeq}
+	</update>
+	
+	<update id="deleteOrderBottles" parameterType="Integer">
+		DELETE FROM  TB_Order_Bottle	
+		WHERE
+			Order_ID = #{orderId}		
+	</update>
+	
+	<update id="deleteOrderBottlesByProduct" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		DELETE FROM  TB_Order_Bottle	
+		WHERE
+			Order_ID = #{orderId}	
+		AND
+			Product_Id =#{productId}
+		AND
+			Product_Price_Seq =#{productPriceSeq}	
+	</update>		
+
+	<select id="selectOrderId" resultType="int">
+		SELECT
+			MAX(IFNULL(Order_id,0))+1
+		FROM
+			TB_ORDER
+	</select>
+	
+	<select id="selectNextOrderProductSeq" parameterType="Integer" resultType="int">
+		SELECT
+			MAX(IFNULL(Order_Product_Seq,0))+1
+		FROM
+			TB_ORDER_Product
+		WHERE
+			Order_ID = #{orderId}	
+	</select>
+	
+	<select id="selectOrderDetail" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.OrderVO">
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			Order_ID = #{orderId}
+		AND Order_Process_CD !='0299'
+		AND A.Customer_Id = B.Customer_ID	
+		AND A.Order_Process_Cd = C.CD_ID
+		AND A.Create_Id = D.User_ID				
+	</select>
+	
+	<select id="selectLastOrderForCustomer" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.OrderVO">
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			A.Customer_Id = #{customerId}
+		AND Order_Process_CD in ('0210','0220','0230','0240')
+		AND A.Customer_Id = B.Customer_ID	
+		AND A.Order_Process_Cd = C.CD_ID
+		AND A.Create_Id = D.User_ID			
+		Order By Create_Dt desc 
+		limit 0,1	
+	</select>
+
+	<select id="selectOrderList" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			A.Customer_Id = B.Customer_ID		
+		AND Order_Process_CD !='0299'
+		AND A.Order_Process_Cd = C.CD_ID
+		AND A.Create_Id = D.User_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
+		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
+		AND Order_Process_CD  =  #{searchOrderProcessCd}
+		</if>
+		ORDER BY A.Create_Dt DESC 
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	
+	<select id="selectOrderListToExcel" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			A.Customer_Id = B.Customer_ID		
+		AND Order_Process_CD !='0299'
+		AND A.Order_Process_Cd = C.CD_ID
+		AND A.Create_Id = D.User_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
+		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
+		AND Order_Process_CD  =  #{searchOrderProcessCd}
+		</if>
+		ORDER BY A.Create_Dt DESC 
+	</select>
+	
+	
+	<select id="selectOrderProductList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderProductSelectColumns" />
+		FROM
+			TB_Product b ,TB_Product_Price C,
+			TB_Order_Product A Left Join (
+					SELECT Count(Work_Seq) Registered_Count,Product_ID, Product_Price_Seq  ,TB.Bottle_Sale_YN
+					FROM TB_Work_Bottle TB,TB_Work_Report TW 
+					WHERE TB.Work_Report_Seq = TW.Work_Report_Seq 
+					AND TW.Delete_YN = 'N'
+					AND Order_Id = #{orderId}	
+					Group By Product_ID, Product_Price_Seq  ,TB.Bottle_Sale_YN
+			) TW on (A.Product_ID = TW.product_id AND A.Product_Price_Seq = TW.Product_Price_Seq AND A.Bottle_Sale_YN = TW.Bottle_Sale_YN)
+		WHERE
+			Order_ID = #{orderId}	
+		AND A.Product_ID = B.Product_ID
+		AND A.Product_ID = C.Product_ID
+		AND A.Product_Price_Seq = C.Product_Price_Seq								
+		ORDER BY A.Create_Dt DESC 
+	</select>
+	
+	<select id="selectOrderInfoOfNotProduct" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
+		SELECT
+			Order_ID   		 
+		 , 0 Order_Amount
+		 , 0 Order_Count
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt  
+		FROM
+			TB_Order
+		WHERE
+			Order_ID = #{orderId}
+	</select>
+	
+	<select id="selectOrderProductListNotDelivery" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
+		SELECT
+			D.Order_ID         
+			 , D.Order_Product_Seq
+			 , D.Product_ID       
+			 , Product_Nm       
+			 , D.Product_Price_Seq
+			 , Product_Capa     
+			 , Order_Count   
+			 , Order_Product_ETC
+			 , Bottle_Change_YN 
+			 , Bottle_Sale_YN 
+			 , Order_Amount 
+			 , A.Bottle_BarCD    
+			 , GAS_ID 
+			 , Order_Bottle_Seq
+			 , A.Create_ID        
+			 , A.Create_Dt        
+			 , A.Update_ID        
+			 , A.Update_Dt   
+		FROM
+			TB_Order_Product A , TB_Product b ,TB_Product_Price C, TB_Order_Bottle D
+		WHERE
+			A.Order_ID = #{orderId}	
+		AND
+			A.Order_ID = D.Order_ID
+		AND
+			A.Order_Product_Seq = D.Order_Product_Seq
+		AND 
+			D.Bottle_BarCD is null
+		AND A.Product_ID = B.Product_ID
+		AND A.Product_ID = C.Product_ID
+		AND A.Product_Price_Seq = C.Product_Price_Seq				
+		AND A.Product_ID = D.Product_ID		
+		AND A.Product_Price_Seq = D.Product_Price_Seq	
+		ORDER BY A.Product_ID, A.Product_Price_Seq DESC 
+	</select>
+	
+	<select id="selectOrderCount" resultType="int" parameterType="java.util.Map">
+		SELECT
+			Count(Order_id)
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C
+		WHERE
+			A.Customer_Id = B.Customer_ID
+		AND 
+			Order_Process_CD !='0299'
+		AND 
+			A.Order_Process_Cd = C.CD_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
+		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
+		AND Order_Process_CD  =  #{searchOrderProcessCd}
+		</if>
+	</select>	
+	
+	<select id="selectCustomerOrderList" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			A.Customer_Id = B.Customer_ID	
+		AND 
+			Order_Process_CD !='0299'	
+		AND 
+			Customer_id = #{customerId}
+		AND 
+			A.Create_Id = D.User_ID
+		AND 
+			A.Order_Process_Cd = C.CD_ID			
+		ORDER BY A.Create_Dt DESC 
+	</select>
+	
+	<select id="selectSalesOrderList" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="String">		
+		SELECT
+			<include refid="OrderSelectColumns" />
+		FROM
+			TB_Order A, TB_Customer B, TB_Code C, TB_User D
+		WHERE
+			A.Customer_Id = B.Customer_ID	
+		AND 
+			Order_Process_CD <![CDATA[<]]> '0250'			
+		AND 
+			B.Sales_Id = #{salesId}
+		AND 
+			A.Create_Id = D.User_ID
+		AND 
+			A.Order_Process_Cd = C.CD_ID			
+		ORDER BY Delivery_Req_Dt DESC 
+	</select>
+	
+	<select id="selectOrderBottleList" resultType="com.gms.web.admin.domain.manage.OrderBottleVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderBottleColumns" />
+		FROM
+			TB_Order_Bottle
+		WHERE
+			Order_ID = #{orderId}
+	</select>
+	
+	<select id="selectOrderBottleListNotDelivery" resultType="com.gms.web.admin.domain.manage.OrderBottleVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderBottleColumns" />
+		FROM
+			TB_Order_Bottle
+		WHERE
+			Order_ID = #{orderId}
+		AND 
+			Bottle_BarCD is null
+	</select>
+	
+	<select id="selectOrderBottleListOfProduct" resultType="com.gms.web.admin.domain.manage.OrderBottleVO" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">		
+		SELECT
+			<include refid="OrderBottleColumns" />
+		FROM
+			TB_Order_Bottle
+		WHERE
+			Order_ID 	= #{orderId}
+		AND
+			Product_ID 	= #{productId}	
+		AND 
+			Product_Price_Seq = #{productPriceSeq}	
+	</select>
+	
+	<update id="deleteOrderBottle" parameterType="com.gms.web.admin.domain.manage.OrderBottleVO">
+		Delete From TB_Order_Bottle		
+		WHERE							
+			Order_Bottle_Seq in
+		<foreach collection="orderBottleList" item="item" index="index" open="(" separator="," close=")">
+			#{item} 
+		</foreach> 
+	</update>	
+	
+	<select id="selectOrderTodayOfCustomer" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderColumns" />
+		FROM
+			TB_Order
+		WHERE
+			Customer_ID = #{customerId}
+		AND date_format(Create_Dt,'%Y/%m/%d') = date_format(now(),'%Y/%m/%d') 
+	</select>
+	
+	<select id="selectOrderReqDtTomorrow" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="com.gms.web.admin.domain.manage.OrderVO">		
+		SELECT
+			Order_ID , A.Member_Comp_Seq , Order_Type_CD , Delivery_Req_Dt , Delivery_Req_AmPm , Order_Etc , 
+			Order_Product_Nm , Order_Product_Capa , A.Customer_ID , Order_Process_CD , Order_Total_Amount , 
+			Order_Delivery_Dt , Deposit_Check_Dt , Deposit_Amount , Deposit_Bank_Cd , A.Sales_ID , 
+			A.Create_ID , A.Create_Dt , A.Update_ID , A.Update_Dt 
+		FROM
+			TB_Order A, TB_Customer B
+		WHERE 
+			A.Customer_ID = B.Customer_ID		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
+		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		</if>		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
+		AND Order_Process_CD  =  #{searchOrderProcessCd}
+		</if>		
+		ORDER BY Order_Id desc
+	</select>
+</mapper>

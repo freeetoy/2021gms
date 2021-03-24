@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.common.CodeMapper">
+
+	<resultMap id="UserInfoMap" type="com.gms.web.admin.domain.common.CodeVO" >
+		<result property="cdId"				column="CD_ID"	    	/>
+		<result property="cdNm"				column="CD_NM"				/>
+		<result property="cdGrpId"			column="CD_GRP_ID"	    	/>
+		<result property="deleteYn"			column="DELETE_YN"	    	/>
+		<result property="userPasswd"		column="USER_PASSWD"		/>
+		<result property="createId"			column="CREATE_ID"			/>
+		<result property="createDt"			column="CREATE_DT"			/>
+		<result property="updateId"			column="UPDATE_ID"			/>		
+		<result property="updateDt"			column="UPDATE_DT"			/>
+	</resultMap>
+	
+	<resultMap id="AppVersionMap" type="com.gms.web.admin.domain.common.AppVersionVO" >
+		<result property="appVer"				column="App_Ver"	    	/>
+	</resultMap>
+	
+	<sql id="CodeColumns">
+		  CD_ID
+		, CD_NM
+		, CD_GRP_ID
+		, DELETE_YN
+		, CREATE_ID
+		, CREATE_DT
+		, UPDATE_ID
+		, UPDATE_DT
+	</sql>
+	<!-- 코드 목록 조회 -->
+	<select id="selectCodeList" resultType="com.gms.web.admin.domain.common.CodeVO" parameterType="String">
+		SELECT
+			<include refid="CodeColumns" />
+		FROM
+			TB_Code
+		WHERE
+			delete_yn = 'N'
+		AND CD_GRP_ID = #{cdGrpId}
+	</select>
+	
+	
+	<select id="selectAppVersion" resultType="com.gms.web.admin.domain.common.AppVersionVO">
+		SELECT
+			App_Ver
+		FROM
+			TB_App_Version		
+	</select>
+</mapper>

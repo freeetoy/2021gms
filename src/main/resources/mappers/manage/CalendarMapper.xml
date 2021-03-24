@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.manage.CalendarMapper">
+	<resultMap id="CalendarMap" type="com.gms.web.admin.domain.manage.CalendarVO" >
+		<result property="calSeq"			column="CAL_SEQ"			/>
+		<result property="calId"			column="CAL_ID"			/>		
+		<result property="calTitle"			column="CAL_TITLE"			/>
+		<result property="calContent"		column="CAL_CONTENT"		/>
+		<result property="calDate"			column="CAL_DATE"			/>
+		<result property="createId"			column="CREATE_ID"			/>
+		<result property="createDt"			column="CREATE_DT"			/>
+		<result property="updateId"			column="UPDATE_ID"			/>		
+		<result property="updateDt"			column="UPDATE_DT"			/>
+	</resultMap>	
+	
+	<select id="getCalendarList" parameterType="com.gms.web.admin.domain.manage.CalendarParam" resultType="com.gms.web.admin.domain.manage.CalendarVO">	
+		SELECT CAL_SEQ, CAL_ID, CAL_TITLE, CAL_CONTENT, CAL_DATE, CREATE_DT 
+		FROM TB_CALENDAR
+		WHERE SUBSTR(RDATE, 1, 6)=#{yyyyMM}) 
+		Limit 0,5
+	</select>
+	
+	<select id="selectCalendarListDay" parameterType="com.gms.web.admin.domain.manage.CalendarParam" resultType="com.gms.web.admin.domain.manage.CalendarVO">
+		SELECT CAL_SEQ, CAL_ID, CAL_TITLE, CAL_CONTENT, CAL_DATE, CREATE_DT 
+		FROM 
+			TB_CALENDAR 
+		WHERE SUBSTR(CAL_DATE, 1, 8)=#{yyyyMM} 
+		ORDER BY Create_Dt ASC		
+	</select>
+	
+	<insert id="inserCalendar" parameterType="com.gms.web.admin.domain.manage.CalendarVO">
+		INSERT INTO TB_CALENDAR(Cal_ID, Cal_TITLE, Cal_CONTENT, Cal_DATE, Create_Dt,Create_Id) 
+		VALUES(#{calId}, #{calTitle}, #{calContent}, #{calDate}, now(), #{createId})
+	</insert>
+
+	<select id="selectCalendar" parameterType="java.lang.String" resultType="com.gms.web.admin.domain.manage.CalendarVO">	
+	 	SELECT Cal_SEQ, Cal_ID, Cal_TITLE, Cal_CONTENT, Cal_DATE, Create_Dt, Create_ID 
+		FROM TB_CALENDAR 
+		WHERE SEQ = #{calSeq}	
+	</select>
+
+	<update id="updateCalendar" parameterType="com.gms.web.admin.domain.manage.CalendarVO">	
+		UPDATE TB_CALENDAR 
+		SET Cal_TITLE = #{calTitle}, 
+			Cal_CONTENT = #{calContent} 
+		WHERE Cal_SEQ = #{calSeq}	
+	</update>
+
+	<delete id="deleteCalendar" parameterType="java.lang.String">
+		 DELETE FROM TB_CALENDAR 
+		 WHERE Cal_SEQ = #{calSeq}
+	</delete>
+
+</mapper>

@@ -1,0 +1,332 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+
+<script type="text/javascript">	
+
+
+window.onload = function() {
+    //document.getElementById("btnShow").onclick = func; : 아래 이벤트 리스너도 동일하게 작용
+    //document.getElementById("btnShow").addEventListener("click", func, false);
+    func();
+}
+function func() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var day = now.getDate();
+    //alert(year + "." + month + 1 + "." + day); // month는 0부터 시작하기 때문에 +1을 해야됨
+    
+    //해당 달의 1일은 무슨 요일이냐
+    var setDate = new Date(year, month, 1);
+    var firstDay = setDate.getDate();
+    var yoil = setDate.getDay();
+    //alert(yoil); // 일:0, 월:1 ~ 토:6
+    
+    var nalsu = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+    
+    //2월은 윤년 체크
+    if(year % 4 === 0 % year % 100 !== 0 || year % 400 === 0 ){
+         nalsu[1] = 28;
+    }
+    
+    makeCalendar(yoil, nalsu[month],year,month+1, day)
+    document.getElementById("disp").innerHTML = str;
+    
+    // 버튼 보이기
+    document.getElementById("etc").style.display = "";
+    
+}
+var str= "";
+function makeCalendar(yoil, nalsu, year, month, day) {
+    str = "<table border ='0'>";
+    str += "<tr><th colspan='7' width='400'>" + year + "년" + month + "월</th></tr>";
+    str += "<tr>";
+    var week = new Array("일", "월", "화", "수", "목", "금", "토");
+    for(var i = 0; i < week.length; i++){
+         str += "<th>" + week[i] + "</th>";
+    }
+    str += "</tr>";
+    
+    // 날 수 채우기
+    var no = 1;
+    var currentCell = 0;
+    var ju = Math.ceil((nalsu + yoil) / 7);
+    //alert("이번달은 " + ju + " 주 동안 계속됩니다");
+    for(var r=0; r < ju; r++){
+         str += "<tr style='text-align:center'>";
+         for(var col=0; col < 7; col++){
+             if(currentCell < yoil || no > nalsu){
+                  str += "<td>&nbsp;</td>";
+                  currentCell++;
+             }else{
+                  str += "<td>" + no + "</td>";
+                  no++;
+             }
+             
+         }
+         str += "<td>&nbsp;</td>";
+         
+         str += "</tr>";
+    }
+    
+    str += "</table>";
+}
+//--------------
+function func1() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var day = now.getDate();
+    //alert(year + "." + month + 1 + "." + day); // month는 0부터 시작하기 때문에 +1을 해야됨
+    
+    //해당 달의 1일은 무슨 요일이냐
+    var setDate = new Date(year, month, 1);
+    var firstDay = setDate.getDate();
+    var yoil = setDate.getDay();
+    //alert(yoil); // 일:0, 월:1 ~ 토:6
+    
+    var nalsu = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+    
+    //2월은 윤년 체크
+    if(year % 4 === 0 % year % 100 !== 0 || year % 400 === 0 ){
+         nalsu[1] = 28;
+    }
+    
+    makeCalendar(yoil, nalsu[month],year,month+1, day)
+    document.getElementById("disp").innerHTML = str;
+    
+    // 버튼 보이기
+    document.getElementById("etc").style.display = "";
+    
+}
+var str= "";
+function makeCalendar(yoil, nalsu, year, month, day) {
+    str = "<table border ='0'>";
+    str += "<tr><th colspan='7' width='400'>" + year + "년" + month + "월</th></tr>";
+    str += "<tr>";
+    var week = new Array("일", "월", "화", "수", "목", "금", "토");
+    for(var i = 0; i < week.length; i++){
+         str += "<th>" + week[i] + "</th>";
+    }
+    str += "</tr>";
+    
+    // 날 수 채우기
+    var no = 1;
+    var currentCell = 0;
+    var ju = Math.ceil((nalsu + yoil) / 7);
+    //alert("이번달은 " + ju + " 주 동안 계속됩니다");
+    for(var r=0; r < ju; r++){
+         str += "<tr style='text-align:center'>";
+         for(var col=0; col < 7; col++){
+             if(currentCell < yoil || no > nalsu){
+                  str += "<td>&nbsp;</td>";
+                  currentCell++;
+             }else{
+                  str += "<td>" + no + "</td>";
+                  no++;
+             }
+             
+         }
+         str += "<td>&nbsp;</td>";
+         
+         str += "</tr>";
+    }
+    
+    str += "</table>";
+}
+
+
+
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+	
+
+	$(function() {
+	
+	  $('input[name="searchChargeDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	
+	});	
+
+	
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>휴가</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Simple Tables</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">        
+     <!-- modal start-->   
+        <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">용기 상태 변경</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="chForm" name="chForm" th:object="${bottle}" method="post">
+              
+              <div class="card-body">
+            	<table class="table table-hover">
+                  <thead>
+                  <tr>
+                      <th class="card-footer">용기 코드</th>
+                      <th><input type="text" class="form-control" id="chBottleId" name="chBottleId" placeholder="용기 코드" ></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">용기 바코드</th>
+                      <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" placeholder="용기 바코드" ></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상태</th>
+                      <th>
+                      <select id="bottleWorkCd" name="bottleWorkCd" class="form-control">
+                          <option value="">상태</option>				    
+					        <option th:each="row : ${codeList}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}"
+					               >
+					        </option>					
+                        </select>
+					  </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">용기타입</th>
+                      <th>
+                      <select id="bottleType" name="bottleType" class="form-control">
+                          <option value="E">공병</option>
+                          <option value="F">실병</option>	
+                        </select>
+					  </th>   
+                    </tr>
+                  </thead>                              
+                </table>       
+                
+              </div>            
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <a class="btn btn-info btn-sm" href="#" onclick="javascript:fn_modifyBottleWorkCd();"><i class="fas fa-pencil-alt"></i>상태변경</a>
+            </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+        
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+              	<!-- table class="table table-bordered">
+              	
+              	<thead>
+				  	<tr height="50">
+					<td align="center">일</td>
+					<td align="center">월</td>
+					<td align="center">화</td>
+					<td align="center">수</td>
+					<td align="center">목</td>
+					<td align="center">금</td>
+					<td align="center">토</td>
+					</tr>
+				  </thead>
+				  <tr height="100" align="left" valign="top">
+				  <tr height="20" > 			  
+					<td th:if="${dayOfWeek> 1}"  th:each="seq : ${#numbers.sequence(1,dayOfWeek)}"></td>
+					<td th:each="seq1 : ${#numbers.sequence(1,lastDay)}" th:text="${seq1}"></td>
+					
+				  </tr><tr th:if="${(seq1 + dayOfWeek - 1) % 7 == 0 && seq1 != lastDay}">
+				  <tr>
+					<td th:text="${dayOfWeek}"></td>
+					<td>2</td>
+					<td>3</td>
+					<td>4</td>
+					<td>5</td>
+					<td>6</td>
+					<td>7</td>
+				  </tr>
+				  
+				  <tr>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+					<td>4</td>
+					<td>5</td>
+					<td>6</td>
+					<td>7</td>
+				  </tr>
+				  <tr>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+					<td>4</td>
+					<td>5</td>
+					<td>6</td>
+					<td>7</td>
+				  </tr>
+				  </table> -->
+                <input type="button" value="달력보기" id="btnShow">
+     <br>
+     <br>
+     <div id="disp"></div>
+     <br>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+         
+
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

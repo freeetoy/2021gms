@@ -1,0 +1,408 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <aside th:fragment="main-leftmenu" class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/gms/start" class="brand-link">
+      <img src="/dist/img/Logo.png"
+           alt="AdminLTE Logo"
+           class="brand-image img-circle elevation-3">
+      <span class="brand-text font-weight-light" th:text="${session.compNm}">GMS</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      <div th:if="${session.LoginUser ne null}"  class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img th:src="|/dist/img/${session.LoginUser.userPartCd}.png|" class="img-circle elevation-2" alt="User Image"> 
+          <!-- <img src="/dist/img/01.png" class="img-circle elevation-2" alt="User Image">  -->
+        </div>
+        <div class="info">
+          <a href="#" class="d-block" th:text="${session.LoginUser.userNm}">Alexander Pierce</a>
+        </div>
+      </div>
+      <div th:unless="${session.LoginUser ne null}"  class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">          
+          <img src="/dist/img/01.png" class="img-circle elevation-2" alt="User Image">  
+        </div>
+        <div class="info">
+          <a href="#" class="d-block" >Alexander Pierce</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+               
+          <li th:if="${menuId=='order'|| menuId=='transact'}" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                	주문관리
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li th:if="${menuId=='order'}" class="nav-item">
+                <a href="/gms/order/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>주문 목록</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='order'}" class="nav-item">
+                <a href="/gms/order/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>주문 목록</p>
+                </a>
+              </li>
+              <li th:if="${menuId=='transact'}" class="nav-item">
+                <a href="/gms/order/monitor.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래 현황</p>
+                </a>
+              </li>         
+              <li th:unless="${menuId=='transact'}" class="nav-item">
+                <a href="/gms/order/monitor.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래 현황</p>
+                </a>
+              </li>              
+            </ul>
+          </li>       
+          <li th:unless="${menuId=='order'|| menuId=='transact'}" class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                	주문관리
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/gms/order/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>주문 목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/gms/order/monitor.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래 현황</p>
+                </a>
+              </li>              
+            </ul>
+          </li>     
+          <!--  용기관리 strar -->   
+          <li th:if="${menuId=='bottle'|| menuId=='bottlet' || menuId=='bottles'|| menuId=='rental'}" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-prescription-bottle-alt"></i>
+              <p>
+                	용기 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li th:if="${menuId=='bottle'}" class="nav-item">
+                <a href="/gms/bottle/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 목록</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='bottle'}" class="nav-item">
+                <a href="/gms/bottle/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 목록</p>
+                </a>
+              </li>
+              <li th:if="${menuId=='bottlet'}" class="nav-item">
+                <a href="/gms/bottle/charge.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 검사</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='bottlet'}" class="nav-item">
+                <a href="/gms/bottle/charge.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 검사</p>
+                </a>
+              </li>
+              <li th:if="${menuId=='bottles'}" class="nav-item">
+                <a href="/gms/bottle/sales.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 판매</p>
+                </a>
+              </li>           
+              <li th:unless="${menuId=='bottles'}" class="nav-item">
+                <a href="/gms/bottle/sales.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 판매</p>
+                </a>
+              </li>      
+              <li th:if="${menuId=='rental'}" class="nav-item">
+                <a href="/gms/bottle/rental.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 대여</p>
+                </a>
+              </li>           
+              <li th:unless="${menuId=='rental'}" class="nav-item">
+                <a href="/gms/bottle/rental.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 대여</p>
+                </a>
+              </li>                       
+            </ul>
+          </li>
+          <li th:unless="${menuId=='bottle'|| menuId=='bottlet' || menuId=='bottles' || menuId=='rental'}" class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-prescription-bottle-alt"></i>
+              <p>
+                	용기 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/gms/bottle/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/gms/bottle/charge.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 검사</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/gms/bottle/sales.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 판매</p>
+                </a>
+              </li>         
+              <li th:unless="${menuId=='rental'}" class="nav-item">
+                <a href="/gms/bottle/rental.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>용기 대여</p>
+                </a>
+              </li>             
+            </ul>
+          </li>
+          <!--  용기관리 end -->  
+          <!--  거래처관리 메뉴  시작 -->
+          <li th:if="${menuId=='customer'}" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-hospital"></i>
+              <p>
+                	거래처 관리
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li th:if="${menuId=='customer'}" class="nav-item">
+                <a href="/gms/customer/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래처 목록</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='customer'}" class="nav-item">
+              <a href="/gms/customer/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래처 목록</p>
+                </a>
+              </li>
+             
+            </ul>
+          </li>
+          <li th:unless="${menuId=='customer'}" class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-hospital"></i>
+              <p>
+                	거래처 관리
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/gms/customer/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>거래처 목록</p>
+                </a>
+              </li>
+              
+            </ul>
+          </li>
+          <!--  거래처관리 메뉴  끝-->
+          <!--  상품관리 메뉴  시작 -->
+          <li th:if="${menuId=='gas' || menuId=='product' }" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-gas-pump"></i>
+              <p>
+                	상품 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li th:if="${menuId=='gas'}" class="nav-item">
+                <a href="/gms/gas/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>가스 목록</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='gas'}" class="nav-item">
+              <a href="/gms/gas/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>가스 목록</p>
+                </a>
+              </li>
+              <li th:if="${menuId=='product'}" class="nav-item">
+                <a href="/gms/product/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>상품 목록</p>
+                </a>
+              </li>    
+              <li th:unless="${menuId=='product'}" class="nav-item">
+                <a href="/gms/product/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>상품 목록</p>
+                </a>
+              </li>              
+            </ul>            
+          </li>
+          <li th:unless="${menuId=='gas' || menuId=='product'}" class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-gas-pump"></i>
+              <p>
+                	상품 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/gms/gas/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>가스 목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/gms/product/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>상품 목록</p>
+                </a>
+              </li>              
+            </ul>
+          </li>
+           <!--  상품관리 메뉴  끝 -->
+
+          <!--  사용자관리 메뉴  시작 -->
+          
+          <li th:if="${menuId=='calendar' }" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-users"></i>
+              <p th:text="${menuId}">
+                	사용자 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              
+              <li th:if="${menuId=='calendar'}" class="nav-item">
+                <a href="/gms/calendar/calendar.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>일정 관리</p>
+                </a>
+              </li> 
+              <li th:unless="${menuId=='calendar'}" class="nav-item">                
+                <a href="/gms/calendar/calendar.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>일정 관리</p>
+                </a>
+              </li>                          
+            </ul>
+          </li>    
+          <li th:unless="${menuId=='calendar' }" class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                	사용자 관리
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              
+              <li class="nav-item">
+                <a href="/gms/calendar/calendar.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>일정 관리</p>
+                </a>
+              </li>                            
+            </ul>
+          </li>   
+          <!--  사용자관리 메뉴  시작 -->
+          <li th:if="${menuId=='vacation' || menuId=='self'}" class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-user-check"></i>
+              <p>
+                	마이페이지
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              
+              <li th:if="${menuId=='vacation'}" class="nav-item">
+                <a href="/gms/schedule/list.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>휴가 등록</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='vacation'}" class="nav-item">
+                <a href="/gms/schedule/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>휴가 등록</p>
+                </a>
+              </li>
+              <li th:if="${menuId=='self'}" class="nav-item">
+                <a href="/gms/mypage/update.do" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>자기 정보 수정</p>
+                </a>
+              </li>
+              <li th:unless="${menuId=='self'}" class="nav-item">
+                <a href="/gms/mypage/update.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>자기 정보 수정</p>
+                </a>
+              </li>
+            </ul>
+          </li>    
+          <li th:unless="${menuId=='vacation' || menuId=='self'}" class="nav-item has-treeview"> 
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user-check"></i>
+              <p>
+                	마이페이지
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">              
+                         
+              <li class="nav-item">
+                <a href="/gms/schedule/list.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>휴가 등록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/gms/mypage/update.do" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>자기 정보 수정</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+ </html>

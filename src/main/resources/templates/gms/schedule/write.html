@@ -1,0 +1,180 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+
+<div class="wrapper">
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+var isOkay = false;
+
+// form 필드값 유효성 검사
+var validation = function(){
+	/*
+	var customerNm = $("#customerNm").val();
+	if(customerNm=="" || customerNm == null){
+		alert("거래처명을 입력해 주세요.");
+		$("#customerNm").focus();
+		isOkay = false;
+		return;
+	}
+	*/
+	/*
+	var result = (
+				isValid(scheduleStartDt, "휴가시작일", null, null)
+	);
+	
+	if ( result === false ) {
+		isOkay = false;
+		return;
+	}else{
+		isOkay = true;
+		return;
+	}
+	*/
+	isOkay = true;
+}
+
+
+
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+
+// 입력된 내용을 작성한다.
+var goWrite = function(){
+	validation();	
+
+	if(!isOkay){
+		return;
+	}
+	//alert(scheduleStartDt.value);
+	//alert(scheduleEndDt.value);
+	
+	if(scheduleEndDt.value=="") scheduleEndDt.value = scheduleStartDt.value;
+	var form = $("#writeForm");	
+	
+	form.submit();
+}
+
+	$(function() { 
+	  $('input[name="scheduleStartDt"]').daterangepicker({
+	    singleDatePicker: true,
+	    showDropdowns: true,
+	    autoUpdateInput: false,
+	    startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="scheduleStartDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY-MM-DD'));
+	  });
+	
+	  $('input[name="scheduleStartDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	  
+	  $('input[name="scheduleEndDt"]').daterangepicker({
+		    singleDatePicker: true,
+		    showDropdowns: true,
+		    autoUpdateInput: false,
+		      locale: {
+		          cancelLabel: 'Clear'
+		      }
+		  });
+		
+		  $('input[name="scheduleEndDt"]').on('apply.daterangepicker', function(ev, picker) {
+		      $(this).val(picker.startDate.format('YYYY-MM-DD'));
+		  });
+		
+		  $('input[name="scheduleEndDt"]').on('cancel.daterangepicker', function(ev, picker) {
+		      $(this).val('');
+		  });
+	});
+
+
+
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>휴가 등록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-8">
+            <div class="card">
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+             
+              <form id="writeForm" name="writeForm" class="form-horizontal" th:action="@{/gms/schedule/register.do}" th:object="${schedule}" method="post" >
+               
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="card-footer">휴가종류</th>
+                      <th colspan=2>
+                      	<input type="radio" name="scheduleType" id="scheduleType" value="1" checked="">  정기휴가                                   
+                      	<input type="radio" name="scheduleType" id="scheduleType" value="2"> 공휴
+					</th>
+                    
+                     <tr>                                   
+                      <th class="card-footer">휴가시작일</th>
+                      <th><input type="text" class="form-control" id="scheduleStartDt" name="scheduleStartDt" placeholder="휴가시작일"></th>
+                      <th>
+							<input type="radio" name="vacationGubun" id="vacationGubun" value="1" checked="">  전일                                   
+                      		<input type="radio" name="vacationGubun" id="vacationGubun" value="2"> 오전반차
+                      		<input type="radio" name="vacationGubun" id="vacationGubun" value="3"> 오후반차
+						</th>                      
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">휴가종료일</th>
+                      <th colspan=2><input type="text" class="form-control" id="scheduleEndDt" name="scheduleEndDt" placeholder="휴가종료일"></th>                      
+                    </tr>  
+                  </thead>                              
+                </table>                   
+            </div>
+          
+      		<div class="card-footer">
+                 <a href="#" th:onclick="history.back()"  class="btn btn-secondary float-left">취소</a>
+		          <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">
+            </div>		  
+                		
+            </form>   
+          	<!-- /.col-12 -->
+          </div>
+        </div>      
+        
+        
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

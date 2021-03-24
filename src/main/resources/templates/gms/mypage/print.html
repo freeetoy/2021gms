@@ -1,0 +1,79 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/blank">
+<th:block layout:fragment="content"> 
+
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
+
+<div class="wrapper">
+  <!-- Main content -->
+  <section class="invoice">
+    <!-- title row -->
+    <div class="row">
+      <div class="col-12">
+        
+      </div>
+      <!-- /.col -->
+    </div>
+    
+
+    <!-- Table row -->
+    <div class="row">
+      <div class="col-12 table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>순번</th>
+            <th>거래처</th>
+            <th>품명</th>
+            <th>용량</th>
+            <th>접수자</th>
+            <th>상태</th>
+            <th>요청일자</th>
+            <th>접수일</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:if="${not #lists.isEmpty( orderList )}" th:each="row : ${orderList}" style="font-size:13px;">
+                      <td th:text="${orderList.indexOf(row)+1}"></td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:text="${row.orderProductNm}"></td>
+                      <td th:text="${row.orderProductCapa}"></td>
+                      <td th:text="|${row.createNm}(${row.createId})|"></td>
+                      <th th:if="${row.orderProcessCdNm=='0210'}" th:text="${row.orderProcessCdNm}">
+                      <th th:unless="${row.orderProcessCdNm=='0210'}" style="color: red" th:text="${row.orderProcessCdNm}">
+                      </th>
+                      <td th:text="${#calendars.format( row.deliveryReqDt, 'yyyy-MM-dd' )}"></td>
+		     		  <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>   
+		     		                    
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( orderList )}">
+						<td colspan="8">조회된 결과가 없습니다.</td>
+					</tr>		
+          </tbody>
+        </table>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    
+  </section>
+  <!-- /.content -->
+</div>
+<!-- ./wrapper -->
+<input type="button" onclick="pagePrintPreview()" value="프린트하기"> <input type="button" value="닫기" onclick="window.close();">
+
+<script type="text/javascript">
+function pagePrintPreview(){
+
+	window.print();
+} 
+</script>
+<script type="text/javascript"> 
+  window.addEventListener("load", window.print());
+</script>
+
+    
+
+
+</th:block>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gms.web.admin.mapper.statistics.StatisticsCustomerMapper">
+	<resultMap id="StatisticsCustomerMap" type="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" >
+		<result property="customerId"			column="Customer_ID"				/>
+		<result property="statDt"				column="Stat_Dt"				/>
+		<result property="orderCount"			column="Order_Count"			/>
+		<result property="orderAmount"			column="Order_Amount"			/>
+		<result property="incomeAmount"			column="Income_Amount"			/>
+		<result property="receivableAmount"		column="Receivable_Amount"		/>
+		<result property="createId"				column="CREATE_ID"				/>
+		<result property="createDt"				column="CREATE_DT"				/>
+	</resultMap>
+	
+	<sql id="StatisticsCustomerColumns">
+		 Customer_ID         
+		 , Stat_Dt  
+		 , Order_Count    
+		 , Order_Amount 	
+		 , Income_Amount
+		 , Receivable_Amount
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
+	<!-- 
+	<insert id="inserDailyStatisticsCustomer">
+		INSERT INTO TB_Daily_Stat_Customer(
+			<include refid="StatisticsCustomerColumns" />
+		) 
+		SELECT tp.Customer_ID,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), IFNULL(Order_Count,0) , IFNULL(Order_Amount,0),'admin' ,now()
+		FROM tb_customer tp left join
+		( 
+			SELECT a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
+			FROM 	TB_Work_Bottle A
+			WHERE  	Bottle_Work_Cd in ('0308','0309')
+			AND 	DATE_FORMAT(A.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			GROUP BY A.customer_Id
+		) Tm  on tm.customer_id = tp.customer_ID
+	</insert>
+	 -->
+	<insert id="inserDailyStatisticsCustomer">
+		INSERT INTO TB_Daily_Stat_Customer(
+			<include refid="StatisticsCustomerColumns" />
+		) 
+		SELECT AA.customer_id,stat_dt,Order_Count,Order_Amount,Income_Amount,Receivable_Amount,'admin' ,now()
+		FROM 
+		(
+			SELECT tp.Customer_ID,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') stat_dt, IFNULL(Order_Count,0) Order_Count, IFNULL(Order_Amount,0) Order_Amount
+			FROM tb_customer tp left join
+			( 
+				SELECT a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
+				FROM 	TB_Work_Bottle A
+				WHERE  	Bottle_Work_Cd in ('0308','0309')
+				AND 	DATE_FORMAT(A.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+				GROUP BY A.customer_Id
+		) Tm  on tm.customer_id = tp.customer_ID ) AA left join
+		(
+			SELECT B.Customer_id, SUM(Income_Amount) Income_Amount,SUM(Receivable_Amount) Receivable_Amount
+			FROM tb_cash_flow B
+			WHERE DATE_FORMAT(B.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			GROUP BY B.customer_Id) BB
+		ON AA.Customer_id = BB.Customer_id
+	</insert>
+	
+	<insert id="inserMonthlyStatisticsCustomer">
+		INSERT INTO TB_Monthly_Stat_Customer(
+			<include refid="StatisticsCustomerColumns" />
+		)
+		SELECT Customer_ID
+			 , LEFT(Stat_Dt,7)
+			 , SUM(Order_Count)   
+			 , SUM(Order_Amount)  
+			 , SUM(Income_Amount)   
+			 , SUM(Receivable_Amount)  	 
+			 , 'admin'
+			 , NOW()
+		FROM TB_Daily_Stat_customer
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY Customer_ID,LEFT(Stat_Dt,7)
+	</insert>
+	
+	
+	<select id="selectDailylStatisticsCustomerList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsCustomerColumns" />
+		FROM
+			TB_Daily_Stat_Customer
+		WHERE
+			Customer_Id = #{searchCustomerId}		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+	
+	<select id="selectMontlylStatisticsCustomerList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsCustomerColumns" />
+		FROM
+			TB_Monthly_Stat_Customer
+		WHERE
+			Customer_Id = #{searchCustomerId}	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+</mapper>

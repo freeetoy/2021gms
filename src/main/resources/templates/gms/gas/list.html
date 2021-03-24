@@ -1,0 +1,219 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	function validationOfForm(form) {
+	
+		var result = (
+				   isValid(form.gasNm, "가스명", null, null)
+				&& isValid(form.gasCd, "가스코드", null, null)
+		);
+		
+		if ( result === false ) {
+			return false;
+		}
+	}
+	// end of function
+	
+	var fn_deleteGas = function(gasId){
+		               		
+		if(confirm("삭제하시겠습니까?")){	
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/gas/delete.do");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "gasId");
+	        hiddenField.setAttribute("value", gasId);
+
+	        form.appendChild(hiddenField);
+	        
+	        document.body.appendChild(form);
+
+	        form.submit();			
+		}                  		
+	}
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+	
+	var fn_modifyGas = function(gasId){
+	
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/gas/detail.do",
+			data:{
+				gasId : gasId
+			},
+			dataType: "json",
+		};
+		
+		ajax = callAjax(ajaxInfo);
+		
+		ajax.done(function(data){
+			console.log(data);
+		
+			console.log("####gasCd---"+data.gasCd);		
+			
+			$("#gasId").val(data.gasId);
+			$("#gasNm").val(data.gasNm);
+			$("#gasCd").val(data.gasCd);
+			//document.form1.gasNm1.value=data.gasNm;
+				
+			if(data.result == "fail"){
+				alert("가스가 존재하지 않습니다");			
+				return;
+			}
+			
+		});
+
+	};
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>가스 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">
+
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">가스 수정</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form role="form1" th:action="@{/gms/gas/modify.do}" th:object="${gas}" method="post" onsubmit="return validationOfForm(this)">
+            <input type="hidden" name="gasId" id="gasId"  class="form-control" >
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <input type="text" name="gasNm" id="gasNm" class="form-control" placeholder="가스명">
+                  </div>
+                  <div class="col-4">
+                    <input type="text" name="gasCd" id="gasCd" class="form-control" placeholder="가스코드">
+                  </div>
+                 
+                </div>
+              </div>            
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+              <button type="submit" class="btn btn-primary">저장</button>
+            </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      <div class="container-fluid">
+        
+        <div class="row" th:if="${session.LoginUser.userAuthority=='99'}" >
+          <div class="col-md-6">         
+            <!-- /.card -->
+			<form role="form" id="regForm" th:action="@{/gms/gas/register.do}" th:object="${gas}" method="post" onsubmit="return validationOfForm(this)">
+            <div class="card card-secondary">
+              <div class="card-header">
+                <h3 class="card-title">가스 등록</h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-5">
+                    <input type="text" name="gasNm" id="gasNm" class="form-control" placeholder="가스명">
+                  </div>
+                  <div class="col-5">
+                    <input type="text" name="gasCd" id="gasCd" class="form-control" placeholder="가스코드">
+                  </div>
+                  <div class="col-2">
+                  <button type="submit" class="btn btn-success">추가</button>
+                </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              </form>
+            </div>
+          </div>
+             <!-- /.card-body -->
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+             
+              
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>순번</th>
+                      <th>가스명</th>
+                      <th>가스코드</th>
+                      <th>등록자</th>
+                      <th>등록일</th>
+                      <th th:if="${session.LoginUser.userAuthority=='99'}" >관리</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( gasList )}" th:each="row : ${gasList}" style="font-size:14px;">
+                      <td th:text="${gasList.indexOf(row)+1}"></td>
+                      <th th:text="${row.gasNm}"></th>
+                      <th th:text="${row.gasCd}"></th>
+                      <td th:text="${row.createId}"></td>
+                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>
+                      <td th:if="${session.LoginUser.userAuthority=='99'}" >
+                      <a class="btn btn-info btn-xs" href="#" th:gasId="${row.gasId}" data-toggle="modal" data-target="#modal-default" th:onclick="fn_modifyGas([[ ${row.gasId} ]])"><i class="fas fa-pencil-alt"></i>수정 </a> 
+                      <a class="btn btn-danger btn-xs" href="#"  th:onclick="fn_deleteGas([[ ${row.gasId} ]])"><i class="fas fa-trash"></i>삭제</a>
+                      
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( gasList )}">
+						<td colspan="6">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

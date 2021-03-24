@@ -1,0 +1,302 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+
+<div class="wrapper">
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+var isOkay = false;
+$(document).ready(function(){
+	$("#bottleBarCd").on("focusout", function(){
+		if($(this).val() != ""){
+			checkName();
+		}
+	});
+	
+});
+// 리스트 페이지 이동
+var goList = function(){
+	$("#listForm").submit();
+};
+
+// form 필드값 유효성 검사
+var validation = function(){
+	
+	var result = (
+				isValid(bottleId, "용기코드", null, null)
+			&& isValid(bottleBarCd, "용기 바코드", null, null)
+			&& isValid(bottleCreateDt, "제조일", null, null)			
+			&& isValid(bottleChargeDt, "충전 기한", null, null)
+	);
+	
+	if ( result === false ) {
+		isOkay = false;
+		return;
+	}else{
+		isOkay = true;
+		return;
+	}
+	
+	isOkay = true;
+}
+
+//서버에 버전 데이터 존재 여부 확인 요청
+var checkName = function(){
+	var bottleBarCd = $("#bottleBarCd").val();
+
+	var ajaxInfo ={
+		type:"POST",
+		url:"/gms/bottle/CheckBottleId.do",
+		data:{
+			bottleBarCd : bottleBarCd
+		},
+		dataType: "json",
+	};
+	ajax = callAjax(ajaxInfo);
+	ajax.done(function(data){
+		if(data.result == "fail"){
+			alert(data.message);
+			$("#bottleBarCd").val("");
+			$("#bottleBarCd").focus();
+			isOkay = false;
+			return;
+		}
+	});
+};
+
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+//숫자 여부 검사
+function isNumber(input){
+	var chars = "0123456789";
+		return containsCharsOnly(input,chars);
+};
+
+function containsCharsOnly(input,chars) {
+	input = String(input);
+	for (var inx = 0; inx < input.length; inx++) {
+		if (chars.indexOf(input.charAt(inx)) == -1) {
+			return false;
+		}else{
+		}
+	};
+	return true;
+};
+
+// 입력된 내용을 작성한다.
+var goWrite = function(){
+	validation();
+	
+	//alert("isOkay=="+isOkay);
+	if(!isOkay){
+		return;
+	}
+	
+	var form = $("#writeForm");	
+	
+	form.submit();
+}
+
+	$(function() { 
+	  $('input[name="bottleCreateDt"]').daterangepicker({
+	    singleDatePicker: true,
+	    showDropdowns: true,
+	    autoUpdateInput: false,
+	    startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="bottleCreateDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="bottleCreateDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	  
+	  $('input[name="bottleChargeDt"]').daterangepicker({
+		    singleDatePicker: true,
+		    showDropdowns: true,
+		    autoUpdateInput: false,
+		      locale: {
+		          cancelLabel: 'Clear'
+		      }
+		  });
+		
+		  $('input[name="bottleChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
+		      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+		  });
+		
+		  $('input[name="bottleChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
+		      $(this).val('');
+		  });
+	});
+
+
+$(document).ready(function(){ 
+	
+	$('#productId').change( function(){
+
+		var productId = $('#productId').val();		
+		initCapa(productId);
+	});
+	
+	function initCapa(productId){
+	     
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ productId ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+		  
+	    	var i=0;			
+	    	$('#productPriceSeq').find('option').remove(); 
+			for(i=0; i< data.length;i++) {
+				
+				$('#productPriceSeq').append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')				
+			}			
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+	} 	
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>용기 등록</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-md-7">
+            <div class="card">
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+              
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/bottle/register.do}" th:object="${bottle}" method="post" >
+                <input type="hidden" id="gasId" name="gasId" value="">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="card-footer">용기 코드</th>
+                      <th><input type="text" class="form-control" id="bottleId" name="bottleId" placeholder="용기 코드"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">용기 바코드</th>
+                      <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" placeholder="용기 바코드"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">가스코드</th>
+                      <th><input type="text" class="form-control" id="gasCd" name="gasCd" placeholder="가스CD "></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상품</th>
+                      <th>
+                      <select id="productId" name="productId" class="form-control">
+                          <option value="0">상품선택</option>				    
+					        <option th:each="row : ${productList}"
+					                th:text="${row.productNm}"
+					                th:value="${row.productId}"
+					               >
+					        </option>					
+                        </select>
+					  </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">가스 용량</th>
+                      <th>
+                      <select id="productPriceSeq" name="productPriceSeq" class="form-control" >
+	                        <option value="0">옵션</option>			                      	
+					   </select>	                       
+                    </tr>
+                    
+                    <tr>
+                      <th class="card-footer">충전용량</th>
+                      <th><input type="text" class="form-control" id="chargeCapa" name="chargeCapa" placeholder="충전용량 "></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">제조일</th>
+                      <th><input type="text" class="form-control" id="bottleCreateDt" name="bottleCreateDt" placeholder="제조일"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">충전 기한</th>
+                      <th><input type="text" class="form-control" id="bottleChargeDt" name="bottleChargeDt" placeholder="충전 기한"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">용기 체적</th>
+                      <th><input type="text" class="form-control" id="bottleVolumn" name="bottleVolumn" placeholder="용기 체적"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">충전 압력</th>
+                      <th><input type="text" class="form-control" id="bottleChargePrss" name="bottleChargePrss" placeholder="충전 압력"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">용기 소유</th>
+                      <th>      
+                      	<select id="ownCustomerId" name="ownCustomerId" class="form-control">
+                          <option value="0">소유거래처</option>				    
+					        <option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					               >
+					        </option>					
+                        </select>       
+                      	<!-- <input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="N" checked=""> 자사                                   
+                      	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
+					  </th>   
+                    </tr>                   
+                    
+                  </thead>
+                              
+                </table>               
+              
+            </div>
+            
+     		<div class="card-footer">
+                <a href="/gms/bottle/list.do" class="btn btn-secondary float-left">취소</a>
+	          <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">
+            </div>		  
+                 		
+            </form>   
+          	<!-- /.col-12 -->
+          </div>
+        </div>      
+        
+        
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

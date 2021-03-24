@@ -1,0 +1,239 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">	
+var goUpdate = function(bottleBarCd){		
+	
+	//alert("goUpdate "+bottleId);
+	
+	var form = $("#mainForm");	
+
+	$("#bottleBarCd").val(bottleBarCd);
+	
+	//document.getElementById("priceCount").value = totalCount;
+	mainForm.action="/gms/bottle/update.do";
+	form.submit();
+}
+	
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/order/monitor.do";
+		form.submit();
+	};
+
+
+
+	function gotoPage(pageNo) {
+		
+		var form =  document.mainForm;			
+		
+		$("#currentPage").val(pageNo);  
+		 mainForm.action="/gms/order/monitor.do";
+        //validate checkt시 confirm 중복되는 부분 처리 
+       
+    	mainForm.submit();
+    }
+	
+
+	$(function() {
+	
+	  $('input[name="searchChargeDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      language: "kr",
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }	  	
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+	
+	});	
+
+$(document).ready(function(){
+	$(".btn-navbar").click(function()  
+    {
+		var form = document.mainForm;	
+		$("#currentPage").val(1);  
+		mainForm.action="/gms/order/monitor.do";
+		mainForm.submit();
+      
+    });
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래 현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+   
+    <section class="content">         
+   
+    	<div class="row">        	
+    		
+            <div class="col-1">
+            <form id="mainForm" name="mainForm"  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="bottleBarCd" name="bottleBarCd" value="">    
+              
+               	<label>작업일자</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" name="searchChargeDt" th:value="${searchChargeDt}"/>			
+            </div>               
+            <div class="col-3">               
+            </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
+    	<div class="row">
+    		
+           	<div class="col-1">
+               		<label >거래처명</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" id="searchCustomerNm" name="searchCustomerNm" class="form-control" th:value="${searchCustomerNm}">
+            </div>  
+            
+              <div class="col-5">
+                <button class="btn btn-navbar" type="button"><i class="fas fa-search"></i></button>           
+              </div>  
+                       
+              <!-- >div class="col-1">
+               		
+              </div-->
+              <div class="col-2">
+              	
+              </div>
+              </form>  
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <td th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|">
+		            <td th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|">
+		        </tr>	         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th>순번</th>
+                      <th>용기코드</th>
+                      <th>바코드</th>
+                      <th>거래처</th>
+                      <th>상품</th>
+                      <th>용량</th>
+                      <th>작업</th>    
+                      <th>작업자</th>                  
+                      <th>작업일</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                 
+                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" style="font-size:14px;">
+                      <td th:text="${totalCount-((currentPage-1)*15) - bottleList.indexOf(row)}"></td>
+                      <td th:text="${row.bottleId}"></th>
+                      <td>
+                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
+                      </td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:if="${row.bottleWorkCd=='0330'}" th:text="${#numbers.formatDecimal(row.productNm, 3, 'COMMA' ,2,'POINT')}"></td>
+                      <td th:unless="${row.bottleWorkCd=='0330'}" th:text="${row.productNm}"></td>
+                      <td th:text="${row.bottleCapa}"></td>
+                      <th th:text="${row.bottleWorkCdNm}"></th>                      
+                      <td th:text="|${row.bottleWorkNm}(${row.bottleWorkId})|"></td>      
+                      <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd HH:mm' )}"></td> 
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( bottleList )}">
+						<td colspan="8">조회된 결과가 없습니다.</td>
+					</tr>			</form>			
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+         <div class="row">								
+			<div class="col-12">
+				<div class="pagination justify-content-center m-0" id="example2_paginate">
+					<ul class="pagination" style="font-size:14px;">
+						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
+							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						
+						<li th:if="${currentPage<=1}" class="paginate_button page-item previous disabled" id="example2_previous">
+							<a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
+						</li>
+						<th:block th:each="num:${#numbers.sequence(startPageNum, lastPageNum)}">
+						
+						<li th:if="${currentPage == num}" class="paginate_button page-item active">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+					
+						<li th:unless="${currentPage == num}" class="paginate_button page-item">
+							<a href="#" th:onclick="gotoPage([[ ${num} ]])" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">[[${num}]]</a>
+						</li>
+						</th:block>
+					
+						<li th:if="${currentPage < lastPage}" class="paginate_button page-item next" id="example2_next">
+						<a href="#" th:onclick="gotoPage([[ ${currentPage +1} ]])" aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+						<li th:if="${currentPage >= lastPage}" class="paginate_button page-item next disabled" id="example2_next">
+						<a href="#"  aria-controls="example2" data-dt-idx="7" tabindex="0" class="page-link">다음</a>
+						</li>
+        			</ul>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			<!-- a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteBottles()">
+                              <i class="fas fa-trash"></i>선택삭제</a-->   
+			</div>
+		</div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>

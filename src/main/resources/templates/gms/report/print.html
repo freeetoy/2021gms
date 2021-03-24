@@ -1,0 +1,113 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/blank">
+
+<th:block layout:fragment="content"> 
+  <!-- jQuery -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="1242" style="border-collapse:collapse;width:936pt;">
+
+ <colgroup><col width="69" span="18" style="width:52pt;">
+ </colgroup><tbody><tr height="35" style="height:24.9pt;">
+  <td colspan="18" rowspan="2" height="66" width="1242" style="color:#0606DE;font-size:18.0pt;font-weight:700;text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:49.8pt;width:936pt;">차량운행 및 판매일지</td>
+ </tr>
+ <tr height="35" style="height:24.9pt;">
+ </tr>
+ <tr height="35" style="height:24.9pt;">
+  <td height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">날 짜</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;"  th:text="${searchDt}">2021-02-21</td>
+  <td colspan="8" width="552" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid black;border-bottom:none;border-left:none;white-space:normal;width:416pt;">　</td>
+  <td rowspan="4" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid windowtext;white-space:normal;width:52pt;">결<br>
+    <br>
+    제</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;width:104pt;">담 당</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">과 장</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">사 장</td>
+ </tr>
+ <tr height="35" style="height:24.9pt;">
+  <td colspan="11" rowspan="2" height="66" width="759" style="text-align:center;border-top:none;border-right:1pt solid black;border-bottom:none;border-left:1pt solid #0606DE;white-space:normal;height:49.8pt;width:572pt;">　</td>
+  <td colspan="2" rowspan="3" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:none;border-bottom:1pt solid #0606DE;border-left:1pt solid windowtext;white-space:normal;width:104pt;"></td>
+  <td colspan="2" rowspan="3" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;width:104pt;"></td>
+  <td colspan="2" rowspan="3" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;width:104pt;"></td>
+ </tr>
+ <tr height="35" style="height:24.9pt;">
+ </tr>
+ <tr height="35" style="height:24.9pt;">
+  <td colspan="11" height="35" width="759" style="text-align:left;border-top:none;border-right:none;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:572pt;"><span>  </span>차 량 번 호 :</td>
+ </tr> 
+ </table>
+
+ <table border="0" cellpadding="0" cellspacing="0" width="1242" style="border-collapse:collapse;width:936pt;">
+ <tr height="35" style="height:24.9pt;">
+  <td height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">#</td>
+  <td colspan="3" width="207" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">거 래 처</td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">납 품 </td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">회수</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">주 문 금 액</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">수 금 액</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">비 고</td>
+ </tr>
+ <tr height="35" style="height:24.6pt;" th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}">
+  <td th:text="${workList.indexOf(row)+1}" height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.6pt;width:52pt;">8</td>
+  <td th:text="${row.CustomerNm}" colspan="3" width="207" style="text-align:left;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">O2(의료용)</td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">
+  	<table>     
+       	<tr th:if="${not #lists.isEmpty(row.salesBottles )}" th:each="row1 : ${row.salesBottles}"  >
+			<td style="text-align:left;" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' "></td>
+        </tr>
+	</table>
+  </td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">
+  <table>     
+    	<tr  th:if="${not #lists.isEmpty(row.backBottles )}" th:each="row2 : ${row.backBottles}" >
+    		<td th:if="${row2.bottleWorkCd !='0310'}" style="text-align:left;" th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount} + ' (' + ${row2.bottleWorkCdNm} + ')'"></td>
+    		<td th:unless="${row2.bottleWorkCd !='0310'}" style="text-align:left;" th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount} "></td>
+    	</tr>
+   </table>
+  </td>
+  <td th:if="${row.orderAmount> 0 && row.orderAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.orderAmount, 3, 'COMMA')}" colspan="2" width="138" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
+  <td th:if="${row.orderAmount> 0 && row.orderAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.orderAmount, 3, 'COMMA', 2,'POINT')}" colspan="2" width="138" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
+  <td th:if="${row.orderAmount == 0 }" th:text="${row.orderAmount}" colspan="2" width="138" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
+  
+  <td th:if="${row.receivedAmount > 0 && row.receivedAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA')}" colspan="2" width="138" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
+  <td th:if="${row.receivedAmount > 0 && row.receivedAmount * 100 % 100 > 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA', 2,'POINT')}" colspan="2" width="138" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
+  <td th:if="${row.receivedAmount == 0}" th:text="${row.receivedAmount}" colspan="2" width="138" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
+  <td th:text="${row.incomeWay}" colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:none;border-left:none;white-space:normal;width:104pt;">비 고</td>
+ </tr>
+ <tr height="35" style="height:24.9pt;" th:each="seq :${#numbers.sequence(1,25-workList.size())}">
+  <td height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">　</td>
+  <td colspan="3" width="207" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">　</td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">　</td>
+  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">　</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
+  <td colspan="2" width="138" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
+ </tr>
+ 
+ <tr height="35" style="height:24.9pt;">
+  <td height="35" width="69" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">비고</td>
+  <td colspan="8" style="text-align:center;border-top:1pt solid #0606DE;border-right:none;border-bottom:1pt solid #0606DE;border-left:none;">　</td>
+  <td colspan="3" width="207" style="color:windowtext;font-weight:700;text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;width:156pt;">합<span>     </span>계<span>     </span>금<span>   
+  </span>액</td>
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px"></td>
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday > 0 && receivedAmountToday * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(receivedAmountToday, 3, 'COMMA')}">22,000</td>
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday > 0 && receivedAmountToday * 100 % 100 > 0 }" th:text="${#numbers.formatInteger(receivedAmountToday, 3, 'COMMA', 2,'POINT')}">22,000</td>
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday == 0}" th:text="${receivedAmountToday}">22,000</td>
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
+ </tr>
+
+</tbody></table><p><br></p>
+<p><br></p>
+
+
+
+<!-- 
+<input type="button" onclick="pagePrintPreview()" value="프린트하기"> <input type="button" value="닫기" onclick="window.close();">
+ -->
+<script type="text/javascript">
+//function pagePrintPreview(){
+
+	window.print();
+//} 
+</script>
+</th:block>

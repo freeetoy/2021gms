@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<th:block th:include="gms/fragments/header"></th:block>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <th:block th:include="gms/fragments/navi"></th:block>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+
+  
+  <th:block th:if="${session.LoginUser ne null && session.LoginUser.userPartCd =='01' && session.LoginUser.userAuthority=='01' }" th:include="gms/fragments/leftmenu"></th:block>
+  <th:block th:unless="${session.LoginUser ne null && session.LoginUser.userPartCd =='01' && session.LoginUser.userAuthority=='01'}" th:include="gms/fragments/leftmenu_other"></th:block>
+  <th:block th:if="${session.LoginUser ne null && session.LoginUser.userAuthority=='99'}" th:include="gms/fragments/leftmenuManager"></th:block>  
+  
+  <!-- Content Wrapper. Contains page content -->
+  <th:block layout:fragment="content"></th:block>
+  <!-- /.content-wrapper -->
+  <th:block th:include="gms/fragments/footer"></th:block>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+
+</html>

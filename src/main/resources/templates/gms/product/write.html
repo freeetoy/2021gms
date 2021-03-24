@@ -1,0 +1,204 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+
+function validationOfForm(form) {
+
+	 var gasId = document.getElementById('gasId').value;
+	 //form.gasId = gasId.value;
+    
+        /* VALUE */   console.log(gasId.value);
+        /* TEXT */    console.log(gasId.options[gasId.selectedIndex].text);
+
+	var result = (
+			   isValid(form.productNm, "상품명", null, null)
+			&& isValid(form.productPrice_0, "상품가격", null, null)
+	);
+	
+	if ( result === false ) {
+		return false;
+	}
+}
+// end of function
+
+
+//Ajax공통 호출
+function callAjax(ajaxInfo){
+	var dfd = $.Deferred();
+	$.ajax(ajaxInfo).done(function(data){
+		dfd.resolve(data);
+	});
+	
+	return dfd.promise();
+}
+
+
+$(document).ready(function(){ 
+	
+	var counter = 0;
+	$("#addrow").on("click", function () {
+
+        counter++;
+        
+        if (counter > 50){
+
+          alert('더 이상 추가 할수 없습니다.');
+          return false;
+
+        }
+     
+        var newRow = $("<tr  style='font-size:14px;''>");
+        var cols = "";
+
+        cols += '<td style="padding-left:0px;">';
+        cols += '<input type="text" class="form-control" id="productCapa_'+ counter + '" name="productCapa_'+ counter + '" placeholder="상품용량">';
+		cols += '</td><td>';
+		cols += '<input type="text" class="form-control" id="productPrice_'+ counter + '" name="productPrice_'+ counter + '" placeholder="대여가격">';        
+		cols += '</td><td>';		
+		cols += '<input type="text" class="form-control" id="eCountCd_'+ counter + '" name="eCountCd_'+ counter + '" placeholder="대여ECount">';
+        cols += '</td><td>';
+        cols += '<input type="text" class="form-control" id="productBottlePrice_'+ counter + '" name="productBottlePrice_'+ counter + '" placeholder="판매가격">';        
+		cols += '</td><td>';		
+		cols += '<input type="text" class="form-control" id="eCountCdS_'+ counter + '" name="eCountCdS_'+ counter + '" placeholder="판매ECount">';
+        cols += '</td><td>';
+        cols += ' <input type="button" class="ibtnDel btn btn-md btn-danger" id="addrow" value="삭제" />';
+        cols += '</td>';
+        cols +='</tr>';        
+
+        newRow.append(cols);
+               
+        $("#priceCount").val(counter+1);
+        $("table.doc-list").append(newRow);
+     
+    });
+
+
+    //수정시 row 추가
+     var mod_counter = 0;
+    
+    // row 삭제    
+    $("table.doc-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();       
+        counter -= 1
+        $("#priceCount").val(counter+1);
+    });
+
+
+    $("table.mod-doc-list").on("click", ".ibtnDelMod", function (event) {
+        $(this).closest("tr").remove();       
+        mod_counter -= 1
+    });
+
+
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>상품 등록</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+        <div class="row">
+          <div class="col-10">
+            <div class="card">
+             
+              
+             <!-- general form elements -->                        
+              <!-- /.card-header -->
+              <div class="col-10">
+              <form class="form-horizontal" th:action="@{/gms/product/register.do}" th:object="${product}" method="post" onsubmit="return validationOfForm(this)">
+              <input type="hidden" id="priceCount" name="priceCount" value="1">
+                <table class="table table-hover">
+                  <thead>
+                      <th class="card-footer">상품명</th>
+                      <th><input type="text" class="form-control" id="productNm" name="productNm" placeholder="상품명"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">가스</th>
+                      <th>
+                      <select id="gasId" name="gasId" class="form-control">
+                          <option value="0">가스선택</option>
+                          <option value="-1">Tank</option>
+                          <label class="labelWidthExtra">					    
+					        <option th:each="row : ${gasList}"
+					                th:text="${row.gasNm}"
+					                th:value="${row.gasId}"
+					               >
+					        </option>					
+                        </select>
+                        </th>
+                    </tr>            
+                  </thead>
+                </table>        
+                <div class="form-group">
+                   <label class="control-label col-10">상품정보</label>
+                   <div class="col-md-12 col-sm-10 col-xs-12">
+                       <table id="myTable" class="table doc-list">
+                       <tr style="font-size:14px;">
+                       	 <td>상품용량</td>
+                         <td>대여가격</td>
+                         <td>대여ECount</td>
+                         <td>판매가격</td>
+                         <td>판매ECount</td>
+                         <td></td>
+                       </tr>
+                       <tr style="font-size:14px;">
+                       <td  style="padding-left:0px;"> 
+                         <input type="text" class="form-control" id="productCapa_0" name="productCapa_0" placeholder="상품용량">
+                       </td> 
+                       <td >                                           
+                         <input type="text" class="form-control" id="productPrice_0" name="productPrice_0" placeholder="대여가격">
+                       </td>                       
+                       <td> 
+                         <input type="text" class="form-control" id="eCountCd_0" name="eCountCd_0" placeholder="대여ECount코드">
+                       </td>   
+                       <td  style="padding-left: 0px;">                                           
+                         <input type="text" class="form-control" id="productBottlePrice_0" name="productBottlePrice_0" placeholder="판매가격">
+                       </td>                       
+                       <td style="font-size:13px;"> 
+                         <input type="text" class="form-control" id="eCountCdS_0" name="eCountCdS_0" placeholder="판매ECount코드">
+                       </td>   
+                       <td>
+                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
+                       </td>
+                       </tr>
+                     </table>
+                     </div>
+                 </div>
+                
+              </div>
+            </div>
+            <!-- /.card -->
+            
+            <div class="card-footer">
+                 <a href="/gms/product/list.do" class="btn btn-secondary float-left">취소</a>
+		          <input type="submit" value="저장" class="btn btn-success float-right">
+            </div>		     		
+            </form>   
+          	
+        </div>
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

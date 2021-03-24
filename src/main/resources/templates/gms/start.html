@@ -1,0 +1,145 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">	
+$(document).ready(function(){
+	$(".btn-navbar").click(function()  
+    {
+		var form = document.mainForm;	
+		
+		mainForm.action="/gms/start";
+		mainForm.submit();
+      
+    });
+});
+
+var goUpdate = function(bottleBarCd){		
+	
+	//alert("goUpdate "+bottleId);
+	//console.log("goUpdate bottleId ="+bottleId);
+	var form = $("#mainForm");	
+
+	$("#bottleBarCd").val(bottleBarCd);
+   	
+   	//document.getElementById("priceCount").value = totalCount;
+   	mainForm.action="/gms/bottle/update.do";
+   	form.submit();
+}
+</script>
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>오늘의 거래 현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+   
+    <section class="content">         
+   
+    	
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        <form id="mainForm" name="mainForm"  method="post">
+        <input type="hidden" id="bottleBarCd" name=bottleBarCd value="">
+         <div class="row">	         
+	        <div class="col-2">
+               	<select id="searchWorkCd" name="searchWorkCd" class="form-control">
+                    <option value="">작업</option>				    
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:if="${searchWorkCd ==row.cdId}" selected>					             
+			        </option>	
+			        <option th:each="row : ${codeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:unless="${searchWorkCd ==row.cdId}">					             
+			        </option>					        				
+                 </select>
+              </div>        
+              <div class="col-10">
+                <button class="btn btn-navbar" type="button">
+		            <i class="fas fa-search"></i>
+		          </button>           		
+              </div>         
+        </div>
+        </form>
+         <div class="row">	
+	        <div class="col-12">
+	        <table>
+	        	<tr>
+			        <td th:if="${totalCount > 999 }" th:text="|총 ${#numbers.formatInteger(totalCount, 3, 'COMMA')}개|">
+		            <td th:unless="${totalCount > 999  }" th:text="|총 ${totalCount}개|">
+		        </tr>	         
+	         </table>
+	        </div>
+        </div>
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">                
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th>순번</th>
+                      <th>용기코드</th>
+                      <th>바코드</th>
+                      <th>거래처</th>
+                      <th>상품</th>
+                      <th>용량</th>
+                      <th>작업</th>  
+                      <th>작업자</th>                      
+                      <th>작업일</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                 
+                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" style="font-size:14px;">
+                      <td th:text="${bottleList.indexOf(row)+1}"></td>
+                      <td th:text="${row.bottleId}"></th>
+                      <td>
+                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
+                      </td>
+                      <td th:text="${row.CustomerNm}"></td>
+                      <td th:if="${row.bottleWorkCd=='0330'}" th:text="${#numbers.formatDecimal(row.productNm, 3, 'COMMA' ,2,'POINT')}"></td>
+                      <td th:unless="${row.bottleWorkCd=='0330'}" th:text="${row.productNm}"></td>
+                      <td th:text="${row.bottleCapa}"></td>
+                      <td th:text="${row.bottleWorkCdNm}"></td>   
+                      <td th:text="|${row.bottleWorkNm}(${row.bottleWorkId})|"></td>                 
+                      <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd HH:mm' )}"></td> 
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( bottleList )}">
+						<td colspan="9">조회된 결과가 없습니다.</td>
+					</tr>			</form>			
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>
