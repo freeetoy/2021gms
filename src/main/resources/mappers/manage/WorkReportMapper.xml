@@ -46,7 +46,8 @@
 		<result property="productCount"			column="Product_Count"			/>
 		<result property="orderId"				column="Order_ID"				/>
 		<result property="orderTotalAmount"		column="Order_Total_Amount"		/>
-		<result property="bottleSaleYn"			column="Bottle_Sale_YN"		/>
+		<result property="bottleSaleYn"			column="Bottle_Sale_YN"			/>
+		<result property="gasCd"				column="Gas_CD"					/>
 		<result property="createId"				column="CREATE_ID"				/>		
 		<result property="createDt"				column="CREATE_DT"				/>
 		<result property="updateId"				column="UPDATE_ID"				/>		
@@ -113,6 +114,7 @@
 		 , Product_Price
 		 , Bottle_Type
 		 , Bottle_Sale_YN
+		 , Gas_CD
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -157,6 +159,7 @@
 			, #{productPrice}
 			, #{bottleType}
 			, #{bottleSaleYn}
+			, #{gasCd}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -182,6 +185,7 @@
 			, #{item.productPrice}
 			, #{item.bottleType}
 			, #{item.bottleSaleYn}
+			, #{item.gasCd}
 			, #{item.createId}			
 			<if test='item.manualYn== "Y"'>			
 			, (SELECT Create_Dt From TB_Work_Report WHERE Work_Report_Seq=#{item.workReportSeq})
@@ -753,7 +757,7 @@
 			AND	
 				TW.User_ID= TU.User_ID
 			AND	
-				TW.customer_id = TCU.`Customer_ID`
+				TW.customer_id = TCU.Customer_ID
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 			AND TWB.Bottle_Work_CD =  #{searchWorkCd}
 			</if>	

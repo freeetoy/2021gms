@@ -63,4 +63,7 @@ public class ECountVO {
 	private String bottleSaleYn;	//용기 판매 여부
 	
 	private String bottleWorkCd;	
+	
+	/** Gas_CD */
+	private String gasCd ;
 }

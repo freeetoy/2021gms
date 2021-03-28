@@ -1983,7 +1983,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		
 		for(int i=0; i < param.getProductCount() ; i++) {
 			WorkBottleVO workBottle = new WorkBottleVO();
-			logger.debug("workSeq="+workSeq);
+			//logger.debug("workSeq="+workSeq);
 			workBottle.setWorkReportSeq(param.getWorkReportSeq());
 			workBottle.setWorkSeq(workSeq++);
 			workBottle.setBottleId(bottle.getBottleId());
@@ -3306,6 +3306,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setProductPriceSeq(bottle.getProductPriceSeq());		
 		workBottle.setBottleWorkCd(bottle.getBottleWorkCd());
 		workBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.FULL"));
+		workBottle.setGasCd(bottle.getGasCd());
 		
 		return workBottle;		
 	}

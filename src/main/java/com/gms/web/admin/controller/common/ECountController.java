@@ -153,7 +153,10 @@ public class ECountController {
 		        //품목명	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getProductNm());
+		        if(vo.getProductNm().equals("믹스가스") && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
+		        	cell.setCellValue(vo.getProductNm()+"("+vo.getGasCd()+")");
+		        else
+		        	cell.setCellValue(vo.getProductNm());
 		        
 		        //규격	
 		        cell = row.createCell(k++);
