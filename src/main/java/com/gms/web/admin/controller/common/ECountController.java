@@ -156,12 +156,14 @@ public class ECountController {
 		        if(vo.getProductNm().equals("믹스가스") && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
 		        	cell.setCellValue(vo.getProductNm()+"("+vo.getGasCd()+")");
 		        else
-		        	cell.setCellValue(vo.getProductNm());
+		        	cell.setCellValue("");
+		        	//cell.setCellValue(vo.getProductNm());
 		        
 		        //규격	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getProductCapa());
+		        cell.setCellValue("");
+		        //cell.setCellValue(vo.getProductCapa());
 		        
 		        //수량	
 		        cell = row.createCell(k++);
