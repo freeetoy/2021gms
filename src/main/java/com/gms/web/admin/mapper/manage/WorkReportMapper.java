@@ -74,4 +74,6 @@ public interface WorkReportMapper {
 	public int deleteWorkBottleProductWorkCd(WorkBottleVO param);
 	
 	public List<WorkBottleVO> selectWorkBottleListOfWorkBottleCd(WorkBottleVO params);	
+	
+	public List<WorkBottleVO> selectWorkBottleListOfCustomerToday(Integer customerId);	
 }

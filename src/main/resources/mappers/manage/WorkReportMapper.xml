@@ -857,4 +857,15 @@
 		WHERE
 			Work_Report_Seq = #{workReportSeq}			
 	</update>	
+	
+	<select id="selectWorkBottleListOfCustomerToday" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="Integer">		
+		SELECT 
+			<include refid="WorkBottleColumns" />
+		FROM 
+			TB_Work_Bottle 
+		WHERE
+			Customer_Id = #{customerId}		
+		AND 
+			DATE_FORMAT(Create_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+	</select>
 </mapper>

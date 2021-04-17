@@ -170,7 +170,7 @@ public class ApiController {
 		param.setUpdateId(param.getUserId());
 		param.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
 		
-		logger.debug("단품판매 start");
+		
 		//workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 		result = apiService.registerWorkReportNoGas(param);			
 		
@@ -463,6 +463,7 @@ public class ApiController {
 		return productList;
 	}
 	
+		
 	@RequestMapping(value = "/api/customerBottleList.do")
 	@ResponseBody
 	public List<CustomerProductVO> getCustomerBottleList(String customerNm)	{	

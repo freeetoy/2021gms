@@ -18,6 +18,7 @@ import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.mapper.manage.CustomerMapper;
 
 import net.sf.ehcache.CacheManager;
@@ -427,6 +428,12 @@ public class CustomerServiceImpl implements CustomerService {
 	public int deleteCustomerProducts(Integer customerId) {
 		
 		return customerMapper.deleteCustomerProduct(customerId);
+	}
+
+	@Override
+	public CustomerPriceVO getCustomerLn2Capa(WorkBottleVO param) {
+		// TODO Auto-generated method stub
+		return customerMapper.selectCustomerLn2Capa(param);
 	}	
 
 

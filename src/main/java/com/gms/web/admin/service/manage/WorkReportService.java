@@ -71,4 +71,6 @@ public interface WorkReportService {
 	public int deleteWorkReportAndBottle(WorkReportVO report,WorkBottleVO workBottle);
 	
 	public int registerWorkBottleChargeTank(WorkBottleVO param);
+	
+	public List<WorkBottleVO> getWorkBottleListOfCustomerToday(Integer customerId);	
 }

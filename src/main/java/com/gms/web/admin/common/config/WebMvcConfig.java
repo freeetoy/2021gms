@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.gms.web.admin.common.web.interceptor.SessionCheckInterceptor;
 
+
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 

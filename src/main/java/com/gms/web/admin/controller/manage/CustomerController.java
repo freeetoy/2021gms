@@ -30,10 +30,13 @@ import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.UserVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
+import com.gms.web.admin.service.manage.OrderService;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.manage.UserService;
+import com.gms.web.admin.service.manage.WorkReportService;
 
 @Controller
 public class CustomerController {
@@ -53,6 +56,9 @@ public class CustomerController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private WorkReportService workService;
 	
 	
 	@RequestMapping(value = "/gms/customer/list.do")
@@ -368,10 +374,19 @@ public class CustomerController {
 		logger.info(" registerCustomerPrice");	
 		
 		try {
-			model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));		
-			int priceCount  = Integer.parseInt(request.getParameter("priceCount"));
 			
-			boolean result=false;
+			boolean result = false;
+			
+			model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));				
+			
+			String[] productIdArray = request.getParameterValues("productId");
+			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
+			String[] productPriceArray = request.getParameterValues("productPrice");
+			String[] productBottlePriceArray = request.getParameterValues("productBottlePrice");
+
+			
+			int priceCount  = productIdArray.length;
+			
 			
 			//result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
 			CustomerPriceVO[] customerPrice = new CustomerPriceVO[priceCount];
@@ -383,28 +398,54 @@ public class CustomerController {
 				
 				RequestUtils.initUserPrgmInfo(request, priceVo);
 				result = false;			
-				
 				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
-				priceVo.setProductId(Integer.parseInt(request.getParameter("productId_"+i)));
-				priceVo.setProductPriceSeq(Integer.parseInt(request.getParameter("productPriceSeq_"+i)));
-				priceVo.setProductPrice(Float.parseFloat(request.getParameter("productPrice_"+i)));
-				if(request.getParameter("productBottlePrice_"+i) != null && request.getParameter("productBottlePrice_"+i).length() > 0 )	bottlePrice = request.getParameter("productBottlePrice_"+i);
-				else bottlePrice = "0";
-				priceVo.setProductBottlePrice(Float.parseFloat(bottlePrice));
-					
+				priceVo.setProductId(Integer.parseInt(productIdArray[i]));
+				priceVo.setProductPriceSeq(Integer.parseInt(productPriceSeqArray[i]));
+				priceVo.setProductPrice(Float.parseFloat(productPriceArray[i]));
+				priceVo.setProductBottlePrice(Float.parseFloat(productBottlePriceArray[i]));
+				
+//				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
+//				priceVo.setProductId(Integer.parseInt(request.getParameter("productId_"+i)));
+//				priceVo.setProductPriceSeq(Integer.parseInt(request.getParameter("productPriceSeq_"+i)));
+//				priceVo.setProductPrice(Float.parseFloat(request.getParameter("productPrice_"+i)));
+//				if(request.getParameter("productBottlePrice_"+i) != null && request.getParameter("productBottlePrice_"+i).length() > 0 )	bottlePrice = request.getParameter("productBottlePrice_"+i);
+//				else bottlePrice = "0";
+//				priceVo.setProductBottlePrice(Float.parseFloat(bottlePrice));
+//					
 				customerPrice[i] = priceVo;				
 			}
+			int result1 = 1;
+			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) 
+				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
+			else {
+				result = customerService.registerCustomerPrice(customerPrice);
 			
-			result = customerService.registerCustomerPrice(customerPrice);
-			
-			// 당일 거래 내역 업데이트
-			
-			if (result == false) {
-				// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+//				List<WorkBottleVO> workBottleList = workService.getWorkBottleListOfCustomerToday(Integer.parseInt(request.getParameter("customerId1")));
+//				for(int i =0 ; i < workBottleList.size() ; i++) {
+//					for(int j=0 ; j < customerPrice.length ; j++) {
+//						if(workBottleList.get(i).getProductId() == customerPrice[j].getProductId() && workBottleList.get(i).getProductPriceSeq() == customerPrice[j].getProductPriceSeq()) {
+//													
+//							if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))	) {
+//								workBottleList.get(i).setProductPrice(customerPrice[j].getProductBottlePrice());
+//								
+//							}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))
+//									|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.title.salesgas")) 
+//									|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyRent"))  ) {
+//								
+//								workBottleList.get(i).setProductPrice(customerPrice[j].getProductPrice());
+//							}
+//							
+//							result1 = workService.modifyWorkBottlePrice(workBottleList.get(i));
+//						}
+//					}
+//				}			
 			}
-		} catch (DataAccessException e) {
-			logger.error(" registerCustomerPrice Exception==="+e.toString());
-			e.printStackTrace();
+			// 당일 거래 내역 업데이트
+			//if(res)
+			
+		} catch (DataAccessException de) {
+			logger.error(" registerCustomerPrice Exception==="+de.toString());
+			de.printStackTrace();
 		} catch (Exception e) {
 			logger.error(" registerCustomerPrice Exception==="+e.toString());
 			e.printStackTrace();

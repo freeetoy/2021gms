@@ -11,6 +11,7 @@ import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 
 @Mapper
 public interface CustomerMapper {
@@ -71,8 +72,7 @@ public interface CustomerMapper {
 	
 	public String searchCustomerSimpleListString(String searchCustomerNm);
 	
-	public List<CustomerSimpleVO> selectCarSimpleList(String carYn);
-	
+	public List<CustomerSimpleVO> selectCarSimpleList(String carYn);	
 
 	public int updateCustomerPrice(CustomerPriceVO param);
 	
@@ -97,4 +97,6 @@ public interface CustomerMapper {
 	public int insertCustomerBottles(List<CustomerBottleVO> param);
 	
 	public List<CustomerBottleVO> selectCustomerBottleList(Integer customerId);
+	
+	public CustomerPriceVO selectCustomerLn2Capa(WorkBottleVO param);
 }

@@ -336,5 +336,10 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductPriceSimpleVO> getTankProductPriceList() {
 		return productMapper.selectTankProductPriceList();
 	}
+
+	@Override
+	public List<ProductPriceSimpleVO> getLn2LProductList() {
+		return productMapper.selectLn2LProductList();
+	}
 	
 }

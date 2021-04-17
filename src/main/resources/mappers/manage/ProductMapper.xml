@@ -459,7 +459,7 @@
 	
 	<select id="selectCustomerLn2List"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
 		SELECT
-			TPP.Product_ID ,TPP.Product_Price_Seq,concat(Product_Nm , " - " ,Product_Capa) Product_Nm,Product_Capa
+			TPP.Product_ID ,TPP.Product_Price_Seq, concat(Product_Nm , " - " ,Product_Capa) Product_Nm,Product_Capa
 		FROM
 			TB_Product  TP, TB_Product_Price TPP
 		WHERE
@@ -481,5 +481,15 @@
 			TP.Product_Status  = '2'		
 		AND 
 			GAS_ID =-1
+	</select>
+	
+	<select id="selectLn2LProductList"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
+		SELECT TP.Product_ID ,Product_Price_Seq,concat(Product_Nm , " - " ,Product_Capa) Product_Nm,Product_Capa
+		FROM TB_Product  TP, TB_Product_Price TPP
+		WHERE TP.Product_ID = 60			
+		AND	TP.Product_Status  = '2'
+		AND TPP.Product_Status  = '2'
+		AND TP.Product_ID = TPP.Product_ID		
+		AND TPP.`Product_Capa` not like '%병%'	
 	</select>
 </mapper>

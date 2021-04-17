@@ -373,6 +373,17 @@ public class ProductController {
 		return productList;
 	}
 	
+	@RequestMapping(value = "/api/ln2LProductPriceList.do")
+	@ResponseBody
+	public List<ProductPriceSimpleVO> getProductPriceListOfLn2Divide(ProductPriceVO param,Model model)	{	
+		
+		
+		List<ProductPriceSimpleVO> productList = productService.getLn2LProductList();
+		//model.addAttribute("productList", productList);
+		
+		return productList;
+	}
+	
 	@RequestMapping(value = "/api/gasProductPriceList.do")
 	@ResponseBody
 	public List<ProductPriceSimpleVO> getProductPriceListOfGas(Model model)	{	

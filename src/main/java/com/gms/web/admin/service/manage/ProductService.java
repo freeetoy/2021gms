@@ -65,4 +65,6 @@ public interface ProductService {
 	public List<ProductPriceSimpleVO> getCustomerLn2List();
 	
 	public List<ProductPriceSimpleVO> getTankProductPriceList();
+	
+	public List<ProductPriceSimpleVO> getLn2LProductList();
 }

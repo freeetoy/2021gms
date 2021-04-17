@@ -1813,7 +1813,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				workBottle.setNewYn("Y");
 				workBottle.setNewProductYn("Y");
-				logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  workBottle.bottleWorkCd=" + workBottle.getBottleWorkCd() );
+				//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  workBottle.bottleWorkCd=" + workBottle.getBottleWorkCd() );
 				if(rightYn) afterWorkBottleList.add(workBottle);				
 			}
 			
@@ -1830,12 +1830,17 @@ public class WorkReportServiceImpl implements WorkReportService {
 					customerId = beforeWorkBottle.getCustomerId();
 					beforeWorkBottle.setCreateId(param.getCreateId());;
 					beforeWorkBottle.setWorkReportSeq(param.getWorkReportSeq());
-					beforeWorkBottle.setProductPrice(beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount() );
-					//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle.getProductPrice=" + beforeWorkBottle.getProductPrice() );
+					//double fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
+					//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  fPrice=" + fPrice );
+					//beforeWorkBottle.setProductPrice(fPrice);
+					
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
 							&& beforeWorkBottle.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){		
 						
+						double fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
+						//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  fPrice=" + fPrice );
+						beforeWorkBottle.setProductPrice(fPrice);
 						int remainCount = afterWorkBottle.getProductCount() - beforeWorkBottle.getProductCount();
 						afterWorkBottle.setGasId(beforeWorkBottle.getGasId());
 						//afterWorkBottle.setProductCount(remainCount);
@@ -1850,12 +1855,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 						afterWorkBottle.setCustomerId(customerId);
 						afterWorkBottle.setCreateDt(beforeWorkBottle.getCreateDt());
 						beforeWorkBottle.setProductCount(remainCount);						
-						
+						//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  remainCount=" +remainCount);
 						// 남은처리 workBottle 처리 
 						if(remainCount > 0) { // 추가			
 							beforeWorkBottle.setManualYn("Y");
 							if(beforeWorkBottle.getGasId() > 0 ) {								
 								//beforeWorkBottle.setProductPrice(beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount());
+								
 								result = addWorkBottle(beforeWorkBottle);	
 								
 								result = modifyCustomerProduct(beforeWorkBottle);
@@ -1902,8 +1908,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						if(productTotal !=null && productTotal.getCustomerBottlePrice() > 0) orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getCustomerBottlePrice());
 						else orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getProductBottlePrice());
 						newOrderProductList.add(orderProduct);
-					}
-					
+					}					
 				}
 				/*
 				//판매 & 대여
@@ -1969,7 +1974,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	private int addWorkBottle(WorkBottleVO param) {
 		int result= 1;
-		//logger.debug("WorkReportServiceImpl --addWorkBottle  param.getPrice=" + param.getProductPrice() );
+		logger.debug("WorkReportServiceImpl --addWorkBottle  param.getPrice=" + param.getProductPrice() );
 		//logger.debug("WorkReportServiceImpl --addWorkBottle  param.getProductCount=" + param.getProductCount() );
 		BottleVO bottle = new BottleVO();
 		bottle.setProductId(param.getProductId());
@@ -3688,5 +3693,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		result = workMapper.insertWorkBottles(workBottleList);
 		
 		return result;
+	}
+
+	@Override
+	public List<WorkBottleVO> getWorkBottleListOfCustomerToday(Integer customerId) {
+		
+		return workMapper.selectWorkBottleListOfCustomerToday(customerId);
 	}
 }

@@ -14,6 +14,7 @@ import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerBottleVO;
+import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderExtVO;
@@ -189,9 +190,21 @@ public class ApiServiceImpl implements ApiService {
 					ProductPriceVO productPrice = new ProductPriceVO();
 					productPrice.setProductId(param.getProductId());
 					productPrice.setProductCapa(param.getProductPriceSeq().toString());
+					param.setProductCapa(param.getProductPriceSeq().toString());
+					//TODO 해당 용량별 거래처별 단가 여부 확인 20210331		*** 확인 필요			
+					CustomerPriceVO customerPrice = customerService.getCustomerLn2Capa(param);
+					ProductPriceVO productPrice1 = null;
+					if(customerPrice !=null)  {
+						//productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
+						param.setProductPriceSeq(customerPrice.getProductPriceSeq());
+					}
+					else {
+						productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
+						param.setProductPriceSeq(productPrice1.getProductPriceSeq());
+					}
 					
-					ProductPriceVO productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
-					param.setProductPriceSeq(productPrice1.getProductPriceSeq());
+//					ProductPriceVO productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
+//					param.setProductPriceSeq(productPrice1.getProductPriceSeq());
 				}
 				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
 				result = workService.registerWorkNoBottle(param);		

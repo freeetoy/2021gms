@@ -9,6 +9,7 @@ import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 
 public interface CustomerService {
 
@@ -89,5 +90,7 @@ public interface CustomerService {
 	public List<CustomerBottleVO> getCustomerBottleList(Integer customerId);
 	
 	public List<CustomerPriceVO>  getCustomerPriceListAllNow();
+	
+	public CustomerPriceVO  getCustomerLn2Capa(WorkBottleVO param);
 	
 }

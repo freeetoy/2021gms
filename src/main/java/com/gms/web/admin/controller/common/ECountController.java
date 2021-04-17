@@ -24,7 +24,7 @@ import com.gms.web.admin.service.manage.ECountService;
 
 @Controller
 public class ECountController {
-	
+		
 	@Autowired
 	private ECountService eService;
 	
@@ -78,6 +78,9 @@ public class ECountController {
 		    int excelIndex = 1;
 		    // 데이터 부분 생성
 		    ECountVO prevEcount = null;
+		    String productNm = "";
+	        String productCapa = "";
+	        int orderCount = 0;
 		    for(ECountVO vo : eList) {
 		    	
 		    	if(prevEcount != null && !prevEcount.getCustomerNm().equals(vo.getCustomerNm()) ){
@@ -151,24 +154,38 @@ public class ECountController {
 		        //cell.setCellValue(vo.getProductId());
 		        
 		        //품목명	
+		        productNm = vo.getProductNm();
+		        productCapa = vo.getProductCapa();
+		        orderCount = vo.getOrderCount();
+		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
+		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
+		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";
+		        		productCapa = "병";
+		        	}
+		        	else {
+		        		productNm = vo.getProductNm();
+		        		productCapa = "L";
+		        		orderCount = Integer.parseInt(vo.getProductCapa());
+		        	}
+		        }
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
 		        if(vo.getProductNm().equals("믹스가스") && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
 		        	cell.setCellValue(vo.getProductNm()+"("+vo.getGasCd()+")");
 		        else
-		        	cell.setCellValue("");
+		        	cell.setCellValue(productNm);
 		        	//cell.setCellValue(vo.getProductNm());
 		        
 		        //규격	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue("");
+		        cell.setCellValue(productCapa);
 		        //cell.setCellValue(vo.getProductCapa());
 		        
 		        //수량	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getOrderCount());
+		        cell.setCellValue(orderCount);
 		        
 		        //단가	
 		        cell = row.createCell(k++);

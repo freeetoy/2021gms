@@ -694,4 +694,14 @@
 		AND TP.Product_ID = PP.Product_ID
 		Group By Product_ID,Product_Price_Seq
 	</select>
+	
+	<select id="selectCustomerLn2Capa" resultType="com.gms.web.admin.domain.manage.CustomerPriceVO" parameterType="com.gms.web.admin.domain.manage.WorkBottleVO">
+		SELECT cp.Product_Price,cp.Product_Bottle_Price, pp.Product_Price, pp.Product_Price_Seq
+		FROM TB_Customer_Product_Price cp, tb_product_price pp
+		WHERE Customer_ID = #{customerId}
+		AND cp.Product_ID = 60
+		AND cp.Product_ID = pp.Product_ID
+		AND cp.Product_Price_Seq = pp.Product_Price_Seq
+		AND pp.Product_Capa  LIKE CONCAT('병_', CONCAT(#{productCapa}, '%'))	
+	</select>
 </mapper>
