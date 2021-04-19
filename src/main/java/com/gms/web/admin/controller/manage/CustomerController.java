@@ -383,10 +383,8 @@ public class CustomerController {
 			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
 			String[] productPriceArray = request.getParameterValues("productPrice");
 			String[] productBottlePriceArray = request.getParameterValues("productBottlePrice");
-
-			
-			int priceCount  = productIdArray.length;
-			
+		
+			int priceCount  = productIdArray.length;		
 			
 			//result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
 			CustomerPriceVO[] customerPrice = new CustomerPriceVO[priceCount];
@@ -401,8 +399,8 @@ public class CustomerController {
 				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
 				priceVo.setProductId(Integer.parseInt(productIdArray[i]));
 				priceVo.setProductPriceSeq(Integer.parseInt(productPriceSeqArray[i]));
-				priceVo.setProductPrice(Float.parseFloat(productPriceArray[i]));
-				priceVo.setProductBottlePrice(Float.parseFloat(productBottlePriceArray[i]));
+				priceVo.setProductPrice(Double.parseDouble(productPriceArray[i]));
+				priceVo.setProductBottlePrice(Double.parseDouble(productBottlePriceArray[i]));
 				
 //				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
 //				priceVo.setProductId(Integer.parseInt(request.getParameter("productId_"+i)));
@@ -414,6 +412,7 @@ public class CustomerController {
 //					
 				customerPrice[i] = priceVo;				
 			}
+			
 			int result1 = 1;
 			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) 
 				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
