@@ -1864,19 +1864,21 @@ public class WorkReportServiceImpl implements WorkReportService {
 								//beforeWorkBottle.setProductPrice(beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount());
 								
 								result = addWorkBottle(beforeWorkBottle);	
-								
-								result = modifyCustomerProduct(beforeWorkBottle);
+								if(!afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) )
+									result = modifyCustomerProduct(beforeWorkBottle);
 							}else {
 								result = addWorkBottleNoGas(beforeWorkBottle);	
 							}
 						}else if(remainCount < 0 ){
-							result = modifyCustomerProduct(beforeWorkBottle);
+							if(!afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) )
+								result = modifyCustomerProduct(beforeWorkBottle);
+							
 							result = minusWorkBottle(beforeWorkBottle);							
 						}
 						// orderProduct처리 -orderBottle도 처리
 					}					
 				}
-				if(afterWorkBottle.getProductCount() > 0) {
+				if(afterWorkBottle.getProductCount() > 0 && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {
 					ProductTotalVO productTotal = null;
 					OrderProductVO orderProduct = new OrderProductVO();
 					orderProduct.setOrderId(param.getOrderId());
@@ -1961,7 +1963,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				//주문상품용기는 변경하지 않음
 			}
 			//order 처리
-			result = modifyOrderInfo(param);
+			if(orderProductList.size() > 0)
+				result = modifyOrderInfo(param);
 			
 		} catch (DataAccessException e) {		
 			e.printStackTrace();
