@@ -137,6 +137,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 							|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.freechange"))
 							|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack"))
 							|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))
+							|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come"))
 							) {
 						
 						temp.getBackBottles().add(workBottle);
@@ -616,11 +617,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				List<OrderProductVO> orderProductList = new ArrayList<OrderProductVO>();
 				List<OrderBottleVO> orderBottleList = new ArrayList<OrderBottleVO>();	
 				
-				OrderVO order = new OrderVO();
+				OrderVO order = new OrderVO();				
 				
-				int orderId = orderService.getOrderId();
-				
-				order.setOrderId(orderId);
 				if(param.getUserId() != null && param.getUserId().length() > 0)
 					order.setCreateId(param.getUserId());
 				else
@@ -644,6 +642,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				else
 					order.setSalesId(param.getCreateId());
 				order.setOrderDeliveryDt(DateUtils.getDate("yyyy/MM/dd HH:mm"));
+				
+				int orderId = orderService.getOrderId();				
+				order.setOrderId(orderId);
 				
 				// Order 먼저 등록  2020-08-28
 				result = orderService.registerOrder(order);
@@ -2809,9 +2810,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 					logger.info("modifyCustomerProductMass2  orderProduct.setOrderCount="+orderProduct.getOrderCount());
 					if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 						customerP.setBottleOwnCount(checkAgency * orderProduct.getOrderCount());
-					}else if(orderProduct.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))) {
+					}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))) {
 						customerP.setBottleRentCount(checkAgency * orderProduct.getOrderCount());
-					}else if(orderProduct.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))) {
+					}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))) {
 						customerP.setBottleRentCount(checkAgency * orderProduct.getOrderCount()*-1);
 					}					
 					registerCustomerProductList.add(customerP);

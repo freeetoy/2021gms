@@ -105,6 +105,7 @@
 	<entry key="common.bottle.status.title.masssales">대량판매</entry>		<!-- 대량판매 -->
 	<entry key="common.bottle.status.title.massrental">대량대여</entry>	<!-- 대량대여 -->
 	<entry key="common.bottle.status.title.massback">대량회수</entry> 		<!-- 대량회수 -->
+	<entry key="common.bottle.status.title.massRentback">대량대여회수</entry> 		<!-- 대량대여회수 -->
 	<entry key="common.bottle.status.title.freechange">무상교체</entry> 	<!-- 무상교체 -->
 	<entry key="common.bottle.status.title.salesgas">가스판매</entry> 		<!-- 가스판매 -->
 	<entry key="common.bottle.status.title.salesBack">판매회수</entry> 	<!-- 판매회수 -->

@@ -394,9 +394,13 @@ public class ApiController {
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));	
 			result = apiService.registerWorkReportMassForSale(workReport);
 			
-		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massback"))) {			//회수
+		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massback"))) {			//판매회수
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesBack"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.salesBack"));	
+			result = apiService.registerWorkReportMassForChangeCd(workReport);
+		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.agencyBack"))) {			//대여회수
+			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
+			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));	
 			result = apiService.registerWorkReportMassForChangeCd(workReport);		
 		}
 		

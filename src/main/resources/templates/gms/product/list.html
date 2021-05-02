@@ -122,9 +122,11 @@
                       <th th:if="${row.productPriceSeq == 1}" th:text="|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${row.productCapa}|">
                       <th th:unless="${row.productPriceSeq == 1}" th:text="${row.productCapa}">
                       </th>
+                      <td th:if="${row.productPrice == 0 }" th:text="${row.productPrice}"></td>
                       <td th:if="${row.productPrice > 0 && row.productPrice * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productPrice,3,'COMMA')}"></td>
                       <td th:if="${row.productPrice > 0 && row.productPrice * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productPrice,3,'COMMA',2,'POINT')}"></td>
                       <td th:text="${row.eCountCd}"></td>
+                      <td th:if="${row.productBottlePrice  == 0 }" th:text="${row.productBottlePrice}"></td>
                       <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productBottlePrice, 3,'COMMA')}"></td>
                       <td th:if="${row.productBottlePrice > 0 && row.productBottlePrice * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productBottlePrice, 3,'COMMA',2,'POINT')}"></td>
                       <td th:text="${row.eCountCdS}"></td>
