@@ -11,16 +11,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StatisticsAgencyResultVO implements Serializable {
+public class StatisticsAgencyResultVO2 implements Serializable {
 
 	private static final long serialVersionUID = 8483043342300538104L;
 	
-	/**Customer_ID   */
-	private Integer customerId ;
-	
-	/**Customer_Nm   */
-	private String customerNm ;
-	
+		
 	/**Product_ID   */
 	private Integer productId ;	
 	
@@ -34,9 +29,7 @@ public class StatisticsAgencyResultVO implements Serializable {
 	private String productCapa ;		
 	
 	
-	private Integer[] bottleOwnCountList;
+	private int[] bottleOwnCountList;
 	
-	private Integer[] bottleRentCountList;
-	
-	private List<Integer> bottleOwnCountList1;
+	private int[] bottleRentCountList;
 }

@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.statistics;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,6 +26,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO;
+import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO2;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyVO;
 import com.gms.web.admin.service.statistics.StatisticsAgencyService;
 
@@ -39,7 +41,7 @@ public class StatisticsAgencyController {
 	private StatisticsAgencyService statService;	
 	
 	
-	@RequestMapping(value = "/gms/statistics/agency/daily.do")
+	@RequestMapping(value = "/gms/statistics/agency/daily1.do")
 	public ModelAndView getStatisticsAgencyDaily(StatisticsAgencyVO param) {
 
 		logger.info("StatisticsCustomerContoller getStatisticsCustomerDaily");
@@ -62,6 +64,45 @@ public class StatisticsAgencyController {
 		
 		mav.addObject("customerList", customerList);	
 		mav.addObject("statAgency", statAgency);	
+		/*
+		for(int i=0 ; i < customerList.size() ; i++) {
+			logger.debug("StatisticsCustomerContoller getCustomerId "+ customerList.get(i).getCustomerId());
+			logger.debug("StatisticsCustomerContoller getCustomerNm "+ customerList.get(i).getCustomerNm());
+			logger.debug("StatisticsCustomerContoller getParentCustomerId "+ customerList.get(i).getParentCustomerId());
+			for ( int j = 0 ; j < statAgency.size() ; j++) {
+				logger.debug("StatisticsCustomerContoller stat "+ statAgency.get(j).getProductNm());
+				Integer[] countOwnList = statAgency.get(j).getBottleOwnCountList();
+				for(int k=0;k<countOwnList.length ; k++) {
+					logger.debug("StatisticsCustomerContoller countOwnList "+ countOwnList[k]);
+				}
+			};
+		}
+		*/
+		//검색어 셋팅
+		mav.addObject("searchStatDt", param.getSearchStatDt());				
+	
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.stat_agency"));	 		
+		
+		mav.setViewName("gms/statistics/agency/daily");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value = "/gms/statistics/agency/daily.do")
+	public ModelAndView getStatisticsAgencyDaily1(StatisticsAgencyVO param) {
+
+		logger.info("StatisticsCustomerContoller getStatisticsCustomerDaily1");
+		//logger.debug("StatisticsCustomerContoller searchStatisticsCustomerDt "+ params.getSearchStatDt());
+
+		ModelAndView mav = new ModelAndView();
+		
+		
+		//List<CustomerVO> customerList = statService.getStatisticsAgencyCustomerList(param);
+		Map<String, Object>  statResult = statService.getDailylStatisticsAgencyList1(param);
+	//	List<StatisticsAgencyResultVO2> statAgency = statService.getDailylStatisticsAgencyList1(param);
+		
+		mav.addObject("customerList", statResult.get("customerList"));	
+		mav.addObject("statAgency", statResult.get("statAgency"));	
 		/*
 		for(int i=0 ; i < customerList.size() ; i++) {
 			logger.debug("StatisticsCustomerContoller getCustomerId "+ customerList.get(i).getCustomerId());
@@ -128,19 +169,21 @@ public class StatisticsAgencyController {
 		   // 가스 정보 불러오기
 		   String searchStatDt = param.getSearchStatDt();			
 		   
-		   List<CustomerVO> customerList = statService.getStatisticsAgencyCustomerList(param);
+		   //List<CustomerVO> customerList = statService.getStatisticsAgencyCustomerList(param);
+		   List<CustomerVO> customerList = null;
 		   String sheetName = "대리점";
 		   String fileName="Statistic_"+sheetName+"_";
 			
-		   List<StatisticsAgencyResultVO> statAgency = null;
-		   
+		   List<StatisticsAgencyResultVO2> statAgency = null;
+		   Map<String, Object>  statResult = statService.getDailylStatisticsAgencyList1(param);
 			if(param.getPeriodType()==1) {
-				statAgency = statService.getDailylStatisticsAgencyList(param);
+				statAgency = (List<StatisticsAgencyResultVO2>) statResult.get("statAgency");//statService.getDailylStatisticsAgencyList(param);
 				fileName +="Daily_"+DateUtils.getDate();
 			}else {
-				statAgency = statService.getMontlylStatisticsAgencyList(param);
+				//statAgency = statService.getMontlylStatisticsAgencyList(param);
 				fileName +="Monthly_"+DateUtils.getDate();
 			}
+			customerList = (List<CustomerVO>) statResult.get("customerList");	
 		    // 워크북 생성
 	
 		    Workbook wb = new HSSFWorkbook();
@@ -172,7 +215,7 @@ public class StatisticsAgencyController {
 		    
 		   // 날짜		주문건수	주문금액
 		    // 데이터 부분 생성
-		    for(StatisticsAgencyResultVO vo : statAgency) {
+		    for(StatisticsAgencyResultVO2 vo : statAgency) {
 		    	int ind = 0;
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		        cell = row.createCell(ind++);
@@ -190,7 +233,7 @@ public class StatisticsAgencyController {
 	        cell.setCellStyle(bodyStyle);
 	        cell.setCellValue("대여현황");
 	        
-		    for(StatisticsAgencyResultVO vo : statAgency) {
+	        for(StatisticsAgencyResultVO2 vo : statAgency) {
 		    	int ind = 0;
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		        cell = row.createCell(ind++);

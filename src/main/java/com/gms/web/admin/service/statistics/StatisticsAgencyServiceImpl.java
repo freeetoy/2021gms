@@ -15,6 +15,7 @@ import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO;
+import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO2;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyVO;
 import com.gms.web.admin.mapper.statistics.StatisticsAgencyMapper;
 
@@ -35,7 +36,7 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 		List<StatisticsAgencyVO> agencyList = null;
 		List<CustomerVO> customerList = null;
 		List<ProductPriceSimpleVO> productList = null;
-		
+		//List<StatisticsAgencyVO> agencyChildList = statMapper.selectTodayStatisticsAgencyChildeList();	
 		if(param.getSearchStatDt() != null && param.getSearchStatDt().length() > 0) {
 			map.put("searchStatDt", param.getSearchStatDt());
 			logger.debug("****** getDailylStatisticsAgencyList *****getSearchStatDt===*"+param.getSearchStatDt());
@@ -55,6 +56,9 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 		StatisticsAgencyResultVO statResult = new StatisticsAgencyResultVO();
 		List<StatisticsAgencyResultVO> statList = new ArrayList<StatisticsAgencyResultVO>();	
 		List<Integer> bottleOwnCountList1 = new ArrayList<Integer>();
+		
+		List<StatisticsAgencyVO> childAgencyList = statMapper.selectTodayStatisticsAgencyChildeList();	
+		logger.debug(" statList.gcustomerList.size() =*"+customerList.size());
 		//Integer[] customerIdList = new Integer[customerList.size()];
 		for(int i =0 ; i < productList.size() ; i++) {
 			statResult = new StatisticsAgencyResultVO();
@@ -62,39 +66,27 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 			statResult.setProductNm(productList.get(i).getProductNm());
 			statResult.setProductPriceSeq(productList.get(i).getProductPriceSeq());
 			statResult.setProductCapa(productList.get(i).getProductCapa());
-			
+			ProductPriceSimpleVO simpleProduct = productList.get(i);
 			Integer[] countOwnList = new Integer[customerList.size()];
 			Integer[] countRentList = new Integer[customerList.size()];
 			
-			for(int k =0 ; k < customerList.size() ; k++) {	
-				
-				int countOwn = 0 ;
-				int countRent = 0;
+			for(int k =0 ; k < customerList.size() ; k++) {					
+				CustomerVO customer = customerList.get(k);
+				countOwnList[k]  = 0;
 				for(int j =0 ; j < agencyList.size() ; j++) {	
 					
 					if(agencyList.get(j).getCustomerId()- customerList.get(k).getCustomerId() == 0 	) {
-						//logger.debug("&&&agencyList.customerId ="+agencyList.get(j).getCustomerId());
-						//logger.debug("&&&customerList.customerId ="+customerList.get(k).getCustomerId());
-						//logger.debug("==customerList.get(k).getParentCustomerId() =*"+customerList.get(k).getParentCustomerId());
-				
+						
 						if(statResult.getProductId() == agencyList.get(j).getProductId() 
-								&& statResult.getProductPriceSeq() == agencyList.get(j).getProductPriceSeq()) {
-								/*
-							logger.debug("==statResult.getProductId =*"+statResult.getProductId());	
-							//logger.debug(" statResult.getProductNm =*"+statResult.getProductNm());	
-							logger.debug(" statResult.getProductPriceSeq =*"+statResult.getProductPriceSeq());	
-							//logger.debug("== statResult.getProductCapa =*"+statResult.getProductCapa());	
-							
-							logger.debug(" agencyList.getProductId =*"+agencyList.get(j).getProductId());				
-							logger.debug(" agencyList.getProductPriceSeq =*"+agencyList.get(j).getProductPriceSeq());
-							*/
+								&& statResult.getProductPriceSeq() == agencyList.get(j).getProductPriceSeq()) {						
 							
 							countOwnList[k] = agencyList.get(j).getBottleOwnCount();
 							countRentList[k] = agencyList.get(j).getBottleRentCount();
 							
 						}			
 					}
-				}				
+				}	
+				
 			}
 			
 			for(int  j=0; j< countOwnList.length ;  j++) {
@@ -111,22 +103,23 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 			statResult.setBottleOwnCountList1(bottleOwnCountList1);
 			statList.add(statResult);
 		}		
-		/*
-		for(int i =0 ; i < statList.size() ; i++ ) {
-			//StatisticsAgencyVO statAgency = statList.get(i).getStatAgency();
-			Integer[] countList  = statList.get(i).getBottleOwnCountList();
-			Integer[] countList1  = statList.get(i).getBottleRentCountList();			
-			
-			logger.debug(" statList.get(i).getProductNm =*"+statList.get(i).getProductNm());					
-			logger.debug(" statList.get(i).getProductCapa =*"+statList.get(i).getProductCapa());				
-			logger.debug(" statList.get(i).get =*"+statList.get(i).getProductNm());	
-			for(int j =0 ; j < countList.length ; j++) {
-				logger.debug(" statAgency.countList =="+countList[j]);		
-				logger.debug(" statAgency.countList1 =="+countList1[j]);
-			}
-					
-		}
-		*/
+		
+//		for(int i =0 ; i < statList.size() ; i++ ) {
+//			//StatisticsAgencyVO statAgency = statList.get(i).getStatAgency();
+//			Integer[] countList  = statList.get(i).getBottleOwnCountList();
+//			Integer[] countList1  = statList.get(i).getBottleRentCountList();			
+//			
+//			logger.debug(" statList.get(i).getProductNm =*"+statList.get(i).getProductNm());					
+//			logger.debug(" statList.get(i).getProductCapa =*"+statList.get(i).getProductCapa());				
+//			logger.debug(" statList.get(i).get =*"+statList.get(i).getProductNm());	
+//			
+//			for(int j =0 ; j < countList.length ; j++) {
+//				logger.debug(" statAgency.countList =="+countList[j]);		
+//				logger.debug(" statAgency.countList1 =="+countList1[j]);
+//			}
+//					
+//		}
+		
 		//statList.setCustomerList(customerList);
 		//statList.setProductList(productList);
 		//statList.setStatAgencyList(agencyList);
@@ -176,7 +169,9 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 							countRentList[k] = agencyList.get(j).getBottleRentCount();							
 						}			
 					}
-				}				
+				}
+
+				
 			}
 			
 			for(int  j=0; j<countOwnList.length ;  j++) {
@@ -186,9 +181,9 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 				}else {
 					bottleOwnCountList1.add(countOwnList[j]);
 				}
-				if(countRentList[j] == null) countRentList[j] =0;
+				if(countRentList[j] == null) countRentList[j] = 0;
 			}
-			statResult.setBottleOwnCountList(countOwnList);
+			//statResult.setBottleOwnCountList(countOwnList);
 			statResult.setBottleRentCountList(countRentList);
 			statResult.setBottleOwnCountList1(bottleOwnCountList1);
 			statList.add(statResult);
@@ -247,6 +242,93 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 		
 	}
 
-	
+	@Override
+	public Map<String, Object> getDailylStatisticsAgencyList1(StatisticsAgencyVO param) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		StatisticsAgencyResultVO2 statResult = null;
+		
+		List<StatisticsAgencyVO> agencyList = null;
+		List<StatisticsAgencyVO> agencyChildList = null;
+		List<CustomerVO> customerList = null;
+		List<ProductPriceSimpleVO> productList = null;				
+		
+		customerList = statMapper.selectTodayStatisticsAgencyCustomerList1();	
+		productList = statMapper.selectTodayStatisticsAgencyProductList();	
+		agencyList = statMapper.selectTodayStatisticsAgencyList1();	
+		
+		agencyChildList = statMapper.selectTodayStatisticsAgencyChildeList();	
+		
+		List<StatisticsAgencyResultVO2> statList = new ArrayList<StatisticsAgencyResultVO2>();	
+		
+		for(int i =0 ; i < productList.size() ; i++) {
+			ProductPriceSimpleVO simpleProduct = productList.get(i);
+			int[] countOwnList = new int[customerList.size()];
+			int[] countRentList = new int[customerList.size()];
+			statResult = new StatisticsAgencyResultVO2();
+			statResult.setProductId(productList.get(i).getProductId());
+			statResult.setProductNm(productList.get(i).getProductNm());
+			statResult.setProductPriceSeq(productList.get(i).getProductPriceSeq());
+			statResult.setProductCapa(productList.get(i).getProductCapa());
+			
+			for(int k =0 ; k < customerList.size() ; k++) {					
+				CustomerVO customer = customerList.get(k);
+				countOwnList[k] = 0;
+				for(int j =0 ; j < agencyList.size() ; j++) {	
+					StatisticsAgencyVO agencyInfo = agencyList.get(j);
+					if(agencyInfo.getCustomerId()- customer.getCustomerId() == 0 	) {						
+						if(simpleProduct.getProductId() == agencyInfo.getProductId() 
+								&& simpleProduct.getProductPriceSeq() == agencyInfo.getProductPriceSeq()) {						
+							
+							countOwnList[k] = agencyInfo.getBottleOwnCount();	
+							countRentList[k] = agencyInfo.getBottleRentCount();	
+						}			
+					}					
+				}		
+				logger.debug(" countOwn1="+countOwnList[k]);
+				for(int m =0 ; m < agencyChildList.size() ; m++) {	
+					StatisticsAgencyVO agencyChild = agencyChildList.get(m);
+					//logger.debug(" countOwn agencyChild.getBottleOwnCount()1 ="+agencyChild.getBottleOwnCount());
+					if(agencyChild.getParentCustomerId()- customer.getCustomerId() == 0  && simpleProduct.getProductId() == agencyChild.getProductId() 
+							&& simpleProduct.getProductPriceSeq() == agencyChild.getProductPriceSeq()	) {						
+									
+						//logger.debug(" countOwn agencyChild.getBottleOwnCount() ="+agencyChild.getBottleOwnCount());
+						countOwnList[k] += agencyChild.getBottleOwnCount();	
+						countRentList[k] = agencyChild.getBottleRentCount();	
+					}
+				}
+//				logger.debug(" countOwn="+customerList.get(k).getCustomerNm());
+//				logger.debug(" countOwn="+countOwnList[k]);
+
+			}
+			statResult.setBottleOwnCountList(countOwnList);
+			statResult.setBottleRentCountList(countRentList);
+			statList.add(statResult);
+		}
+		
+//		for(int k =0 ; k < customerList.size() ; k++) {
+//			CustomerVO customer = customerList.get(k);
+//			for(int j =0 ; j < productList.size() ; j++){
+//				ProductPriceSimpleVO simpleProduct = productList.get(j);
+//				for(int m =0 ; m < agencyChildList.size() ; m++) {	
+//					StatisticsAgencyVO agencyChild = agencyChildList.get(m);
+//					//logger.debug(" countOwn agencyChild.getBottleOwnCount()1 ="+agencyChild.getBottleOwnCount());
+//					if(agencyChild.getParentCustomerId()- customer.getCustomerId() == 0  && simpleProduct.getProductId() == agencyChild.getProductId() 
+//							&& simpleProduct.getProductPriceSeq() == agencyChild.getProductPriceSeq()	) {						
+//									
+//						//logger.debug(" countOwn agencyChild.getBottleOwnCount() ="+agencyChild.getBottleOwnCount());
+//						countOwnList[j] += agencyChild.getBottleOwnCount();							
+//							
+//					}
+//				}
+//				logger.debug(" countOwn="+customerList.get(k).getCustomerNm());
+//				logger.debug(" countOwn="+countOwnList[j]);
+//			}
+//		}
+		map.put("statAgency",statList);
+		map.put("customerList",customerList);
+		return map;
+	}
+
 
 }

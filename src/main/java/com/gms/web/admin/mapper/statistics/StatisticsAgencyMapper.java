@@ -30,5 +30,11 @@ public interface StatisticsAgencyMapper {
 	public List<CustomerVO> selectTodayStatisticsAgencyCustomerList();	
 	
 	public List<ProductPriceSimpleVO> selectTodayStatisticsAgencyProductList();
+	
+	public List<StatisticsAgencyVO> selectTodayStatisticsAgencyList1();	
+	
+	public List<CustomerVO> selectTodayStatisticsAgencyCustomerList1();	
+	
+	public List<StatisticsAgencyVO> selectTodayStatisticsAgencyChildeList();
 
 }

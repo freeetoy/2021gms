@@ -128,16 +128,12 @@
 	</select>	-->
 	<select id="selectTodayStatisticsAgencyList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
 		SELECT DATE_FORMAT(curdate(),'%Y/%m/%d') Stat_Dt, 
-		TP.Customer_ID, 
-		Parent_Customer_ID,
-		Product_ID, 
-		Product_Price_Seq, 
-		TP.Bottle_Own_Count, 
-		TP.Bottle_Rent_Count
+		TP.Customer_ID, Parent_Customer_ID,	Product_ID, Product_Price_Seq, TP.Bottle_Own_Count, TP.Bottle_Rent_Count
 		FROM TB_Customer_Product TP, TB_Customer TC
 		WHERE TC.Agency_YN =  'Y'
 		AND TP.Customer_ID = TC.Customer_ID
 		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+		order by Product_ID, Product_Price_Seq,TP.Customer_ID
 	</select> 
 	
 	<select id="selectTodayStatisticsAgencyCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO">		
@@ -160,4 +156,33 @@
 		AND (TCP.Bottle_Own_Count + TCP.Bottle_Rent_Count !=0 )
 		GROUP by TCP.Product_ID, TCP.Product_Price_Seq
 	</select>
+	<select id="selectTodayStatisticsAgencyList1" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
+		SELECT DATE_FORMAT(curdate(),'%Y/%m/%d') Stat_Dt, 
+		TP.Customer_ID, Parent_Customer_ID,	Product_ID, Product_Price_Seq, 	TP.Bottle_Own_Count, TP.Bottle_Rent_Count
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID
+		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+		AND Parent_Customer_ID is null
+	</select> 
+	<select id="selectTodayStatisticsAgencyCustomerList1" resultType="com.gms.web.admin.domain.manage.CustomerVO">		
+		SELECT TP.Customer_ID, TC.Customer_Nm, Parent_Customer_Id
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID		
+		AND (TP.Bottle_Own_Count + TP.Bottle_Rent_Count !=0 )
+		AND Parent_Customer_ID is null
+		GROUP By TP.Customer_ID 
+	</select>
+	
+	<select id="selectTodayStatisticsAgencyChildeList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
+		SELECT TP.Customer_ID,Parent_Customer_ID,
+		Product_ID, Product_Price_Seq, sum(	TP.Bottle_Own_Count) Bottle_Own_Count,sum(TP.Bottle_Rent_Count) Bottle_Rent_Count
+		FROM TB_Customer_Product TP, TB_Customer TC
+		WHERE TC.Agency_YN =  'Y'
+		AND TP.Customer_ID = TC.Customer_ID
+		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+		AND Parent_Customer_ID is not null
+		GROUP BY TP.Customer_ID,Parent_Customer_ID,Product_ID, Product_Price_Seq
+	</select> 
 </mapper>
