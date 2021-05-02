@@ -104,12 +104,12 @@ public class ProductController {
 				//priceVo1.setProductId(Integer.valueOf(productId));
 				priceVo1.setProductCapa(req.getParameter("productCapa_"+i));
 				if(req.getParameter("productPrice_"+i)!=null && req.getParameter("productPrice_"+i).length() > 0)
-					priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+i)));	
+					priceVo1.setProductPrice(Double.parseDouble(req.getParameter("productPrice_"+i)));	
 				else
 					priceVo1.setProductPrice(0);	
 				priceVo1.setECountCd(req.getParameter("eCountCd_"+i));
 				if(req.getParameter("productBottlePrice_"+i)!=null && req.getParameter("productBottlePrice_"+i).length() > 0)
-					priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+i)));	
+					priceVo1.setProductBottlePrice(Double.parseDouble(req.getParameter("productBottlePrice_"+i)));	
 				else
 					priceVo1.setProductBottlePrice(0);
 				priceVo1.setECountCdS(req.getParameter("eCountCdS_"+i));
