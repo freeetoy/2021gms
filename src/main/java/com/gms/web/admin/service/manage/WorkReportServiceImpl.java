@@ -584,7 +584,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		try {		
 			//기존 주문이 있는지 여부 확인
 			OrderVO orderTemp =  orderService.getLastOrderForCustomer(param.getCustomerId());
-			
+			//orderTemp = null;
 			if(orderTemp != null ) {
 				param.setOrderId(orderTemp.getOrderId());
 				//logger.debug("WorkReportServiceImpl registerWorkReportNoOrder getOrderId =" + param.getOrderId());		
@@ -600,7 +600,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				boolean registerFlag = false;
 				int workSeq=1;
 				int workReportSeq = getWorkReportSeqForCustomerToday(param);
-				
+				//workReportSeq = 0;
 				if(workReportSeq <= 0) {
 					workReportSeq = getWorkReportSeq();
 					registerFlag = true;

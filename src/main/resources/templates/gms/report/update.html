@@ -1,4 +1,4 @@
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="gms/layout/basic">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
 
 <div class="wrapper">
 
@@ -131,6 +131,7 @@ $(document).ready(function(){
 		$('#bottleWorkCd_' + pid).append('<option value=0317>대여회수</option>')	
 		$('#bottleWorkCd_' + pid).append('<option value=0318>Tank충전</option>')	
 		$('#bottleWorkCd_' + pid).append('<option value=0301>입고</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0306>출고</option>')	
     } 
     
 	function initProduct(pid){
@@ -279,6 +280,7 @@ $(document).ready(function(){
 				cols += '<option value=0317>대여회수</option>'; 
 				cols += '<option value=0318>Tank충전</option>'; 
 				cols += '<option value=0301>입고</option>';
+				cols += '<option value=0306>출고</option>';
 				cols += '</select>'; 
 				cols += '</td><td>';
 				cols += '<select class="form-control" id="productId_0" name="productId_0" style="width:250px"></select>'; 
@@ -347,7 +349,9 @@ $(document).ready(function(){
 						cols += '	<option value="0318" selected>Tank충전</option>';
 					if(data[i].bottleWorkCd =='0301')
 						cols += '	<option value="0301" selected>입고</option>';
-						
+					if(data[i].bottleWorkCd =='0306')
+						cols += '	<option value="0306" selected>출고</option>';
+							
 					cols += '	</select>';
 					cols += '</td><td>';
 					cols += '	<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:250px" readonly>'; 
