@@ -56,6 +56,9 @@ public class OrderProductVO extends AbstractVO implements Serializable {
 	/** GAS_ID 			*/
 	private Integer gasId;
 	
+	/** GAS_CD 			*/
+	private String gasCd;
+	
 	/** Bottle_Work_CD 			*/
 	private String bottleWorkCd;
 	
