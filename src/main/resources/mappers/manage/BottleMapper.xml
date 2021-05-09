@@ -269,7 +269,7 @@
 			, Product_Price_Seq	= #{productPriceSeq}
 			, Gas_ID			= #{gasId}
 			, Gas_CD			= #{gasCd}			
-			, Bottle_Capa		= #{bottleCapa}
+			, Bottle_Capa		= #{chargeCapa}
 			, Charge_Capa		= #{chargeCapa}
 			, Bottle_Create_Dt	= #{bottleCreateDt}
 			, Bottle_Charge_Dt	= #{bottleChargeDt}

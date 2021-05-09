@@ -206,7 +206,7 @@ public class ApiServiceImpl implements ApiService {
 //					ProductPriceVO productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
 //					param.setProductPriceSeq(productPrice1.getProductPriceSeq());
 				}
-				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
+//				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
 				result = workService.registerWorkNoBottle(param);		
 			}else {
 				return CUSOTMER_NOT_EXIST;
@@ -426,7 +426,7 @@ public class ApiServiceImpl implements ApiService {
 			if(customer!=null) {
 				param.setCustomerId(customer.getCustomerId());
 				
-				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
+//				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.tcharge"))) {
 					result = workService.registerWorkBottleChargeTank(param);	
 				}else

@@ -155,16 +155,7 @@ public class ApiController {
 		logger.info("<<<<  controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
 		
 		boolean phoneCall = true;
-		int result = 1;
-		/*
-		WorkBottleVO workBottle = new WorkBottleVO();
-		
-		workBottle.setProductId(param.get);
-		workBottle.setProductPriceSeq(productPriceSeq);
-		
-		workBottle.setProductCount(productCount);
-		workBottle.setCustomerNm(customerNm);			
-		*/	
+		int result = 1;		
 		
 		param.setCreateId(param.getUserId());	
 		param.setUpdateId(param.getUserId());
@@ -182,70 +173,7 @@ public class ApiController {
 			return "fail";
 		//return null;
 	}
-	/*
-	@RequestMapping(value = "/api/controlActionNoGas.do")
-	@ResponseBody
-	public String controlActionNoGas(String userId, String customerNm, Integer productId, Integer productPriceSeq, int productCount )	{	
-				
-		logger1.info("controlActionNoGas userId="+userId+" : productId ="+productId +": productPriceSeq ="+ productPriceSeq + " : customerNm ="+customerNm + " : productCount ="+productCount);
-		logger.info("controlActionNoGas", "userId="+userId+" : productId ="+productId +": productPriceSeq ="+ productPriceSeq + " : customerNm ="+customerNm + " : productCount ="+productCount);
-		
-		boolean phoneCall = true;
-		int result = 0;
-		
-		WorkBottleVO workBottle = new WorkBottleVO();
-		
-		workBottle.setProductId(productId);
-		workBottle.setProductPriceSeq(productPriceSeq);
-		
-		workBottle.setProductCount(productCount);
-		workBottle.setCustomerNm(customerNm);				
-		workBottle.setCreateId(userId);	
-		workBottle.setUpdateId(userId);
-		workBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
-		
-		logger.debug("단품판매 start");
-		//workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
-		result = apiService.registerWorkReportNoGas(workBottle);			
-		
-		if(result > 0)
-			return "success";
-		if(result == USER_NOT_EXIST)
-			return "noUser";
-		else
-			return "fail";
-		//return null;
-	}
-	*/
-	/*
-	@RequestMapping(value = "/api/controlCashFlow.do")
-	@ResponseBody
-	public String manageCashFlow(String userId, String customerNm, String incomeAmount, String receivableAmount, String incomeWay )	{	
-				
-		logger.info("userId="+userId+" : incomeAmount ="+incomeAmount +": receivableAmount ="+ receivableAmount + " : customerNm ="+customerNm + " : incomeWay ="+incomeWay);
-		logger1.info("userId="+userId+" : incomeAmount ="+incomeAmount +": receivableAmount ="+ receivableAmount + " : customerNm ="+customerNm + " : incomeWay ="+incomeWay);
-				
-		int result = 0;
-		
-		CashFlowVO cashFlow = new CashFlowVO();
-		
-		cashFlow.setCustomerNm(customerNm);
-		cashFlow.setIncomeAmount(Float.parseFloat(incomeAmount));
-		cashFlow.setReceivableAmount(Float.parseFloat(receivableAmount));
-		cashFlow.setIncomeWay(incomeWay);
-		cashFlow.setCreateId(userId);
-		
-		result = apiService.registerCashFlow(cashFlow);
-		
-		if(result > 0)
-			return "success";
-		if(result == USER_NOT_EXIST)
-			return "noUser";
-		else
-			return "fail";
-		//return null;
-	}
-*/
+	
 	@RequestMapping(value = "/api/controlCashFlow.do")
 	@ResponseBody
 	public String manageCashFlow(CashFlowVO param )	{	
@@ -253,15 +181,7 @@ public class ApiController {
 		logger.info("<<<< userId="+param.getCreateId()+" : incomeAmount ="+param.getIncomeAmount() +": receivableAmount ="+ param.getReceivableAmount() + " : customerNm ="+param.getCustomerNm() + " : incomeWay ="+param.getIncomeWay());
 	
 		int result = 0;
-		/*
-		CashFlowVO cashFlow = new CashFlowVO();
 		
-		cashFlow.setCustomerNm(customerNm);
-		cashFlow.setIncomeAmount(Float.parseFloat(incomeAmount));
-		cashFlow.setReceivableAmount(Float.parseFloat(receivableAmount));
-		cashFlow.setIncomeWay(incomeWay);
-		cashFlow.setCreateId(userId);
-		*/
 		result = apiService.registerCashFlow(param);
 		
 		if(result > 0)

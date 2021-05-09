@@ -285,7 +285,7 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 						}			
 					}					
 				}		
-				logger.debug(" countOwn1="+countOwnList[k]);
+				//logger.debug(" countOwn1="+countOwnList[k]);
 				for(int m =0 ; m < agencyChildList.size() ; m++) {	
 					StatisticsAgencyVO agencyChild = agencyChildList.get(m);
 					//logger.debug(" countOwn agencyChild.getBottleOwnCount()1 ="+agencyChild.getBottleOwnCount());
