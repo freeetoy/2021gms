@@ -2927,6 +2927,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				orderProduct.setBottleId(bottle.getBottleId());
 				orderProduct.setBottleBarCd(bottle.getBottleBarCd());
 				orderProduct.setGasId(bottle.getGasId());
+				orderProduct.setGasCd(bottle.getGasCd());
 				
 				for(int j=0;j<bottles.size() ; j++) {
 					if(bottle.getBottleId().equals(bottles.get(j)) ) {						
@@ -2969,7 +2970,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 							workBottle.setCustomerId(param.getCustomerId());
 							workBottle.setBottleId(orderProduct.getBottleId());
 							workBottle.setBottleBarCd(orderProduct.getBottleBarCd());
-							workBottle.setGasId(orderProduct.getGasId());						
+							workBottle.setGasId(orderProduct.getGasId());		
+							workBottle.setGasCd(orderProduct.getGasCd());	
 							workBottle.setCreateId(param.getUserId());
 							workBottle.setProductId(orderProduct.getProductId());
 							workBottle.setProductPriceSeq(orderProduct.getProductPriceSeq());		
@@ -3056,7 +3058,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 							workBottle.setCustomerId(param.getCustomerId());
 							workBottle.setBottleId(remainOrderProduct.getBottleId());
 							workBottle.setBottleBarCd(remainOrderProduct.getBottleBarCd());
-							workBottle.setGasId(remainOrderProduct.getGasId());						
+							workBottle.setGasId(remainOrderProduct.getGasId());
+							workBottle.setGasCd(remainOrderProduct.getGasCd());
 							workBottle.setCreateId(param.getUserId());
 							workBottle.setProductId(remainOrderProduct.getProductId());
 							workBottle.setProductPriceSeq(remainOrderProduct.getProductPriceSeq());		
