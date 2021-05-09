@@ -221,6 +221,20 @@
 			Work_Report_Seq = #{workReportSeq}
 	</update>
 	
+	<update id="updateWorkReportOrder" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
+		UPDATE TB_Work_Report
+		SET
+			Order_Id			= #{orderId}
+			, Work_Product_NM	= #{workProductNm}
+			, Work_Product_Capa	= #{workProductCapa}
+			, Work_CD			= #{workCd}
+			, Work_Dt			= NOW()	
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Work_Report_Seq = #{workReportSeq}
+	</update>
+	
 	<update id="deleteWorkReport" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
 		UPDATE TB_Work_Report
 		SET

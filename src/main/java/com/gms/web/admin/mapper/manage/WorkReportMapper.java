@@ -76,4 +76,6 @@ public interface WorkReportMapper {
 	public List<WorkBottleVO> selectWorkBottleListOfWorkBottleCd(WorkBottleVO params);	
 	
 	public List<WorkBottleVO> selectWorkBottleListOfCustomerToday(Integer customerId);	
+	
+	public int updateWorkReportOrder(WorkReportVO param);
 }

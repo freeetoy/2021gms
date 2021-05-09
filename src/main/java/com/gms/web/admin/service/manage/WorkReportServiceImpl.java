@@ -583,9 +583,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		
 		try {		
 			//기존 주문이 있는지 여부 확인
-			OrderVO orderTemp =  orderService.getLastOrderForCustomer(param.getCustomerId());
-			//orderTemp = null;
-			if(orderTemp != null ) {
+			OrderVO orderTemp =  null;
+			
+			if(param.getAgencyYn().equals("N")) orderTemp = orderService.getLastOrderForCustomer(param.getCustomerId());
+			
+			if(orderTemp != null) {
 				param.setOrderId(orderTemp.getOrderId());
 				//logger.debug("WorkReportServiceImpl registerWorkReportNoOrder getOrderId =" + param.getOrderId());		
 				//result = registerWorkReportForOrder(param);
@@ -599,11 +601,15 @@ public class WorkReportServiceImpl implements WorkReportService {
 				//Work_Report_Seq 가져오기
 				boolean registerFlag = false;
 				int workSeq=1;
-				int workReportSeq = getWorkReportSeqForCustomerToday(param);
+				int workReportSeq = 0;
+				
+				if(param.getAgencyYn().equals("N")) workReportSeq = getWorkReportSeqForCustomerToday(param);
 				//workReportSeq = 0;
 				if(workReportSeq <= 0) {
 					workReportSeq = getWorkReportSeq();
 					registerFlag = true;
+					param.setWorkReportSeq(workReportSeq);	
+					result = workMapper.insertWorkReport(param);
 				}else {
 					workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 				}
@@ -861,7 +867,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				
 				if(registerFlag) {
-					result = workMapper.insertWorkReport(param);
+					result = workMapper.updateWorkReportOrder(param);
 				}else {
 					
 					param.setUpdateId(param.getCreateId());
@@ -2512,7 +2518,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 		int result = 0;
 		try {		
 			//기존 주문이 있는지 여부 확인
-			OrderVO order =  orderService.getLastOrderForCustomer(param.getCustomerId());
+			OrderVO order =  null;
+			if(param.getAgencyYn().equals("N")) order = orderService.getLastOrderForCustomer(param.getCustomerId());
 			
 			//Bottle 정보 가져오기
 			
@@ -2547,7 +2554,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 			//Work_Report_Seq 가져오기
 			boolean registerFlag = false;
 			int workSeq=1;
-			int workReportSeq = getWorkReportSeqForCustomerToday(param);
+			int workReportSeq = 0;
+			if(param.getAgencyYn().equals("N"))  workReportSeq = getWorkReportSeqForCustomerToday(param);
 			
 			if(workReportSeq <= 0) {
 				workReportSeq = getWorkReportSeq();
@@ -3658,6 +3666,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 		if(workReportSeq <= 0) {
 			workReportSeq = getWorkReportSeq();
 			registerFlag = true;
+			workReport.setWorkReportSeq(workReportSeq);
+			
+			result = workMapper.insertWorkReport(workReport);
 		}else {
 			workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 		}	
@@ -3669,11 +3680,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		
 		ProductTotalVO productTotal = productService.getPrice(bottle);
 		
-		if(registerFlag) {
-			workReport.setWorkReportSeq(workReportSeq);
-			
-			result = workMapper.insertWorkReport(workReport);
-		}
+//		if(registerFlag) {
+//			workReport.setWorkReportSeq(workReportSeq);
+//			
+//			result = workMapper.insertWorkReport(workReport);
+//		}
 				
 		List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();
 		
