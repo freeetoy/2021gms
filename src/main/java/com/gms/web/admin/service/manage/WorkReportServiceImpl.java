@@ -1321,6 +1321,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(workReportSeq <= 0) {
 				workReportSeq = getWorkReportSeq();
 				registerFlag = true;
+				workReport.setWorkReportSeq(workReportSeq);
+				result = workMapper.insertWorkReport(workReport);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
@@ -1485,9 +1487,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 					workReport.setOrderId(orderTemp.getOrderId());
 					workReport.setWorkProductNm(productTotal.getProductNm());
 					workReport.setWorkProductCapa(productTotal.getProductCapa());
-					workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
+					workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));			
 					
-					result = workMapper.insertWorkReport(workReport);
+					result = workMapper.updateWorkReportOrder(workReport);
+					
 				}
 								
 				List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();
@@ -1553,11 +1556,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				
 				//int leftOrderProduct = 0;
-				for(int i = 0 ; i < orderProductList.size();i++) {
-					OrderProductVO tempOrderProduct = orderProductList.get(i);	
-					//logger.debug("WorkReportServiceImpl ****** - registerWorkNoBottle  tempOrderProduct.getOrderCount()=" + tempOrderProduct.getOrderCount() );
-					//leftOrderProduct += tempOrderProduct.getOrderCount();					
-				}				
+				/*
+				 * for(int i = 0 ; i < orderProductList.size();i++) { OrderProductVO
+				 * tempOrderProduct = orderProductList.get(i); }
+				 */				
 				// Order 상태 정보 변경
 				List<OrderProductVO> orderProduct = orderService.getOrderProductList(orderTemp.getOrderId());
 				int remainCount = 0;
@@ -1577,9 +1579,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			}else {
 				// order 정보 등록 (Tb_Order, Tb_Order_Product)
 				orderTemp = new OrderVO();
-				int orderId = orderService.getOrderId();
-				
-				orderTemp.setOrderId(Integer.valueOf(orderId));
+								
 				orderTemp.setMemberCompSeq(Integer.parseInt(PropertyFactory.getProperty("common.Member.Comp.Daehan")) );
 				orderTemp.setCustomerId(param.getCustomerId());
 				orderTemp.setOrderTypeCd(PropertyFactory.getProperty("common.code.order.type.order"));	//상품주문
@@ -1618,6 +1618,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				
 				//order정보 등록
+				int orderId = orderService.getOrderId();
+				orderTemp.setOrderId(Integer.valueOf(orderId));
+				
 				result = orderService.registerOrder(orderTemp);
 				receivableAmount += orderTemp.getOrderTotalAmount();
 				
@@ -1658,7 +1661,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				//WorkReport 등록
 				if(registerFlag)
-					result = workMapper.insertWorkReport(workReport);	
+					result = workMapper.updateWorkReportOrder(workReport);
 				
 				//WorkReportBottle 등록
 				List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();
