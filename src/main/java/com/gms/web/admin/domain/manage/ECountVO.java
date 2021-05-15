@@ -14,6 +14,8 @@ public class ECountVO {
 	
 	private String customerId;
 	
+	private String customerEId;
+	
 	private String customerNm;
 	
 	private String salesNm;
@@ -33,7 +35,8 @@ public class ECountVO {
 	private Integer productId;
 	
 	private String eCountCd;	//ECount품목코드
-	
+	/** Product_Price_Seq */
+	private Integer productPriceSeq;
 	/** ECount_CDS     */
 	private String eCountCdS; 	//용기및사스 판매 ECount품목코드
 	
@@ -66,4 +69,6 @@ public class ECountVO {
 	
 	/** Gas_CD */
 	private String gasCd ;
+	
+	private String agencyYn = "N";
 }

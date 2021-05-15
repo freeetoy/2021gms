@@ -8,4 +8,6 @@ import com.gms.web.admin.domain.manage.WorkReportVO;
 public interface ECountService {
 
 	public List<ECountVO> getECountList(WorkReportVO workReport);
+	
+	public List<ECountVO> getECountMinusList(WorkReportVO workReport);
 }

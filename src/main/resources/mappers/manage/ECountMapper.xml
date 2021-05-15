@@ -22,8 +22,8 @@
 
 	 <select id="selectECount" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >		
 		SELECT 
-			TC.ECount_CD Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, PP.Product_Capa, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
-			WB.Order_Count, WB.Product_Price, WB.Order_Count*WB.Product_Price Supply_Price,WB.Order_Count*WB.Product_Price*0.1 VAT,Bottle_Work_Cd,GAS_CD
+			TC.ECount_CD Customer_EID, TC.Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, WB.Product_Price_Seq,PP.Product_Capa, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
+			WB.Order_Count, WB.Product_Price, WB.Order_Count*WB.Product_Price Supply_Price,WB.Order_Count*WB.Product_Price*0.1 VAT,Bottle_Work_Cd,GAS_CD,Agency_Yn
 		FROM 
 			(
 				SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq,TB.Create_ID,Bottle_Sale_YN, Product_Price, Bottle_Work_Cd,GAS_CD
@@ -51,5 +51,18 @@
 		AND 
 			WB.Create_ID = TU.User_Id
 		Order By WB.Work_Report_Seq desc
+	</select>
+	
+	<select id="selectECountMinus" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >
+		SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq, Bottle_Work_Cd,TB.Customer_ID
+		FROM TB_Work_Bottle TB, TB_Work_Report TW
+		WHERE Bottle_Work_Cd in ('0310','0315')
+		AND TB.Work_Report_Seq = TW.Work_Report_Seq
+		AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')=  #{searchDt}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND TB.Create_ID =  #{searchUserId}
+		</if>
+		AND TB.Bottle_Type='F'
+		Group By Work_Report_Seq,Product_ID, Product_Price_Seq ,Bottle_Work_Cd,TB.Customer_ID		
 	</select>
 </mapper>

@@ -21,4 +21,9 @@ public class ECountServiceImpl implements ECountService {
 		return eMapper.selectECount(workReport);
 	}
 
+	@Override
+	public List<ECountVO> getECountMinusList(WorkReportVO workReport) {
+		return eMapper.selectECountMinus(workReport);
+	}
+
 }

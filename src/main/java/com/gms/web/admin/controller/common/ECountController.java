@@ -10,6 +10,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,7 @@ import com.gms.web.admin.service.manage.ECountService;
 
 @Controller
 public class ECountController {
-		
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private ECountService eService;
 	
@@ -38,6 +40,7 @@ public class ECountController {
 		  
 		   // 가스 정보 불러오기
 			List<ECountVO> eList = eService.getECountList(workReport); 
+			List<ECountVO> eMList = eService.getECountMinusList(workReport); 
 		    // 워크북 생성
 	
 		    Workbook wb = new HSSFWorkbook();
@@ -81,6 +84,8 @@ public class ECountController {
 		    String productNm = "";
 	        String productCapa = "";
 	        int orderCount = 0;
+	        double supplyPrice = 0;	
+	        double vat = 0;
 		    for(ECountVO vo : eList) {
 		    	
 		    	if(prevEcount != null && !prevEcount.getCustomerNm().equals(vo.getCustomerNm()) ){
@@ -102,7 +107,7 @@ public class ECountController {
 		        //거래처코드
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getCustomerId());
+		        cell.setCellValue(vo.getCustomerEId());
 		        
 		        //거래처명
 		        cell = row.createCell(k++);;
@@ -157,6 +162,22 @@ public class ECountController {
 		        productNm = vo.getProductNm();
 		        productCapa = vo.getProductCapa();
 		        orderCount = vo.getOrderCount();
+		        supplyPrice = vo.getSupplyPrice();
+		        vat = vo.getVat();
+		       
+		        if(vo.getAgencyYn().equals("Y")) {
+		        	for(int i= 0 ; i < eMList.size() ; i++) {
+		        		ECountVO mVo = eMList.get(i);
+		        		
+		        		if(mVo.getCustomerId().equals(vo.getCustomerId()) && mVo.getProductId().equals(vo.getProductId()) 
+		        				&& mVo.getProductPriceSeq().equals(vo.getProductPriceSeq()) ) {
+		        			orderCount = orderCount - mVo.getOrderCount();		        
+		        			supplyPrice = Math.round(orderCount * vo.getProductPrice());
+		        			vat = Math.round(supplyPrice * 0.1);
+		        		}
+		        	}
+		        }
+		        
 		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
 		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
 		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";
@@ -190,7 +211,12 @@ public class ECountController {
 		        //단가	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getProductPrice());
+		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
+		        	cell.setCellValue(vo.getProductPrice()/orderCount);
+		        }else {
+		        	cell.setCellValue(vo.getProductPrice());
+		        }
+		        
 		        
 		        //외화금액
 		        cell = row.createCell(k++);
@@ -200,12 +226,12 @@ public class ECountController {
 		        //공급가액	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(Math.round(vo.getSupplyPrice()));
+		        cell.setCellValue(supplyPrice);
 		        
 		        //부가세	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(Math.round(vo.getVat()));
+		        cell.setCellValue(vat);
 		        
 		        //적요	
 		        cell = row.createCell(k++);

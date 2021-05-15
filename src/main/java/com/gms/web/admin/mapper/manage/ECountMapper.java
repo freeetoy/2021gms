@@ -12,4 +12,6 @@ import com.gms.web.admin.domain.manage.WorkReportVO;
 public interface ECountMapper {
 
 	public List<ECountVO> selectECount(WorkReportVO workReport);
+	
+	public List<ECountVO> selectECountMinus(WorkReportVO workReport);
 }
