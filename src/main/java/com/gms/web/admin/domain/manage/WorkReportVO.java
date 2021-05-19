@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WorkReportVO extends AbstractVO implements Serializable {
+	
+	
+	private static final long serialVersionUID = 3224009822300528104L;
 
 	/**Work_Report_Seq      */
 	private Integer workReportSeq;

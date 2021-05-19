@@ -294,9 +294,9 @@
 	
 	<select id="selectWorkBottleList" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="int">		
 		SELECT  
-			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, Product_Capa,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN
+			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN
 		FROM (
-			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN
+			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN,Gas_Cd
 			FROM TB_Work_Bottle
 			WHERE Work_Report_Seq = #{workReportSeq}
 			Group by Bottle_Work_Cd , Product_ID  ,Product_Price_Seq

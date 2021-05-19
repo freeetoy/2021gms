@@ -584,8 +584,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 		try {		
 			//기존 주문이 있는지 여부 확인
 			OrderVO orderTemp =  null;
-			
-			if(param.getAgencyYn().equals("N")) orderTemp = orderService.getLastOrderForCustomer(param.getCustomerId());
+					
+			if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) orderTemp = orderService.getLastOrderForCustomer(param.getCustomerId());
 			
 			if(orderTemp != null) {
 				param.setOrderId(orderTemp.getOrderId());
@@ -603,7 +603,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				int workSeq=1;
 				int workReportSeq = 0;
 				
-				if(param.getAgencyYn().equals("N")) workReportSeq = getWorkReportSeqForCustomerToday(param);
+				if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) workReportSeq = getWorkReportSeqForCustomerToday(param);
 				//workReportSeq = 0;
 				if(workReportSeq <= 0) {
 					workReportSeq = getWorkReportSeq();
@@ -1316,8 +1316,15 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workReport.setUserId(param.getCreateId());
 						
 			//WorkReportSeq 가져오기
-			int workReportSeq = getWorkReportSeqForCustomerToday(workReport);
+			int workReportSeq = 0;
 			
+			if(param.getAgencyYn().equals("N") || !param.getCreateId().equals("factory") )  {
+				logger.debug(" registerWorkNoBottle  param.getAgencyYn()=" ,param.getAgencyYn() );
+				logger.debug(" registerWorkNoBottle  param.getCreateId()=" ,param.getCreateId() );
+				workReportSeq = getWorkReportSeqForCustomerToday(workReport);
+			}else {
+				logger.debug(" registerWorkNoBottle11  param.getAgencyYn()=" ,param.getAgencyYn() );
+			}
 			if(workReportSeq <= 0) {
 				workReportSeq = getWorkReportSeq();
 				registerFlag = true;
@@ -1330,7 +1337,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			//주문정보 확인
 			//기존 주문이 있는지 여부 확인
-			OrderVO orderTemp =  orderService.getLastOrderForCustomer(param.getCustomerId());			
+			OrderVO orderTemp =  null;			
+			if(param.getAgencyYn().equals("N") || !param.getCreateId().equals("factory") ) orderTemp =  orderService.getLastOrderForCustomer(param.getCustomerId());
 			
 			List<OrderProductVO> orderProductList= null;		
 			List<OrderProductVO> tempOrderProductList= null;	
@@ -1922,45 +1930,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 						newOrderProductList.add(orderProduct);
 					}					
 				}
-				/*
-				//판매 & 대여
-				if(!afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))) {
-					for(int i =0 ; i <orderProductList.size() ; i++) {
-						OrderProductVO orderProduct = orderProductList.get(i);
 						
-						if(orderProduct.getProductId() == afterWorkBottle.getProductId() 
-								&& orderProduct.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){
-							
-							// 같은 경우
-							if( (orderProduct.getBottleChangeYn().equals("Y") && afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent")) )
-									|| (orderProduct.getBottleChangeYn().equals("N") && afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) )  ) {
-								
-								afterWorkBottle.setNewProductYn("N");
-								int remainCount = afterWorkBottle.getProductCount() - orderProduct.getOrderCount();
-								
-								orderProduct.setSalesCount(remainCount);
-								
-								if(remainCount > 0) {
-									if(orderProduct.getGasId() > 0) {
-										result = addOrderProduct(orderProduct);	
-									}else {
-										result = addOrderProductNoGas(orderProduct);	
-									}
-								}else if(remainCount < 0 ){
-									orderProduct.setCustomerId(customerId);
-									result = minusOrderProduct(orderProduct);
-								}
-							}
-						
-						}
-					} //for(int i =0 ; i <orderProductList.size() ; i++) {
-				}				
-				*/			
 				
 			}			
-			// afeterWorkBottle 의 productCount 만큼 가감
-			//result = changeWorkBottle(afterWorkBottleList);			
-			//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  afterWorkBottleList=" + afterWorkBottleList.get(0).getCustomerId());
 			
 			result = addNewWorkBottle(getNewWorkBottle(afterWorkBottleList,1));			
 			
@@ -2009,6 +1981,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			workBottle.setCustomerId(param.getCustomerId());
 			workBottle.setBottleWorkCd(param.getBottleWorkCd());
 			workBottle.setGasId(param.getGasId());
+			workBottle.setGasCd(param.getGasCd());
 			workBottle.setProductId(param.getProductId());
 			workBottle.setProductPriceSeq(param.getProductPriceSeq());
 			workBottle.setProductPrice(param.getProductPrice());
@@ -2221,12 +2194,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 					addWorkBottle.setBottleWorkCd(workBottle.getBottleWorkCd());
 					addWorkBottle.setCreateId(workBottle.getCreateId());
 					addWorkBottle.setBottleWorkCd(workBottle.getBottleWorkCd());
-					addWorkBottle.setBottleSaleYn(workBottle.getBottleSaleYn());
+					addWorkBottle.setBottleSaleYn(workBottle.getBottleSaleYn());					
 					
 					addWorkBottle.setWorkSeq(workSeq);
 					workSeq++;
 					if(dummy != null) {
 						addWorkBottle.setGasId(dummy.getGasId());
+						addWorkBottle.setGasCd(dummy.getGasCd());
 						addWorkBottle.setBottleId(dummy.getBottleId());
 						addWorkBottle.setBottleBarCd(dummy.getBottleBarCd());
 					}
@@ -2244,7 +2218,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						else addWorkBottle.setProductPrice(productTotal.getProductBottlePrice());		
 						addWorkBottle.setBottleSaleYn("Y");
 					}
-					
+					logger.debug("WorkReportServiceImpl --addWorkBottle getGasCd" + addWorkBottle.getGasCd());
 					addWorkBottleList.add(addWorkBottle);
 				}
 			}		
@@ -2522,7 +2496,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		try {		
 			//기존 주문이 있는지 여부 확인
 			OrderVO order =  null;
-			if(param.getAgencyYn().equals("N")) order = orderService.getLastOrderForCustomer(param.getCustomerId());
+			if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) order = orderService.getLastOrderForCustomer(param.getCustomerId());
 			
 			//Bottle 정보 가져오기
 			
@@ -2558,7 +2532,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			boolean registerFlag = false;
 			int workSeq=1;
 			int workReportSeq = 0;
-			if(param.getAgencyYn().equals("N"))  workReportSeq = getWorkReportSeqForCustomerToday(param);
+			if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") )  workReportSeq = getWorkReportSeqForCustomerToday(param);
 			
 			if(workReportSeq <= 0) {
 				workReportSeq = getWorkReportSeq();
