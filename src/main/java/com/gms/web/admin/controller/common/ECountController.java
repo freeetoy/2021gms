@@ -191,7 +191,7 @@ public class ECountController {
 		        }
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        if(vo.getProductNm().equals("믹스가스") && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
+		        if(vo.getProductNm().indexOf("믹스가스") > -1 && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
 		        	cell.setCellValue(vo.getProductNm()+"("+vo.getGasCd()+")");
 		        else
 		        	cell.setCellValue(productNm);
