@@ -13,15 +13,11 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
-import com.gms.web.admin.domain.manage.CustomerBottleVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
-import com.gms.web.admin.domain.manage.OrderExtVO;
-import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
-import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
@@ -29,7 +25,6 @@ import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CashFlowService;
 import com.gms.web.admin.service.manage.CustomerService;
-import com.gms.web.admin.service.manage.OrderService;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.manage.UserService;
 import com.gms.web.admin.service.manage.WorkReportService;
@@ -66,9 +61,6 @@ public class ApiServiceImpl implements ApiService {
 	
 	@Autowired
 	private ProductService productService;
-	
-	@Autowired
-	private OrderService orderService;
 	
 	@Override
 	public int registerWorkReportForSale(WorkReportVO param) { 
@@ -179,7 +171,7 @@ public class ApiServiceImpl implements ApiService {
 			
 			if(customer!=null) {
 				param.setCustomerId(customer.getCustomerId());
-				
+				param.setAgencyYn(customer.getAgencyYn());	
 				if(param.getProductId()==Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.productId"))
 						&& param.getProductPriceSeq() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.bottle.productPriceSeq") )
 						&& param.getProductCount() > 1000 ) {
