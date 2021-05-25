@@ -118,9 +118,9 @@ public class BottleServiceImpl implements BottleService {
 		}
 	
 		int bottleCount = 0;
-		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
-			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
-		else
+//		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
+//			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
+//		else
 			bottleCount = bottleMapper.selectBottleCount(map);
 		
 		//int lastPage = (int)(Math.ceil(bottleCount/ROW_PER_PAGE));
@@ -147,9 +147,9 @@ public class BottleServiceImpl implements BottleService {
 		
 		Map<String, Object> resutlMap = new HashMap<String, Object>();
 		List<BottleVO> bottleList = null;
-		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
-			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
-		else
+//		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
+//			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
+//		else
 			bottleList = bottleMapper.selectBottleList(map);
 		
 		resutlMap.put("list",  bottleList);

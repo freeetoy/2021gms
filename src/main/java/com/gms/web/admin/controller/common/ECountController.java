@@ -162,8 +162,8 @@ public class ECountController {
 		        productNm = vo.getProductNm();
 		        productCapa = vo.getProductCapa();
 		        orderCount = vo.getOrderCount();
-		        supplyPrice = vo.getSupplyPrice();
-		        vat = vo.getVat();
+		        supplyPrice = Math.round(vo.getSupplyPrice());
+		        vat = Math.round(vo.getVat());
 		       
 		        if(vo.getAgencyYn().equals("Y")) {
 		        	for(int i= 0 ; i < eMList.size() ; i++) {
@@ -214,7 +214,7 @@ public class ECountController {
 		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
 		        	cell.setCellValue(vo.getProductPrice()/orderCount);
 		        }else {
-		        	cell.setCellValue(vo.getProductPrice());
+		        	cell.setCellValue(Math.round(vo.getProductPrice()));
 		        }
 		        
 		        

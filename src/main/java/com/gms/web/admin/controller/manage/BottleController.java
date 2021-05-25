@@ -109,8 +109,8 @@ public class BottleController {
 		// 가스 정보 불러오기
 		//List<GasVO> gasList = gasService.getGasList();
 		//model.addAttribute("gasList", gasList);
-		logger.debug(" getBottleList ownCustomerId="+params.getOwnCustomerId());
-		logger.debug(" getBottleList searchCustomerNm1="+params.getSearchCustomerNm1());
+//		logger.debug(" getBottleList ownCustomerId="+params.getOwnCustomerId());
+//		logger.debug(" getBottleList searchCustomerNm1="+params.getSearchCustomerNm1());
 		String ownCustomerId = "";
 		if(params.getOwnCustomerId() !=null) ownCustomerId = params.getOwnCustomerId();
 		

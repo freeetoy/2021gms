@@ -509,6 +509,9 @@
 				TB_Bottle TB, TB_CODE TC, TB_Product TG
 			WHERE
 				TB.Delete_YN = 'N'
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
+			AND	Customer_Id = #{ownCustomerId}
+			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>
@@ -588,6 +591,9 @@
 			TB_Bottle
 		WHERE
 			Delete_YN = 'N'
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
+		AND	Customer_Id = #{ownCustomerId}
+		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 		AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 		</if>
