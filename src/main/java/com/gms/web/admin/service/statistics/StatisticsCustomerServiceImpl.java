@@ -82,8 +82,10 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 
 	@Override
 	public int registerDailyStatisticsCustomer() {
-		// TODO Auto-generated method stub
-		return statMapper.inserDailyStatisticsCustomer();
+		int result=0;
+		result = statMapper.inserDailyStatisticsCustomer();
+		if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();
+		return result;
 	}
 
 	@Override

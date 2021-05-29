@@ -42,7 +42,7 @@
 		INSERT INTO TB_Daily_Stat_Customer(
 			<include refid="StatisticsCustomerColumns" />
 		) 
-		SELECT AA.customer_id,stat_dt,Order_Count,Order_Amount,Income_Amount,Receivable_Amount,'admin' ,now()
+		SELECT AA.customer_id,stat_dt,IFNULL(Order_Count,0),IFNULL(Order_Amount,0),IFNULL(Income_Amount,0),IFNULL(Receivable_Amount,0),'admin' ,now()
 		FROM 
 		(
 			SELECT tp.Customer_ID,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') stat_dt, IFNULL(Order_Count,0) Order_Count, IFNULL(Order_Amount,0) Order_Amount
@@ -50,7 +50,7 @@
 			( 
 				SELECT a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
 				FROM 	TB_Work_Bottle A
-				WHERE  	Bottle_Work_Cd in ('0308','0309')
+				WHERE  	Bottle_Work_Cd in ('0308','0309','0314','0316')
 				AND 	DATE_FORMAT(A.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
 				GROUP BY A.customer_Id
 		) Tm  on tm.customer_id = tp.customer_ID ) AA left join
@@ -79,6 +79,14 @@
 		GROUP BY Customer_ID,LEFT(Stat_Dt,7)
 	</insert>
 	
+	<update id="deleteDailyStatisticsCustomer" >		
+		DELETE FROM  TB_Daily_Stat_Customer		
+		WHERE Stat_Dt = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		AND Order_Count = 0
+		AND Order_Amount = 0
+		AND Income_Amount = 0
+		AND Receivable_Amount = 0
+	</update>
 	
 	<select id="selectDailylStatisticsCustomerList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" parameterType="java.util.Map">		
 		SELECT

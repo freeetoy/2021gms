@@ -15,6 +15,8 @@ public interface StatisticsCustomerMapper {
 	public List<StatisticsCustomerVO> selectMontlylStatisticsCustomerList(Map<String, Object> map);	
 	
 	public int inserDailyStatisticsCustomer();
+	
+	public int deleteDailyStatisticsCustomer();
 
 	public int inserMonthlyStatisticsCustomer();
 
