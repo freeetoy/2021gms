@@ -1102,14 +1102,16 @@ $(document).ready(function(){
                       <td >
                       	<table>     
                       	<tr th:if="${not #lists.isEmpty(row.salesBottles )}" th:each="row1 : ${row.salesBottles}"  >
-                      		<td th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' ">
+                      		<td th:if="${row1.bottleWorkCd=='0306'}" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ',' +${row1.bottleType}+')' ">
+                      		<td th:unless="${row1.bottleWorkCd =='0306'}" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' ">
                       	</tr>
                       	</table>
                       </td>
                       <td>
                     	<table>     
                       	<tr th:if="${not #lists.isEmpty(row.backBottles )}" th:each="row2 : ${row.backBottles}" >
-                      		<td  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm} + ')'">
+                      		<td th:if="${row2.bottleWorkCd=='0301'}"  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm}  + ',' +${row2.bottleType}+')'">
+                      		<td th:unless="${row2.bottleWorkCd=='0301'}"  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm}  + ')'">
                       	</tr>
                       	</table>
                       </td>
