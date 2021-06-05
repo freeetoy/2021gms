@@ -78,4 +78,6 @@ public interface WorkReportMapper {
 	public List<WorkBottleVO> selectWorkBottleListOfCustomerToday(Integer customerId);	
 	
 	public int updateWorkReportOrder(WorkReportVO param);
+	
+	public int updateWorkReportNoOrder(WorkReportVO param);
 }

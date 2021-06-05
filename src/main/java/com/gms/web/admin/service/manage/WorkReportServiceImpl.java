@@ -209,16 +209,17 @@ public class WorkReportServiceImpl implements WorkReportService {
 			int workReportSeq = getWorkReportSeqForCustomerToday(param);
 			int workSeq=1;
 			if(workReportSeq <= 0) {
-				workReportSeq = getWorkReportSeq();
+				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
+				
+				result = workMapper.insertWorkReport(param);
+				workReportSeq = getWorkReportSeqForCustomerToday(param);
+				param.setWorkReportSeq(workReportSeq);	
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
 			param.setWorkReportSeq(workReportSeq);
 			param.setWorkCd(param.getBottleWorkCd());
-					
-			if(registerFlag)
-				result = workMapper.insertWorkReport(param);
 			
 			boolean updateOrderAddFlag = true;
 			double receivableAmount = 0 ;
@@ -606,10 +607,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 				if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) workReportSeq = getWorkReportSeqForCustomerToday(param);
 				//workReportSeq = 0;
 				if(workReportSeq <= 0) {
-					workReportSeq = getWorkReportSeq();
+					//workReportSeq = getWorkReportSeq();
 					registerFlag = true;
-					param.setWorkReportSeq(workReportSeq);	
+					
 					result = workMapper.insertWorkReport(param);
+					workReportSeq = getWorkReportSeqForCustomerToday(param);
+					param.setWorkReportSeq(workReportSeq);	
 				}else {
 					workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 				}
@@ -923,13 +926,15 @@ public class WorkReportServiceImpl implements WorkReportService {
 			//int workReportSeq = getWorkReportSeqForCustomerToday(param);
 			
 			if(workReportSeq <= 0) {
-				workReportSeq = getWorkReportSeq();
+				//workReportSeq = getWorkReportSeq();
 				insertFlag = true;
+				
+				result = workMapper.insertWorkReport(param);
+				workReportSeq = getWorkReportSeqForCustomerToday(param);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
-//			logger.debug(" registerWorkReportByBottle workReportSeq =" + workReportSeq);
-//			logger.debug(" registerWorkReportByBottle workSeq =" + workSeq);
+
 			//TB_Work_Reprot 등록
 			param.setWorkReportSeq(workReportSeq);
 						
@@ -1020,7 +1025,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 			}
 			
 			if(insertFlag) {
-				result = workMapper.insertWorkReport(param);
+//				result = workMapper.insertWorkReport(param);
+				result = workMapper.updateWorkReportNoOrder(param);
 			}
 			result = workMapper.insertWorkBottles(workBottleList);				
 			
@@ -1326,10 +1332,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 //				logger.debug(" registerWorkNoBottle11  param.getAgencyYn()=" ,param.getAgencyYn() );
 			}
 			if(workReportSeq <= 0) {
-				workReportSeq = getWorkReportSeq();
+				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
 				workReport.setWorkReportSeq(workReportSeq);
 				result = workMapper.insertWorkReport(workReport);
+				workReportSeq = getWorkReportSeqForCustomerToday(workReport);
+				
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
@@ -2429,15 +2437,18 @@ public class WorkReportServiceImpl implements WorkReportService {
 			int workReportSeq = getWorkReportSeqForCustomerToday(param);
 			
 			if(workReportSeq <= 0) {
-				workReportSeq = getWorkReportSeq();
+				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
+				result = workMapper.insertWorkReport(param);
+				
+				workReportSeq = getWorkReportSeqForCustomerToday(param);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
 						
 			param.setWorkReportSeq(workReportSeq);
-			if(registerFlag)
-				result = workMapper.insertWorkReport(param);	
+//			if(registerFlag)
+//				result = workMapper.insertWorkReport(param);	
 			
 			for(int i = 0 ; i < bottleList.size() ; i++) {
 				BottleVO bottle = bottleList.get(i);
@@ -2543,8 +2554,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") )  workReportSeq = getWorkReportSeqForCustomerToday(param);
 			
 			if(workReportSeq <= 0) {
-				workReportSeq = getWorkReportSeq();
+				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
+				
+				result = workMapper.insertWorkReport(param);	
+				workReportSeq = getWorkReportSeqForCustomerToday(param);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
@@ -2552,8 +2566,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 //			logger.debug(" registerWorkReportMassNoOrder workReportSeq =" + workReportSeq);
 			//TB_Work_Reprot 등록
 			param.setWorkReportSeq(workReportSeq);
-			if(registerFlag)
-				result = workMapper.insertWorkReport(param);		
+//			if(registerFlag)
+//				result = workMapper.insertWorkReport(param);		
 			
 			if(order != null ) {
 				param.setOrderId(order.getOrderId());
@@ -3653,11 +3667,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 		int workReportSeq = getWorkReportSeqForCustomerToday(workReport);
 		
 		if(workReportSeq <= 0) {
-			workReportSeq = getWorkReportSeq();
+//			workReportSeq = getWorkReportSeq();
 			registerFlag = true;
 			workReport.setWorkReportSeq(workReportSeq);
 			
 			result = workMapper.insertWorkReport(workReport);
+			workReportSeq = getWorkReportSeqForCustomerToday(workReport);
 		}else {
 			workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 		}	
@@ -3669,12 +3684,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 		
 		ProductTotalVO productTotal = productService.getPrice(bottle);
 		
-//		if(registerFlag) {
-//			workReport.setWorkReportSeq(workReportSeq);
-//			
-//			result = workMapper.insertWorkReport(workReport);
-//		}
-				
 		List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();
 		
 		for(int i = 0 ; i < param.getProductCount() ; i++) {					
