@@ -58,6 +58,8 @@ public interface ProductService {
 	
 	public List<ProductPriceSimpleVO> getNoGasProductPriceList();
 	
+	public List<ProductPriceSimpleVO> getNoGasProductPriceListV2(ProductVO param);
+	
 	public List<ProductPriceSimpleVO> getGasProductPriceList();
 	
 	public List<ProductTotalVO> getProductTotalDetailList();

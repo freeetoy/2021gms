@@ -124,8 +124,18 @@ $(document).ready(function(){
               <input type="hidden" id="priceCount" name="priceCount" value="1">
                 <table class="table table-hover">
                   <thead>
+                  	<tr>
                       <th class="card-footer">상품명</th>
                       <th><input type="text" class="form-control" id="productNm" name="productNm" placeholder="상품명"></th>
+                      
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래타입</th>
+                      <th>
+                      	<input type="radio" name="saleCtype" id="saleCtype" value="A" checked="">  공용                                   
+                      	<input type="radio" name="saleCtype" id="saleCtype" value="C"> 영업용
+                      	<input type="radio" name="saleCtype" id="saleCtype" value="F"> 공장
+                      	</th>
                     </tr>
                     <tr>
                       <th class="card-footer">가스</th>

@@ -316,6 +316,11 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductPriceSimpleVO> getNoGasProductPriceList() {
 		return productMapper.selectNoGasProductPriceList();
 	}
+	
+	@Override
+	public List<ProductPriceSimpleVO> getNoGasProductPriceListV2(ProductVO param) {
+		return productMapper.selectNoGasProductPriceListV2(param);
+	}
 
 	@Override
 	public List<ProductPriceSimpleVO> getGasProductPriceList() {

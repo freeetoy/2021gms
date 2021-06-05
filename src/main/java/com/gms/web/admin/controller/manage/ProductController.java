@@ -89,6 +89,7 @@ public class ProductController {
 			boolean result=true;
 			
 			params.setProductNm(req.getParameter("productNm"));			
+			params.setSaleCtype(req.getParameter("saleCtype"));
 			if(req.getParameter("gasId").equals("0")) params.setGasId(0);
 			else params.setGasId(Integer.parseInt(req.getParameter("gasId")));
 			params.setMemberCompSeq(1);
@@ -187,6 +188,7 @@ public class ProductController {
 			
 			params.setProductId(Integer.parseInt(req.getParameter("productId")));	
 			params.setProductNm(req.getParameter("productNm"));			
+			params.setSaleCtype(req.getParameter("saleCtype"));
 			if(req.getParameter("gasId").equals("0")) params.setGasId(0);
 			else params.setGasId(Integer.parseInt(req.getParameter("gasId")));
 			params.setMemberCompSeq(1);
@@ -368,6 +370,17 @@ public class ProductController {
 		
 		logger.debug("******result *****===*"+param.getProductId());
 		List<ProductPriceSimpleVO> productList = productService.getNoGasProductPriceList();
+		//model.addAttribute("productList", productList);
+		
+		return productList;
+	}
+	
+	@RequestMapping(value = "/api/ngasProductPriceListV2.do")
+	@ResponseBody
+	public List<ProductPriceSimpleVO> getProductPriceListOfNoGasV2(ProductVO param,Model model)	{	
+		
+		logger.debug("******getSaleCtype *****===*"+param.getSaleCtype());
+		List<ProductPriceSimpleVO> productList = productService.getNoGasProductPriceListV2(param);
 		//model.addAttribute("productList", productList);
 		
 		return productList;

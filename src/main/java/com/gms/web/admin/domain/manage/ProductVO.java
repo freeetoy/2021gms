@@ -28,5 +28,6 @@ public class ProductVO extends AbstractVO  implements Serializable {
 	/**Member_Comp_Seq */ 
 	private Integer memberCompSeq;
 	
-
+	/**Sale_CType */
+	private String saleCtype;	
 }

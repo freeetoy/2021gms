@@ -27,7 +27,8 @@
 		,Product_Nm
 		,Gas_ID
 		,Product_Status
-		,Member_Comp_Seq 		
+		,Member_Comp_Seq
+		,Sale_CType
 		,Create_ID 
 		,Create_Dt 
 		,Update_ID 
@@ -71,6 +72,7 @@
 			, #{gasId}
 			, IFNULL(#{productStatus}, '2')
 			, #{memberCompSeq}
+			, #{saleCtype}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -189,6 +191,7 @@
 		SET
 			  Product_Nm = #{productNm}
 			, Gas_ID = #{gasId}
+			, Sale_Ctype = #{saleCtype}
 			, UPDATE_ID = #{updateId}
 			, UPDATE_DT = NOW()
 		WHERE
@@ -442,6 +445,16 @@
 			GAS_ID = 0 		
 	</select>
 	
+	<select id="selectNoGasProductPriceListV2"  parameterType="com.gms.web.admin.domain.manage.ProductVO" resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
+		SELECT TP.Product_ID ,Product_Price_Seq,concat(Product_Nm , " - " ,Product_Capa) Product_Nm,Product_Capa
+		FROM TB_Product  TP, TB_Product_Price TPP
+		WHERE TP.Product_Status  = '2'
+		AND TPP.Product_Status  = '2'
+		AND TP.Product_ID = TPP.Product_ID
+		AND GAS_ID = 0 	
+		AND (Sale_Ctype = 'A' or Sale_Ctype = #{saleCtype} )	
+	</select>
+	
 	<select id="selectGasProductPriceList"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
 		SELECT
 			TP.Product_ID ,Product_Price_Seq, Product_Nm , Product_Capa
@@ -454,7 +467,9 @@
 		AND 
 			TP.Product_ID = TPP.Product_ID
 		AND 
-			GAS_ID > 0 		
+			GAS_ID > 0 
+		AND
+			
 	</select>
 	
 	<select id="selectCustomerLn2List"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
@@ -490,6 +505,6 @@
 		AND	TP.Product_Status  = '2'
 		AND TPP.Product_Status  = '2'
 		AND TP.Product_ID = TPP.Product_ID		
-		AND TPP.`Product_Capa` not like '%병%'	
+		AND TPP.Product_Capa not like '%병%'	
 	</select>
 </mapper>
