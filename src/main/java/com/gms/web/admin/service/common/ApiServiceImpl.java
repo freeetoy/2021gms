@@ -81,7 +81,8 @@ public class ApiServiceImpl implements ApiService {
 			CustomerVO customer = getCustomer(param.getCustomerNm());
 			if(customer!=null) {
 				param.setCustomerId(customer.getCustomerId());
-				param.setAgencyYn(customer.getAgencyYn());				//20201220				
+				param.setAgencyYn(customer.getAgencyYn());				//20201220		
+				param.setWorkCd(param.getBottleWorkCd());
 	
 				result = workService.registerWorkReportNoOrder(param);			
 				
@@ -136,7 +137,7 @@ public class ApiServiceImpl implements ApiService {
 			}
 			
 			param.setUserId(param.getCreateId());
-			
+			param.setWorkCd(param.getBottleWorkCd());
 			result = workService.registerWorkReportByBottle(param, bottleList);
 			if(result <= 0) return result;
 			
@@ -339,6 +340,7 @@ public class ApiServiceImpl implements ApiService {
 			if(customer!=null) {
 				param.setCustomerId(customer.getCustomerId());
 				param.setAgencyYn(customer.getAgencyYn());				//20201220	
+				param.setWorkCd(param.getBottleWorkCd());
 				result = workService.registerWorkReportMassByBottle(param);		
 				
 			}else {

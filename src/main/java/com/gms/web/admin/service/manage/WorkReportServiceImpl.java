@@ -182,7 +182,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	@Override
 	@Transactional
 	public int registerWorkReportForOrder(WorkReportVO param) {
-//		logger.debug("****registerWorkReportForOrder start =" );
+		//logger.debug("****registerWorkReportForOrder start ="+param.getBottleWorkCd() );
 		int result = 1;
 		try {
 			//Order 정보가져오기
@@ -590,7 +590,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			if(orderTemp != null) {
 				param.setOrderId(orderTemp.getOrderId());
-				//logger.debug("WorkReportServiceImpl registerWorkReportNoOrder getOrderId =" + param.getOrderId());		
+				//logger.debug("WorkReportServiceImpl registerWorkReportNoOrder getBottleWorkCd =" + param.getBottleWorkCd());		
 				//result = registerWorkReportForOrder(param);
 				result = registerWorkReportForOrder(param);
 			}else {
@@ -1334,10 +1334,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(workReportSeq <= 0) {
 				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
-				workReport.setWorkReportSeq(workReportSeq);
+				
 				result = workMapper.insertWorkReport(workReport);
 				workReportSeq = getWorkReportSeqForCustomerToday(workReport);
-				
+				workReport.setWorkReportSeq(workReportSeq);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}

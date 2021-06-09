@@ -50,7 +50,7 @@
 			(
 				SELECT Product_Id, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
 				FROM TB_Work_Bottle
-				WHERE Bottle_Work_Cd in ('0308')
+				WHERE Bottle_Work_Cd in ('0308','0314')
 				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
 				Group by Product_Id
 			) tc on tb.Product_ID = tc.Product_ID
@@ -61,7 +61,7 @@
 			(
 				SELECT Product_Id, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
 				FROM TB_Work_Bottle
-				WHERE Bottle_Work_Cd in ('0309')
+				WHERE Bottle_Work_Cd in ('0309','0316')
 				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
 				Group by Product_Id
 			) tc on tb.Product_ID = tc.Product_ID

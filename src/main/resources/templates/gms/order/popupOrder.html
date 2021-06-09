@@ -355,12 +355,12 @@
  <tr height="33" style="height:24.9pt;">
   <td height="33" style="height:24.9pt;"><br></td>
   <td width="69" style="text-align:center;border-top:none;border-right:1pt solid red;border-bottom:none;border-left:1.5pt solid red;white-space:normal;width:52pt;">비고</td>
-  <td colspan="8" style="text-align:center;border-top:1pt solid red;border-right:1pt solid red;border-bottom:none;border-left:none;"  th:text="${orderExt.order.orderEtc}">가천대 201호로 납품 바랍니다.</td>
+  <td colspan="8" style="text-align:center;border-top:1pt solid red;border-right:1pt solid red;border-bottom:1.5pt solid red;border-left:none;"  th:text="${orderExt.order.orderEtc}">가천대 201호로 납품 바랍니다.</td>
   <td colspan="3" width="207" style="color:windowtext;font-weight:700;text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:none;border-left:1.5pt solid red;white-space:normal;width:156pt;">합<span>     </span>계<span>    
   </span>금<span>    </span>액</td>
   <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:none;border-left:none;white-space:normal;width:104pt;padding-right:5px"  th:if="${ (orderExt.order.orderTotalAmount*1.1) > 0 && (orderExt.order.orderTotalAmount*1.1)  * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(orderExt.order.orderTotalAmount*1.1, 3, 'COMMA')}">22,000</td>
   <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:none;border-left:none;white-space:normal;width:104pt;padding-right:5px"  th:if="${ (orderExt.order.orderTotalAmount*1.1) > 0 && (orderExt.order.orderTotalAmount*1.1)  * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(orderExt.order.orderTotalAmount*1.1, 3, 'COMMA',2,'POINT')}">22,000</td>
-  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:none;border-left:none;white-space:normal;width:104pt;">인 수
+  <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:1.5pt solid red;border-left:none;white-space:normal;width:104pt;">인 수
   자</td>
   <td colspan="2" width="138" style="color:windowtext;font-weight:700;text-align:right;border-top:1.5pt solid red;border-right:1.5pt solid red;border-bottom:none;border-left:none;white-space:normal;width:104pt;">(인)</td>
   <td><br></td>
@@ -372,9 +372,9 @@
   </span>방<span>  </span>식</td>
   <td colspan="2" width="138" style="color:windowtext;text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:1pt solid red;border-left:none;white-space:normal;width:104pt;">온라인
   송금</td>
-  <td width="69" style="color:windowtext;text-align:center;border-top:none;border-right:none;border-bottom:1pt solid red;border-left:none;white-space:normal;width:52pt;">현금</td>
-  <td width="69" style="color:windowtext;text-align:center;border-top:none;border-right:none;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:52pt;">카드</td>
-  <td width="69" style="color:windowtext;text-align:center;border-top:none;border-right:none;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:52pt;">미수</td>
+  <td width="69" style="color:windowtext;text-align:center;border-top:1pt solid red;border-right:none;border-bottom:1pt solid red;border-left:none;white-space:normal;width:52pt;">현금</td>
+  <td width="69" style="color:windowtext;text-align:center;border-top:1pt solid red;border-right:none;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:52pt;">카드</td>
+  <td width="69" style="color:windowtext;text-align:center;border-top:1pt solid red;border-right:none;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:52pt;">미수</td>
   <td colspan="2" width="138" style="text-align:center;border-top:1pt solid red;border-right:none;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:104pt;">세금계산서 발행</td>
   <td colspan="2" width="138" style="text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:1pt solid red;border-left:1pt solid red;white-space:normal;width:104pt;">세금계산서 미발행</td>
   <td colspan="2" width="138" style="color:windowtext;;text-align:center;border-top:1.5pt solid red;border-right:1pt solid red;border-bottom:1.5pt solid red;border-left:1.5pt solid red;white-space:normal;width:104pt;"><span> </span>전 미수금액</td>

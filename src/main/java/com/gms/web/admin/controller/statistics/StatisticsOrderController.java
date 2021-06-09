@@ -42,7 +42,7 @@ public class StatisticsOrderController {
 	@RequestMapping(value = "/gms/statistics/order/daily.do")
 	public ModelAndView getStatisticsOrderDaily(StatisticsOrderVO params) {
 
-		logger.debug("StatisticsOrderContoller getStatisticsOrderDaily");
+//		logger.debug("StatisticsOrderContoller getStatisticsOrderDaily");
 		//logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
@@ -90,7 +90,7 @@ public class StatisticsOrderController {
 	@RequestMapping(value = "/gms/statistics/order/monthly.do")
 	public ModelAndView getStatisticsOrderMonthly(StatisticsOrderVO params) {
 
-		logger.debug("StatisticsOrderContoller getStatisticsOrderMonthly");
+//		logger.debug("StatisticsOrderContoller getStatisticsOrderMonthly");
 		//logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
@@ -270,8 +270,8 @@ public class StatisticsOrderController {
 	@RequestMapping(value = "/gms/statistics/sales/daily.do")
 	public ModelAndView getStatisticsSalesDaily(StatisticsSalesVO params) {
 
-		logger.debug("StatisticsOrderContoller getStatisticsSalesDaily");
-		logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
+//		logger.debug("StatisticsOrderContoller getStatisticsSalesDaily");
+//		logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
 		
@@ -289,10 +289,10 @@ public class StatisticsOrderController {
 		}else {						
 			
 			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
+//			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
 			
 			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
+//			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
 			params.setSearchStatDtEnd(searchStatDtEnd);
@@ -320,8 +320,8 @@ public class StatisticsOrderController {
 	@RequestMapping(value = "/gms/statistics/sales/monthly.do")
 	public ModelAndView getStatisticsSalesMonthly(StatisticsSalesVO params) {
 
-		logger.debug("StatisticsOrderContoller getStatisticsSalesMonthly");
-		logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
+//		logger.debug("StatisticsOrderContoller getStatisticsSalesMonthly");
+//		logger.debug("StatisticsOrderContoller searchStatisticsOrderDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
 				
@@ -339,10 +339,10 @@ public class StatisticsOrderController {
 		}else {						
 			
 			searchStatDtFrom = DateUtils.getNextDate(-366,"yyyy/MM/dd");
-			logger.debug("****** getStatisticsSalesMonthly *****getSearchStatDtFrom===*"+searchStatDtFrom);
+//			logger.debug("****** getStatisticsSalesMonthly *****getSearchStatDtFrom===*"+searchStatDtFrom);
 			
 			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-			logger.debug("****** getStatisticsSalesMonthly *****getSearchStatDtEnd===*"+searchStatDtEnd);
+//			logger.debug("****** getStatisticsSalesMonthly *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
 			params.setSearchStatDtEnd(searchStatDtEnd);
@@ -386,10 +386,10 @@ public class StatisticsOrderController {
 			}else {						
 					
 				searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-				logger.debug("****** excelDownloadSalesStatistics else *****getSearchStatDtFrom===*"+searchStatDtFrom);
+//				logger.debug("****** excelDownloadSalesStatistics else *****getSearchStatDtFrom===*"+searchStatDtFrom);
 		
 				searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-				logger.debug("****** excelDownloadSalesStatistics else *****getSearchStatDtEnd===*"+searchStatDtEnd);
+//				logger.debug("****** excelDownloadSalesStatistics else *****getSearchStatDtEnd===*"+searchStatDtEnd);
 		
 				
 				params.setSearchStatDtFrom(searchStatDtFrom);

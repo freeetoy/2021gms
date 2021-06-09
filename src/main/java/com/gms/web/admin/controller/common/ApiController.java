@@ -60,6 +60,7 @@ public class ApiController {
 		workReport.setBottlesIds(bottles);		//BottleBarCd 모음
 		workReport.setCustomerNm(customerNm);		
 		workReport.setPhoneFlag(phoneCall);
+		
 		workReport.setCreateId(userId);		
 		workReport.setUserId(userId);
 		workReport.setUpdateId(userId);		
@@ -159,8 +160,7 @@ public class ApiController {
 		
 		param.setCreateId(param.getUserId());	
 		param.setUpdateId(param.getUserId());
-		param.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
-		
+		param.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));		
 		
 		//workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 		result = apiService.registerWorkReportNoGas(param);			
