@@ -581,6 +581,18 @@ public class BottleServiceImpl implements BottleService {
 						
 		return result ;
 	}
+	
+	@Override
+	public int modifyBottleOrderV2(BottleVO param) {
+		
+		int result = 0; 
+				
+		//result = insertBottleHistory(param.getBottleBarCd());
+		
+		result = bottleMapper.updateBottleOrderId(param);	
+						
+		return result ;
+	}
 
 	@Override
 	public List<BottleVO> getBottleDetails(BottleVO param) {
@@ -745,6 +757,14 @@ public class BottleServiceImpl implements BottleService {
 	public int modifyBottleAfterDelete(OrderBottleVO param) {
 		
 		return bottleMapper.updateBottleAfterDelete(param);
+	}
+
+
+
+	@Override
+	public int registerBottlesHistory(List<BottleVO> param) {
+	
+		return bottleMapper.insertBottleHistorys(param);
 	}
 	
 

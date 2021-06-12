@@ -47,6 +47,8 @@ public interface BottleService {
 	
 	public int modifyBottleOrder(BottleVO param);
 	
+	public int modifyBottleOrderV2(BottleVO param);
+	
 	public int changeBottleWorkCd(BottleVO param);
 	
 	public int changeBottlesWorkCd(BottleVO param);
@@ -74,4 +76,6 @@ public interface BottleService {
 	public BottleVO getDummyBottle(BottleVO param);
 	
 	public int modifyBottleAfterDelete(OrderBottleVO param);
+	
+	public int registerBottlesHistory(List<BottleVO> param);	
 }
