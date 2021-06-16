@@ -91,14 +91,14 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO params) {
 
-		logger.debug(" getWorkReportListAll");
-		
+		logger.debug(" getWorkReportListAll="+params.getSearchUserId());
+		logger.debug(" getWorkReportListAll="+request.getParameter("searchUserId"));
 		RequestUtils.initUserPrgmInfo(request, params);				
 		
 		ModelAndView mav = new ModelAndView();		
 		
 		params.setUserId(params.getCreateId());	
-		
+		params.setSearchUserId(request.getParameter("searchUserId"));
 		UserVO tempUser = new UserVO();		
 		List<UserVO> userList = userService.getUserListPartNot(tempUser);
 		
@@ -297,7 +297,7 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkBottleVO param) {
 		
-		logger.debug(" registerWorkReportNoGasProduct");
+		logger.debug(" registerWorkReportNoGasProduct"+param.getSearchDt());
 		
 		RequestUtils.initUserPrgmInfo(request, param);
 		
@@ -378,7 +378,7 @@ public class WorkReportController {
 		int result = 1;
 		try {			
 		
-			logger.debug("*************************** getWorkReportModify**************");
+//			logger.debug("*************************** getWorkReportModify**************"+param.getSearchDt());
 			
 			//RequestUtils.initUserPrgmInfo(request, param);	
 			if(param.getUserId() !=null ) {			

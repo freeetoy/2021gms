@@ -97,4 +97,7 @@ public class WorkBottleVO extends AbstractVO implements Serializable {
 	/** Gas_CD */
 	private String gasCd ;
 	
+	/** searchDt	*/
+	private String  searchDt;
+	
 }

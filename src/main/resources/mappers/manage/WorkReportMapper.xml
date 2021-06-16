@@ -136,7 +136,6 @@
 		 , Update_ID        
 		 , Update_Dt   
 	</sql>
-	
 	<insert id="insertWorkReport" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
 		INSERT INTO TB_Work_Report(
 			<include refid="WorkReportInsertColumns" />
@@ -147,12 +146,22 @@
 			, #{workProductNm}	
 			, #{workProductCapa}	
 			, #{workCd}	
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			, #{searchDt}	
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
 			, NOW()	
+			</if>			
 			, #{receivedAmount}		
 			, #{incomeWay}		
 			, #{bottleType}
 			, #{createId}			
-			, NOW()
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			, #{searchDt}	
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
+			, NOW()	
+			</if>			
 			, NULL
 			, NOW()
 		)
@@ -163,7 +172,7 @@
 			<include refid="WorkBottleColumns" />
 		) VALUES (
 			#{workReportSeq}
-			, #{workSeq}	
+			, #{item.workSeq}	
 			, #{bottleId}				
 			, #{bottleBarCd}	
 			, #{customerId}	
@@ -176,7 +185,12 @@
 			, #{bottleSaleYn}
 			, #{gasCd}
 			, #{createId}			
-			, NOW()
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			, #{searchDt}	
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
+			, NOW()	
+			</if>		
 			, NULL
 			, NOW()
 		)
@@ -202,12 +216,12 @@
 			, #{item.bottleSaleYn}
 			, #{item.gasCd}
 			, #{item.createId}			
-			<if test='item.manualYn== "Y"'>			
-			, (SELECT Create_Dt From TB_Work_Report WHERE Work_Report_Seq=#{item.workReportSeq})
-			</if>	
-			<if test='item.manualYn== "N"'>	
-			, NOW()
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(item.searchDt)">
+			, #{item.searchDt}	
 			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(item.searchDt)">
+			, NOW()	
+			</if>		
 			, NULL
 			, NOW()
 		)
@@ -243,7 +257,6 @@
 			, Work_Product_NM	= #{workProductNm}
 			, Work_Product_Capa	= #{workProductCapa}
 			, Work_CD			= #{workCd}
-			, Work_Dt			= NOW()	
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -489,8 +502,13 @@
 			TB_Work_Report
 		WHERE 
 			Customer_Id = #{customerId}	
-		AND 
-			DATE_FORMAT(Work_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+		
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND  DATE_FORMAT(Work_Dt,'%Y/%m/%d') = #{searchDt}	
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
+			AND DATE_FORMAT(Work_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+		</if>	
 		AND
 			User_ID = 	#{userId}	
 		AND 
