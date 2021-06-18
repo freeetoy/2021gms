@@ -408,7 +408,7 @@ $(document).ready(function(){
        var select_pid = $(this).attr('id'); 
        var msg = '';
        var bottleWorkCd = '';
-      
+       var searchDt = $('#searchDt').val();
        customerId= $("#customerId").val();           
        
        if(customerId ==0){
@@ -476,6 +476,12 @@ $(document).ready(function(){
 	        hiddenField.setAttribute("value", bottleWorkCd);
 	        form.appendChild(hiddenField);   
 	        
+	        var hiddenField0 = document.createElement("input");
+	        hiddenField0.setAttribute("type", "hidden");
+	        hiddenField0.setAttribute("name", "workCd");
+	        hiddenField0.setAttribute("value", bottleWorkCd);
+	        form.appendChild(hiddenField0);   
+	        
 	        var hiddenField1 = document.createElement("input");
 	        hiddenField1.setAttribute("type", "hidden");
 	        hiddenField1.setAttribute("name", "customerId");
@@ -495,7 +501,14 @@ $(document).ready(function(){
 	        hiddenField3.setAttribute("name", "userId");
 	        hiddenField3.setAttribute("value", $("#searchUserId").val());
 
-	        form.appendChild(hiddenField3); 
+	        form.appendChild(hiddenField3); 	        
+	       
+	        var hiddenField4 = document.createElement("input");
+	        hiddenField4.setAttribute("type", "hidden");
+	        hiddenField4.setAttribute("name", "searchDt");
+	        hiddenField4.setAttribute("value", $("#searchDt").val());
+
+	        form.appendChild(hiddenField4); 
 	        
 	        document.body.appendChild(form);
 	        
@@ -565,6 +578,12 @@ $(document).ready(function(){
 
 	        form.appendChild(hiddenField5); 
 	        
+	        var hiddenField6 = document.createElement("input");
+	        hiddenField6.setAttribute("type", "hidden");
+	        hiddenField6.setAttribute("name", "searchDt");
+	        hiddenField6.setAttribute("value", $("#searchDt").val());
+
+	        form.appendChild(hiddenField6); 	        
 	        
 	        document.body.appendChild(form);
 	        
