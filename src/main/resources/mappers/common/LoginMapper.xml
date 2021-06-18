@@ -12,7 +12,6 @@
 	
 	<!-- 사용자 정보 조회 -->
 	<select id="selectUserInfo" parameterType="com.gms.web.admin.domain.common.LoginUserVO" resultMap="UserInfoMap">
-		/* 사용자 정보 조회  :   selectAdminUserInfo*/
        SELECT TA.USER_ID
 			 	,TA.USER_NM
 			 	,TA.USER_PART_CD
@@ -24,6 +23,19 @@
        <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(idCheckYn)">
 		  	AND TA.USER_PASSWD = #{userPasswd}
        </if>       	  
+       AND	DELETE_YN = 'N'
+	</select> 
+	
+	
+	<select id="selectLoginUser" parameterType="com.gms.web.admin.domain.common.LoginUserVO" resultMap="UserInfoMap">
+       SELECT TA.USER_ID
+			 	,TA.USER_NM
+			 	,TA.USER_PART_CD
+			 	,TA.USER_AUTHORITY
+			 	,TA.USER_PASSWD
+		FROM TB_USER TA
+		WHERE 
+			TA.USER_ID = #{userId}    	  
        AND	DELETE_YN = 'N'
 	</select> 
 	

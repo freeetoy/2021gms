@@ -5,7 +5,10 @@ import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.gms.web.admin.common.utils.ShRunner;
 import com.gms.web.admin.common.web.utils.SessionUtil;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.UserVO;
@@ -102,8 +106,6 @@ public class LoginController {
 			, HttpServletResponse response
 			, LoginUserVO param) {
 		
-		logger.info("LoginContoller loginAction Start");		
-		
 		UserVO user = userService.getUserDetails(param.getUserId());
 		String alertMessage = "로그인 되었습니다.";
 		String returnUrl = request.getParameter("returnUrl");
@@ -114,13 +116,18 @@ public class LoginController {
 			HttpSession session = request.getSession();			
 			
 			if(loginUser!= null && loginUser.getUserId() != null) {
-				//logger.debug("LoginContoller loginAction userNm "+loginUser.getUserNm());			
-				
+
 				loginUser.setUserId(param.getUserId());
 				session.setAttribute(LoginUserVO.ATTRIBUTE_NAME, loginUser);		
 				
 				session.setAttribute("userId", loginUser.getUserId());		
 				
+				//Cookie 설정
+				Cookie cookie = new Cookie(LoginUserVO.ATTRIBUTE_NAME,loginUser.getUserId());
+				cookie.setMaxAge(60*60);
+				
+				response.addCookie(cookie);
+				logger.info("LoginContollern loginUser.getUserId() ",loginUser.getUserId());	
 				//RequestUtils.responseWriteException(response, alertMessage, "/gms/start");
 			}else {
 				//alertMessage = "비밀번호를 확인해주세요";	
@@ -149,17 +156,15 @@ public class LoginController {
 		String result = "";
 		boolean res=false;
 		
-		logger.info("LoginContoller /api/loginAction Start");		
-		
 		LoginUserVO param = new LoginUserVO();
 		param.setUserId(id);
 		param.setUserPasswd(pw);
 			
 		LoginUserVO user = loginService.getUserInfo(param);			
+
+		if(user != null && user.getUserNm() !=null)
+			user.setUserNm(URLEncoder.encode(user.getUserNm(), "UTF-8"));
 		
-		//logger.debug("LoginContoller loginAction user.getMessage "+user.getErrorMessage());
-		
-		user.setUserNm(URLEncoder.encode(user.getUserNm(), "UTF-8"));
 		if(user != null && user.getUserId() != null){
 			result = "success";
 			res = true;
@@ -186,7 +191,7 @@ public class LoginController {
 		
 		logger.info("LoginContoller /api/loginEncodeAction Start");		
 		
-		LoginUserVO param = new LoginUserVO();		
+		LoginUserVO param = new LoginUserVO();	
 		
 		byte[] idBytes = id.getBytes();
         byte[] pwBytes = pw.getBytes();
@@ -204,9 +209,9 @@ public class LoginController {
 			
 		LoginUserVO user = loginService.getUserInfo(param);			
 		
-		//logger.debug("LoginContoller loginAction user.getMessage "+user.getErrorMessage());
+		if(user != null && user.getUserNm() !=null)
+			user.setUserNm(URLEncoder.encode(user.getUserNm(), "UTF-8"));
 		
-		user.setUserNm(URLEncoder.encode(user.getUserNm(), "UTF-8"));
 		if(user != null && user.getUserId() != null){
 			result = "success";
 			res = true;
@@ -228,6 +233,20 @@ public class LoginController {
 		req.getSession().invalidate();
 		
 		return "gms/login";
+	}
+	
+
+	@RequestMapping(value="/command")
+	public String command(Model model,HttpServletRequest req){
+		model.addAttribute("message",req.getServletContext());
+		
+		ShRunner shRunner = new ShRunner();
+		logger.debug("LoginContoller command start ");
+		String cmds = "sh /home/data/restart.sh";
+        String[] callCmd = {"/bin/bash", "-c", cmds};
+        Map map = shRunner.execCommand(callCmd);
+        
+		return "";
 	}
 	
 }

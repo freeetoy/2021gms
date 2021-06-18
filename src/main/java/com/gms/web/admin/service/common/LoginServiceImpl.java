@@ -59,9 +59,8 @@ public class LoginServiceImpl implements LoginService{
 
 	@Override
 	public LoginUserVO getUserInfo(LoginUserVO param) {
-		LoginUserVO userInfo = null;
-		
-		userInfo = loginMapper.selectUserInfo(param);
+	
+		LoginUserVO userInfo = loginMapper.selectUserInfo(param);
 		
 		int result= 0;
 		
@@ -70,11 +69,9 @@ public class LoginServiceImpl implements LoginService{
 			
 			try {				
 				
-				AES256Util aescipher = new AES256Util(PropertyFactory.getProperty("common.crypto.key"));
-				
-				//logger.debug("****** getUserInfo. param.getUserPasswd()===*"+param.getUserPasswd());
+				AES256Util aescipher = new AES256Util(PropertyFactory.getProperty("common.crypto.key"));				
+
 				String rsaEn = aescipher.aesEncode( param.getUserPasswd());
-				//logger.debug("****** getUserInfo. param.rsaEn ()===*"+rsaEn);
 				param.setUserPasswd(rsaEn  );
 								
 				userInfo = loginMapper.selectUserInfo(param);  //비번까지 검색
@@ -111,5 +108,12 @@ public class LoginServiceImpl implements LoginService{
 			return  loginMapper.updateUserLastConnect(param);
 		else
 			return -1;
+	}
+
+	@Override
+	public LoginUserVO getLoginUser(LoginUserVO param) {
+		
+		return loginMapper.selectLoginUser(param);
+		
 	}
 }

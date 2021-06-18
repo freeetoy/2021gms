@@ -7,5 +7,7 @@ public interface LoginService {
 	
 	public LoginUserVO getUserInfo(LoginUserVO param);
 	
+	public LoginUserVO getLoginUser(LoginUserVO param);
+	
 	public int modifyLastConnect(LoginUserVO param);
 }
