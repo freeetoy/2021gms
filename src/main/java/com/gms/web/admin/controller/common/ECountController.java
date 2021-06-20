@@ -160,7 +160,8 @@ public class ECountController {
 		        
 		        //품목명	
 		        productNm = vo.getProductNm();
-		        productCapa = vo.getProductCapa();
+		        //productCapa = vo.getProductCapa();	
+		        productCapa = vo.getECountSpec();
 		        orderCount = vo.getOrderCount();
 		        supplyPrice = Math.round(vo.getSupplyPrice());
 		        vat = Math.round(vo.getVat());

@@ -44,6 +44,8 @@ public class ECountVO {
 	
 	private String productCapa; // 규격
 	
+	private String eCountSpec; // Ecount규격
+	
 	private int orderCount;	//수량
 	
 	private double productPrice;	//단가

@@ -22,7 +22,7 @@
 
 	 <select id="selectECount" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >		
 		SELECT 
-			TC.ECount_CD Customer_EID, TC.Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, WB.Product_Price_Seq,PP.Product_Capa, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
+			TC.ECount_CD Customer_EID, TC.Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, WB.Product_Price_Seq,PP.Product_Capa,ECount_Spec, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
 			WB.Order_Count, WB.Product_Price, WB.Order_Count*WB.Product_Price Supply_Price,WB.Order_Count*WB.Product_Price*0.1 VAT,Bottle_Work_Cd,GAS_CD,Agency_Yn
 		FROM 
 			(
