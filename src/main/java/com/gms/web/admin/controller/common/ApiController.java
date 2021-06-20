@@ -65,7 +65,7 @@ public class ApiController {
 		workReport.setUserId(userId);
 		workReport.setUpdateId(userId);		
 		
-		if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come"))) {			
+		if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 			result = apiService.registerWorkReportForChangeCd(workReport);
 			
@@ -321,6 +321,14 @@ public class ApiController {
 		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.agencyBack"))) {			//대여회수
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));	
+			result = apiService.registerWorkReportMassForChangeCd(workReport);		
+		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massCome"))) {			//대량입고
+			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));	
+			result = apiService.registerWorkReportMassForChangeCd(workReport);		
+		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massOut"))) {			//대량출고
+			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
+			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));	
 			result = apiService.registerWorkReportMassForChangeCd(workReport);		
 		}
 		

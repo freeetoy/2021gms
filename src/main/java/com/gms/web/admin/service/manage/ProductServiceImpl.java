@@ -1,5 +1,6 @@
 package com.gms.web.admin.service.manage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -305,6 +306,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public ProductTotalVO getPrice(BottleVO param) {
 		return productMapper.selectPrice(param);
+	}
+	
+	@Override
+	public List<ProductTotalVO> getPriceList(HashMap<String, Object> param) {
+		return productMapper.selectPriceList(param);
 	}
 
 	@Override

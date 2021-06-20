@@ -1,5 +1,6 @@
 package com.gms.web.admin.mapper.manage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -52,6 +53,8 @@ public interface ProductMapper {
 	public ProductTotalVO selectBottleGasCapa(BottleVO param);
 	
 	public ProductTotalVO selectPrice(BottleVO param);
+	
+	public List<ProductTotalVO> selectPriceList(HashMap<String, Object> param);
 	
 	public int selectProductPriceSeq(Integer productId);
 	

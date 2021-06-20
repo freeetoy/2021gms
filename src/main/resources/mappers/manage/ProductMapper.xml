@@ -387,6 +387,30 @@
 		and pp.Product_Price_Seq = #{productPriceSeq}
 	</select>
 	
+	<select id="selectPriceList" parameterType="hashmap" resultType="com.gms.web.admin.domain.manage.ProductTotalVO">
+		SELECT p.Product_ID
+			, Product_Nm
+			, Gas_ID
+			, pp.Product_Status 
+			, Member_Comp_Seq
+			, pp.Product_Price_Seq
+			, pp.Product_Price 
+			, pp.Product_Bottle_Price 
+			, IFNULL(tc.Product_Price,0) Customer_Product_Price
+			, IFNULL(tc.Product_Bottle_Price,0) Customer_Bottle_Price
+			, Product_Capa
+			, p.Create_ID, p.Create_Dt, p.Update_ID, p.Update_Dt
+		FROM TB_Product p, TB_Product_Price pp Left Join TB_Customer_Product_Price tc on (pp.Product_ID = tc.Product_ID AND pp.Product_Price_Seq = tc.Product_Price_Seq  AND Customer_Id = #{customerId}	)
+
+		WHERE p.Product_ID = pp.Product_ID
+		AND p.Product_Status != '0'
+		AND pp.Product_Status != '0'
+		AND 
+		<foreach collection="bottleList" item="item" separator=" OR " open="(" close=")">
+		( p.Product_ID = #{item.productId} AND pp.Product_Price_Seq = #{item.productPriceSeq} ) 
+		</foreach>
+	</select>
+	
 	<select id="selectProductPriceSeq" parameterType="integer" resultType="int">
 		SELECT
 			count(product_Id)

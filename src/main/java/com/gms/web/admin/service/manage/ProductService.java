@@ -1,5 +1,6 @@
 package com.gms.web.admin.service.manage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.gms.web.admin.domain.manage.BottleVO;
@@ -45,6 +46,8 @@ public interface ProductService {
 	public ProductTotalVO getBottleGasCapa(BottleVO param);
 	
 	public ProductTotalVO getPrice(BottleVO param);
+	
+	public List<ProductTotalVO> getPriceList(HashMap<String, Object> param);
 	
 	public List<ProductPriceVO> getProductPriceList(Integer productId);
 	

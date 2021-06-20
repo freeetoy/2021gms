@@ -583,6 +583,16 @@ public class BottleServiceImpl implements BottleService {
 	}
 	
 	@Override
+	public int modifyBottlesOrder(List<BottleVO> params) {
+		
+		int result = 0; 				
+		
+		result = bottleMapper.updateBottlesOrderId(params);	
+						
+		return result ;
+	}
+	
+	@Override
 	public int modifyBottleOrderV2(BottleVO param) {
 		
 		int result = 0; 

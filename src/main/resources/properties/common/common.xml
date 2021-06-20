@@ -111,6 +111,8 @@
 	<entry key="common.bottle.status.title.salesBack">판매회수</entry> 	<!-- 판매회수 -->
 	<entry key="common.bottle.status.title.agencyRent">공장대여</entry> 	<!-- 공장대여 -->
 	<entry key="common.bottle.status.title.agencyBack">대여회수</entry> 	<!-- 대여회수 -->
+	<entry key="common.bottle.status.title.massCome">대량입고</entry> 	<!-- 대량입고 -->
+	<entry key="common.bottle.status.title.massOut">대량출고</entry> 	<!-- 대량출고 -->
 	
 	<entry key="common.code.order.type">0100</entry>
 	<entry key="common.code.order.type.order">0101</entry>

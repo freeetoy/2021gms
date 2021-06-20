@@ -355,6 +355,24 @@
 			Bottle_BarCd = #{bottleBarCd}
 	</update>
 	
+	<update id="updateBottlesOrderId" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
+		UPDATE TB_Bottle
+		SET
+			Order_Id			= #{item.orderId}
+			, Order_Product_Seq	= #{item.orderProductSeq}
+			, Customer_Id		= #{item.customerId}
+			, Bottle_Work_CD 	= #{item.bottleWorkCd}
+			, Bottle_Work_ID	= #{item.bottleWorkId}
+			, Bottle_Work_DT	= NOW()	
+			, Bottle_Type		= #{item.bottleType}
+			, UPDATE_ID 		= #{item.updateId}
+			, UPDATE_DT 		= NOW()	
+		WHERE
+			Bottle_BarCd = #{item.bottleBarCd}
+		</foreach>
+	</update>
+	
 	<update id="deleteBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
 		UPDATE TB_Bottle
 		SET
