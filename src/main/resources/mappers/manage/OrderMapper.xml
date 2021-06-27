@@ -769,11 +769,11 @@
 			 , B.Customer_nm
 		 	, Order_Total_Amount
 		FROM TB_Order A, TB_Customer B, TB_Code C
-		WHERE A.Order_Process_CD = '0210'				
+		WHERE A.Order_Process_CD =  #{searchOrderProcessCd}			
 		AND A.Customer_Id = B.Customer_ID	
 		AND A.Order_Process_Cd = C.CD_ID
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
 		</if>		
 		ORDER BY A.Create_Dt DESC 
 	</select>
@@ -793,13 +793,13 @@
 			 , Order_Amount 
 			 , C.GAS_ID
 		FROM TB_Order A, TB_Order_Product B, TB_Product C, TB_Product_Price D
-		WHERE  A.Order_Process_CD = '0210'
+		WHERE  A.Order_Process_CD =  #{searchOrderProcessCd}
 		AND A.Order_ID = B.Order_ID
 		AND B.Product_ID = C.Product_ID
 		AND b.Product_ID = D.Product_ID
 		AND B.Product_Price_Seq = D.Product_Price_Seq
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Create_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
 		</if>		
 		ORDER BY A.Create_Dt DESC 
 	</select>

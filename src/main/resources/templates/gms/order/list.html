@@ -428,22 +428,28 @@ $(document).ready(function(){
    	{		
 		
 		var searchOrderDt = $('#searchOrderDt').val();	
+		var searchOrderProcessCd = $('#searchOrderProcessCd').val();	
 		
 		if(searchOrderDt=="" || searchOrderDt == null){
 			alert("납품요청일을 입력하세요");
 			$('#searchOrderDt').focus();
 		}else { 
-			var form = document.createElement("form");
-    		form.setAttribute("charset","UTF-8");
-    		form.setAttribute("method","post");
-    		form.setAttribute("action","/gms/order/excelOrder.do?searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=0210");
-    		
-           
-            document.body.appendChild(form);
-
-            form.submit();			
+			
+			if(searchOrderProcessCd=="" || searchOrderProcessCd == null){
+				alert("주문상태을 선택하세요");
+				$('#searchOrderProcessCd').focus();
+			}else{ 
+				var form = document.createElement("form");
+	    		form.setAttribute("charset","UTF-8");
+	    		form.setAttribute("method","post");
+	    		form.setAttribute("action","/gms/order/excelOrder.do?searchOrderDt="+searchOrderDt+"&searchOrderProcessCd="+searchOrderProcessCd);
+	    		
+	           
+	            document.body.appendChild(form);
+	
+	            form.submit();			
             
-	      	
+			}
 		}
    	});
 	
