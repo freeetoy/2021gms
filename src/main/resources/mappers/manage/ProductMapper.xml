@@ -400,8 +400,7 @@
 			, IFNULL(tc.Product_Bottle_Price,0) Customer_Bottle_Price
 			, Product_Capa
 			, p.Create_ID, p.Create_Dt, p.Update_ID, p.Update_Dt
-		FROM TB_Product p, TB_Product_Price pp Left Join TB_Customer_Product_Price tc on (pp.Product_ID = tc.Product_ID AND pp.Product_Price_Seq = tc.Product_Price_Seq  AND Customer_Id = #{customerId}	)
-
+		FROM TB_Product p, TB_Product_Price pp Left Join TB_Customer_Product_Price tc on (Customer_Id = #{customerId} AND pp.Product_ID = tc.Product_ID AND pp.Product_Price_Seq = tc.Product_Price_Seq  )
 		WHERE p.Product_ID = pp.Product_ID
 		AND p.Product_Status != '0'
 		AND pp.Product_Status != '0'

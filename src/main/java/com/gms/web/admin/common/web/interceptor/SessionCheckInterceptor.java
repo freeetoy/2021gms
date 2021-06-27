@@ -66,14 +66,15 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
         	final Cookie[] cookies = request.getCookies();
 
             Map<String, String> result = new HashMap<>();
-            for (Cookie cookie : cookies) {
-            	
-                if(cookie.getName().equals(LoginUserVO.ATTRIBUTE_NAME)) {
-                	userId = cookie.getValue();
-                	break;
-                }
+            if(cookies != null ) {
+	            for (Cookie cookie : cookies) {
+	            	
+	                if(cookie.getName().equals(LoginUserVO.ATTRIBUTE_NAME)) {
+	                	userId = cookie.getValue();
+	                	break;
+	                }
+	            }
             }
-            
             if(userId != null && userId.length() > 0) {
             	LoginUserVO param = new LoginUserVO();
             	param.setUserId(userId); 

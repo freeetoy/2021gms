@@ -1118,6 +1118,22 @@ public class OrderServiceImpl implements OrderService {
 		return orderMapper.deleteOrderBottlesByProduct(param);
 	}
 
+	@Override
+	public List<OrderVO> getOrderListExcel(OrderVO param) {		
+		return orderMapper.selectOrderListExcel(param);
+	}
+
+	@Override
+	public List<OrderProductVO> getAllOrderListExcel(OrderVO param) {
+		return orderMapper.selectAllOrderProductListExcel(param);
+	}
+
+	@Override
+	public List<OrderProductVO> getOrderProducSimpletList(Integer orderId) {
+		
+		return orderMapper.selectOrderProductSimpleList(orderId);
+	}
+
 	
 	
 	

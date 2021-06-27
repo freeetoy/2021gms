@@ -227,10 +227,14 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/logout")
-	public String logout(Model model,HttpServletRequest req){
+	public String logout(Model model,HttpServletRequest req , HttpServletResponse res){
 		model.addAttribute("message",req.getServletContext());
 		
 		req.getSession().invalidate();
+		Cookie cookie = new Cookie(LoginUserVO.ATTRIBUTE_NAME,null);
+		cookie.setMaxAge(0);
+		
+		res.addCookie(cookie);
 		
 		return "gms/login";
 	}

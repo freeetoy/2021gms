@@ -102,5 +102,11 @@ public interface OrderService {
 	public int deleteOrderProductByProduct(OrderProductVO param);
 	
 	public int deleteOrderBottlesByProduct(OrderProductVO param);
+	
+	public List<OrderVO> getOrderListExcel(OrderVO params);
+	
+	public List<OrderProductVO> getAllOrderListExcel(OrderVO params);
+	
+	public List<OrderProductVO> getOrderProducSimpletList(Integer orderId);
 
 }

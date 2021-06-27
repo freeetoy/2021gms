@@ -412,7 +412,7 @@ $(document).ready(function(){
 		var searchOrderProcessCd = $('#searchOrderProcessCd').val();	
 		
 		if(searchOrderDt=="" || searchOrderDt == null){
-			alert("접수기간을 입력하세요");
+			alert("납품요청일을 입력하세요");
 			$('#searchOrderDt').focus();
 		}else { 		
 	      	$.popupWindow('/gms/order/popupOrderAll.do?searchCustomerNm='+searchCustomerNm+'&searchOrderDt='+searchOrderDt+'&searchOrderProcessCd='+searchOrderProcessCd, {
@@ -423,6 +423,30 @@ $(document).ready(function(){
 	        });
 		}
    	});
+	
+	$(".btn_orderlist_print_all").click(function()  
+   	{		
+		
+		var searchOrderDt = $('#searchOrderDt').val();	
+		
+		if(searchOrderDt=="" || searchOrderDt == null){
+			alert("납품요청일을 입력하세요");
+			$('#searchOrderDt').focus();
+		}else { 
+			var form = document.createElement("form");
+    		form.setAttribute("charset","UTF-8");
+    		form.setAttribute("method","post");
+    		form.setAttribute("action","/gms/order/excelOrder.do?searchOrderDt=[[ ${searchOrderDt} ]]&searchOrderProcessCd=0210");
+    		
+           
+            document.body.appendChild(form);
+
+            form.submit();			
+            
+	      	
+		}
+   	});
+	
 	//Ajax공통 호출
 	function callAjax(ajaxInfo){
 		var dfd = $.Deferred();
@@ -653,13 +677,18 @@ $(document).ready(function(){
             <form id="mainForm" name="mainForm"  method="post">
               <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
               <input type="hidden" id="orderId" name="orderId" value="">
-               		<label>접수기간</label>
+               		<label style="font-size:14px;">납품요청일</label>
             </div>               
             <div class="col-4">              
                <input type="text" class="form-control" id="searchOrderDt" name="searchOrderDt" th:value="${searchOrderDt}"/>			
-            </div>               
-            <div class="col-3">               
-            </div>
+            </div>      
+            <div class="col-6">  
+            </div>         
+            <div   align="right" class="col-1" >
+            <a class="btn_orderlist_print_all btn btn-secondary btn-xs"  href="#" >
+                              <i class="fas fa-print"></i>접수목록</a>
+             <!-- <a th:href="@{/gms/order/excelOrder.do( searchOrderDt= ${searchOrderDt},searchOrderProcessCd=0210 )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i>접수목록</button></a>  
+             --></div>
          </div>
          <div class="row">	
 	        <div class="col-12">

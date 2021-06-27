@@ -26,6 +26,7 @@ import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
@@ -460,6 +461,137 @@ public class ExcelDownloadController {
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(DateUtils.convertDateFormat(vo.getCreateDt(), "yyyy/MM/dd"));
+	
+		    }	
+	
+		 // width 자동조절
+ 			for (int x = 0; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
+ 				sheet.autoSizeColumn(x);
+ 				int width = sheet.getColumnWidth(x);
+ 				int minWidth = list.get(x).getBytes().length * 450;
+ 				int maxWidth = 18000;
+ 				if (minWidth > width) {
+ 					sheet.setColumnWidth(x, minWidth);
+ 				} else if (width > maxWidth) {
+ 					sheet.setColumnWidth(x, maxWidth);
+ 				} else {
+ 					sheet.setColumnWidth(x, width + 2000);
+ 				}
+ 			}
+		 			
+		    // 컨텐츠 타입과 파일명 지정
+		    response.setContentType("ms-vnd/excel");
+		    response.setHeader("Content-Disposition", "attachment;filename=Order_"+DateUtils.getDate()+".xls");	
+	
+		    // 엑셀 출력
+		    wb.write(response.getOutputStream());
+		    wb.close();
+		    
+	   } catch (DataAccessException e) {
+			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		}
+	}
+   
+   @RequestMapping(value = "/gms/order/excelOrder.do")
+   public void excelOrder(HttpServletResponse response, OrderVO param){
+	// 게시판 목록조회
+
+	   try {
+		   	String searchOrderDt = param.getSearchOrderDt();	
+			
+			String searchOrderDtFrom = null;
+			String searchOrderDtEnd = null;
+					
+			if(searchOrderDt != null && searchOrderDt.length() > 20) {
+		
+				searchOrderDtFrom = searchOrderDt.substring(0, 10) ;
+				
+				searchOrderDtEnd = searchOrderDt.substring(13, searchOrderDt.length()) ;
+				
+				param.setSearchOrderDtFrom(searchOrderDtFrom);
+				param.setSearchOrderDtEnd(searchOrderDtEnd);				
+			}		
+
+		   // order 정보 불러오기
+			List<OrderVO> orderlist = orderService.getOrderListExcel(param);	
+			
+			// order 정보 불러오기
+			List<OrderProductVO> orderProductList = orderService.getAllOrderListExcel(param);	
+			
+		    // 워크북 생성
+	
+		    Workbook wb = new HSSFWorkbook();
+		    Sheet sheet = (Sheet) wb.createSheet("주문");
+		    Row row = null;
+		    Cell cell = null;
+	
+		    int rowNo = 0;
+		    
+		    // 테이블 헤더용 스타일
+		    CellStyle headStyle = wb.createCellStyle();
+	
+		    headStyle= ExcelStyle.getHeadStyle(headStyle);
+	
+		    // 데이터용 경계 스타일 테두리만 지정
+		    CellStyle bodyStyle = wb.createCellStyle();
+		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		   
+		   
+		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		    //순번,거래처명,상품명,용량,접수자,상태,요청일자,접수일
+		    // 헤더 생성
+		    List<String> list = null;		    
+		    list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.stat.order.0210.title"), ","); 		
+		    
+		    for(int i =0;i<list.size();i++) {		    
+			    cell = row.createCell(i);
+			    cell.setCellStyle(headStyle);
+			    cell.setCellValue(list.get(i));		    
+		    }
+		    
+		    //순번	거래처	품명	용량 주문액	접수자	상태	요청일자	접수일
+		    // 데이터 부분 생성
+		    int i = 1;
+		    int idx = 0;
+		    for(OrderVO vo : orderlist) {
+		    	idx = 0;
+		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(i++);
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(vo.getCustomerNm());      
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(vo.getOrderTotalAmount());
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(DateUtils.convertDateFormat(vo.getDeliveryReqDt(), "yyyy/MM/dd"));
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        StringBuffer sb = new StringBuffer();
+		        for(OrderProductVO prd : orderProductList) {
+		        	if(vo.getOrderId().equals( prd.getOrderId()) ) {
+		        		sb.append(prd.getProductNm()).append(" ").append(prd.getProductCapa());
+				        if(prd.getGasId() > 0) {
+							if(prd.getProductCapa().indexOf("Kg") < 0) sb.append("L");
+						}
+		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(prd.getOrderAmount() / prd.getOrderCount()).append(" / ");
+		        	}
+		        }
+		        cell.setCellValue(sb.toString());  
+			        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(vo.getOrderEtc());
 	
 		    }	
 	

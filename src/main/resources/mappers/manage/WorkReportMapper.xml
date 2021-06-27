@@ -172,7 +172,7 @@
 			<include refid="WorkBottleColumns" />
 		) VALUES (
 			#{workReportSeq}
-			, #{item.workSeq}	
+			, #{workSeq}	
 			, #{bottleId}				
 			, #{bottleBarCd}	
 			, #{customerId}	

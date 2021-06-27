@@ -19,7 +19,7 @@ public class SchedulerController {
 	@Autowired
 	private SchedulerService scheduleService;
 	
-	@Scheduled(cron="0 00 04 * * *")
+	@Scheduled(cron="0 00 03 * * *")
 	private void scheduleDaily() { 
 		
 		//Daiyl 통계 데이타 등록@Scheduled(cron="0 00 21 * * *")
@@ -36,7 +36,7 @@ public class SchedulerController {
 	}
 	
 	 
-	@Scheduled(cron="0 30 05 1 * *")
+	@Scheduled(cron="0 30 03 1 * *")
 	private void scheduleMonthly() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
 		int result = scheduleService.registerMonthlyStatistics();	

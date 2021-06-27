@@ -16,6 +16,8 @@ public interface OrderMapper {
 	
 	public List<OrderVO> selectOrderListToExcel(Map<String, Object> map);	
 
+	public List<OrderProductVO> selectOrderProductSimpleList(Integer orderId);	
+	
 	public List<OrderProductVO> selectOrderProductList(Integer orderId);	
 
 	public List<OrderProductVO> selectOrderInfoOfNotProduct(Integer orderId);	
@@ -91,4 +93,9 @@ public interface OrderMapper {
 	public int deleteOrderProductByProduct(OrderProductVO param);
 	
 	public int deleteOrderBottlesByProduct(OrderProductVO param);
+	
+	public List<OrderVO> selectOrderListExcel(OrderVO param);	
+	
+	public List<OrderProductVO> selectAllOrderProductListExcel(OrderVO param);
+		
 }
