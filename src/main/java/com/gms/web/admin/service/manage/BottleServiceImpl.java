@@ -42,7 +42,6 @@ public class BottleServiceImpl implements BottleService {
 	
 	@Override
 	public Map<String,Object> getBottleList(BottleVO param) {
-		logger.debug("****** getBottleList *****start===*");		
 		
 		int currentPage = param.getCurrentPage();
 		int ROW_PER_PAGE = param.getRowPerPage();
@@ -173,7 +172,6 @@ public class BottleServiceImpl implements BottleService {
 	
 	@Override
 	public List<BottleVO> getBottleListToExcel(BottleVO param) {
-		logger.debug("****** getBottleListToExcel *****start===*");			
 		
 		Map<String, Object> map = new HashMap<String, Object>();			
 		
@@ -217,7 +215,6 @@ public class BottleServiceImpl implements BottleService {
 			
 		if(param.getSearchChargeDt() != null) {
 			map.put("searchChargeDt", param.getSearchChargeDt());
-			logger.debug("****** getBottleListToExcel *****getSearchChargeDt===*"+param.getSearchChargeDt());
 			
 			if(param.getSearchChargeDt() != null && param.getSearchChargeDt().length() > 20) {
 				String searchChargeDtFrom = param.getSearchChargeDt().substring(0, 10) ;				
@@ -338,7 +335,6 @@ public class BottleServiceImpl implements BottleService {
 	public int registerBottle(BottleVO param) {
 
 		// 정보 등록
-		logger.debug("****** registerBottle.getBottleId()()) *****===*"+param.getBottleId());
 		int result = 0;
 
 		ProductTotalVO product = productService.getBottleGasCapa(param);
@@ -373,7 +369,6 @@ public class BottleServiceImpl implements BottleService {
 	public int modifyBottle(BottleVO param) {
 				
 		// 정보 등록
-		logger.debug("****** modifyBottle.getBottleBarCd() *****===*"+param.getBottleBarCd());
 		int result = 0;
 		
 		/*
@@ -394,7 +389,6 @@ public class BottleServiceImpl implements BottleService {
 	@Transactional
 	public int changeBottleWorkCd(BottleVO param) {
 		// 정보 등록
-		logger.debug("****** modifyBottle.getChBottleId()()) *****===*"+param.getChBottleId());
 		int result = 0;
 		result =  bottleMapper.updateBottleWorkCd(param);			
 		
@@ -475,7 +469,6 @@ public class BottleServiceImpl implements BottleService {
 			}
 			
 			param.setBottleIds(tempBottleIds);
-			logger.debug("BottleServiceImpl changeBottlesWorkCdOnly after **** getBottlesId "+ param.getBottleIds());
 			
 			if(bottleList.size() > 0 ) param.setCustomerId(bottleList.get(0).getCustomerId());
 			
@@ -516,7 +509,6 @@ public class BottleServiceImpl implements BottleService {
 	@Override
 	@Transactional
 	public int deleteBottle(BottleVO param) {
-		logger.debug("****** deleteBottle *****===*"+param.getBottleBarCd());
 		
 		int result = 0;
 		result =   bottleMapper.deleteBottle(param);
@@ -561,7 +553,6 @@ public class BottleServiceImpl implements BottleService {
 	
 	private int insertBottleHistory(String bottleBarCd) {
 		// 정보 등록
-		logger.debug("****** registerBottle.insertBottleHistory()()) *****===*" +bottleBarCd);
 		
 		BottleVO bottle = new BottleVO();
 		bottle.setBottleBarCd(bottleBarCd);
@@ -646,13 +637,11 @@ public class BottleServiceImpl implements BottleService {
 			param.getBottList().clear();
 			
 			for(int i = 0; i< bottleList.size() ; i++) {
-				logger.debug("BottleServiceImpl changeBottlesWorkCdOnly  for in getBottlesId "+ bottleList.get(i).getBottleId());
 				tempBottleIds += bottleList.get(i).getBottleId()+",";
 				param.setBottList(list);
 			}
 			
 			param.setBottleIds(tempBottleIds);
-			logger.debug("BottleServiceImpl changeBottlesWorkCdOnly after **** getBottlesId "+ param.getBottleIds());
 			
 			if(bottleList.size() > 0 ) param.setCustomerId(bottleList.get(0).getCustomerId());			
 			

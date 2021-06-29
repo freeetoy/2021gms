@@ -42,7 +42,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override	
 	public Map<String, Object> getCustomerList(CustomerVO param) {
 		
-		logger.debug("****** getCustomerList *****start===*");				
 		
 		int currentPage = param.getCurrentPage();
 		int ROW_PER_PAGE = param.getRowPerPage();
@@ -173,7 +172,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 		// 거래처 정보 수정
 		int result = 0;
-		logger.debug("****** modifyCustomer()()) *****===*"+param.getCustomerId());	
 		
 		result = customerMapper.updateCustomerExcel(param);
 		if (result > 0) {
@@ -193,7 +191,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 		// 정보 등록
 		int result = 0;
-		logger.debug("****** modifyCustomerStatus.getCustomerId()()) *****===*"+param.getCustomerId());
 		
 		result = customerMapper.updateCustomerStatus(param);
 		if (result > 0) {
@@ -236,7 +233,6 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		List<CustomerVO> customerList = customerMapper.searchCustomerList(param);
 		
-		logger.debug("****** getCustomerList.customerList *****===*"+customerList.size());
 		
 		resutlMap.put("list",  customerList);
 		resutlMap.put("searchCustomerNm", param);
@@ -268,7 +264,6 @@ public class CustomerServiceImpl implements CustomerService {
 		Integer customerId = 0;
 		// 정보 등록
 		int result = 0;
-		logger.debug("****** registerCustomer.getCustomerId()()) *****===*");
 		
 		boolean deleteResult = false;
 		for(int i = 0 ; i < param.length ; i++ ) {
@@ -307,7 +302,6 @@ public class CustomerServiceImpl implements CustomerService {
 		boolean successFlag = false;
 		// 정보 등록
 		int result = 0;
-		logger.debug("****** deleteCustomerPrice.getCustomerId()()) *****===*"+customerId);
 		
 		result = customerMapper.deleteCustomerPrice(customerId);
 		if (result > 0) {

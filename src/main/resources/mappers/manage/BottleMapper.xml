@@ -478,17 +478,11 @@
 			<include refid="BottleSelectColumns" />
 		FROM
 			TB_Bottle TB, TB_CODE TC, TB_Product TG
-		WHERE
-			(Bottle_ID in  
-			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
-				#{item} 
-			</foreach>
-			OR 
+		WHERE			
 			Bottle_BarCd in 
 			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
 				#{item} 
 			</foreach>
-			)
 		AND
 			TB.Delete_YN = 'N'
 		AND 

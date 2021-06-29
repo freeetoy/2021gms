@@ -106,7 +106,6 @@ public class CustomerController {
 			, HttpServletResponse response
 			, Model model
 			, CustomerVO params) {
-		logger.info(" registerCustomer");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		
@@ -248,7 +247,6 @@ public class CustomerController {
 		
 		ModelAndView mav = new ModelAndView();	
 		
-		logger.info(" modifyCustomer");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer"));
@@ -286,7 +284,6 @@ public class CustomerController {
 			, HttpServletResponse response
 			, CustomerVO param) {		
 		
-		logger.info(" deleteCustomer");
 		
 		ModelAndView mav = new ModelAndView();	
 		RequestUtils.initUserPrgmInfo(request, param);		
@@ -371,7 +368,6 @@ public class CustomerController {
 			, HttpServletResponse response
 			, Model model) {
 		
-		logger.info(" registerCustomerPrice");	
 		
 		try {
 			
@@ -483,7 +479,6 @@ public class CustomerController {
 			, HttpServletResponse response
 			, Model model) {
 		
-		logger.info(" registerCustomerBottle");	
 		
 		try {
 			model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));		
@@ -579,7 +574,6 @@ public class CustomerController {
 	public ModelAndView registerCustomerProductBottle(HttpServletRequest request
 			, HttpServletResponse response ) {
 		
-		logger.info(" registerCustomerBottle");	
 		ModelAndView mav = new ModelAndView();	
 		int result=0;
 		try {
@@ -648,7 +642,6 @@ public class CustomerController {
 	@RequestMapping(value = "/api/carList.do")
 	@ResponseBody
 	public List<CustomerSimpleVO> getCarList()	{
-		logger.info("CustomerContoller getCarList");
 		List<CustomerSimpleVO> customerList = null;
 		try {	
 			//customerList = customerService.getCarSimpleList("Y");
@@ -664,7 +657,6 @@ public class CustomerController {
 	@RequestMapping(value = "/api/gasCustomerList.do")
 	@ResponseBody
 	public List<CustomerSimpleVO> getGasCustoerList()	{
-		logger.info(" getCarList");
 
 		List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
 		return customerList;
@@ -674,7 +666,6 @@ public class CustomerController {
 	@ResponseBody
 	public List<CustomerSimpleVO> getCustomerAllList()	{	
 				
-		logger.info(" getCustomerAllList");
 		
 		List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
 		return customerList;
@@ -684,7 +675,6 @@ public class CustomerController {
 	@ResponseBody
 	public String getCustomerListString(@RequestParam(value = "searchCustomerNm", required = false)  String searchCustomerNm)	{	
 		
-		logger.info(" getCustomerListString");
 						
 		String customerList = customerService.searchCustomerSimpleListString(searchCustomerNm);
 		
@@ -695,7 +685,6 @@ public class CustomerController {
 	@ResponseBody
 	public List<CustomerProductVO> getCustomerRentBottleList(@RequestParam(value = "customerId", required = false)  Integer customerId)	{	
 		
-		logger.info(" getCustomerRentBottleList");
 						
 		List<CustomerProductVO> productList = customerService.getCustomerProductList(customerId);	
 		List<CustomerProductVO> rentBottleList = new ArrayList<CustomerProductVO>();
