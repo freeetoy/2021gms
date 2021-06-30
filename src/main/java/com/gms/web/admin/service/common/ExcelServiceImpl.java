@@ -280,21 +280,21 @@ public class ExcelServiceImpl implements ExcelService {
                 */
                 }
                
-               
+                
                 ProductTotalVO productTotal = new ProductTotalVO();
                 productTotal.setProductNm(productNm);
                 productTotal.setProductCapa(productCapa);
         
-                productTotal = productService.getProductTotalDetails(productTotal);
+                //productTotal = productService.getProductTotalDetails(productTotal);
                
-              /*
+             
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
-                	if(productTemp.getProductNm().equals(productNm) && productTemp.getProductCapa().equals(productCapa)) {
+                	if(productTemp.getProductNm().equals(productNm) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
                 		productTotal = productTemp;
                 	}                	
                 }
-                */
+
                 if(productTotal != null && productTotal.getProductId() > 0) {
 	                
 	                bottle.setProductId(productTotal.getProductId());

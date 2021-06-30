@@ -142,9 +142,9 @@
 		WHERE
 			p.Product_ID = pp.Product_ID
 		AND
-			p.Product_Status  != '0'
+			p.Product_Status  = '2'
 		AND
-			pp.Product_Status  != '0'		
+			pp.Product_Status  = '2'		
 		AND
 			Gas_Id > 0
 	</select>
@@ -342,8 +342,8 @@
 		WHERE ta.pid= p.product_Id
 		AND p.product_Id =pp.product_Id
 		AND ta.pseq = pp.Product_Price_Seq
-		AND p.Product_Status != '0'
-		AND pp.Product_Status != '0'
+		AND p.Product_Status = '2'
+		AND pp.Product_Status = '2'
 	</select>
 	
 	
@@ -425,7 +425,7 @@
 		FROM
 			TB_Product
 		WHERE
-			Product_Status  != '0'
+			Product_Status  = '2'
 	</select>
 
 	<select id="selectGasProductList"  resultType="com.gms.web.admin.domain.manage.ProductVO">

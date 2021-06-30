@@ -78,7 +78,6 @@ public class ProductController {
 	@RequestMapping(value = "/gms/product/register.do", method = RequestMethod.POST)
 	public String registerProduct(HttpServletRequest req) {		
 		
-		logger.debug(" registerProduct");
 		try {
 	
 			int priceCount  = Integer.parseInt(req.getParameter("priceCount"));
@@ -137,7 +136,6 @@ public class ProductController {
 	
 	@RequestMapping(value = "/gms/product/update.do")
 	public String updateProductForm(ProductVO params, Model model) {
-		logger.debug(" updateProduct");
 		
 		try {
 
@@ -176,7 +174,6 @@ public class ProductController {
 	
 	@RequestMapping(value = "/gms/product/modify.do", method = RequestMethod.POST)
 	public String modifyProduct(HttpServletRequest req) {
-		logger.debug(" modifyProduct");
 		try {
 		
 			int priceCount  = Integer.parseInt(req.getParameter("priceCount"));
@@ -211,7 +208,6 @@ public class ProductController {
 				RequestUtils.initUserPrgmInfo(req, priceVo1);
 				
 				if(req.getParameter("productPriceSeq_"+i) != null) {
-					//logger.debug("ProductContoller registerProduct req.getParameter(\"productPriceSeq_\"+i)==="+req.getParameter("productPriceSeq_"+i));
 				//priceVo1.setProductId(Integer.valueOf(productId));
 					priceVo1.setProductId(Integer.parseInt(req.getParameter("productId")));					
 					priceVo1.setProductPriceSeq(Integer.parseInt(req.getParameter("productPriceSeq_"+i)));		
@@ -368,7 +364,6 @@ public class ProductController {
 	@ResponseBody
 	public List<ProductPriceSimpleVO> getProductPriceListOfNoGas(ProductPriceVO param,Model model)	{	
 		
-		logger.debug("******result *****===*"+param.getProductId());
 		List<ProductPriceSimpleVO> productList = productService.getNoGasProductPriceList();
 		//model.addAttribute("productList", productList);
 		
@@ -379,7 +374,6 @@ public class ProductController {
 	@ResponseBody
 	public List<ProductPriceSimpleVO> getProductPriceListOfNoGasV2(ProductVO param,Model model)	{	
 		
-		logger.debug("******getSaleCtype *****===*"+param.getSaleCtype());
 		List<ProductPriceSimpleVO> productList = productService.getNoGasProductPriceListV2(param);
 		//model.addAttribute("productList", productList);
 		
@@ -411,7 +405,6 @@ public class ProductController {
 	@ResponseBody
 	public List<ProductPriceSimpleVO> getProductPriceListOfTank(ProductPriceVO param,Model model)	{	
 		
-		logger.debug("******result *****===*"+param.getProductId());
 		List<ProductPriceSimpleVO> productList = productService.getTankProductPriceList();
 		//model.addAttribute("productList", productList);
 		

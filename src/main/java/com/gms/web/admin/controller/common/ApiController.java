@@ -46,10 +46,9 @@ public class ApiController {
 	@RequestMapping(value = "/api/controlAction.do")
 	@ResponseBody
 	public String controlAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd)	{	
-				
-		logger1.info("<<<< controlAction userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
-		logger.info("*******************************************************************************************************************************************");
-		logger.info("<<<< controlAction", "userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
+		Long startTime = System.currentTimeMillis();		
+//		logger1.info("<<<< controlAction userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
+		logger.info("<<<< controlAction  userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
 		
 		boolean phoneCall = true;
 		int result = 0;		
@@ -136,7 +135,8 @@ public class ApiController {
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.agencyBack"));			
 			result = apiService.registerWorkReportForChangeCd(workReport);				
 		}
-		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =userId="+userId+" : bottles ="+bottles +" "+(endTime-startTime)+" millis");
 		if(result > 0)
 			return "success";
 		if(result == USER_NOT_EXIST)
@@ -150,9 +150,8 @@ public class ApiController {
 	@RequestMapping(value = "/api/controlActionNoGas.do")
 	@ResponseBody
 	public String controlActionNoGas(WorkBottleVO param )	{	
-				
-		logger1.info("<<<< controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
-		logger.info("*******************************************************************************************************************************************");
+		Long startTime = System.currentTimeMillis();			
+//		logger1.info("<<<< controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
 		logger.info("<<<<  controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
 		
 		boolean phoneCall = true;
@@ -164,6 +163,8 @@ public class ApiController {
 		
 		//workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 		result = apiService.registerWorkReportNoGas(param);			
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =userId="+param.getUserId()+" : productId ="+param.getProductId() +" : productPriceSeq ="+param.getProductPriceSeq() +" "+(endTime-startTime)+" millis");
 		
 		if(result > 0)
 			return "success";
@@ -177,13 +178,15 @@ public class ApiController {
 	@RequestMapping(value = "/api/controlCashFlow.do")
 	@ResponseBody
 	public String manageCashFlow(CashFlowVO param )	{	
-		logger.info("*******************************************************************************************************************************************");		
-		logger.info("<<<< userId="+param.getCreateId()+" : incomeAmount ="+param.getIncomeAmount() +": receivableAmount ="+ param.getReceivableAmount() + " : customerNm ="+param.getCustomerNm() + " : incomeWay ="+param.getIncomeWay());
+		Long startTime = System.currentTimeMillis();	
+		logger.info("<<<<manageCashFlow userId="+param.getCreateId()+" : incomeAmount ="+param.getIncomeAmount() +": receivableAmount ="+ param.getReceivableAmount() + " : customerNm ="+param.getCustomerNm() + " : incomeWay ="+param.getIncomeWay());
 	
 		int result = 0;
 		
 		result = apiService.registerCashFlow(param);
 		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =" +(endTime-startTime)+" millis");
 		if(result > 0)
 			return "success";
 		if(result == USER_NOT_EXIST)
@@ -197,8 +200,8 @@ public class ApiController {
 	
 	@RequestMapping(value = "/api/controlTank.do")
 	@ResponseBody
-	public String controlTank(WorkBottleVO param )	{	
-		logger.debug("Tank start logger.info(\"*******************************************************************************************************************************************\");");
+	public String controlTank(WorkBottleVO param )	{
+		Long startTime = System.currentTimeMillis();	
 		logger.info("<<<<  controlTank userId="+param.getUserId()+" : productId ="+param.getProductId() +" : productPriceSeq ="+param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : BottleWorkCd ="+param.getBottleWorkCd()+ " : productCount ="+param.getProductCount());
 		
 		int result = 0;
@@ -214,6 +217,8 @@ public class ApiController {
 		
 		result = apiService.registerWorkReportTank(param);	
 		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =userId="+param.getUserId()+" : productId ="+param.getProductId() +" : productPriceSeq ="+param.getProductPriceSeq() +" "+(endTime-startTime)+" millis");
 		if(result > 0)
 			return "success";
 		if(result == USER_NOT_EXIST)
@@ -236,10 +241,9 @@ public class ApiController {
 	@RequestMapping(value = "/api/controlGasAndBottle.do")
 	@ResponseBody
 	public String manageGasAndBottle(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd )	{	
-				
+		Long startTime = System.currentTimeMillis();			
 		logger.info("<<<<  manageGasAndBottle userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
-		logger.info("*******************************************************************************************************************************************");
-		logger1.info("<<<< manageGasAndBottle","userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
+//		logger1.info("<<<< manageGasAndBottle","userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
 				
 		int result = 0;
 		boolean phoneCall = true;
@@ -253,6 +257,8 @@ public class ApiController {
 		workReport.setCreateId(userId);				
 		workReport.setUpdateId(userId);				
 		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =userId="+userId+" : bottles ="+bottles +"  " +(endTime-startTime)+" millis");
 		if(result > 0)
 			return "success";
 		if(result == USER_NOT_EXIST)
@@ -272,7 +278,7 @@ public class ApiController {
 	@RequestMapping(value = "/api/workReportList.do")
 	@ResponseBody
 	public List<WorkBottleVO> getWorkBottleList(String userId)	{			
-		logger1.debug("getWorkBottleList","userId="+userId);
+		logger.debug("getWorkBottleList","userId="+userId);
 		WorkReportVO workReport = new WorkReportVO();
 		
 		workReport.setSearchUserId(userId);
@@ -284,10 +290,9 @@ public class ApiController {
 	@RequestMapping(value = "/api/controlMassAction.do")
 	@ResponseBody
 	public String controlMassAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd)	{	
-				
+		Long startTime = System.currentTimeMillis();			
 		logger.info("<<<< controlMassAction  userId="+userId+" : bottles ="+bottles +" : bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm +"/n*******");
-		logger.info("*******************************************************************************************************************************************");
-		logger1.info("<<<< controlMassAction"," userId="+userId+" : bottles ="+bottles +" : bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm +"/n*******");
+//		logger1.info("<<<< controlMassAction"," userId="+userId+" : bottles ="+bottles +" : bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm +"/n*******");
 		
 		int result = 1;		
 		boolean phoneCall = true;
@@ -332,6 +337,8 @@ public class ApiController {
 			result = apiService.registerWorkReportMassForChangeCd(workReport);		
 		}
 		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! = userId="+userId+" : bottles ="+bottles +" " +(endTime-startTime)+" millis");
 		if(result > 0)
 			return "success";
 		if(result == USER_NOT_EXIST)
@@ -353,7 +360,7 @@ public class ApiController {
 	@RequestMapping(value = "/api/bottleDetail.do")
 	@ResponseBody
 	public BottleVO getBottleDetail(String bottleBarCd)	{				
-		logger1.info("getBottleDetail bottleBarCd="+bottleBarCd);
+		logger.info("getBottleDetail bottleBarCd="+bottleBarCd);
 		try {
 			BottleVO bottle =  bottleService.getBottleDetailForBarCd(bottleBarCd);			
 			
@@ -410,7 +417,7 @@ public class ApiController {
 	@RequestMapping(value = "/api/deleteWorkBottle.do")
 	@ResponseBody
 	public String deleteWorkBottle(String param)	{			
-		logger.debug("deleteWorkBottle==="+param);
+		logger.info("deleteWorkBottle==="+param);
 		
 		List<String> list = null;
 		int result = 0;		

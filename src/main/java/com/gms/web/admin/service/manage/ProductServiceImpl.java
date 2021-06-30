@@ -140,13 +140,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductPriceVO> getProductPriceList(Integer productId) {
-		logger.debug("****** getProductPriceList *****===*");
 		return productMapper.selectProductPriceList(productId);
 	}
 
 	@Override
 	public List<ProductTotalVO> getProductTotalList() {
-		logger.debug("****** getProductTotalList *****===*");
 		return productMapper.selectProductTotalList();
 	}
 
@@ -189,7 +187,6 @@ public class ProductServiceImpl implements ProductService {
 		// 가스정보 등록
 		int result = 0;
 		
-		logger.debug("****** Start registerProduct param.getProductId()()) *****===*"+param.getProductId());
 		if (param.getProductId() == null) {
 			
 			productId = getProductId();
@@ -232,7 +229,6 @@ public class ProductServiceImpl implements ProductService {
 		// 가스정보 등록
 		int result = 0;
 		
-		logger.debug("****** Start modifyProduct param.getProductId()()) *****===*"+param.getProductId());
 		if (param.getProductId() != null) {
 			
 			productId = param.getProductId();

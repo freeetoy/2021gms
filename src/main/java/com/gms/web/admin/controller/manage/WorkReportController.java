@@ -61,7 +61,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO params) {
 
-		logger.debug(" getWorkReportList");
 		
 		RequestUtils.initUserPrgmInfo(request, params);				
 		
@@ -70,7 +69,6 @@ public class WorkReportController {
 		params.setUserId(params.getCreateId());		
 		params.setSearchUserId(params.getCreateId());
 		
-		logger.debug(" getWorkReportList User_id= "+ params.getUserId());		
 		
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
 		
@@ -91,8 +89,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO params) {
 
-		logger.debug(" getWorkReportListAll="+params.getSearchUserId());
-		logger.debug(" getWorkReportListAll="+request.getParameter("searchUserId"));
 		RequestUtils.initUserPrgmInfo(request, params);				
 		
 		ModelAndView mav = new ModelAndView();		
@@ -124,7 +120,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, OrderBottlesVO params) {
 		
-		logger.debug(" registerWorkReportForOrder");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		ModelAndView mav = new ModelAndView();	
@@ -162,7 +157,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO params) {
 		
-		logger.debug(" registerWorkReportAll");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		//logger.debug("WorkReportController userId="+params.getUserId());
@@ -222,7 +216,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, OrderBottlesVO params) {
 		
-		logger.debug(" registerWorkReport0310");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		ModelAndView mav = new ModelAndView();	
@@ -260,7 +253,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO params) {
 
-		logger.debug(" getWorkReportList");
 		
 		RequestUtils.initUserPrgmInfo(request, params);		
 		
@@ -297,7 +289,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkBottleVO param) {
 		
-		logger.debug(" registerWorkReportNoGasProduct"+param.getSearchDt());
 		
 		RequestUtils.initUserPrgmInfo(request, param);
 		
@@ -337,7 +328,6 @@ public class WorkReportController {
 	@ResponseBody
 	public List<WorkBottleVO> getWorkBottleList(@RequestParam(value = "workReportSeq", required = false) Integer workReportSeq, Model model)	{	
 				
-		logger.debug(" getWorkBottleList "+ workReportSeq);
 		
 		List<WorkBottleVO> workBottleList = workService.getWorkBottleList(workReportSeq);
 		//model.addAttribute("orderProductList", orderProductList);
@@ -351,7 +341,6 @@ public class WorkReportController {
 			, HttpServletResponse response
 			, WorkReportVO param) {
 
-		logger.debug(" getWorkReportUpdate");
 		
 		RequestUtils.initUserPrgmInfo(request, param);				
 		
@@ -426,7 +415,6 @@ public class WorkReportController {
 
 		int result =0;
 		try {	
-			logger.debug(" deleteWorkReport workReportSeq ="+param.getWorkReportSeq());
 			result = workService.deleteWorkReport(param);					
 
 			mav.addObject("searchDt", param.getSearchDt());
@@ -457,7 +445,6 @@ public class WorkReportController {
 				
 		param.setUpdateId(param.getCreateId());
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.diary"));	 	
-		logger.debug("getCreateId = "+param.getCreateId());				
 		
 		// 수금액 정보 업데이트			
 		

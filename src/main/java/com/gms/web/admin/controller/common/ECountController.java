@@ -178,18 +178,21 @@ public class ECountController {
 		        		}
 		        	}
 		        }
-		        
-		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
+//		        logger.debug("****** registerWorkReportNoGas orderCount*****="+orderCount);
+		        if(vo.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) ) {
 		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
 		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";
 		        		productCapa = "병";
+		        		
 		        	}
 		        	else {
 		        		productNm = vo.getProductNm();
 		        		productCapa = "L";
 		        		orderCount = Integer.parseInt(vo.getProductCapa());
 		        	}
+//		        	logger.debug("****** registerWorkReportNoGas orderCount*****="+orderCount);
 		        }
+		       
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
 		        if(vo.getProductNm().indexOf("믹스가스") > -1 && (vo.getGasCd()!=null && vo.getGasCd().length() > 0 ) )
@@ -213,7 +216,12 @@ public class ECountController {
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
 		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
-		        	cell.setCellValue(vo.getProductPrice()/orderCount);
+		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {	
+		        		cell.setCellValue(vo.getProductPrice());
+		        	}else {
+		        		cell.setCellValue(vo.getProductPrice()/orderCount);
+		        	}
+		        	
 		        }else {
 		        	cell.setCellValue(Math.round(vo.getProductPrice()));
 		        }
