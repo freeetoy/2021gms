@@ -645,9 +645,8 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public int modifyOrderDeposit(OrderVO param) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int modifyOrderAmount(OrderVO param) {
+		return orderMapper.updateOrderTotalAmount(param);
 	}
 	
 	@Override
@@ -1113,6 +1112,17 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderProductVO> getOrderProducSimpletList(Integer orderId) {
 		
 		return orderMapper.selectOrderProductSimpleList(orderId);
+	}
+
+	@Override
+	public int modifyOrderProcessCd0250() {
+		return orderMapper.updateOrdersProcessCd0250();
+	}
+
+	@Override
+	public int modifyOrderProduct(OrderProductVO param) {
+		
+		return orderMapper.updateOrderProduct(param);
 	}
 
 	

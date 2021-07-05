@@ -55,7 +55,7 @@ public interface OrderService {
 	
 	public int modifyOrderAdditionBottles(OrderVO param);
 	
-	public int modifyOrderDeposit(OrderVO param);
+	public int modifyOrderAmount(OrderVO param);
 
 	public int modifyOrderProductCount(OrderProductVO param);
 	
@@ -108,5 +108,9 @@ public interface OrderService {
 	public List<OrderProductVO> getAllOrderListExcel(OrderVO params);
 	
 	public List<OrderProductVO> getOrderProducSimpletList(Integer orderId);
+	
+	public int modifyOrderProcessCd0250();
+	
+	public int modifyOrderProduct(OrderProductVO param);
 
 }

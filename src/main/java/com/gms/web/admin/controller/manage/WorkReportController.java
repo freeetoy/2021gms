@@ -164,10 +164,12 @@ public class WorkReportController {
 		int result =0;
 		try {	
 			
-			if(params.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back")) ){
+			if(params.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back")) || params.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) 
+					|| params.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ){
 				List<String> list = null;				
 				BottleVO bottle = new BottleVO();
 				params.setBottleType("E");
+				if(params.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out"))) params.setBottleType("F");
 				if(params.getBottlesIds()!=null && params.getBottlesIds().length() > 0) {
 					//bottleIds= request.getParameter("bottleIds");
 					list = StringUtils.makeForeach(params.getBottlesIds(), ","); 		
@@ -176,7 +178,7 @@ public class WorkReportController {
 					bottle.setBottleWorkId(params.getCreateId());
 					bottle.setCustomerId(params.getCustomerId());
 					bottle.setUpdateId(params.getCreateId());
-					bottle.setBottleType("E");
+					bottle.setBottleType(params.getBottleType());
 				}			
 				
 				List<BottleVO> bottleList = bottleService.getBottleDetails(bottle);

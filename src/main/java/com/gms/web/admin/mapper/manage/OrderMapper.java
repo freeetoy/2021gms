@@ -54,6 +54,8 @@ public interface OrderMapper {
 	
 	public int updateOrderProductAmount(OrderProductVO param);
 	
+	public int updateOrderProduct(OrderProductVO param);
+	
 	public int updateOrderAdditionBottles(OrderVO param);
 	
 	public int updateOrderProductCount(OrderProductVO param);
@@ -69,7 +71,9 @@ public interface OrderMapper {
 	public int updateOrderProcessCd(OrderVO param);
 	
 	public int updateOrdersProcessCd(OrderVO param);
-
+	
+	public int updateOrdersProcessCd0250();
+	
 	public int deleteOrder(OrderVO param);
 
 	public int deleteOrderProduct(OrderProductVO param);

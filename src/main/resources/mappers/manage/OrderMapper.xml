@@ -360,6 +360,16 @@
 			Order_ID = #{chOrderId}
 	</update>	
 	
+	<update id="updateOrdersProcessCd0250" >
+		UPDATE TB_Order
+		SET
+			  Order_Process_CD 	= '0250'			 
+			, UPDATE_ID 		= 'daehangas'
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Order_Process_CD = '0240'
+	</update>	
+	
 	<update id="updateOrderBottleId" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
 		UPDATE TB_Order_Product
 		SET
@@ -376,6 +386,20 @@
 		UPDATE TB_Order_Product
 		SET
 			  Order_Count 	= #{orderCount}
+			, Order_Amount 	= #{orderAmount}
+			, UPDATE_ID 	= #{updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			Order_ID = #{orderId}
+		AND
+			Order_Product_Seq = #{orderProductSeq}	
+	</update>	
+	
+	<update id="updateOrderProduct" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">
+		UPDATE TB_Order_Product
+		SET
+			  Product_Price_Seq 	= #{productPriceSeq}
+			, Order_Count 	= #{orderCount}  
 			, Order_Amount 	= #{orderAmount}
 			, UPDATE_ID 	= #{updateId}
 			, UPDATE_DT 	= NOW()
