@@ -195,7 +195,7 @@ public class ProductController {
 			List<ProductPriceVO> productPriceList = productService.getProductPriceList(params.getProductId());
 			Integer lastPriceSeqInt = productPriceList.get(productPriceList.size()-1).getProductPriceSeq();
 			int lastPriceSeq = lastPriceSeqInt.intValue();			
-			
+			logger.debug("************* modifyProduct priceCount="+priceCount);
 			ProductPriceVO[] priceVo = new ProductPriceVO[priceCount] ;
 						
 			int listIndex=0;
@@ -229,9 +229,9 @@ public class ProductController {
 						priceVo1.setProductPriceSeq(++lastPriceSeq);	
 						priceVo1.setProductCapa(req.getParameter("productCapa_"+i));
 						priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+i)));						
-						priceVo1.setECountCd(req.getParameter("eCountCd"+i));
+						priceVo1.setECountCd(req.getParameter("eCountCd_"+i));
 						priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+i)));						
-						priceVo1.setECountCdS(req.getParameter("eCountCdS"+i));
+						priceVo1.setECountCdS(req.getParameter("eCountCdS_"+i));
 						priceVo1.setCreateId(params.getCreateId());
 						
 						priceVo[listIndex++] = priceVo1;
