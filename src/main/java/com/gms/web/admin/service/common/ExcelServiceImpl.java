@@ -163,7 +163,7 @@ public class ExcelServiceImpl implements ExcelService {
                     }
                 	
                 	//if(i==0 && colValue.equals("end")) break;
-                	//logger.debug("ExcelSerive uploadExcelFile j =="+j+"=="+ colValue);
+//                	logger.debug("ExcelSerive uploadExcelFile j =="+j+"=="+ colValue);
                 	
                 	//용기	바코드/RFID	가스	품명	용기체적	가스용량	충전용량	충전기한	충전압력	제조일	거래처	작업	소유	
                     //0		1			2	3	4		5		6		7		8		9		10		11	12
@@ -203,81 +203,7 @@ public class ExcelServiceImpl implements ExcelService {
                 	}
                 	
                 	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
-               /* 	
-                	
-                	if(j == 0) bottle.setBottleId(colValue);
-                	else if(j == 1) bottle.setBottleBarCd(colValue);
-                	else if(j == 2) bottle.setGasCd(colValue);
-                	else if(j == 3) productNm = colValue;
-                	else if(j == 4) bottle.setBottleVolumn(colValue);
-                	else if(j == 5) {
-                		bottle.setBottleCapa(colValue);
-                		productCapa = colValue;
-                	}
-                	else if(j == 6) bottle.setChargeCapa(colValue);
-                	else if(j == 7) {
-                		if(colValue!=null && colValue.length() > 9) {
-	                		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-	                		Date date = sdf.parse(colValue);
-	                		
-	                		bottle.setBottleChargeDt(date);
-                		}
-                	}
-                	else if(j == 8) bottle.setBottleChargePrss(colValue);
-                	else if(j == 9) {
-                		if(colValue!=null && colValue.length() > 9) {
-	                		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-	                		Date date = sdf.parse(colValue);
-	                		
-	                		bottle.setBottleCreateDt(date);
-                		}
-                	}
-                	else if(j == 10) {
-                		if(colValue != null && colValue.length() > 0) {
-                			for(int k=0; k < customerList.size() ; k++) {
-                				CustomerSimpleVO customer =customerList.get(k);
-                				if(colValue.equals(customer.getCustomerNm())) 
-									bottle.setCustomerId(customer.getCustomerId());
-                			}
-                		}
-                		
-                		//CustomerVO customer = customerService.getCustomerDetailsByNm(colValue) ;
-                		//if(customer != null &&  customer.getCustomerId()!=null)
-                		//	bottle.setCustomerId(customerService.getCustomerDetailsByNm(colValue).getCustomerId());
-                			
-                	}
-                	else if(j == 11) {                		
-                		
-                		if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.come")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.vacuum")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.vacuum"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.hole")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.hole"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.chargeDt")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.chargeDt"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.charge")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.charge"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.out")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.incar")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.incar"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.sales")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.rental")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.back")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
-                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.discard")))
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.0399"));
-                		else	
-                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
-                	}
-                	else if(j == 12) { 
-                		if(colValue.equals("other")) bottle.setBottleOwnYn("N");
-                		else bottle.setBottleOwnYn("Y");
-                	}                
-                */
+              
                 }
                
                 
@@ -290,7 +216,7 @@ public class ExcelServiceImpl implements ExcelService {
              
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
-                	if(productTemp.getProductNm().equals(productNm) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
+                	if(productTemp.getProductNm().toLowerCase().equals(productNm.toLowerCase()) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
                 		productTotal = productTemp;
                 	}                	
                 }
@@ -469,39 +395,7 @@ public class ExcelServiceImpl implements ExcelService {
     	                	}
     	                	
     	                	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
-    	                	/*
-    	                	else if(j == 11) {                		
-    	                		
-    	                		if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.come")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.vacuum")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.vacuum"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.hole")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.hole"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.chargeDt")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.chargeDt"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.charge")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.charge"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.out")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.incar")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.incar"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.sales")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.rental")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.back")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
-    	                		else if(colValue.equals(PropertyFactory.getProperty("common.bottle.status.title.discard")))
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.0399"));
-    	                		else	
-    	                			bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
-    	                	}
-    	                	else if(j == 12) { 
-    	                		if(colValue.equals("other")) bottle.setBottleOwnYn("N");
-    	                		else bottle.setBottleOwnYn("Y");
-    	                	}
-    	                	*/
+    	                	
                     	}
                     }
                     
@@ -509,13 +403,8 @@ public class ExcelServiceImpl implements ExcelService {
                     
                     for(int k=0;k<productList.size();k++) {
                     	ProductTotalVO productTemp = productList.get(k);
-                    /*	 
-                    	logger.debug("ExcelSerive uploadExcelFile productTemp.productNm=="+ productTemp.getProductNm()+"=="+productTemp.getProductNm().length());
-                    	 logger.debug("ExcelSerive uploadExcelFile productTemp.productCapa=="+ productTemp.getProductCapa()+"=="+productTemp.getProductCapa().length());
-                    	 logger.debug("ExcelSerive uploadExcelFile productNm=="+ productNm+"=="+productNm.length());
-                    	 logger.debug("ExcelSerive uploadExcelFile productCapa=="+ productCapa+"=="+productCapa.length());
-                    */
-                    	if(productTemp.getProductNm().equals(productNm) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
+                   
+                    	if(productTemp.getProductNm().toLowerCase().equals(productNm.toLowerCase()) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
                     		
                     		logger.debug("ExcelSerive uploadExcelFile Equal");
                     		productTotal = productTemp;

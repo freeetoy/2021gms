@@ -1,5 +1,6 @@
 package com.gms.web.admin.controller.common;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -551,7 +552,7 @@ public class ExcelDownloadController {
 			    cell.setCellStyle(headStyle);
 			    cell.setCellValue(list.get(i));		    
 		    }
-		    
+		    DecimalFormat df = new DecimalFormat("###,###.##");
 		    //순번	거래처	품명	용량 주문액	접수자	상태	요청일자	접수일
 		    // 데이터 부분 생성
 		    int i = 1;
@@ -569,7 +570,7 @@ public class ExcelDownloadController {
 		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getOrderTotalAmount());
+		        cell.setCellValue(df.format(vo.getOrderTotalAmount()));
 		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
@@ -584,7 +585,10 @@ public class ExcelDownloadController {
 				        if(prd.getGasId() > 0) {
 							if(prd.getProductCapa().indexOf("Kg") < 0) sb.append("L");
 						}
-		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(prd.getOrderAmount() / prd.getOrderCount()).append(" / ");
+				        
+				        double price = prd.getOrderAmount() / prd.getOrderCount();
+				        String strPrice = df.format(price);
+		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(strPrice).append(" / ");
 		        	}
 		        }
 		        cell.setCellValue(sb.toString());  
