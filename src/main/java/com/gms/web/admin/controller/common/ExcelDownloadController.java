@@ -588,7 +588,12 @@ public class ExcelDownloadController {
 				        
 				        double price = prd.getOrderAmount() / prd.getOrderCount();
 				        String strPrice = df.format(price);
-		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(strPrice).append(" / ");
+		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(strPrice).append(" ");
+		        		if(prd.getBottleChangeYn() !=null && prd.getBottleChangeYn().equals("Y") ){
+		        			sb.append("대여 / ");
+		        		}else {
+		        			sb.append("판매 / ");
+		        		}
 		        	}
 		        }
 		        cell.setCellValue(sb.toString());  
