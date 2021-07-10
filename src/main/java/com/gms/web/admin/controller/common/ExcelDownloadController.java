@@ -553,7 +553,7 @@ public class ExcelDownloadController {
 			    cell.setCellValue(list.get(i));		    
 		    }
 		    DecimalFormat df = new DecimalFormat("###,###.##");
-		    //순번	거래처	품명	용량 주문액	접수자	상태	요청일자	접수일
+		    //주문건수,거래처,주문상품,주문금액,기타,확인
 		    // 데이터 부분 생성
 		    int i = 1;
 		    int idx = 0;
@@ -567,15 +567,7 @@ public class ExcelDownloadController {
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getCustomerNm());      
-		        
-		        cell = row.createCell(idx++);
-		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(df.format(vo.getOrderTotalAmount()));
-		        
-		        cell = row.createCell(idx++);
-		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(DateUtils.convertDateFormat(vo.getDeliveryReqDt(), "yyyy/MM/dd"));
-		        
+		        		        		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
 		        StringBuffer sb = new StringBuffer();
@@ -588,7 +580,7 @@ public class ExcelDownloadController {
 				        
 				        double price = prd.getOrderAmount() / prd.getOrderCount();
 				        String strPrice = df.format(price);
-		        		sb.append(" ").append(prd.getOrderCount()).append(" ").append(strPrice).append(" ");
+		        		sb.append("   ").append(prd.getOrderCount()).append(", ").append(strPrice).append(" ");
 		        		if(prd.getBottleChangeYn() !=null && prd.getBottleChangeYn().equals("Y") ){
 		        			sb.append("대여 / ");
 		        		}else {
@@ -600,16 +592,29 @@ public class ExcelDownloadController {
 			        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(df.format(vo.getOrderTotalAmount()*1.1));
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getOrderEtc());
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue("               ");
 	
 		    }	
+		    idx = 0;
+	        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+	        cell = row.createCell(0);
+	       // cell.setCellStyle(bodyStyle);
+	        cell.setCellValue("주문금액은 부가세 포함입니다");
 	
 		 // width 자동조절
 		    if(orderlist.size() > 0 ) {
-	 			for (int x = 0; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
+	 			for (int x = 1; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
 	 				sheet.autoSizeColumn(x);
 	 				int width = sheet.getColumnWidth(x);
-	 				int minWidth = list.get(x).getBytes().length * 450;
+	 				int minWidth = list.get(x).getBytes().length * 350;
 	 				int maxWidth = 18000;
 	 				if (minWidth > width) {
 	 					sheet.setColumnWidth(x, minWidth);
@@ -622,7 +627,7 @@ public class ExcelDownloadController {
 		    }
 		    // 컨텐츠 타입과 파일명 지정
 		    response.setContentType("ms-vnd/excel");
-		    response.setHeader("Content-Disposition", "attachment;filename=Order_"+DateUtils.getDate()+".xls");	
+		    response.setHeader("Content-Disposition", "attachment;filename=Order_"+searchOrderDt+".xls");	
 	
 		    // 엑셀 출력
 		    wb.write(response.getOutputStream());

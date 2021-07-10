@@ -59,8 +59,6 @@ $(document).ready(function(){
 
     $("table.doc-list").on("click", ".ibtnAddMod", function (event) {
          
-        console.log("추가 클릭");
-
         mod_counter++;       
         totalCount++;
         
@@ -72,13 +70,13 @@ $(document).ready(function(){
         cols += '</td><td>';
         cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq_' + mod_counter + '" style="width:80px"></select> ';
 		cols += '</td><td>';
-		cols += ' <input type="number" class="form-control" id="orderCount_' + counter + '" name="orderCount_' + counter + '" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="1" max="99999" value="1">';
+		cols += ' <input type="number" class="form-control" id="orderCount_' + mod_counter + '" name="orderCount_' + mod_counter + '" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="1" max="99999" value="1">';
 		cols += '</td><td>';  
-		cols += ' <input type="text" class="form-control" id="orderProductEtc_' + counter + '" name="orderProductEtc_' + counter + '" ">';
+		cols += ' <input type="text" class="form-control" id="orderProductEtc_' + mod_counter + '" name="orderProductEtc_' + mod_counter + '" ">';
 		cols += '</td><td>';  
-		cols += ' <input type="checkbox" class="form-control" id="bottleChangeYn_' + counter + '" name="bottleChangeYn_' + counter + '" ">';
+		cols += ' <input type="checkbox" class="form-control" id="bottleChangeYn_' + mod_counter + '" name="bottleChangeYn_' + mod_counter + '" ">';
 		cols += '</td><td>'; 
-		cols += ' <input type="checkbox" class="form-control" id="bottleSaleYn_' + counter + '" name="bottleSaleYn_' + counter + '" ">';
+		cols += ' <input type="checkbox" class="form-control" id="bottleSaleYn_' + mod_counter + '" name="bottleSaleYn_' + mod_counter + '" ">';
 		cols += '</td><td>'; 
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
@@ -102,12 +100,10 @@ $(document).ready(function(){
         counter -= 1
         totalCount-=1
         $("#productCount").val(counter);
-		console.log("3 totalCount=="+totalCount); 
     });
 
     $("table.doc-list").on("click", ".ibtnDelMod", function (event) {
         $(this).closest("tr").remove();       
-        console.log("4 $(this)=="+$(this).id);
         mod_counter -= 1
         totalCount -= 1
         $("#productCount").val(mod_counter);
@@ -131,7 +127,6 @@ $(document).ready(function(){
 
        })
   	 .done(function(data){
-  		console.log(data);       
   		var i=0;
   		$('#productId_' + pid).append('<option value=0>상품</option>');
 		for(i=0; i< data.length;i++) {
@@ -207,21 +202,16 @@ $(document).ready(function(){
 		      }
 			i++;
 		 });    	
-    	console.log("searchCustomerNm= "+$("#searchCustomerNm").val());
-    	console.log("5 totalCount==="+totalCount);
     	var form = $("#writeForm");	
 
     	//document.getElementById("priceCount").value = counter+mod_counter;
     	document.getElementById("productCount").value = totalCount;
-    	
     	
     	form.submit();
     });
     
     function getProductList(productId,sel_pid,type){
 	      
-		console.log(type);      
-		
 		$.ajax({
 			url: '/gms/product/priceList.do',
 			type: 'POST',
@@ -231,23 +221,17 @@ $(document).ready(function(){
 		 })
 		.done(function(data){	           
 		  //console.log("sel pid:" + sel_pid + "type:" + type);
-			console.log(data);        
-
-			//var json_obj = $.parseJSON(data);//parse JSON
 
 			if(type == "ins"){
 		    	var i=0;
 				//$('#productCapa_' + sel_pid).find('option').remove(); 
 				for(i=0; i< data.length;i++) {
-					console.log(data[i]);      
 					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
 					
 				}
 			}else if(type == "mod"){
-				console.log("this is mod =="+sel_pid);
 				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
 				for(i=0; i< data.length;i++) {
-					console.log("tdata[i].productCapa =="+data[i].productCapa);
 					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
 				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
 				}
@@ -288,7 +272,6 @@ $(document).ready(function(){
 		
 		//$('#customerId1').val($(this).val());
 		var orderType = $(this).val();
-		console.log("orderType Change ="+orderType); 
 		if(orderType=='0104' || orderType=='0105' || orderType=='0105' ){
 		 	$("table.doc-list").closest("table").remove();
 		//console.log("customerId change ="+totalCount); 
@@ -430,8 +413,6 @@ $(document).ready(function(){
 		            
 		            initModProductCapa(counter);
 		            
-					console.log("counter=="+counter);   
-	
 		            mod_counter = counter;
 		            
 		            totalCount =counter;

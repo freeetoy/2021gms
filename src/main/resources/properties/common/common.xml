@@ -146,7 +146,7 @@
 	<entry key="excel.customer.bottle.title">용기,바코드/RFID,품명,가스용량,구분,타입,날짜</entry>
 	
 	<entry key="excel.stat.order.title">날짜,주문건수,주문금액,완료건수,완료금액,취소주문,회수요청,점검요청,기타요청</entry>
-	<entry key="excel.stat.order.0210.title">주문건수,거래처,주문금액,납품일,주문상품,기타</entry>
+	<entry key="excel.stat.order.0210.title">주문건수,거래처,주문상품,주문금액,기타,확인</entry>
 	<entry key="excel.stat.sales.title">날짜,판매건수,판매금액,대여건수,대여금액,입금액</entry>
 	<entry key="excel.stat.bottle.title">날짜,입고,충전,판매,대여,회수</entry>
 	<entry key="excel.stat.product.title">날짜,판매건수,판매금액,대여건수,대여금액</entry>
@@ -163,6 +163,7 @@
 	<entry key="product.LN2.divide.productId">52</entry>
 	<entry key="product.LN2.divide.bottle.productPriceSeq">2</entry>
 	<entry key="product.LN2.divide.new.productId">60</entry>
+	<entry key="product.LN2.divide.no.producSeq">50</entry>
 		
 	<entry key="cash.receivable.limit">10000000</entry>
 	

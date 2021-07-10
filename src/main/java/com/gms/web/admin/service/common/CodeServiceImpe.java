@@ -21,7 +21,6 @@ public class CodeServiceImpe implements CodeService {
 
 	@Override
 	public List<CodeVO> getCodeList(String param) {
-		logger.debug("****** getCodeList *****===*" + param);
 		return codeMapper.selectCodeList(param);
 	}
 

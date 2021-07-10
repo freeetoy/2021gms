@@ -95,7 +95,6 @@ $(document).ready(function(){
         counter -= 1
         totalCount-=1
         $("#productCount").val(counter);
-		console.log("3 totalCount=="+totalCount); 
     });
 
 
@@ -105,8 +104,6 @@ $(document).ready(function(){
         mod_counter -= 1
         totalCount -= 1
         $("#productCount").val(mod_counter);
-
-		console.log("4 totalCount=="+totalCount); 
     });
     
 
@@ -236,10 +233,8 @@ $(document).ready(function(){
 					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')					
 				}
 			}else if(type == "mod"){
-				console.log("this is mod =="+sel_pid);
 				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
 				for(i=0; i< data.length;i++) {
-					console.log("tdata[i].productCapa =="+data[i].productCapa);
 					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
 				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
 				}

@@ -302,20 +302,33 @@ public class OrderServiceImpl implements OrderService {
 												
 						}
 					}			
-						
+					logger.debug("registerOrder salePrice="+productId);
 					for(int k=0;k<customerPriceList.size();k++) {
 						orderAmount = 0;
 						CustomerPriceExtVO customerPrice = customerPriceList.get(k);
-						
-						if(productId == customerPrice.getProductId() && productPriceSeq == customerPrice.getProductPriceSeq()) {
-							//if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;	
-							if(bottleSaleYn.equals("Y"))
-								orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
-							else
-								orderAmount = customerPrice.getProductPrice() *orderCount;
-							productVo.setOrderAmount(orderAmount);
-												
-						}
+						if(productId.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) 
+								&& productPriceSeq.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.no.producSeq")) )){
+							if(productId.equals(customerPrice.getProductId() ) ){
+								int units = Integer.parseInt(customerPrice.getProductCapa().replace("병_",""));
+								double salePrice = customerPrice.getProductBottlePrice()/units;
+								
+								logger.debug("registerOrder salePrice="+salePrice);
+								orderAmount = salePrice *orderCount;
+								
+								productVo.setOrderAmount(orderAmount);
+							}
+						}else {
+							if(productId.equals(customerPrice.getProductId() ) && productPriceSeq.equals(customerPrice.getProductPriceSeq() ) ) {
+								//if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;	
+								if(bottleSaleYn.equals("Y"))
+									orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
+								else
+									orderAmount = customerPrice.getProductPrice() *orderCount;		
+								
+								logger.debug("registerOrder orderAmount="+orderAmount);
+								productVo.setOrderAmount(orderAmount);
+							}
+						}						
 					}
 					
 					productVo.setOrderId(params.getOrderId());
@@ -366,8 +379,7 @@ public class OrderServiceImpl implements OrderService {
 				}
 				params.setOrderTotalAmount(orderTotalAmount);
 			}
-			//
-			
+		
 			params.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
 		
 			result =  orderMapper.insertOrder(params);	
@@ -388,8 +400,6 @@ public class OrderServiceImpl implements OrderService {
 		return orderMapper.insertOrder(param);	
 	}
 	
-	
-
 	@Override
 	@Transactional
 	public int registerOrderProduct(OrderProductVO param) {
@@ -494,7 +504,12 @@ public class OrderServiceImpl implements OrderService {
 					|| orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.auto"))) {
 				
 				// 상품별 단가 정보 가져오기
-				List<ProductTotalVO> productPriceList = productService.getCustomerProductTotalList(params.getCustomerId());
+//				List<ProductTotalVO> productPriceList = productService.getCustomerProductTotalList(params.getCustomerId());
+				
+				List<CustomerPriceExtVO> customerPriceList = customerService.getCustomerPriceList(params.getCustomerId());			
+				
+				// 상품별 단가 정보 가져오기
+				List<ProductTotalVO> productPriceList = productService.getProductTotalList();
 								
 				for(int i =0 ; i < productCount ; i++ ) {
 					
@@ -526,7 +541,6 @@ public class OrderServiceImpl implements OrderService {
 							}
 						}						
 					}				
-					logger.debug("OrderContoller modifyOrder orderCount = "+ orderCount);					
 					if(request.getParameter("bottleChangeYn_"+requestIndex) !=null)  {
 						bottleChangeYn = "Y";
 					}
@@ -534,29 +548,87 @@ public class OrderServiceImpl implements OrderService {
 						bottleSaleYn = "Y";
 					}
 					
-						
 					for(int k=0;k<productPriceList.size();k++) {
 						orderAmount = 0;
 						tempProduct = productPriceList.get(k);
-						logger.debug("OrderContoller modifyOrder tempProduct.getGasId() = "+ tempProduct.getGasId());	
+						
 						if(productId == tempProduct.getProductId() && productPriceSeq == tempProduct.getProductPriceSeq()) {
-							if(tempProduct.getGasId() !=null && tempProduct.getGasId() > 0 && orderCount > 0) bottleFlag = true;
+							
+							if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;
+							
 							if(i==0) {
 								orderProductNm = tempProduct.getProductNm();
 								orderProductCapa = tempProduct.getProductCapa();
 							}
-							
 							if(bottleSaleYn.equals("Y"))
-								orderAmount = tempProduct.getProductBottlePrice() *orderCount;
+								orderAmount = tempProduct.getProductBottlePrice() *orderCount;		
 							else
-								orderAmount = tempProduct.getProductPrice() *orderCount;									
-							
-							//orderAmount = tempProduct.getProductPrice() *orderCount;	
+								orderAmount = tempProduct.getProductPrice() *orderCount;
 							productVo.setOrderAmount(orderAmount);
-							orderTotalAmount += orderAmount;								
+												
 						}
-					}	
+					}			
+					for(int k=0;k<customerPriceList.size();k++) {
+						orderAmount = 0;
+						CustomerPriceExtVO customerPrice = customerPriceList.get(k);
+						if(productId.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) 
+								&& productPriceSeq.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.no.producSeq")) )){
+							if(productId.equals(customerPrice.getProductId() ) ){
+								int units = Integer.parseInt(customerPrice.getProductCapa().replace("병_",""));
+								double salePrice = customerPrice.getProductBottlePrice()/units;
+								
+								orderAmount = salePrice *orderCount;
+								
+								productVo.setOrderAmount(orderAmount);
+							}
+						}else {
+							if(productId.equals(customerPrice.getProductId() ) && productPriceSeq.equals(customerPrice.getProductPriceSeq() ) ) {
+								//if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;	
+								if(bottleSaleYn.equals("Y"))
+									orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
+								else
+									orderAmount = customerPrice.getProductPrice() *orderCount;		
+								
+								productVo.setOrderAmount(orderAmount);
+							}
+						}						
+					}
 					
+//					for(int k=0;k<productPriceList.size();k++) {
+//						orderAmount = 0;
+//						tempProduct = productPriceList.get(k);
+//						
+//						if(productId.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) 
+//								&& productPriceSeq.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.no.producSeq")) )){
+//							if(productId.equals(tempProduct.getProductId()) ){
+//								int units = Integer.parseInt(tempProduct.getProductCapa().replace("병_",""));
+//								double salePrice = tempProduct.getProductBottlePrice()/units;
+//								
+//								logger.debug("modifyrOrder salePrice="+salePrice);
+//								orderAmount = salePrice *orderCount;
+//								productVo.setOrderAmount(orderAmount);
+//								orderTotalAmount += orderAmount;	
+//							}
+//						}else {
+//							if(productId == tempProduct.getProductId() && productPriceSeq == tempProduct.getProductPriceSeq()) {
+//								if(tempProduct.getGasId() !=null && tempProduct.getGasId() > 0 && orderCount > 0) bottleFlag = true;
+//								if(i==0) {
+//									orderProductNm = tempProduct.getProductNm();
+//									orderProductCapa = tempProduct.getProductCapa();
+//								}
+//								
+//								if(bottleSaleYn.equals("Y"))
+//									orderAmount = tempProduct.getProductBottlePrice() *orderCount;
+//								else
+//									orderAmount = tempProduct.getProductPrice() *orderCount;									
+//								
+//								//orderAmount = tempProduct.getProductPrice() *orderCount;	
+//								productVo.setOrderAmount(orderAmount);
+//								orderTotalAmount += orderAmount;								
+//							}
+//						}
+//					}	
+//					
 					//기존 주문상품과 빅교
 					for(int j=0; j< oldProductList.size() ; j++) {
 						OrderProductVO oldProductVo = oldProductList.get(j);						
@@ -574,7 +646,6 @@ public class OrderServiceImpl implements OrderService {
 					
 					orderProduct.add(productVo);
 					
-					logger.debug("OrderContoller modifyOrder bottleFlag = "+ bottleFlag);
 					if(bottleFlag) {
 						for(int k=0; k< orderCount ; k++) {
 							
@@ -606,6 +677,11 @@ public class OrderServiceImpl implements OrderService {
 				if(productCount > 1) {
 					orderProductNm = orderProductNm +"외 "+ (productCount-1);
 					orderProductCapa = orderProductCapa +"외 "+ (productCount-1);
+				}
+				
+				orderTotalAmount = 0;
+				for(int j=0;j<orderProduct.size();j++) {
+					orderTotalAmount  += orderProduct.get(j).getOrderAmount();		
 				}
 				/*
 				// 기존 상품과 비교
