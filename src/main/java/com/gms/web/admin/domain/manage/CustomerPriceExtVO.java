@@ -31,5 +31,8 @@ public class CustomerPriceExtVO implements Serializable {
 	
 	/** Product_Capa     */
 	private String productCapa;
+	
+	/**Gas_ID */
+	private Integer gasId;
 
 }

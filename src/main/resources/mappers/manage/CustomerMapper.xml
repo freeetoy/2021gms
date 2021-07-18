@@ -454,7 +454,7 @@
 
 	<select id="selectCustomerPriceList" resultType="com.gms.web.admin.domain.manage.CustomerPriceExtVO" parameterType="Integer">
 		SELECT
-			a.Customer_ID, a.Product_ID, a.Product_Price_Seq,a.Product_Price, a.Product_Bottle_Price,b.Product_Capa, c.Product_Nm
+			a.Customer_ID, a.Product_ID, a.Product_Price_Seq,a.Product_Price, a.Product_Bottle_Price,b.Product_Capa, c.Product_Nm, Gas_Id
 		FROM
 			TB_CUSTOMER_PRODUCT_PRICE a, TB_PRODUCT_PRICE b, TB_PRODUCT c
 		WHERE

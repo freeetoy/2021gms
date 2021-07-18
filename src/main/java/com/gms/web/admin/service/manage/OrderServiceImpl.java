@@ -284,6 +284,7 @@ public class OrderServiceImpl implements OrderService {
 					
 					for(int k=0;k<productPriceList.size();k++) {
 						orderAmount = 0;
+						
 						tempProduct = productPriceList.get(k);
 						
 						if(productId == tempProduct.getProductId() && productPriceSeq == tempProduct.getProductPriceSeq()) {
@@ -294,38 +295,45 @@ public class OrderServiceImpl implements OrderService {
 								orderProductNm = tempProduct.getProductNm();
 								orderProductCapa = tempProduct.getProductCapa();
 							}
-							if(bottleSaleYn.equals("Y"))
-								orderAmount = tempProduct.getProductBottlePrice() *orderCount;		
-							else
+							if(bottleSaleYn.equals("Y")) {								
+								if(bottleFlag){	// 가스 및 용기 판매
+									orderAmount = tempProduct.getProductBottlePrice() + tempProduct.getProductPrice()* orderCount;
+								}else 
+									orderAmount = tempProduct.getProductBottlePrice() * orderCount;		
+							}else
 								orderAmount = tempProduct.getProductPrice() *orderCount;
-							productVo.setOrderAmount(orderAmount);
-												
+							
+							productVo.setOrderAmount(orderAmount);												
 						}
 					}			
-					logger.debug("registerOrder salePrice="+productId);
+//					logger.debug("registerOrder productId="+productId);
+//					logger.debug("registerOrder orderAmount1="+orderAmount);
 					for(int k=0;k<customerPriceList.size();k++) {
 						orderAmount = 0;
 						CustomerPriceExtVO customerPrice = customerPriceList.get(k);
+						
+//						if(customerPrice.getGasId()!=null && customerPrice.getGasId() > 0) bottleFlag = true;
 						if(productId.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) 
 								&& productPriceSeq.equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.no.producSeq")) )){
 							if(productId.equals(customerPrice.getProductId() ) ){
 								int units = Integer.parseInt(customerPrice.getProductCapa().replace("병_",""));
 								double salePrice = customerPrice.getProductBottlePrice()/units;
 								
-								logger.debug("registerOrder salePrice="+salePrice);
 								orderAmount = salePrice *orderCount;
 								
 								productVo.setOrderAmount(orderAmount);
 							}
 						}else {
 							if(productId.equals(customerPrice.getProductId() ) && productPriceSeq.equals(customerPrice.getProductPriceSeq() ) ) {
-								//if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;	
-								if(bottleSaleYn.equals("Y"))
-									orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
-								else
+								if(customerPrice.getGasId()!=null && customerPrice.getGasId() > 0) bottleFlag = true;
+								if(bottleSaleYn.equals("Y"))  {								
+									if(bottleFlag) {	// 가스 및 용기 판매
+										orderAmount = customerPrice.getProductBottlePrice() * orderCount + customerPrice.getProductPrice()* orderCount;
+									}else
+										orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
+								}else
 									orderAmount = customerPrice.getProductPrice() *orderCount;		
 								
-								logger.debug("registerOrder orderAmount="+orderAmount);
 								productVo.setOrderAmount(orderAmount);
 							}
 						}						
@@ -560,10 +568,14 @@ public class OrderServiceImpl implements OrderService {
 								orderProductNm = tempProduct.getProductNm();
 								orderProductCapa = tempProduct.getProductCapa();
 							}
-							if(bottleSaleYn.equals("Y"))
-								orderAmount = tempProduct.getProductBottlePrice() *orderCount;		
-							else
+							if(bottleSaleYn.equals("Y")) {								
+								if(bottleFlag){	// 가스 및 용기 판매
+									orderAmount = tempProduct.getProductBottlePrice()* orderCount + tempProduct.getProductPrice()* orderCount;
+								}else 
+									orderAmount = tempProduct.getProductBottlePrice() * orderCount;		
+							}else
 								orderAmount = tempProduct.getProductPrice() *orderCount;
+								
 							productVo.setOrderAmount(orderAmount);
 												
 						}
@@ -583,10 +595,13 @@ public class OrderServiceImpl implements OrderService {
 							}
 						}else {
 							if(productId.equals(customerPrice.getProductId() ) && productPriceSeq.equals(customerPrice.getProductPriceSeq() ) ) {
-								//if(tempProduct.getGasId()!=null && tempProduct.getGasId() > 0) bottleFlag = true;	
-								if(bottleSaleYn.equals("Y"))
-									orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
-								else
+								if(customerPrice.getGasId()!=null && customerPrice.getGasId() > 0) bottleFlag = true;	
+								if(bottleSaleYn.equals("Y"))  {								
+									if(bottleFlag) {	// 가스 및 용기 판매
+										orderAmount = customerPrice.getProductBottlePrice()* orderCount + customerPrice.getProductPrice()* orderCount;
+									}else
+										orderAmount = customerPrice.getProductBottlePrice() *orderCount;								
+								}else
 									orderAmount = customerPrice.getProductPrice() *orderCount;		
 								
 								productVo.setOrderAmount(orderAmount);
