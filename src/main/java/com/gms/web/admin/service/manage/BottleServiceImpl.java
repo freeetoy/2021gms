@@ -274,7 +274,8 @@ public class BottleServiceImpl implements BottleService {
 		List<BottleVO> bottleList = null;
 		if(param.getOwnCustomerId() !=null && param.getOwnCustomerId().length() > 0 ) {
 			map.put("ownCustomerId", Integer.parseInt(param.getOwnCustomerId()) );
-			bottleList = bottleMapper.selectBottleHistListToExcelOfCustomer(map);
+			map.put("ownCustomerIdYn", "Y");
+			bottleList = bottleMapper.selectBottleListToExcel(map);
 		}else {
 			map.put("startRow", param.getStartRow());
 			map.put("rowPerPage",30000);

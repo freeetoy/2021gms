@@ -50,6 +50,8 @@ public class ECountVO {
 	
 	private double productPrice;	//단가
 	
+	private double gasPrice;	//가스판매가격
+	
 	private double currencyPrice;	//외화 금액
 	
 	private double supplyPrice;		//공급가액

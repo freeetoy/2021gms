@@ -40,6 +40,7 @@
 		<result property="productId"			column="Product_ID"				/>
 		<result property="productPriceSeq"		column="Product_Price_Seq"		/>
 		<result property="productPrice"			column="Product_Price"			/>
+		<result property="gasPrice"				column="Gas_Price"				/>
 		<result property="productNm"			column="Product_Nm"				/>	
 		<result property="productCapa"			column="product_Capa"			/>	
 		<result property="bottleType"			column="Bottle_Type"			/>
@@ -128,6 +129,7 @@
 		 , Product_ID          
 		 , Product_Price_Seq   
 		 , Product_Price
+		 , Gas_Price
 		 , Bottle_Type
 		 , Bottle_Sale_YN
 		 , Gas_CD
@@ -181,6 +183,7 @@
 			, #{productId}	
 			, #{productPriceSeq}
 			, #{productPrice}
+			, #{gasPrice}
 			, #{bottleType}
 			, #{bottleSaleYn}
 			, #{gasCd}
@@ -212,6 +215,7 @@
 			, #{item.productId}	
 			, #{item.productPriceSeq}
 			, #{item.productPrice}
+			, #{item.gasPrice}
 			, #{item.bottleType}
 			, #{item.bottleSaleYn}
 			, #{item.gasCd}
@@ -423,7 +427,7 @@
 	
 	<select id="selectWorkReportList1" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
 		SELECT Product_Count,Work_Report_Seq, AA.Customer_ID,Customer_nm  , AA.Product_ID  ,Product_NM , AA.Product_Price_Seq ,Product_Capa    
-		,Bottle_work_Cd, CD_NM Bottle_work_Cd_NM, AA.Order_Id, Order_Total_Amount
+			,Bottle_work_Cd, CD_NM Bottle_work_Cd_NM, AA.Order_Id, Order_Total_Amount
 		FROM TB_CODE TC, TB_Customer TS, tb_product TP, tb_product_price TPP, (
 			SELECT Count(TB.Product_Price_Seq) Product_Count, TB.Work_Report_Seq, TB.Customer_ID  , TB.Product_ID   , TB.Product_Price_Seq    ,Bottle_work_Cd,Order_Id
 			FROM TB_Work_Bottle TB, TB_Work_Report TW

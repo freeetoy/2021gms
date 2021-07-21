@@ -357,7 +357,7 @@ public class OrderController {
 		
 		logger.debug(" getPopupOrderDetail");
 		
-		OrderExtVO result = orderService.getOrder(orderId);			
+		OrderExtVO result = orderService.getOrderPopup(orderId);			
 		
 		model.addAttribute("orderExt", result);
 		

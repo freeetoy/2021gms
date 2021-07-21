@@ -574,7 +574,10 @@
 			FROM
 				TB_Bottle TB, TB_CODE TC, TB_Product TG
 			WHERE
-				TB.Delete_YN = 'N'
+				TB.Delete_YN = 'N'			
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
+			AND Customer_Id = #{ownCustomerId}
+			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderExtVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
@@ -24,6 +25,8 @@ public interface OrderService {
 	public OrderVO getLastOrderForCustomer(Integer customerId) ;
 	
 	public OrderExtVO getOrder(Integer orderId) ;
+	
+	public OrderExtVO getOrderPopup(Integer orderId) ;
 	
 	public OrderExtVO getOrderNotDelivery(Integer orderId) ;
 	
