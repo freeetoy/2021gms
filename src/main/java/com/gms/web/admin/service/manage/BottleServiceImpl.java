@@ -111,15 +111,17 @@ public class BottleServiceImpl implements BottleService {
 		}		
 		
 		String ownCustomerId = "";
-		if(param.getOwnCustomerId() !=null) {
+		if(param.getOwnCustomerId() !=null && param.getOwnCustomerId().length() > 0 ) {
 			ownCustomerId = param.getOwnCustomerId();
 			map.put("ownCustomerId", ownCustomerId);
+			map.put("ownCustomerIdYn", "Y");
 		}
 	
 		int bottleCount = 0;
-//		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
-//			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
-//		else
+		logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchWorkCd());
+		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
+			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
+		}else
 			bottleCount = bottleMapper.selectBottleCount(map);
 		
 		//int lastPage = (int)(Math.ceil(bottleCount/ROW_PER_PAGE));
@@ -145,10 +147,11 @@ public class BottleServiceImpl implements BottleService {
 		//수정 end
 		
 		Map<String, Object> resutlMap = new HashMap<String, Object>();
+		
 		List<BottleVO> bottleList = null;
-//		if(param.getOwnCustomerId()!=null  && param.getOwnCustomerId().length() > 0 )
-//			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
-//		else
+		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0 )
+			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
+		else
 			bottleList = bottleMapper.selectBottleList(map);
 		
 		resutlMap.put("list",  bottleList);
@@ -270,12 +273,14 @@ public class BottleServiceImpl implements BottleService {
 			else
 				map.put("searchWorkCd", PropertyFactory.getProperty("common.bottle.status.rent"));
 		}
-		
-		List<BottleVO> bottleList = null;
-		if(param.getOwnCustomerId() !=null && param.getOwnCustomerId().length() > 0 ) {
+		if(param.getOwnCustomerId() != null && param.getOwnCustomerId().length() > 0) {
 			map.put("ownCustomerId", Integer.parseInt(param.getOwnCustomerId()) );
 			map.put("ownCustomerIdYn", "Y");
-			bottleList = bottleMapper.selectBottleListToExcel(map);
+		}
+		List<BottleVO> bottleList = null;
+		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
+			//bottleList = bottleMapper.selectBottleListToExcel(map);
+			bottleList = bottleMapper.selectBottleHistListToExcelOfCustomer(map);
 		}else {
 			map.put("startRow", param.getStartRow());
 			map.put("rowPerPage",30000);

@@ -129,7 +129,7 @@ public class ExcelServiceImpl implements ExcelService {
             	
                 for(int j=0; j< COLUMN_COUNT; j++) {
                 	XSSFCell cell = row.getCell(j);
-
+                	
                 	switch (cell.getCellType()) {
 	                    case Cell.CELL_TYPE_STRING:
 	                        colValue = cell.getRichStringCellValue().getString();
@@ -137,7 +137,9 @@ public class ExcelServiceImpl implements ExcelService {
 	                        break;
 	                    case Cell.CELL_TYPE_NUMERIC:
 	                        if (DateUtil.isCellDateFormatted(cell)) {
-	                            colValue = cell.getDateCellValue().toString();
+	                            //colValue = cell.getDateCellValue().toString();
+	                            Date date = cell.getDateCellValue();
+	                            colValue = new SimpleDateFormat("yyyy-MM-dd").format(date);
 	                            
 	                            if(j==6) bottle.setBottleChargeDt(cell.getDateCellValue());
 	                            else if(j==8) bottle.setBottleCreateDt(cell.getDateCellValue());
@@ -206,14 +208,11 @@ public class ExcelServiceImpl implements ExcelService {
               
                 }
                
-                
                 ProductTotalVO productTotal = new ProductTotalVO();
                 productTotal.setProductNm(productNm);
                 productTotal.setProductCapa(productCapa);
-        
                 //productTotal = productService.getProductTotalDetails(productTotal);
                
-             
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
                 	if(productTemp.getProductNm().toLowerCase().equals(productNm.toLowerCase()) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {

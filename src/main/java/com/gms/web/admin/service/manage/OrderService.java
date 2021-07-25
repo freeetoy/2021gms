@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
+import com.gms.web.admin.domain.manage.OrderExtCustomerVO;
 import com.gms.web.admin.domain.manage.OrderExtVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
@@ -26,7 +27,7 @@ public interface OrderService {
 	
 	public OrderExtVO getOrder(Integer orderId) ;
 	
-	public OrderExtVO getOrderPopup(Integer orderId) ;
+	public OrderExtCustomerVO getOrderPopup(Integer orderId) ;
 	
 	public OrderExtVO getOrderNotDelivery(Integer orderId) ;
 	

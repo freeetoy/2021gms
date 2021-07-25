@@ -263,7 +263,7 @@ public class ECountController {
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getEcountString());
 	
-		        if(vo.getAgencyYn().equals("N") && vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
+		        if(vo.getAgencyYn().equals("N") && vo.getGasPrice() > 0 && vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 		        	k=0;
 			        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 			        

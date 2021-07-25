@@ -531,7 +531,7 @@
 			AND Bottle_BarCd	 LIKE CONCAT('%', CONCAT(#{searchBottleBarCd}, '%'))
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
-			AND TG.Product_ID=  #{searchProductId}
+			AND TB.Product_ID=  #{searchProductId}
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
 			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
@@ -567,37 +567,35 @@
 		SELECT A.*, B.Customer_Nm
 		FROM (
 			SELECT
-				Bottle_ID , Bottle_BarCd , Gas_CD , Product_Nm , Bottle_Capa , 
-				Charge_Capa ,Bottle_Create_Dt, Bottle_Charge_Dt , Bottle_Volumn , 
-				Bottle_Charge_Prss , Bottle_Own_YN , Own_Customer_ID , TB.Customer_ID,
-				Bottle_Type , CD_NM Bottle_Work_CD_NM ,Bottle_Work_DT,Bottle_Work_ID
+				<include refid="BottleSelectColumns" />
 			FROM
 				TB_Bottle TB, TB_CODE TC, TB_Product TG
 			WHERE
-				TB.Delete_YN = 'N'			
+				TB.Delete_YN = 'N'
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 			AND Customer_Id = #{ownCustomerId}
-			</if>
+			</if>	
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
-			AND TG.Product_ID=  #{searchProductId}
+			AND TB.Product_ID=  #{searchProductId}
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
 			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
-			</if>	
+			</if>		
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
-			</if>	
+			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 			AND Bottle_Work_CD =  #{searchWorkCd}
 			</if>			
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
-		ORDER BY Bottle_Work_DT DESC 
+		ORDER BY Bottle_Work_DT DESC
 	</select>
+	
 	
 	<select id="selectBottleCount" resultType="int" parameterType="java.util.Map">
 		SELECT
@@ -794,8 +792,9 @@
 			TB_Bottle_Hist
 		WHERE
 			Delete_YN = 'N'
-		AND
-			Customer_Id = #{ownCustomerId}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
+		AND Customer_Id = #{ownCustomerId}
+		</if>	
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 		AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 		</if>
@@ -822,13 +821,14 @@
 				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
 			WHERE
 				TB.Delete_YN = 'N'
-			AND
-				Customer_Id = #{ownCustomerId}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
+			AND Customer_Id = #{ownCustomerId}
+			</if>	
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
-			AND TG.Product_ID=  #{searchProductId}
+			AND TB.Product_ID=  #{searchProductId}
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
 			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
@@ -855,13 +855,14 @@
 				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
 			WHERE
 				TB.Delete_YN = 'N'
-			AND
-				Customer_Id = #{ownCustomerId}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
++			AND Customer_Id = #{ownCustomerId}
++			</if>			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
-			AND TG.Product_ID=  #{searchProductId}
+			AND TB.Product_ID=  #{searchProductId}
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
 			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 

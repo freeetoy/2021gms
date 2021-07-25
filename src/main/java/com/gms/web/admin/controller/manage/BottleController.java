@@ -112,7 +112,7 @@ public class BottleController {
 //		logger.debug(" getBottleList ownCustomerId="+params.getOwnCustomerId());
 //		logger.debug(" getBottleList searchCustomerNm1="+params.getSearchCustomerNm1());
 		String ownCustomerId = "";
-		if(params.getOwnCustomerId() !=null) ownCustomerId = params.getOwnCustomerId();
+		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) ownCustomerId = params.getOwnCustomerId();
 		
 		List<CustomerSimpleVO> customerList = null;
 		if(params.getSearchCustomerNm1()!=null && params.getSearchCustomerNm1().length() > 0)
@@ -120,7 +120,8 @@ public class BottleController {
 		
 		model.addAttribute("customerList", customerList);	
 		model.addAttribute("searchCustomerNm1", params.getSearchCustomerNm1());
-		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) model.addAttribute("ownCustomerId", Integer.parseInt(params.getOwnCustomerId()) );
+		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) 
+			model.addAttribute("ownCustomerId", Integer.parseInt(params.getOwnCustomerId()) );
 		
 		// 상품 정보 불러오기
 		List<ProductVO> productList = productService.getGasProductList();
