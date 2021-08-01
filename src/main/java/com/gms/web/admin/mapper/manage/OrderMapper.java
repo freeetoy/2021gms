@@ -36,6 +36,8 @@ public interface OrderMapper {
 	
 	public int selectOrderId() ;
 	
+	public int selectCustomerOrderId(OrderVO param) ;
+	
 	public int selectNextOrderProductSeq(Integer orderId) ;
 
 	public int insertOrder(OrderVO param);

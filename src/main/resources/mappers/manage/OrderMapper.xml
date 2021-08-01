@@ -84,6 +84,27 @@
 		 , Update_Dt   
 	</sql>
 	
+	<sql id="OrderInsertColumns">
+		 Member_Comp_Seq  
+		 , Order_Type_CD    
+		 , Delivery_Req_Dt 		  
+		 , Delivery_Req_AmPm
+		 , Order_Etc        
+		 , Order_Product_Nm   
+		 , Order_Product_Capa 
+		 , Customer_ID      
+		 , Order_Process_CD 
+		 , Order_Total_Amount
+		 , Order_Delivery_Dt
+		 , Deposit_Check_Dt 
+		 , Deposit_Amount   
+		 , Deposit_Bank_Cd  
+		 , Sales_ID         
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
 	<sql id="OrderSelectColumns">
 		  Order_ID         
 		 , A.Member_Comp_Seq  
@@ -173,10 +194,9 @@
 	
 	<insert id="insertOrder" parameterType="com.gms.web.admin.domain.manage.OrderVO">
 		INSERT INTO TB_Order(
-			<include refid="OrderColumns" />
+			<include refid="OrderInsertColumns" />
 		) VALUES (
-			#{orderId}
-			, #{memberCompSeq}	
+			#{memberCompSeq}	
 			, #{orderTypeCd}	
 			, #{deliveryReqDt}					
 			, #{deliveryReqAmpm}		
@@ -483,6 +503,15 @@
 			MAX(IFNULL(Order_id,0))+1
 		FROM
 			TB_ORDER
+	</select>
+	
+	<select id="selectCustomerOrderId" resultType="int" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		SELECT
+			MAX(Order_id)
+		FROM
+			TB_ORDER
+		WHERE
+			Customer_Id = #{customerId}
 	</select>
 	
 	<select id="selectNextOrderProductSeq" parameterType="Integer" resultType="int">

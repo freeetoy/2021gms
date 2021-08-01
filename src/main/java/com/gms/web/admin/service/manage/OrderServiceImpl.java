@@ -224,9 +224,14 @@ public class OrderServiceImpl implements OrderService {
 			List<OrderProductVO> orderProduct = new ArrayList<OrderProductVO>();
 			List<OrderBottleVO> orderBottleList = new ArrayList<OrderBottleVO>();
 					
-			int orderId = getOrderId();
+			// Sales ID 설정
+			CustomerVO customer = customerService.getCustomerDetails(params.getCustomerId());
+			params.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
+			params.setSalesId(customer.getSalesId());
+			result =  orderMapper.insertOrder(params);	
+						
+			int orderId = getNewOrderId(params);
 			params.setOrderId(Integer.valueOf(orderId));
-			
 			
 			String orderTypeCd = params.getOrderTypeCd();
 						
@@ -245,11 +250,6 @@ public class OrderServiceImpl implements OrderService {
 			String bottleSaleYn = "N";
 			ProductTotalVO tempProduct = null;			
 			
-			// Sales ID 설정
-			CustomerVO customer = customerService.getCustomerDetails(params.getCustomerId());
-			
-			params.setSalesId(customer.getSalesId());
-		
 			if(orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.order")) ||  orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.cancel"))
 					|| orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.auto"))) {
 			
@@ -307,8 +307,7 @@ public class OrderServiceImpl implements OrderService {
 							productVo.setOrderAmount(orderAmount);												
 						}
 					}			
-//					logger.debug("registerOrder productId="+productId);
-//					logger.debug("registerOrder orderAmount1="+orderAmount);
+
 					for(int k=0;k<customerPriceList.size();k++) {
 						orderAmount = 0;
 						CustomerPriceExtVO customerPrice = customerPriceList.get(k);
@@ -389,10 +388,7 @@ public class OrderServiceImpl implements OrderService {
 				}
 				params.setOrderTotalAmount(orderTotalAmount);
 			}
-		
-			params.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
-		
-			result =  orderMapper.insertOrder(params);	
+			result =  orderMapper.updateOrder(params);	
 		
 		} catch (DataAccessException e) {
 			logger.error("registerOrder Exception==="+e.toString());
@@ -904,6 +900,24 @@ public class OrderServiceImpl implements OrderService {
 		if(result ==0) result = 1;
 		return result;
 	}
+	
+	@Override
+	public int getNewOrderId(OrderVO param) {
+		
+		int result = 0;
+		try {
+			result =  orderMapper.selectCustomerOrderId(param);	
+		} catch (DataAccessException e) {
+			logger.error("getOrderId Exception==="+e.toString());
+			result = 1;
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("getOrderId Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		if(result ==0) result = 1;
+		return result;
+	}
 
 	@Override
 	public OrderExtVO getOrder(Integer orderId) {
@@ -1316,6 +1330,22 @@ public class OrderServiceImpl implements OrderService {
 	public int modifyOrderProduct(OrderProductVO param) {
 		
 		return orderMapper.updateOrderProduct(param);
+	}
+
+	@Override
+	public int modifyOrderInfo(OrderVO param) {
+		int result = 0;
+		try {	
+			result =  orderMapper.updateOrder(param);	
+			
+		} catch (DataAccessException e) {
+			logger.error("modifyOrderInfo Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("modifyOrderInfo Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	

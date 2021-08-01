@@ -27,6 +27,7 @@ import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CashSumVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.OrderExtCustomerVO;
 import com.gms.web.admin.domain.manage.OrderExtVO;
 import com.gms.web.admin.domain.manage.OrderPrintVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
@@ -357,19 +358,14 @@ public class OrderController {
 		
 		logger.debug(" getPopupOrderDetail");
 		
-		OrderExtVO result = orderService.getOrderPopup(orderId);			
+		OrderExtCustomerVO result = orderService.getOrderPopup(orderId);			
 		
-		model.addAttribute("orderExt", result);
-		
-		model.addAttribute("orderTotalAmountHan",StringUtils.numberToHan(String.valueOf(Math.round(result.getOrder().getOrderTotalAmount()))));
-		
-		//logger.debug("OrderContoller getPopupOrderDetail Money 1024 "+StringUtils.numberToHan("1024"));
-		CustomerVO customer = customerService.getCustomerDetails(result.getOrder().getCustomerId());			
-		
-		model.addAttribute("customer", customer);
+		model.addAttribute("orderExt", result.getOrderExt());		
+		model.addAttribute("orderTotalAmountHan",StringUtils.numberToHan(String.valueOf(Math.round(result.getOrderExt().getOrder().getOrderTotalAmount()))));
+		model.addAttribute("customer", result.getCustomer());
 		
 		//Customer_Product 목록
-		List<CustomerProductVO> productList = customerService.getCustomerProductList(result.getOrder().getCustomerId());		
+		List<CustomerProductVO> productList = customerService.getCustomerProductList(result.getCustomer().getCustomerId());		
 		
 		List<CustomerProductVO> rentBottleList = new ArrayList<CustomerProductVO>();
 		StringBuffer rentList = new StringBuffer();
@@ -391,7 +387,7 @@ public class OrderController {
 		model.addAttribute("rentBottle", rentList.toString());
 		
 		CashFlowVO cashFlow = new CashFlowVO();
-		cashFlow.setCustomerId(result.getOrder().getCustomerId());
+		cashFlow.setCustomerId(result.getCustomer().getCustomerId());
 		CashSumVO cashSum = cashService.getCashFlowSum(cashFlow);
 		if(cashSum == null) {
 			cashSum = new CashSumVO();

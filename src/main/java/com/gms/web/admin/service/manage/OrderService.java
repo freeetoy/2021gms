@@ -35,7 +35,9 @@ public interface OrderService {
 
 	public int getOrderCount(Map<String, Object> map);	
 
-	public int getOrderId() ;
+	public int getOrderId();
+	
+	public int getNewOrderId(OrderVO param);
 	
 	public int getNextOrderProductSeq(Integer orderId) ;
 	
@@ -116,5 +118,8 @@ public interface OrderService {
 	public int modifyOrderProcessCd0250();
 	
 	public int modifyOrderProduct(OrderProductVO param);
+	
+	public int modifyOrderInfo(OrderVO param);
+
 
 }

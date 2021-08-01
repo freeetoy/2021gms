@@ -854,11 +854,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 					order.setSalesId(param.getCreateId());
 				order.setOrderDeliveryDt(DateUtils.getDate("yyyy/MM/dd HH:mm"));
 				
-				int orderId = orderService.getOrderId();				
-				order.setOrderId(orderId);
-				
 				// Order 먼저 등록  2020-08-28
 				result = orderService.registerOrder(order);
+				
+				int orderId = orderService.getNewOrderId(order);				
+				order.setOrderId(orderId);
 				
 				OrderProductVO tempOrderProduct = null;
 				
@@ -1906,9 +1906,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 				if(param.getUserId()!=null && param.getUserId().length() > 0) {
 					orderTemp.setSalesId(param.getUserId());
 					orderTemp.setCreateId(param.getUserId());
+					orderTemp.setUpdateId(param.getUserId());
 				}else {
 					orderTemp.setSalesId(param.getCreateId());
 					orderTemp.setCreateId(param.getCreateId());
+					orderTemp.setUpdateId(param.getUserId());
 				}
 				orderTemp.setOrderProductNm(productTotal.getProductNm());
 				orderTemp.setOrderProductCapa(productTotal.getProductCapa());
@@ -1927,10 +1929,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				
 				//order정보 등록
-				int orderId = orderService.getOrderId();
+				result = orderService.registerOrder(orderTemp);
+				
+				int orderId = orderService.getNewOrderId(orderTemp);
 				orderTemp.setOrderId(Integer.valueOf(orderId));
 				
-				result = orderService.registerOrder(orderTemp);
 				receivableAmount += orderTemp.getOrderTotalAmount();
 				
 				OrderProductVO orderProduct = new OrderProductVO();
@@ -1960,6 +1963,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				orderProduct.setBottleSaleYn("N");
 				//order product 등록
 				result = orderService.registerOrderProduct(orderProduct);
+				result = orderService.modifyOrderInfo(orderTemp);
 				
 				//WorkReport 등록 및 업데이트				
 				workReport.setWorkReportSeq(workReportSeq);
@@ -2940,8 +2944,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 			//Order
 			OrderVO order = new OrderVO();
 			
-			int orderId = orderService.getOrderId();
-			order.setOrderId(orderId);
 			order.setCreateId(param.getUpdateId());
 			order.setCustomerId(param.getCustomerId());
 			
@@ -2965,6 +2967,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 			order.setUpdateId(param.getUserId());
 			
 			result = orderService.registerOrder(order);			
+			
+			int orderId = orderService.getNewOrderId(order);
+			order.setOrderId(orderId);
 			
 			List<OrderProductVO> orderProductList = new ArrayList<OrderProductVO>();	
 			List<OrderBottleVO> orderBottleList = new ArrayList<OrderBottleVO>();
