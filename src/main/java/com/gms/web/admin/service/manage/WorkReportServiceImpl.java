@@ -1014,7 +1014,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					workBottle.setWorkReportSeq(workReportSeq);
 					workBottle.setWorkSeq(workSeq++);			
 					//20201220
-//					logger.debug("WorkReportServiceImpl registerWorkReportNoOrder workReportSeq =" + workBottle.getWorkReportSeq());
+					
 					workBottle.setAgencyYn(param.getAgencyYn());
 					
 					if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) ) {
@@ -2913,7 +2913,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			}else {
 											
 				//Order & Order_Product & order_bottle CustomerProduct
-				OrderVO orderResult = registerOrderInfo(param,bottleList,bottles,productCounts);			
+				OrderVO orderResult = registerOrderInfo(param,workSeq,bottleList,bottles,productCounts);			
 				
 				//WorkReprot
 				param.setOrderId(orderResult.getOrderId());
@@ -2937,7 +2937,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	}
 
 	@Transactional
-	private OrderVO registerOrderInfo(WorkReportVO param, List<BottleVO> params, List<String> bottles, List<String> productCounts) {
+	private OrderVO registerOrderInfo(WorkReportVO param,int workSeq, List<BottleVO> params, List<String> bottles, List<String> productCounts) {
 //		logger.debug(" registerOrderInfo" );
 		try {
 			int result = 0;
@@ -2978,7 +2978,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			double orderTotalAmount = 0 ;
 			String orderProductNm = "";
 			String orderProductCapa = "";
-			int workSeq = 1;
+//			int workSeq = 1;
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("bottleList", params);
@@ -3061,7 +3061,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 					orderBottle.setProductPriceSeq(bottle.getProductPriceSeq());
 					
 					orderBottleList.add(orderBottle);
-					
 					WorkBottleVO workBottle = makeWorkBottle(bottle);
 					workBottle.setWorkReportSeq(param.getWorkReportSeq());
 					workBottle.setWorkSeq(workSeq++);
