@@ -57,8 +57,9 @@
 		INSERT INTO TB_Daily_Stat_Order(
 			<include refid="StatisticsOrderColumns" />
 		) 
-		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), order_total_count,IFNULL(order_total_amount,0), order_completed_count, IFNULL(order_completed_amount,0),order_product_count, 
-				order_cancel_count, order_auto_count, order_retrieved_count, order_check_count,order_etc_count, 'admin',now()
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'), order_total_count,IFNULL(order_total_amount,0) order_total_amount, 
+			order_completed_count, IFNULL(order_completed_amount,0) order_completed_amount, order_product_count, 
+			order_cancel_count, order_auto_count, order_retrieved_count, order_check_count,order_etc_count, 'admin',now()
 		FROM 
 		(SELECT count(order_id) order_total_count FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) aa,
 		(SELECT sum(`Order_Total_Amount`) order_total_amount FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) ab,
@@ -94,6 +95,46 @@
 		GROUP BY LEFT(Stat_Dt,7)
 	</insert>
 	
+	
+	<insert id="inserDailyStatisticsOrderInfo" parameterType="com.gms.web.admin.domain.statistics.StatisticsOrderVO">
+		INSERT INTO TB_Daily_Stat_Order(
+			<include refid="StatisticsOrderColumns" />
+		) VALUES (
+			  #{statDt}
+			, #{orderTotalCount}
+			, #{orderTotalAmount}
+			, #{orderCompletedCount}
+			, #{orderCompletedAmount}
+			, #{orderProductCount}
+			, #{orderCancelCount}
+			, #{orderAutoCount}
+			, #{orderRetrievedCount}
+			, #{orderCheckCount}
+			, #{orderEtcCount}			
+			, #{createId}			
+			, NOW()			
+		)
+	</insert>
+	<select id="selectDailylOrderInfo" resultType="com.gms.web.admin.domain.statistics.StatisticsOrderVO">		
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, 
+			order_total_count, IFNULL(order_total_amount,0) order_total_amount, 
+			order_completed_count, IFNULL(order_completed_amount,0) order_completed_amount,
+			order_product_count, order_cancel_count, 
+			order_auto_count, order_retrieved_count, 
+			order_check_count,order_etc_count
+		FROM 
+		(SELECT count(order_id) order_total_count FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) aa,
+		(SELECT sum(`Order_Total_Amount`) order_total_amount FROM tb_order WHERE order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) ab,
+		(SELECT count(order_id) order_completed_count FROM tb_order WHERE order_process_cd in ('0240', '0250', '0260', '0260','0280','0290') AND DATE_FORMAT(Order_Delivery_Dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) bb,
+		(SELECT sum(`Order_Total_Amount`) order_completed_amount FROM tb_order WHERE order_process_cd in ('0240', '0250', '0260', '0260','0280','0290') AND DATE_FORMAT(Order_Delivery_Dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) bc,
+		(SELECT count(order_id) order_product_count FROM tb_order WHERE order_type_cd='0101' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) a,
+		(SELECT count(order_id) order_cancel_count  FROM tb_order WHERE order_type_cd='0102' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) b ,
+		(SELECT count(order_id) order_auto_count  FROM tb_order WHERE order_type_cd='0103' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) c,
+		(SELECT count(order_id) order_retrieved_count  FROM tb_order WHERE order_type_cd='0104' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
+		(SELECT count(order_id) order_check_count  FROM tb_order WHERE order_type_cd='0105' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
+		(SELECT count(order_id) order_etc_count  FROM tb_order WHERE order_type_cd='0106' AND order_process_cd !='0299' AND DATE_FORMAT(Create_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) f
+	
+	</select>
 	
 	<select id="selectDailylStatisticsOrderList" resultType="com.gms.web.admin.domain.statistics.StatisticsOrderVO" parameterType="java.util.Map">		
 		SELECT

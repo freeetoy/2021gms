@@ -231,7 +231,7 @@
 		)
 		</foreach>
 	</insert>
-	
+	<!-- 
 	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
 		INSERT INTO TB_Bottle_Hist
 		SELECT b.history_seq,a.*
@@ -259,6 +259,24 @@
 			GROUP BY C.Bottle_BarCd
 		) b 
 		WHERE a. Bottle_BarCd = b.Bottle_BarCd 			
+	</insert>
+	-->
+	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt
+		FROM TB_Bottle 
+		WHERE Bottle_BarCd =#{bottleBarCd}			
+	</insert>
+	
+	<insert id="insertBottleHistorys" parameterType="java.util.List">
+		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt
+		FROM TB_Bottle 		
+		WHERE Bottle_BarCd in (
+		<foreach collection="list" item="item" separator=" , ">
+		#{item.bottleBarCd} 
+		</foreach>
+		)		
 	</insert>
 	
 	<update id="updateBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">

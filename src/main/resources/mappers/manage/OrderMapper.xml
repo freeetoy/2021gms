@@ -544,6 +544,7 @@
 		WHERE
 			A.Customer_Id = #{customerId}
 		AND Order_Process_CD in ('0210','0220','0230','0240')
+		AND Order_Type_CD = '0101'
 		Order By Create_Dt desc 
 		limit 0,1	
 	</select>

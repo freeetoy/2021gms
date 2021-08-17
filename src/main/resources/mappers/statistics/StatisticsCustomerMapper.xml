@@ -37,7 +37,7 @@
 			GROUP BY A.customer_Id
 		) Tm  on tm.customer_id = tp.customer_ID
 	</insert>
-	 -->
+	 
 	<insert id="inserDailyStatisticsCustomer">
 		INSERT INTO TB_Daily_Stat_Customer(
 			<include refid="StatisticsCustomerColumns" />
@@ -60,6 +60,27 @@
 			WHERE DATE_FORMAT(B.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
 			GROUP BY B.customer_Id) BB
 		ON AA.Customer_id = BB.Customer_id
+	</insert>
+	-->
+	<insert id="inserDailyStatisticsCustomer">
+		INSERT INTO TB_Daily_Stat_Customer(
+			<include refid="StatisticsCustomerColumns" />
+		) 
+		SELECT BB.Customer_id,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, IFNULL(Order_Count,0),IFNULL(Order_Amount,0),IFNULL(Income_Amount,0),IFNULL(Receivable_Amount,0),'admin' ,now()
+		from 
+		( 
+			SELECT a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
+			FROM 	TB_Work_Bottle A
+			WHERE  	Bottle_Work_Cd in ('0308','0309','0314','0316')
+			AND 	DATE_FORMAT(A.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			GROUP BY A.customer_Id
+		) AA right join 
+		( 		
+			SELECT B.Customer_id, SUM(Income_Amount) Income_Amount,SUM(Receivable_Amount) Receivable_Amount
+			FROM tb_cash_flow B
+			WHERE DATE_FORMAT(B.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			GROUP BY B.customer_Id
+		) BB on BB.Customer_id = AA.Customer_id
 	</insert>
 	
 	<insert id="inserMonthlyStatisticsCustomer">

@@ -1,5 +1,6 @@
 package com.gms.web.admin.controller.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.domain.common.CodeVO;
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.service.common.CodeService;
 import com.gms.web.admin.service.manage.WorkReportService;
 

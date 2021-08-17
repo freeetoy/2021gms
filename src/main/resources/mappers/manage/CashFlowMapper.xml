@@ -116,7 +116,7 @@
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
 		AND date_format(TF.Create_Dt,'%Y/%m/%d  %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
 		</if>		
-		ORDER BY TF.Create_Dt DESC 
+		ORDER BY Cash_Flow_Seq DESC 
 		Limit #{startRow}, #{rowPerPage}
 	</select>
 	
@@ -160,7 +160,7 @@
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
 		AND date_format(TF.Create_Dt,'%Y/%m/%d %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
 		</if>		
-		ORDER BY TF.Create_Dt DESC 
+		ORDER BY Cash_Flow_Seq DESC 
 		Limit #{startRow}, #{rowPerPage}
 	</select>
 	
@@ -184,7 +184,7 @@
 		AND
 			TF.Delete_YN 	= 'N'
 		AND
-			TF.`Customer_ID` = TC.`Customer_ID`
+			TF.Customer_ID = TC.Customer_ID
 	</select>
 	
 	<select id="selectCashFlowSum" resultType="com.gms.web.admin.domain.manage.CashSumVO" parameterType="com.gms.web.admin.domain.manage.CashFlowVO">

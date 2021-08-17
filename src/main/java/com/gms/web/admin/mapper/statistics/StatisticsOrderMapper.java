@@ -16,6 +16,10 @@ public interface StatisticsOrderMapper {
 	public List<StatisticsOrderVO> selectMontlylStatisticsOrderList(Map<String, Object> map);	
 	
 	public int inserDailyStatisticsOrder();
+	
+	public int inserDailyStatisticsOrderInfo(StatisticsOrderVO param);
+	
+	public StatisticsOrderVO selectDailylOrderInfo();
 
 	public int inserMonthlyStatisticsOrder();
 	

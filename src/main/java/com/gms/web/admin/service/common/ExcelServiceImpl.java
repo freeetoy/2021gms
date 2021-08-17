@@ -219,8 +219,8 @@ public class ExcelServiceImpl implements ExcelService {
                 		productTotal = productTemp;
                 	}                	
                 }
-
-                if(productTotal != null && productTotal.getProductId() > 0) {
+                
+                if(productTotal != null && productTotal.getProductId() != null && productTotal.getProductId() > 0) {
 	                
 	                bottle.setProductId(productTotal.getProductId());
 	                bottle.setProductPriceSeq(productTotal.getProductPriceSeq());

@@ -668,7 +668,7 @@
 			AND	
 				TW.User_ID= TU.User_ID
 			AND	
-				TW.customer_id = TCU.`Customer_ID`
+				TW.customer_id = TCU.Customer_ID
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 			AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
 			</if>				

@@ -42,7 +42,7 @@ import com.gms.web.admin.service.manage.ProductService;
 public class BottleController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final Logger logger1 = LoggerFactory.getLogger("ROLLING_FILE1");
+	
 	/*
 	 * UserService 빈(Bean) 선언
 	 */
