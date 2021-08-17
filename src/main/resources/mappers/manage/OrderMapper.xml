@@ -19,6 +19,7 @@
 		<result property="depositAmount"		column="Deposit_Amount"			/>
 		<result property="depositBankCd"		column="Deposit_Bank_Cd"		/>
 		<result property="salesId"				column="Sales_ID"				/>
+		<result property="customerCity"			column="Customer_City"			/>
 		<result property="createNm"				column="Create_Nm"				/>
 		<result property="createId"				column="CREATE_ID"				/>
 		<result property="createDt"				column="CREATE_DT"				/>
@@ -77,7 +78,8 @@
 		 , Deposit_Check_Dt 
 		 , Deposit_Amount   
 		 , Deposit_Bank_Cd  
-		 , Sales_ID         
+		 , Sales_ID    
+		 , Customer_City
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -99,7 +101,8 @@
 		 , Deposit_Check_Dt 
 		 , Deposit_Amount   
 		 , Deposit_Bank_Cd  
-		 , Sales_ID         
+		 , Sales_ID
+		 , Customer_City
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -123,6 +126,7 @@
 		 , Deposit_Amount   
 		 , Deposit_Bank_Cd  
 		 , A.Sales_ID
+		 , Customer_City
 		 , D.User_Nm Create_Nm
 		 , A.Create_ID        
 		 , A.Create_Dt        
@@ -211,6 +215,7 @@
 			, #{depositAmount}
 			, #{depositBankCd}
 			, #{salesId}
+			, #{customerCity}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -307,6 +312,7 @@
 			, Order_Product_Capa	= #{orderProductCapa}
 			, Customer_ID			= #{customerId}
 			, Order_Total_Amount	= #{orderTotalAmount}
+			, Customer_City			= #{customerCity}
 			, UPDATE_ID 			= #{updateId}
 			, UPDATE_DT 			= NOW()
 		WHERE
@@ -822,6 +828,7 @@
 			 , Order_Etc
 			 , A.Customer_ID      
 			 , B.Customer_nm
+			 , A.Customer_City
 		 	, Order_Total_Amount
 		FROM TB_Order A, TB_Customer B, TB_Code C
 		WHERE A.Order_Process_CD =  #{searchOrderProcessCd}			

@@ -114,7 +114,9 @@ public class OrderVO extends AbstractSearchVO implements Serializable {
 	/** Create_Nm           	*/
 	private String createNm;
 
-
+	/** Customer_City           	*/
+	private String customerCity;
+	
 	/** 검색용			*/
 	/** SearchCustomerNm	*/
 	private String  searchCustomerNm;	

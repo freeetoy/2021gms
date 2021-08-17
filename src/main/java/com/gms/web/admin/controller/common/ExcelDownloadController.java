@@ -542,7 +542,7 @@ public class ExcelDownloadController {
 		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		   
 		   
 		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
-		    //순번,거래처명,상품명,용량,접수자,상태,요청일자,접수일
+		    //순번,지역,거래처명,상품명,용량,접수자,상태,요청일자,접수일
 		    // 헤더 생성
 		    List<String> list = null;		    
 		    list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.stat.order.0210.title"), ","); 		
@@ -560,9 +560,14 @@ public class ExcelDownloadController {
 		    for(OrderVO vo : orderlist) {
 		    	idx = 0;
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(i++);
+		        
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(bodyStyle);
+		        cell.setCellValue(vo.getCustomerCity());  
 		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);

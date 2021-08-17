@@ -523,9 +523,13 @@ $(document).ready(function(){
 	            		  </td>                
 	                    </tr>                   
 	                    <tr>
+	                      <td class="card-footer">지역</td>
+	                      <td colspan=3><input type="text" class="form-control" id="customerCity" name="customerCity"  th:value="${order.customerCity}"> </thd>   
+	                    </tr>     
+	                     <tr>
 	                      <td class="card-footer">비고</td>
 	                      <td colspan=3><input type="text" class="form-control" id="orderEtc" name="orderEtc"  th:value="${order.orderEtc}"> </thd>   
-	                    </tr>                   
+	                    </tr>                  
 	                     </thead>   
 			         </table>
 			         
