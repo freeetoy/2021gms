@@ -13,7 +13,6 @@ $(document).ready(function(){
  	// 
     $(".btn_order_print").click(function()  
     {
-    
        var orderId = $(this).attr('orderId'); 
 
        $.popupWindow('/gms/mypage/print.do', {
@@ -93,7 +92,6 @@ $(document).ready(function(){
 		       .fail(function(){
 			  console.log("fail");
 		});
-			console.log("customerId=="+customerId);
 			
 		//$("#orderAmountView").show();
 		//$("#view_button").hide();
@@ -111,7 +109,6 @@ $(document).ready(function(){
 
        })
   	 .done(function(data){
-  		console.log(data);       
   		var i=0;
   		var btype = "실병";
   		
@@ -238,7 +235,6 @@ $(document).ready(function(){
     
 	$(".btn_bottle_search").click(function()  
   	{
-   		console.log("start btn_bottle_search}");
    		//$("#mcustomerNm").val
    		var bottleId = $("#bottleId").val(); 
    		console.log("start bottleId" +bottleId);
@@ -269,7 +265,6 @@ $(document).ready(function(){
  						 
 					bottleIds +=bottleId+",";
 					//$("#bottlIds").val(data.order.orderId);
-					console.log("bottleIds " +bottleIds);
 					$("#bottleIds").val(bottleIds);
   				})
   			       .fail(function(){
@@ -293,9 +288,6 @@ $(document).ready(function(){
        var orderId = $('#orderId').val();
        var customerId = $('#customerId').val();
        //var bottleIds = $('#bottleIds').val();
-       
-       console.log("orderId ="+orderId);
-       console.log("bottleIds ="+bottleIds);
        
        if(bottleIds ==''){
     	   alert("용기를 검색하세요");

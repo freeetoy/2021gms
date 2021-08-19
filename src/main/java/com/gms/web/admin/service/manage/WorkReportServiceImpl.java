@@ -2133,6 +2133,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				if(request.getParameter("productPriceSeq_"+i) !=null) workBottle.setProductPriceSeq(Integer.parseInt(request.getParameter("productPriceSeq_"+i)));
 				else rightYn = false;
 				
+				if(request.getParameter("bottleType_"+i) !=null && request.getParameter("bottleType_"+i).length() > 0) workBottle.setBottleType(request.getParameter("bottleType_"+i));
+				//else rightYn = false;
+				
 				if(request.getParameter("productCount_"+i) !=null) workBottle.setProductCount(Integer.parseInt(request.getParameter("productCount_"+i)));
 				else rightYn = false;
 				
@@ -2469,6 +2472,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		List<WorkBottleVO> addWorkBottleList = new ArrayList<WorkBottleVO>();
 		
 		for(int i = 0 ; i < params.size() ; i++) {
+			logger.debug("************* bottleType =="+params.get(i).getBottleType());
 			if(flag > 0) {
 				if(params.get(i).getNewYn().equals("Y")) {
 					addWorkBottleList.add(params.get(i));				
@@ -2522,8 +2526,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 					addWorkBottle.setSearchDt(workBottle.getSearchDt());
 					addWorkBottle.setBottleWorkCd(workBottle.getBottleWorkCd());
 					addWorkBottle.setBottleSaleYn(workBottle.getBottleSaleYn());					
-					
+					addWorkBottle.setBottleType(workBottle.getBottleType());
 					addWorkBottle.setWorkSeq(workSeq);
+					
 					workSeq++;
 					if(dummy != null) {
 						addWorkBottle.setGasId(dummy.getGasId());
@@ -2531,11 +2536,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 						addWorkBottle.setBottleId(dummy.getBottleId());
 						addWorkBottle.setBottleBarCd(dummy.getBottleBarCd());
 					}
-					if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))) {
-						addWorkBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
-					}else {
-						addWorkBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.FULL"));
-					}
+//					if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))) {
+//						addWorkBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
+//					}else {
+//						addWorkBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.FULL"));
+//					}
 					
 					if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))) {
 						if(productTotal !=null && productTotal.getCustomerProductPrice() > 0) addWorkBottle.setProductPrice(productTotal.getCustomerProductPrice());

@@ -69,6 +69,12 @@ $(document).ready(function(){
         cols += '</td><td>';
         cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq_' + mod_counter + '" style="width:80px"></select> ';
 		cols += '</td><td>';
+		cols += ' <select class="form-control" id="bottleType_' + mod_counter + '" name="bottleType_' + mod_counter + '" style="width:80px">';
+		cols += '<option></option>'; 
+		cols += '<option value="F">실병</option>'; 
+		cols += '<option value="E">공병</option>'; 
+		cols += '</select> ';
+		cols += '</td><td>';
 		cols += ' <input type="number" class="form-control" id="productCount_' + mod_counter + '" name="productCount_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="1">';
 		cols += '</td><td>'; 
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
@@ -287,6 +293,12 @@ $(document).ready(function(){
 				cols += '</td><td>';
 				cols += ' <select class="form-control" id="productPriceSeq_0" name="productPriceSeq_0" style="width:80px"><option value=0>옵션</option></select> ';
 				cols += '</td><td>';
+				cols += ' <select class="form-control" id="bottleType_0" name="bottleType_0" style="width:80px">';
+				cols += '<option></option>'; 
+				cols += '<option value="F">실병</option>'; 
+				cols += '<option value="E">공병</option>'; 
+				cols += '</select> ';
+				cols += '</td><td>';
 				cols += ' <input type="number" class="form-control" id="productCount_0" name="productCount_0" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 				cols += '</td><td>';  
 				cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-danger" id="mod_addrow" value="삭제" />';
@@ -314,12 +326,16 @@ $(document).ready(function(){
 
 				newRow.append(cols);
 		        $("table.doc-list").append(newRow);
-		        
+		        var botttleTypeNm = "";
 				for(i=0; i< data.length;i++) {
 					 
 					//if(data[i].workBottleCd=='0309'){ }
+					botttleTypeNm = "";
+					if(data[i].bottleType=='E') botttleTypeNm ="공병";
+					else if(data[i].bottleType=='F') botttleTypeNm ="실병";
+					else botttleTypeNm = "";
 					var newRow = $("<tr>");
-			        
+					
 		            cols = "";				
 					cols += '<td style="padding-left:5px;">';
 					
@@ -360,6 +376,10 @@ $(document).ready(function(){
 					cols += '</td><td>';
 					cols += '	<select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:80px" readonly>';
 					cols += '	<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
+					cols += '	</select> ';
+					cols += '</td><td>';
+					cols += '	<select class="form-control" id="bottleType_' + counter + '" name="bottleType_' + counter + '" style="width:80px" readonly>';
+					cols += '	<option value="' + data[i].bottleType +'" selected>' + botttleTypeNm + '</option>';
 					cols += '	</select> ';
 					cols += '</td><td>';				
 					cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
@@ -480,6 +500,7 @@ $(document).ready(function(){
 		                         <td>구분</td>
 		                         <td>상품</td>
 		                         <td>용량</td>
+		                         <td>용기</td>
 		                         <td>수량</td>
 		                         <td></td>
 		                       </tr>
@@ -498,7 +519,12 @@ $(document).ready(function(){
 			                       		<select id="productPriceSeq_0" name="productPriceSeq_0" class="form-control" style="width:80px">
 					                        <option value="0">옵션</option>			                      	
 									    </select>	   
-			                       </td>   
+			                       </td>
+			                       <td> 
+			                       		<select id="bottleType_0" name="bottleType_0" class="form-control" style="width:80px">
+					                        <option value="0">용기</option>			                      	
+									    </select>	   
+			                       </td>
 			                       <td>
 		                             <input type="number" id="orderCount_0" name="orderCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999"> 
 		                           </td>	                      

@@ -90,7 +90,7 @@ public class WorkReportController {
 			, WorkReportVO params) {
 
 		RequestUtils.initUserPrgmInfo(request, params);				
-		
+		logger.debug("WorkReportController getWorkReportListAll=");
 		ModelAndView mav = new ModelAndView();		
 		
 		params.setUserId(params.getCreateId());	
@@ -368,9 +368,6 @@ public class WorkReportController {
 
 		int result = 1;
 		try {			
-		
-//			logger.debug("*************************** getWorkReportModify**************"+param.getSearchDt());
-			
 			//RequestUtils.initUserPrgmInfo(request, param);	
 			if(param.getUserId() !=null ) {			
 				param.setUserId(param.getUserId());
