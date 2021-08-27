@@ -22,8 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.ExcelStyle;
-import com.gms.web.admin.common.utils.StringUtils;
-import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO2;
@@ -44,7 +42,7 @@ public class StatisticsAgencyController {
 	@RequestMapping(value = "/gms/statistics/agency/daily1.do")
 	public ModelAndView getStatisticsAgencyDaily(StatisticsAgencyVO param) {
 
-		logger.info("StatisticsCustomerContoller getStatisticsCustomerDaily");
+		logger.info("StatisticsAgencyController getStatisticsAgencyDaily");
 		//logger.debug("StatisticsCustomerContoller searchStatisticsCustomerDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
@@ -91,11 +89,10 @@ public class StatisticsAgencyController {
 	@RequestMapping(value = "/gms/statistics/agency/daily.do")
 	public ModelAndView getStatisticsAgencyDaily1(StatisticsAgencyVO param) {
 
-		logger.info("StatisticsCustomerContoller getStatisticsCustomerDaily1");
+		logger.info("StatisticsAgencyController getStatisticsAgencyDaily1");
 		//logger.debug("StatisticsCustomerContoller searchStatisticsCustomerDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
-		
 		
 		//List<CustomerVO> customerList = statService.getStatisticsAgencyCustomerList(param);
 		Map<String, Object>  statResult = statService.getDailylStatisticsAgencyList1(param);
@@ -131,7 +128,7 @@ public class StatisticsAgencyController {
 	@RequestMapping(value = "/gms/statistics/agency/monthly.do")
 	public ModelAndView getStatisticsAgencyMonthly(StatisticsAgencyVO param) {
 
-		logger.info("StatisticsCustomerContoller getStatisticsAgencyMonthly");
+		logger.info("StatisticsAgencyController getStatisticsAgencyMonthly");
 
 		ModelAndView mav = new ModelAndView();
 		

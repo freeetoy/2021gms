@@ -132,7 +132,7 @@
 		FROM TB_Customer_Product TP, TB_Customer TC
 		WHERE TC.Agency_YN =  'Y'
 		AND TP.Customer_ID = TC.Customer_ID
-		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+		AND (TP.Bottle_Own_Count !=0 OR TP.Bottle_Rent_Count !=0 )
 		order by Product_ID, Product_Price_Seq,TP.Customer_ID
 	</select> 
 	
@@ -141,7 +141,7 @@
 		FROM TB_Customer_Product TP, TB_Customer TC
 		WHERE TC.Agency_YN =  'Y'
 		AND TP.Customer_ID = TC.Customer_ID		
-		AND (TP.Bottle_Own_Count + TP.Bottle_Rent_Count !=0 )
+		AND (TP.Bottle_Own_Count != 0 OR TP.Bottle_Rent_Count !=0 )
 		GROUP By TP.Customer_ID 
 	</select>
 	
@@ -153,7 +153,7 @@
 		and TCP.Product_ID = tp.Product_ID
 		AND TCP.Product_ID = pp.Product_ID
 		AND TCP.Product_Price_Seq = pp.Product_Price_Seq
-		AND (TCP.Bottle_Own_Count + TCP.Bottle_Rent_Count !=0 )
+		AND (TCP.Bottle_Own_Count !=0 OR TCP.Bottle_Rent_Count !=0 )
 		GROUP by TCP.Product_ID, TCP.Product_Price_Seq
 	</select>
 	<select id="selectTodayStatisticsAgencyList1" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
@@ -170,18 +170,18 @@
 		FROM TB_Customer_Product TP, TB_Customer TC
 		WHERE TC.Agency_YN =  'Y'
 		AND TP.Customer_ID = TC.Customer_ID		
-		AND (TP.Bottle_Own_Count + TP.Bottle_Rent_Count !=0 )
+		AND (TP.Bottle_Own_Count !=0 OR TP.Bottle_Rent_Count !=0 )
 		AND Parent_Customer_ID is null
 		GROUP By TP.Customer_ID 
 	</select>
 	
 	<select id="selectTodayStatisticsAgencyChildeList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">
 		SELECT TP.Customer_ID,Parent_Customer_ID,
-		Product_ID, Product_Price_Seq, sum(	TP.Bottle_Own_Count) Bottle_Own_Count,sum(TP.Bottle_Rent_Count) Bottle_Rent_Count
+		Product_ID, Product_Price_Seq, TP.Bottle_Own_Count, TP.Bottle_Rent_Count 
 		FROM TB_Customer_Product TP, TB_Customer TC
 		WHERE TC.Agency_YN =  'Y'
 		AND TP.Customer_ID = TC.Customer_ID
-		AND (TP.Bottle_Own_Count+TP.Bottle_Rent_Count !=0 )
+		AND (TP.Bottle_Own_Count !=0 OR TP.Bottle_Rent_Count !=0 )
 		AND Parent_Customer_ID is not null
 		GROUP BY TP.Customer_ID,Parent_Customer_ID,Product_ID, Product_Price_Seq
 	</select> 

@@ -10,10 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
-import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyResultVO2;
 import com.gms.web.admin.domain.statistics.StatisticsAgencyVO;
@@ -285,21 +283,18 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 						}			
 					}					
 				}		
-				//logger.debug(" countOwn1="+countOwnList[k]);
+			
 				for(int m =0 ; m < agencyChildList.size() ; m++) {	
 					StatisticsAgencyVO agencyChild = agencyChildList.get(m);
 					//logger.debug(" countOwn agencyChild.getBottleOwnCount()1 ="+agencyChild.getBottleOwnCount());
 					if(agencyChild.getParentCustomerId()- customer.getCustomerId() == 0  && simpleProduct.getProductId() == agencyChild.getProductId() 
-							&& simpleProduct.getProductPriceSeq() == agencyChild.getProductPriceSeq()	) {						
-									
-						//logger.debug(" countOwn agencyChild.getBottleOwnCount() ="+agencyChild.getBottleOwnCount());
+							&& simpleProduct.getProductPriceSeq() == agencyChild.getProductPriceSeq()	) {				
+						
 						countOwnList[k] += agencyChild.getBottleOwnCount();	
-						countRentList[k] = agencyChild.getBottleRentCount();	
+						countRentList[k] += agencyChild.getBottleRentCount();	
 					}
 				}
-//				logger.debug(" countOwn="+customerList.get(k).getCustomerNm());
-//				logger.debug(" countOwn="+countOwnList[k]);
-
+				
 			}
 			statResult.setBottleOwnCountList(countOwnList);
 			statResult.setBottleRentCountList(countRentList);

@@ -42,10 +42,10 @@
 			WHERE delete_yn='N' AND bottle_work_cd ='0308' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) c,
 		(	SELECT count(Bottle_BarCd) rental_count 
 			FROM TB_Bottle 
-			WHERE delete_yn='N' AND bottle_work_cd ='0309' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
+			WHERE delete_yn='N' AND bottle_work_cd in ('0309', '0316') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
 		(	SELECT count(Bottle_BarCd) back_count 
 			FROM TB_Bottle 
-			WHERE delete_yn='N' AND bottle_work_cd in ('0310', '0311','0312') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
+			WHERE delete_yn='N' AND bottle_work_cd in ('0310', '0311','0312','0315','0317') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
 		(	SELECT count(Bottle_BarCd) discard_count 
 			FROM TB_Bottle 
 			WHERE delete_yn='N' AND bottle_work_cd ='0399' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) f
