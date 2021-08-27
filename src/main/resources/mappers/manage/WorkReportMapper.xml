@@ -480,7 +480,7 @@
 		AND AA.Product_ID 		= TP.Product_ID
 		AND AA.Product_ID 		= TPP.Product_ID
 		AND AA.Product_Price_Seq = Tpp.Product_Price_Seq		
-		ORDER BY Work_Report_Seq  
+		ORDER BY Work_Report_Seq desc, AA.Product_ID, AA.Product_Price_Seq
 	</select>
 	
 	<select id="selectWorkReportSeq" resultType="int">
