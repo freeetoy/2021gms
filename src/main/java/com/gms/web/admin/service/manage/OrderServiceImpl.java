@@ -248,6 +248,9 @@ public class OrderServiceImpl implements OrderService {
 			
 			String bottleChangeYn = null;
 			String bottleSaleYn = "N";
+			String retrievedYn = "N";
+			String asYn = "N";
+			
 			ProductTotalVO tempProduct = null;			
 			
 			if(orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.order")) ||  orderTypeCd.equals(PropertyFactory.getProperty("common.code.order.type.cancel"))
@@ -271,6 +274,8 @@ public class OrderServiceImpl implements OrderService {
 					orderCount = 0;
 					bottleChangeYn = "N";
 					bottleSaleYn = "N";
+					retrievedYn = "N";
+					asYn = "N";
 					boolean bottleFlag = false;
 					
 					productId = Integer.parseInt(request.getParameter("productId_"+i));
@@ -282,6 +287,9 @@ public class OrderServiceImpl implements OrderService {
 					
 					if(request.getParameter("bottleChangeYn_"+i) !=null)  bottleChangeYn = "Y";
 					if(request.getParameter("bottleSaleYn_"+i) !=null )  bottleSaleYn = "Y";									
+					
+					if(request.getParameter("retrievedYn_"+i) !=null )  retrievedYn = "Y";	
+					if(request.getParameter("asYn_"+i) !=null )  asYn = "Y";	
 					
 					for(int k=0;k<productPriceList.size();k++) {
 						orderAmount = 0;
@@ -353,7 +361,9 @@ public class OrderServiceImpl implements OrderService {
 					productVo.setOrderCount(orderCount);
 					productVo.setOrderProductEtc(request.getParameter("orderProductEtc_"+i));
 					productVo.setBottleChangeYn(bottleChangeYn);	
-					productVo.setBottleSaleYn(bottleSaleYn);		
+					productVo.setBottleSaleYn(bottleSaleYn);
+					productVo.setRetrievedYn(retrievedYn);
+					productVo.setAsYn(asYn);
 					//productVo.setProductDeliveryDt(null);
 					
 					orderProduct.add(productVo);
@@ -502,6 +512,8 @@ public class OrderServiceImpl implements OrderService {
 			String orderProductCapa = "";			
 			String bottleChangeYn = "N";
 			String bottleSaleYn = "N";
+			String retrievedYn = "N";
+			String asYn = "N";
 			
 			CustomerPriceExtVO tempCustomerPrice = null;
 			ProductTotalVO tempProduct = null;		
@@ -532,6 +544,8 @@ public class OrderServiceImpl implements OrderService {
 					orderCount = 0;
 					bottleChangeYn = "N";
 					bottleSaleYn = "N";
+					retrievedYn = "N";
+					asYn = "N";
 					boolean bottleFlag = false;
 					int requestIndex = i;					
 					
@@ -557,6 +571,9 @@ public class OrderServiceImpl implements OrderService {
 					if(request.getParameter("bottleSaleYn_"+requestIndex) !=null )  {
 						bottleSaleYn = "Y";
 					}
+					
+					if(request.getParameter("retrievedYn_"+i) !=null )  retrievedYn = "Y";	
+					if(request.getParameter("asYn_"+i) !=null )  asYn = "Y";	
 					
 					for(int k=0;k<productPriceList.size();k++) {
 						orderAmount = 0;
@@ -662,7 +679,9 @@ public class OrderServiceImpl implements OrderService {
 					productVo.setOrderCount(orderCount);
 					productVo.setOrderProductEtc(request.getParameter("orderProductEtc_"+requestIndex));
 					productVo.setBottleChangeYn(bottleChangeYn);								
-					productVo.setBottleSaleYn(bottleSaleYn);		
+					productVo.setBottleSaleYn(bottleSaleYn);
+					productVo.setRetrievedYn(retrievedYn);
+					productVo.setAsYn(asYn);
 					//productVo.setProductDeliveryDt(null);
 					
 					orderProduct.add(productVo);

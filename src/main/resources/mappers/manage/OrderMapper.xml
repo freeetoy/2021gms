@@ -37,12 +37,14 @@
 		<result property="orderCount"			column="Order_Count"		/>		
 		<result property="orderProductEtc"		column="Order_Product_ETC"	/>
 		<result property="bottleChangeYn"		column="Bottle_Change_YN"	/>
-		<result property="bottleSaleYn"			column="Bottle_Sale_YN"	/>
+		<result property="bottleSaleYn"			column="Bottle_Sale_YN"		/>
+		<result property="retrievedYn"			column="Retrieved_YN"		/>
+		<result property="asYn"					column="AS_YN"				/>
 		<result property="orderAmount"			column="Order_Amount"		/>
-		<result property="bottleBarCd"			column="Bottle_BarCD"			/>
+		<result property="bottleBarCd"			column="Bottle_BarCD"		/>
 		<result property="gasID"				column="GAS_ID"				/>
 		<result property="orderBottleSeq"		column="Order_Bottle_Seq"	/>
-		<result property="Sales_Count"			column="SalesCount"	/>
+		<result property="Sales_Count"			column="SalesCount"			/>
 		<result property="createId"				column="CREATE_ID"			/>
 		<result property="createDt"				column="CREATE_DT"			/>
 		<result property="updateId"				column="UPDATE_ID"			/>		
@@ -143,6 +145,8 @@
 		 , Order_Product_ETC
 		 , Bottle_Change_YN 
 		 , Bottle_Sale_YN 
+		 , Retrieved_YN 
+		 , AS_YN 
 		 , Order_Amount 
 		 , Bottle_BarCD  
 		 , Create_ID        
@@ -161,6 +165,8 @@
 		 , Order_Product_ETC
 		 , Bottle_Change_YN 
 		 , A.Bottle_Sale_YN 
+		 , Retrieved_YN 
+		 , AS_YN 
 		 , Order_Amount 
 		 , Bottle_BarCD    
 		 , GAS_ID 
@@ -234,7 +240,9 @@
 			, #{orderCount}	
 			, #{orderProductEtc}
 			, #{bottleChangeYn}		
-			, #{bottleSaleYn}		
+			, #{bottleSaleYn}
+			, #{retrievedYn}		
+			, #{asYn}
 			, #{orderAmount}		
 			, #{bottleBarCd}
 			, #{createId}			
@@ -257,7 +265,9 @@
 			, #{item.orderCount}	
 			, #{item.orderProductEtc}
 			, #{item.bottleChangeYn}
-			, #{item.bottleSaleYn}			
+			, #{item.bottleSaleYn}
+			, #{item.retrievedYn}		
+			, #{item.asYn}	
 			, #{item.orderAmount}		
 			, #{item.bottleBarCd}
 			, #{item.createId}			
@@ -628,8 +638,8 @@
 		FROM
 			TB_Order_Product A
 		WHERE
-			Order_ID = #{orderId}							
-		ORDER BY A.Create_Dt DESC 
+			Order_ID = #{orderId}
+		AND (Bottle_Change_YN ='Y' or  Bottle_Sale_YN = 'Y')
 	</select>
 	
 	<select id="selectOrderInfoOfNotProduct" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
@@ -852,6 +862,8 @@
 			 , Order_Product_ETC
 			 , Bottle_Change_YN 
 			 , Bottle_Sale_YN 
+			 , Retrieved_YN 
+		 	 , AS_YN 
 			 , Order_Amount 
 			 , C.GAS_ID
 		FROM TB_Order A, TB_Order_Product B, TB_Product C, TB_Product_Price D

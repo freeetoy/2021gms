@@ -78,6 +78,10 @@ $(document).ready(function(){
 		cols += '</td><td>'; 
 		cols += ' <input type="checkbox" class="form-control" id="bottleSaleYn_' + mod_counter + '" name="bottleSaleYn_' + mod_counter + '" ">';
 		cols += '</td><td>'; 
+		cols += ' <input type="checkbox" class="form-control" id="retrievedYn_' + mod_counter + '" name="retrievedYn_' + mod_counter + '" ">';
+		cols += '</td><td>'; 
+		cols += ' <input type="checkbox" class="form-control" id="asYn_' + mod_counter + '" name="asYn_' + mod_counter + '" ">';
+		cols += '</td><td>'; 
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
         cols +='</tr>';
@@ -297,10 +301,7 @@ $(document).ready(function(){
 
 	    	var i=0;
 			//$('#productCapa_' + sel_pid).find('option').remove(); 
-			
-			if(data.length ==0) {
-				
-				$("table.doc-list").find('tr').remove();
+			$("table.doc-list").find('tr').remove();
 			 	
 			 	var newRow = $("<tr>");
 		        
@@ -310,11 +311,14 @@ $(document).ready(function(){
 				cols += '<td>적요</td>';
 				cols += '<td>용기교환</td>';
 				cols += '<td>용기판매</td>';
+				cols += '<td>용기회수</td>';
+				cols += '<td>용기 AS</td>';
 				cols += '<td></td></tr>';
 
 		        newRow.append(cols);
 		        $("table.doc-list").append(newRow);
-		        
+			if(data.length ==0) {
+				
 		        totalCount =1 ;
 		        
 		        var newRow = $("<tr>");
@@ -345,21 +349,6 @@ $(document).ready(function(){
 	            
 			}else {
 
-			 	$("table.doc-list").find('tr').remove();
-			 	
-			 	var newRow = $("<tr>");
-		        
-				cols += '<td>상품</td>';
-				cols += '<td>용량</td>';
-				cols += '<td>수량</td>';
-				cols += '<td>적요</td>';
-				cols += '<td>용기교환</td>';
-				cols += '<td>용기판매</td>';
-				cols += '<td></td></tr>';
-
-				newRow.append(cols);
-		        $("table.doc-list").append(newRow);
-		        
 				for(i=0; i< data.length;i++) {
 					 
 					var newRow = $("<tr>");
@@ -395,7 +384,18 @@ $(document).ready(function(){
 					}else {
 						cols += '	<input type="checkbox" class="form-control" id="bottleSaleYn_' + counter + '" name="bottleSaleYn_' + counter + '" ">';
 					}
-					
+					cols += '</td><td>'; 
+					if(data[i].retrievedYn=='Y'){
+						cols += '	<input type="checkbox" class="form-control" id="retrievedYn_' + counter + '" name="retrievedYn_' + counter + '" checked>';
+					}else {
+						cols += '	<input type="checkbox" class="form-control" id="retrievedYn_' + counter + '" name="retrievedYn_' + counter + '" ">';
+					}
+					cols += '</td><td>'; 
+					if(data[i].asYn=='Y'){
+						cols += '	<input type="checkbox" class="form-control" id="asYn_' + counter + '" name="asYn_' + counter + '" checked>';
+					}else {
+						cols += '	<input type="checkbox" class="form-control" id="asYn_' + counter + '" name="asYn_' + counter + '" ">';
+					}
 					cols += '</td><td>'; 
 	
 					if (counter < 1){	
@@ -552,6 +552,8 @@ $(document).ready(function(){
 		                         <td>적요</td>
 		                         <td>용기교환</td>
 								 <td>용기판매</td>
+								 <td>용기회수</td>
+		                         <td>용기 AS</td>
 		                         <td></td>
 		                       </tr>
 		                       <tr >
@@ -576,6 +578,12 @@ $(document).ready(function(){
 				                   </td> 
 				                    <td> 
 			                         <input type="checkbox" class="form-control" id="bottleSaleYn_0" name="bottleSaleYn_0">
+				                   </td> 
+				                    <td> 
+				                         <input type="checkbox" class="form-control" id="retrievedYn_0" name="retrievedYn_0">
+					                   </td> 
+				                   <td> 
+			                         <input type="checkbox" class="form-control" id="asYn_0" name="asYn_0">
 				                   </td> 
 			                       <td>
 			                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />

@@ -591,6 +591,13 @@ public class ExcelDownloadController {
 		        		}else {
 		        			sb.append("판매 / ");
 		        		}
+		        		
+		        		if(prd.getRetrievedYn().equals("Y")) {
+		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" 회수 / ");
+		        		}
+		        		if(prd.getAsYn().equals("Y")) {
+		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" AS / ");
+		        		}
 		        	}
 		        }
 		        cell.setCellValue(sb.toString());  

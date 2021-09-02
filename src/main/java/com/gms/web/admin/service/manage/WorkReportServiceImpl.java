@@ -187,7 +187,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 		int result = 1;
 		try {
 			//Order 정보가져오기
-			//OrderExtVO  orderInfo = orderService.getOrderNotDelivery(param.getOrderId());		
 			OrderVO order = orderService.getOrderDetail(param.getOrderId());
 			//Order_Product 비교
 			List<OrderProductVO> orderProductList = orderService.getOrderProducSimpletList(param.getOrderId());
@@ -320,8 +319,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 					newOrderProduct.setOrderProductSeq(orderProductSeq++);
 					newOrderProduct.setProductId(soldBottle.getProductId());
 					newOrderProduct.setProductPriceSeq(soldBottle.getProductPriceSeq());
-					logger.debug("WorkReportServiceImpl registerWorkReportForOrder newOrderProduct.ge=" +newOrderProduct.getProductId());
-					logger.debug("WorkReportServiceImpl registerWorkReportForOrder newOrderProduct.getProductPriceSeq()=" +newOrderProduct.getProductPriceSeq());
 					newOrderProduct.setBottleBarCd(soldBottle.getBottleBarCd());
 					newOrderProduct.setGasId(soldBottle.getGasId());
 					newOrderProduct.setCreateId(param.getUserId());
@@ -345,6 +342,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 						else
 							newOrderProduct.setOrderAmount(productTotal.getProductPrice());						
 					}
+					newOrderProduct.setRetrievedYn("N");
+					newOrderProduct.setAsYn("N");
 					
 					boolean isNew  = true;
 					for(int k = 0 ; k < newOrderProductList.size(); k++) {
@@ -397,10 +396,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 			}
 			
-			logger.debug("WorkReportServiceImpl registerWorkReportForOrder newOrderProductList.size()=" +newOrderProductList.size());
 			if(newOrderProductList.size() > 0)
 				result = orderService.registerOrderProducts(newOrderProductList);
-			logger.debug("WorkReportServiceImpl registerWorkReportForOrder orderBottleList.size()=" +orderBottleList.size());
 			if(orderBottleList.size() > 0 )
 				result = orderService.registerOrderBottles(orderBottleList);
 
@@ -411,13 +408,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 			List<OrderProductVO> allOrderProductList = orderService.getOrderProductList(param.getOrderId());
 			int remainCount = 0;
 			double orderAmount = 0;
-			logger.debug("WorkReportServiceImpl registerWorkReportForOrder allOrderProductList.size()=" +allOrderProductList.size());
+
 			boolean orderCompleted = false;
 			for(int j=0; j < allOrderProductList.size() ; j++) {
 				OrderProductVO orderProduct = allOrderProductList.get(j);
 				remainCount += allOrderProductList.get(j).getSalesCount();
 				orderAmount += allOrderProductList.get(j).getOrderAmount();
-				String strBottleSaleYn = orderProduct.getBottleSaleYn();
+//				String strBottleSaleYn = orderProduct.getBottleSaleYn();
 			}
 			
 			if(remainCount <= 0) orderCompleted = true;			
@@ -647,7 +644,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 						tempOrderProduct.setBottleChangeYn("Y");
 						tempOrderProduct.setBottleSaleYn("N");
 					}
-					
+					tempOrderProduct.setRetrievedYn("N");
+					tempOrderProduct.setAsYn("N");
 					//tempOrderProduct.setProductDeliveryDt(cal.getTime());
 					tempOrderProduct.setOrderProductEtc("주문없이추가");					
 					
@@ -1513,7 +1511,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 					newOrderProduct.setUpdateId(param.getUpdateId());					
 					newOrderProduct.setBottleSaleYn("N");
 					newOrderProduct.setBottleChangeYn("N");
-				
+					newOrderProduct.setRetrievedYn("N");
+					newOrderProduct.setAsYn("N");
+					
 					// 주문상품 추가
 					result = orderService.registerOrderProduct(newOrderProduct);
 					
@@ -1701,6 +1701,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				orderProduct.setUpdateId(param.getCreateId());
 				orderProduct.setBottleChangeYn("N");
 				orderProduct.setBottleSaleYn("N");
+				orderProduct.setRetrievedYn("N");
+				orderProduct.setAsYn("N");
+				
 				//order product 등록
 				result = orderService.registerOrderProduct(orderProduct);
 				result = orderService.modifyOrderInfo(orderTemp);
@@ -1910,9 +1913,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 					beforeWorkBottle.setCreateId(param.getCreateId());;
 					beforeWorkBottle.setWorkReportSeq(param.getWorkReportSeq());
 					beforeWorkBottle.setSearchDt(param.getSearchDt());
-					//double fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
-					//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  fPrice=" + fPrice );
-					//beforeWorkBottle.setProductPrice(fPrice);
 					
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
@@ -1936,8 +1936,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 						afterWorkBottle.setCreateDt(beforeWorkBottle.getCreateDt());
 						afterWorkBottle.setSearchDt(param.getSearchDt());
 						beforeWorkBottle.setProductCount(remainCount);						
-//						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  afterWorkBottle getSearchDt=" +afterWorkBottle.getSearchDt());
-//						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle getSearchDt=" +beforeWorkBottle.getSearchDt());
 						// 남은처리 workBottle 처리 
 						if(remainCount > 0) { // 추가			
 							beforeWorkBottle.setManualYn("Y");
@@ -1971,6 +1969,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 					orderProduct.setOrderCount(afterWorkBottle.getProductCount());
 					if(afterWorkBottle.getProductPrice() > 0)
 						orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*afterWorkBottle.getProductPrice());
+					orderProduct.setRetrievedYn("N");
+					orderProduct.setAsYn("N");	
 					
 					BottleVO bottle = new BottleVO();
 					bottle.setCustomerId(customerId);
@@ -2538,6 +2538,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				orderProduct.setProductPriceSeq(bottle.getProductPriceSeq());
 				orderProduct.setBottleWorkCd(param.getBottleWorkCd());
 				orderProduct.setCustomerId(param.getCustomerId());
+				orderProduct.setRetrievedYn("N");
+				orderProduct.setAsYn("N");
 				
 				for(int j=0;j<bottles.size() ; j++) {
 
@@ -2643,8 +2645,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 //			logger.debug(" registerWorkReportMassNoOrder workReportSeq =" + workReportSeq);
 			//TB_Work_Reprot 등록
 			param.setWorkReportSeq(workReportSeq);
-//			if(registerFlag)
-//				result = workMapper.insertWorkReport(param);		
 			
 			if(order != null ) {
 				param.setOrderId(order.getOrderId());
@@ -2796,6 +2796,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 					orderProduct.setBottleChangeYn("Y");
 					orderProduct.setBottleSaleYn("N");
 				}
+				orderProduct.setRetrievedYn("N");
+				orderProduct.setAsYn("N");
+				
 				orderTotalAmount += orderProduct.getOrderAmount();
 				
 				orderProductList.add(orderProduct);
@@ -2934,7 +2937,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		
 	private int modifyCustomerProductMass(WorkReportVO param, List<OrderProductVO> params) {
 //		logger.debug(" modifyCustomerProductMass");
-//		logger.debug(" modifyCustomerProductMass params.size ="+params.size());
+
 		int result = 0 ;
 		try {
 			List<CustomerProductVO> customerProductList = customerService.getCustomerProductList(param.getCustomerId());
@@ -3039,6 +3042,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 		orderProduct.setOrderProductEtc(PropertyFactory.getProperty("order.etc.message.noOrder"));					
 		
+		orderProduct.setRetrievedYn("N");
+		orderProduct.setAsYn("N");
+		
 		if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 			orderProduct.setBottleChangeYn("N");
 			orderProduct.setBottleSaleYn("Y");
@@ -3118,7 +3124,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				orderProduct.setBottleBarCd(bottle.getBottleBarCd());
 				orderProduct.setGasId(bottle.getGasId());
 				orderProduct.setGasCd(bottle.getGasCd());
-				
+				orderProduct.setRetrievedYn("N");
+				orderProduct.setAsYn("N");
 				bottleList.get(i).setOrderId(order.getOrderId());
 				
 				for(int j=0;j<bottles.size() ; j++) {
@@ -3142,14 +3149,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 			for(int j=0; j < soldOrderProductList.size() ; j++) {
 				OrderProductVO orderProduct = soldOrderProductList.get(j);
 				orderProductCount = orderProduct.getOrderCount();				
-//				logger.debug(" registerWorkReportMassForOrder orderProductCount0 "+orderProductCount);
 				
 				BottleVO bottle = new BottleVO();
 				bottle.setCustomerId(param.getCustomerId());
 				bottle.setProductId(orderProduct.getProductId());
 				bottle.setProductPriceSeq(orderProduct.getProductPriceSeq());
 				
-//				ProductTotalVO productTotal = productService.getPrice(bottle);	
 				ProductTotalVO productTotal = getProductTotal(productTotalList,bottle);//2021-06-19
 				
 				for(int k =0 ; k < orderProduct.getOrderCount() ; k++) {					

@@ -54,7 +54,7 @@
         </rollingPolicy>
     </appender>
     
-    <logger name="com.gms.web.admin" level="INFO"/>     
+    <logger name="com.gms.web.admin" level="DEBUG"/>     
     <logger name="jdbc" level="OFF"/> 
     <logger name="jdbc.sqlonly" level="DEBUG" appender-ref="console-infolog"/> 
     <logger name="jdbc.resultset" level="OFF"/> 
