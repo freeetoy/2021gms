@@ -190,7 +190,15 @@ public class WorkReportServiceImpl implements WorkReportService {
 			OrderVO order = orderService.getOrderDetail(param.getOrderId());
 			//Order_Product 비교
 			List<OrderProductVO> orderProductList = orderService.getOrderProducSimpletList(param.getOrderId());
+			int orderProductSeq = orderProductList.size() +1;
 			
+			for(int i=orderProductList.size()-1 ; i >= 0  ; i-- ) {
+				OrderProductVO removeP = orderProductList.get(i);
+				if(removeP.getBottleChangeYn().equals("N") && removeP.getBottleSaleYn().equals("N")) {
+					orderProductList.remove(i);
+				}
+			}
+			logger.debug("****orderProductList.size() start ="+orderProductList.size() );
 			List<OrderBottleVO> orderBottleListNot = orderService.getOrderBottleListNotDelivery(param.getOrderId());
 			//Bottle 정보 가져오기
 			List<BottleVO> bottleList = getBottleList(param);
@@ -239,7 +247,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			List<ProductTotalVO> productTotalList =  productService.getPriceList(map);	
 			
-			int orderProductSeq = orderProductList.size() +1;
+			
 			for(int i = bottleList.size()-1 ; i >= 0 ; i--) {
 				BottleVO soldBottle = bottleList.get(i);
 				ProductTotalVO productTotal = getProductTotal(productTotalList,soldBottle);//2021-06-19

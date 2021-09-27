@@ -639,7 +639,6 @@
 			TB_Order_Product A
 		WHERE
 			Order_ID = #{orderId}
-		AND (Bottle_Change_YN ='Y' or  Bottle_Sale_YN = 'Y')
 	</select>
 	
 	<select id="selectOrderInfoOfNotProduct" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
