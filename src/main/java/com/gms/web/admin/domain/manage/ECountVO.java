@@ -75,4 +75,6 @@ public class ECountVO {
 	private String gasCd ;
 	
 	private String agencyYn = "N";
+	/**MultilYN */
+	private String multiYn = "N";
 }

@@ -152,9 +152,10 @@ public class ECountController {
 		        //품목코드	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        if(vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale") ) )
-		        	cell.setCellValue(vo.getECountCdS());
-		        else
+		        if(vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale") ) ) {
+		        	if(vo.getMultiYn().equals("Y")) cell.setCellValue(vo.getECountCd());
+		        	else cell.setCellValue(vo.getECountCdS());
+		        }else
 		        	cell.setCellValue(vo.getECountCd());
 		        //cell.setCellValue(vo.getProductId());
 		        

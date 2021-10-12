@@ -133,6 +133,7 @@
 		 , Bottle_Type
 		 , Bottle_Sale_YN
 		 , Gas_CD
+		 , Multi_YN
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -187,6 +188,7 @@
 			, #{bottleType}
 			, #{bottleSaleYn}
 			, #{gasCd}
+			, #{multiYn}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 			, #{searchDt}	
@@ -219,6 +221,7 @@
 			, #{item.bottleType}
 			, #{item.bottleSaleYn}
 			, #{item.gasCd}
+			, #{item.multiYn}
 			, #{item.createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(item.searchDt)">
 			, #{item.searchDt}	
@@ -337,9 +340,11 @@
 	
 	<select id="selectWorkBottleList" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="int">		
 		SELECT  
-			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN
+			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, 
+			Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN, Multi_Yn
 		FROM (
-			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN,Gas_Cd
+			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, SUM(Product_Price) Product_Price,
+			Bottle_Type,Bottle_Sale_YN,Gas_Cd,Multi_Yn
 			FROM TB_Work_Bottle
 			WHERE Work_Report_Seq = #{workReportSeq}
 			Group by Bottle_Work_Cd , Product_ID  ,Product_Price_Seq
@@ -473,7 +478,7 @@
 				<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 				AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')  =   #{searchDt}
 				</if>
-				Group By TB.Work_Report_Seq, TB.Customer_ID  , TB.Product_ID   , TB.Product_Price_Seq   ,Bottle_work_Cd
+				Group By TB.Work_Report_Seq, TB.Customer_ID  , TB.Product_ID   , TB.Product_Price_Seq   ,Bottle_work_Cd ,Multi_YN
 			) AA Left Join TB_Order TR on AA.Order_Id = TR.Order_Id
 		WHERE AA.Bottle_Work_Cd = TC.CD_ID
 		AND AA.Customer_ID 		= TS.Customer_ID

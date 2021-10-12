@@ -97,6 +97,9 @@ public class WorkBottleVO extends AbstractVO implements Serializable {
 	/**ManualYN */
 	private String manualYn = "N";
 	
+	/**MultilYN */
+	private String multiYn = "N";
+	
 	/** Gas_CD */
 	private String gasCd ;
 	

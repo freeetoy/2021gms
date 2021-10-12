@@ -117,5 +117,6 @@ public class WorkReportVO extends AbstractVO implements Serializable {
 	
 	private boolean phoneFlag = false;
 	
-
+	/**MultilYN */
+	private String multiYn = "N";
 }

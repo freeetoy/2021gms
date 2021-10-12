@@ -158,7 +158,7 @@
 	
 	<entry key="order.etc.message.work">업무일지추가</entry>
 	<entry key="order.etc.message.customer">현장주문</entry>
-	<entry key="order.etc.message.noOrder">주문없이추가</entry>
+	<entry key="order.etc.message.noOrder">무주문</entry>
 	
 	<entry key="product.LN2.divide.productId">52</entry>
 	<entry key="product.LN2.divide.bottle.productPriceSeq">2</entry>
