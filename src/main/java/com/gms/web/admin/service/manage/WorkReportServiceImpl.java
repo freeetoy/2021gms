@@ -237,7 +237,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				strBottleSaleYn1 = "N";
 			}
 			
-			boolean updateOrderAddFlag = true;
+			boolean updateOrderAddFlag = false;
 			double receivableAmount = 0 ;
 			Integer insertOrderProductSeq = 0;
 			
@@ -321,6 +321,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				// 신규 주문 등록
 				if(soldBottle.getDeleteYn().equals("N")) {
+					updateOrderAddFlag = true;
 					OrderProductVO newOrderProduct = new OrderProductVO();					
 					
 					newOrderProduct.setOrderId(param.getOrderId());		
@@ -340,7 +341,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 						if(productTotal.getCustomerBottlePrice() > 0) 
 							newOrderProduct.setOrderAmount(productTotal.getCustomerBottlePrice());
 						else 
-							newOrderProduct.setOrderAmount( productTotal.getProductBottlePrice());									
+							newOrderProduct.setOrderAmount( productTotal.getProductBottlePrice());
+						
+						if(productTotal.getCustomerProductPrice() > 0 )
+							newOrderProduct.setOrderAmount(newOrderProduct.getOrderAmount() + productTotal.getCustomerProductPrice());
+						else
+							newOrderProduct.setOrderAmount(newOrderProduct.getOrderAmount() + productTotal.getProductPrice());
 					}else {
 						newOrderProduct.setBottleChangeYn("Y");
 						newOrderProduct.setBottleSaleYn("N");
@@ -431,7 +437,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				order.setOrderProductNm(allOrderProductList.get(0).getProductNm()+" 외 "+(allOrderProductList.size()-1));
 				order.setOrderProductCapa(allOrderProductList.get(0).getProductCapa()+" 외 "+(allOrderProductList.size()-1));
 			}
-			if(!updateOrderAddFlag && orderAmount > 0) {
+			if(updateOrderAddFlag && orderAmount > 0) {
 				order.setOrderTotalAmount(orderAmount);	
 				order.setUpdateId(param.getUserId());
 				
