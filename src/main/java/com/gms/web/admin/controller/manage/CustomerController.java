@@ -27,10 +27,12 @@ import com.gms.web.admin.domain.manage.CustomerBottleVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
+import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
 import com.gms.web.admin.service.manage.OrderService;
@@ -626,6 +628,57 @@ public class CustomerController {
 		}
 		return null;
 		
+	}
+	
+	@RequestMapping(value = "/gms/customer/sales.do")
+	public ModelAndView getCustomerSales(CustomerSalesVO params) {
+
+//		logger.info("CustomerContoller getCustomerSales");
+
+		ModelAndView mav = new ModelAndView();
+		
+		String searchStatDt = params.getSearchStatDt();	
+		
+		String searchStatDtFrom = null;
+		String searchStatDtEnd = null;
+				
+		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			
+			params.setSearchStatDtFrom(searchStatDtFrom);
+			params.setSearchStatDtEnd(searchStatDtEnd);			
+		}else {				
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
+			
+			searchStatDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
+			
+			params.setSearchStatDtFrom(searchStatDtFrom);
+			params.setSearchStatDtEnd(searchStatDtEnd);
+			
+			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+			params.setSearchStatDt(searchStatDt);
+		}
+		params.setSearchStatDt(searchStatDtFrom);
+		
+		List<CustomerSalesVO> statCustomerList = customerService.getCustomerSalesList(params);
+		
+		mav.addObject("statCustomerList", statCustomerList);	
+		
+		//검색어 셋팅
+		mav.addObject("searchStatDt", searchStatDt);	
+		mav.addObject("searchCustomerId", params.getSearchCustomerId());			
+		
+		Map<String, Object> map = customerService.searchCustomerList("");
+		mav.addObject("customerList", map.get("list"));
+		
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer.sales"));	 		
+		
+		mav.setViewName("gms/customer/sales");
+		
+		return mav;
 	}
 	
 	@RequestMapping(value = "/api/customerList.do")

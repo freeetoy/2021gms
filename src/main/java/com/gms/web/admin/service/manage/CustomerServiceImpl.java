@@ -16,9 +16,11 @@ import com.gms.web.admin.domain.manage.CustomerBottleVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
+import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.mapper.manage.CustomerMapper;
 
 import net.sf.ehcache.CacheManager;
@@ -430,5 +432,28 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerMapper.selectCustomerLn2Capa(param);
 	}	
 
+	@Override
+	public List<CustomerSalesVO> getCustomerSalesList(CustomerSalesVO param) {
+//		logger.info("****** getCustomerSalesList *****start===*");	
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
 
+		map.put("searchCustomerId", param.getSearchCustomerId());	
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}	
+				
+		List<CustomerSalesVO> statList = customerMapper.selectCustomerSalesList(map);	
+				
+		return statList;
+	}
 }

@@ -704,4 +704,20 @@
 		AND cp.Product_Price_Seq = pp.Product_Price_Seq
 		AND pp.Product_Capa  LIKE CONCAT('병_', CONCAT(#{productCapa}, '%'))	
 	</select>
+	
+	<select id="selectCustomerSalesList" resultType="com.gms.web.admin.domain.manage.CustomerSalesVO" parameterType="java.util.Map">		
+		SELECT
+			wb.Product_ID, wb.Product_Price_Seq,count(wb.Product_ID) salesCount,wb.Product_Price,product_nm,product_capa
+		FROM TB_Work_Bottle wb, TB_Product tp, TB_Product_Price pp
+		WHERE Customer_ID = #{searchCustomerId}	
+		AND Bottle_Work_Cd in ('0308','0309','0314', '0316')
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND date_format(wb.Create_Dt,'%Y/%m/%d') between #{searchStatDtFrom} AND #{searchStatDtEnd}
+		</if>
+		AND wb.Product_ID = tp.Product_ID
+		AND wb.Product_ID = pp.Product_ID
+		AND wb.Product_Price_Seq = pp.Product_Price_Seq
+		Group By Customer_ID,wb.Product_ID, wb.Product_Price_Seq,wb.Product_Price
+	</select>
+	
 </mapper>

@@ -9,6 +9,7 @@ import com.gms.web.admin.domain.manage.CustomerBottleVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
@@ -99,4 +100,6 @@ public interface CustomerMapper {
 	public List<CustomerBottleVO> selectCustomerBottleList(Integer customerId);
 	
 	public CustomerPriceVO selectCustomerLn2Capa(WorkBottleVO param);
+	
+	public List<CustomerSalesVO> selectCustomerSalesList(Map<String, Object> map);	
 }

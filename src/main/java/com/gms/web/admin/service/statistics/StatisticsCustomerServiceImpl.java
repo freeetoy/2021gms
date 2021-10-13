@@ -31,17 +31,14 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 		
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
-			logger.debug("****** getDailylStatisticsCustomerList *****getSearchStatDt===*"+param.getSearchStatDt());
 		}		
 		
 		if(param.getSearchStatDtFrom() != null) {
 			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
-			logger.debug("****** getDailylStatisticsCustomerList *****getSearchStatDtFrom===*"+param.getSearchStatDtFrom());
 		}
 		
 		if(param.getSearchStatDtEnd() != null) {
 			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
-			logger.debug("****** getDailylStatisticsCustomerList *****getSearchStatDtEnd===*"+param.getSearchStatDtEnd());
 		}	
 				
 		List<StatisticsCustomerVO> statList = statMapper.selectDailylStatisticsCustomerList(map);	

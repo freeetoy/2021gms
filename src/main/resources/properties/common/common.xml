@@ -30,6 +30,7 @@
 	<entry key="common.menu.customer.price">price</entry>
 	<entry key="common.menu.customer.cbottle">cbottle</entry>
 	<entry key="common.menu.customer.cproduct">cproduct</entry>
+	<entry key="common.menu.customer.sales">csales</entry>
 	<entry key="common.menu.gas">gas</entry>
 	<entry key="common.menu.product">product</entry>
 	<entry key="common.menu.stat_order">sorder</entry>
