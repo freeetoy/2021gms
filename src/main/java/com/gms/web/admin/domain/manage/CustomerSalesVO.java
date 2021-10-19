@@ -32,6 +32,9 @@ public class CustomerSalesVO  implements Serializable {
 	/**Product_Price */
 	private int productPrice;
 	
+	/**CD_NM */
+	private String cdNm;
+	
 	/** searchStatDt	*/
 	private String  searchStatDt;
 	
