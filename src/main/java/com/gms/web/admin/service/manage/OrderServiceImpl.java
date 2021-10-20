@@ -1375,7 +1375,11 @@ public class OrderServiceImpl implements OrderService {
 		return result;
 	}
 
-	
-	
-	
+	@Override
+	public OrderVO getPayOrderForCustomer(Integer customerId) {
+		OrderVO orderInfo = orderMapper.selectPayOrderForCustomer(customerId);	
+		
+		return orderInfo;
+	}
+
 }

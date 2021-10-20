@@ -89,6 +89,8 @@ public interface OrderService {
 	
 	public OrderVO getTodayOrderForCustomer(Integer customerId) ;
 	
+	public OrderVO getPayOrderForCustomer(Integer customerId) ;
+	
 	public int modifyOrderAmount(Integer customerId) ;
 	
 	public int modifyOrderAmountAll() ;

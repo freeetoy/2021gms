@@ -564,6 +564,19 @@
 		Order By Create_Dt desc 
 		limit 0,1	
 	</select>
+	
+	<select id="selectPayOrderForCustomer" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.OrderVO">
+		SELECT
+			<include refid="OrderColumns" />
+		FROM
+			TB_Order A
+		WHERE
+			A.Customer_Id = #{customerId}
+		AND Order_Process_CD in ('0210','0220')
+		AND Order_Type_CD = '0107'
+		Order By Create_Dt desc 
+		limit 0,1	
+	</select>
 
 	<select id="selectOrderList" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="java.util.Map">		
 		SELECT

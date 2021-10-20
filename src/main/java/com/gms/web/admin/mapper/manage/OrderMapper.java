@@ -32,7 +32,9 @@ public interface OrderMapper {
 	
 	public OrderVO selectOrderDetail(Integer orderId) ;		
 	
-	public OrderVO selectLastOrderForCustomer(Integer customerId) ;		
+	public OrderVO selectLastOrderForCustomer(Integer customerId) ;
+	
+	public OrderVO selectPayOrderForCustomer(Integer customerId) ;	
 	
 	public int selectOrderId() ;
 	

@@ -1,5 +1,7 @@
 package com.gms.web.admin.service.manage;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CashSumVO;
+import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.mapper.manage.CashFlowMapper;
 
@@ -24,20 +29,26 @@ public class CashFlowServiceImpl implements CashFlowService {
 	
 	@Autowired
 	private WorkReportService workService;
+	
+	@Autowired
+	private OrderService orderService;
 		
 	@Override
 	public int registerCashFlow(CashFlowVO param) {
-		/*
-		OrderVO order = orderService.getTodayOrderForCustomer (param.getCustomerId());
 		
-		int orderAmount = 0;
+		int result = 0;
+		OrderVO order = orderService.getPayOrderForCustomer(param.getCustomerId());
+		
 		if(order !=null) {
-			orderAmount = order.getOrderTotalAmount();			
+			Calendar cal = Calendar.getInstance();
+			
+			order.setDeliveryReqDt(cal.getTime());			
+			order.setChOrderId(order.getOrderId());
+			order.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.delivery"));
+			
+			result = orderService.changeOrderProcessCd(order);
 		}
-		int receivableAmount = param.getReceivableAmount()+orderAmount;		
-		
-		param.setReceivableAmount(receivableAmount);
-		*/
+	
 		return cashMapper.insertCashFlow(param);
 	}
 

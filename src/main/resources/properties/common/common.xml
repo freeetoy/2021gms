@@ -121,8 +121,8 @@
 	<entry key="common.code.order.type.auto">0103</entry>
 	<entry key="common.code.order.type.back">0104</entry>
 	<entry key="common.code.order.type.check">0105</entry>
-	<entry key="common.code.order.type.bill">0106</entry>
-	<entry key="common.code.order.type.etc">0107</entry>
+	<entry key="common.code.order.type.etc">0106</entry>
+	<entry key="common.code.order.type.bill">0107</entry>
 	
 	<entry key="common.code.order.process">0200</entry>
 	<entry key="common.code.order.process.receive">0210</entry>		<!-- 주문접수 -->
