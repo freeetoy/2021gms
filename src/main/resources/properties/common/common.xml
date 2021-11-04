@@ -153,6 +153,7 @@
 	<entry key="excel.stat.bottle.title">날짜,입고,충전,판매,대여,회수</entry>
 	<entry key="excel.stat.product.title">날짜,판매건수,판매금액,대여건수,대여금액</entry>
 	<entry key="excel.stat.customer.title">날짜,판매건수,판매금액,입금액,미수금액</entry>
+	<entry key="excel.report.title">순번,거래처,납품,회수,금액,수금액</entry>
 	
 	<entry key="o2.medical.productId">1</entry>
 	<entry key="o2.medical.35.productPriceSeq">6</entry>

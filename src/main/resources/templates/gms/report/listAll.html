@@ -24,14 +24,10 @@ $(function() {
 	  $('input[name="searchDt"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');
 	  });
-	  
-	 
 	});
-	
 	
 
 $(document).ready(function(){ 	
-	
  	
     $(".btn_select_process").click(function()  
 	{				
@@ -59,7 +55,7 @@ $(document).ready(function(){
 					$("#deliveryReqDt").val(moment(data.order.deliveryReqDt).format('YYYY/MM/DD') + ' ' +Ampm);			
 					$("#orderEtc").val(data.order.orderEtc);			
 					$("#orderTotalAmount").val(numberWithCommas(data.order.orderTotalAmount));	
-					console.log(data.order.OrderTotalAmount);
+					//console.log(data.order.OrderTotalAmount);
 					
 					if(data.orderProduct.length > 0) {
 						$("table.mod-doc-list").find('tr').remove();
@@ -95,9 +91,6 @@ $(document).ready(function(){
 				  console.log("fail");
 			});
 				
-
-				//$("#orderAmountView").show();
-				//$("#view_button").hide();
 		});
     	
   //Ajax공통 호출
@@ -254,7 +247,7 @@ $(document).ready(function(){
 	    	$('#productPriceSeq').find('option').remove(); 
 			//$('#productCapa_' + sel_pid).find('option').remove(); 
 			for(i=0; i< data.length;i++) {
-				console.log(data[i]);      
+			//	console.log(data[i]);      
 				$('#productPriceSeq').append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')				
 			}
 					
@@ -294,10 +287,10 @@ $(document).ready(function(){
 			ajax = callAjax(ajaxInfo);
 			
 			ajax.done(function(data){
-				console.log(data);
+				//console.log(data);
 				 $('#customerId').find('option').remove(); 
 				for(i=0; i< data.length;i++) {
-					console.log(data[i]);      
+				//	console.log(data[i]);      
 					$('#customerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
 				}			
 				
@@ -594,7 +587,6 @@ $(document).ready(function(){
     
     $(".btn_process_cash").click(function()  
 	{
- 			
 		var msg = '입금/미수를 등록하시겠습니까?';       
 		var bottleWorkCd = '0308';
 		var customerId= $("#customerId2").val(); 	       	   
@@ -671,6 +663,32 @@ $(document).ready(function(){
           });
     });
  
+    $(".btn_excel").click(function()  
+   {
+    	var searchDt = $('#searchDt').val();
+  	   var searchUserId =  $("#searchUserId").val()
+  	   
+  	   var form = document.createElement("form");
+ 		form.setAttribute("charset","UTF-8");
+ 		form.setAttribute("method","post");
+ 		form.setAttribute("action","/gms/report/excelDownload.do");			
+ 	    
+ 		var hiddenField = document.createElement("input");
+       	hiddenField.setAttribute("type", "hidden");
+       	hiddenField.setAttribute("name", "searchDt");
+       	hiddenField.setAttribute("value", searchDt);
+       	form.appendChild(hiddenField);   
+       	
+       	var hiddenField1 = document.createElement("input");
+       	hiddenField1.setAttribute("type", "hidden");
+       	hiddenField1.setAttribute("name", "searchUserId");
+       	hiddenField1.setAttribute("value", searchUserId);
+       	form.appendChild(hiddenField1);   
+       
+       	document.body.appendChild(form);
+         
+         form.submit();		
+   });
  
     $(".btn_ecount").click(function()  
     {
@@ -1082,7 +1100,8 @@ $(document).ready(function(){
             	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
             </div>
             <div class="col-3" align=right>
-         	
+         	<a class="btn_excel btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
+                              <i class="fas fa-file-excel"></i>엑셀</a>
          	<a class="btn_print btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
                               <i class="fas fa-print"></i>프린트</a>
          	</div>	

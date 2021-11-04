@@ -3,15 +3,24 @@ package com.gms.web.admin.controller.common;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.synth.Region;
 import javax.xml.ws.spi.http.HttpContext;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -30,10 +39,15 @@ import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
+import com.gms.web.admin.domain.manage.UserVO;
+import com.gms.web.admin.domain.manage.WorkReportVO;
+import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
 import com.gms.web.admin.service.manage.OrderService;
+import com.gms.web.admin.service.manage.UserService;
+import com.gms.web.admin.service.manage.WorkReportService;
 
 @Controller
 public class ExcelDownloadController {
@@ -48,7 +62,12 @@ public class ExcelDownloadController {
 	
 	@Autowired
 	private CustomerService customerService;
-
+	
+	@Autowired
+	private WorkReportService workService;
+	
+	@Autowired
+	private UserService userService;
 
    @RequestMapping(value = "/gms/bottle/excelDownload.do")
    public void excelDownloadBottle(HttpServletResponse response, BottleVO param){
@@ -946,7 +965,7 @@ public class ExcelDownloadController {
    
    
    @RequestMapping(value = "/gms/customer/excelDownSales.do")
-	public void excelDownloadBottle(HttpServletResponse response,CustomerSalesVO params){
+	public void excelDownloadCSale(HttpServletResponse response,CustomerSalesVO params){
 	// 게시판 목록조회
 
 	   try {
@@ -1078,4 +1097,225 @@ public class ExcelDownloadController {
 		}
 	}
 
+   
+   @RequestMapping(value = "/gms/report/excelDownload.do")
+	public void excelDownloadReport(HttpServletRequest request
+			,HttpServletResponse response,WorkReportVO params){
+	// 게시판 목록조회
+
+	   try {
+		params.setUserId(request.getParameter("searchUserId"));	
+		params.setSearchUserId(request.getParameter("searchUserId"));
+		UserVO user = userService.getUserDetails(request.getParameter("searchUserId"));
+		
+		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);		
+		
+		String sheetName = "업무일지";
+			if(user != null) sheetName = sheetName + "_"+user.getUserNm();
+		
+		String fileName=sheetName;
+		
+		// 워크북 생성
+		Workbook wb = new HSSFWorkbook();
+		Sheet sheet = (Sheet) wb.createSheet(sheetName);
+		Row row = null;
+		Cell cell = null;
+		
+		int rowNo = 0;
+		
+		// 테이블 헤더용 스타일
+		CellStyle headStyle = wb.createCellStyle();
+		
+		headStyle= ExcelStyle.getHeadStyle(headStyle);
+		
+		// 데이터용 경계 스타일 테두리만 지정
+		CellStyle bodyStyle = wb.createCellStyle();
+		    
+		bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);
+		   
+		    // 헤더 생성 날짜		주문건수	주문금액
+		//			0	1		2		
+		row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		
+		List<String> list = null;		    
+		list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.report.title"), ","); 		
+		    
+		for(int i =0;i<list.size();i++) {
+		    cell = row.createCell(i);
+		    cell.setCellStyle(headStyle);
+		    cell.setCellValue(list.get(i));		    
+		}
+		    
+		   // 날짜		주문건수	주문금액
+		// 데이터 부분 생성
+		int seqNum = 1;
+		//sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
+
+		CellStyle styleCenter = wb.createCellStyle();
+		//정렬
+		styleCenter.setAlignment(HorizontalAlignment.CENTER);
+		styleCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		//테두리 선 (우,좌,위,아래)
+		styleCenter.setBorderTop(BorderStyle.THIN);
+		styleCenter.setBorderLeft(BorderStyle.THIN);
+		styleCenter.setBorderRight(BorderStyle.THIN);
+		styleCenter.setBorderBottom(BorderStyle.THIN);
+		
+		CellStyle styleLeft = wb.createCellStyle();
+		//정렬
+		styleLeft.setAlignment(HorizontalAlignment.LEFT);
+		styleLeft.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		//테두리 선 (우,좌,위,아래)
+		styleLeft.setBorderTop(BorderStyle.THIN);
+		styleLeft.setBorderLeft(BorderStyle.THIN);
+		styleLeft.setBorderRight(BorderStyle.THIN);
+		styleLeft.setBorderBottom(BorderStyle.THIN);
+		
+		CellStyle styleRight = wb.createCellStyle();
+		//정렬
+		styleRight.setAlignment(HorizontalAlignment.RIGHT);
+		styleRight.setVerticalAlignment(VerticalAlignment.CENTER);
+		HSSFDataFormat df = (HSSFDataFormat) wb.createDataFormat();
+		styleRight.setDataFormat(df.getFormat("#,###"));
+
+		//테두리 선 (우,좌,위,아래)
+		styleRight.setBorderTop(BorderStyle.THIN);
+		styleRight.setBorderLeft(BorderStyle.THIN);
+		styleRight.setBorderRight(BorderStyle.THIN);
+		styleRight.setBorderBottom(BorderStyle.THIN);
+		
+		int[] mergeSeq = new int[workList.size()];
+		int[] lastmergeSeq = new int[workList.size()];
+		
+		int j= 0;
+		for(WorkReportViewVO vo : workList) {
+			mergeSeq[j] = rowNo;
+		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		    cell = row.createCell(0);
+		    cell.setCellStyle(styleCenter);
+		    cell.setCellValue(seqNum++);
+		    
+		    cell = row.createCell(1);
+		    cell.setCellStyle(styleLeft);
+		    cell.setCellValue(vo.getCustomerNm());
+		    
+		    cell = row.createCell(4);
+		    cell.setCellStyle(styleRight);
+		    cell.setCellValue(vo.getOrderAmount());	  
+		   
+		    cell = row.createCell(5);
+		    cell.setCellStyle(styleRight);
+		    cell.setCellValue(vo.getReceivedAmount());	  
+		    
+		    StringBuffer sb = new StringBuffer();
+		    StringBuffer sb1 = new StringBuffer();
+		    int numOfCount = 0 ;
+		    numOfCount = vo.getSalesBottles().size() >= vo.getBackBottles().size() ? vo.getSalesBottles().size() : vo.getBackBottles().size();
+//		    logger.debug("Controller numOfCount="+numOfCount);
+//		    logger.debug("Controller vo.getSalesBottles().size()="+vo.getSalesBottles().size());
+//		    logger.debug("Controller vo.getBackBottles().size()="+vo.getBackBottles().size());
+		    for(int i=0 ; i < numOfCount ; i++) {		
+		    	sb.setLength(0);
+		    	sb1.setLength(0);
+//		    	logger.debug("Controller i="+i);
+		    	if(i >  0) {
+		    		row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		    		
+		    		cell = row.createCell(0);
+				    cell.setCellStyle(styleCenter);
+				    
+				    cell = row.createCell(1);
+				    cell.setCellStyle(styleLeft);
+				    
+				    cell = row.createCell(4);
+				    cell.setCellStyle(styleRight);
+				   
+				    cell = row.createCell(5);
+				    cell.setCellStyle(styleRight);
+		    	}
+		    	
+		    	if(vo.getSalesBottles().size() > i) {
+		    		cell = row.createCell(2);
+		 		    cell.setCellStyle(styleLeft);
+			    	sb.append(vo.getSalesBottles().get(i).getProductNm()).append(" ");
+			    	sb.append(vo.getSalesBottles().get(i).getProductCapa()).append(" ");
+			    	sb.append(vo.getSalesBottles().get(i).getProductCount()).append(" ");
+			    	sb.append("(").append(vo.getSalesBottles().get(i).getBottleWorkCdNm()).append(")");
+			    	
+//			    	logger.debug("Controller isb="+sb.toString());
+			    	cell.setCellValue(sb.toString());
+		    	}else{
+		    		cell = row.createCell(2);
+		 		    cell.setCellStyle(styleLeft);
+		    	}
+		    	
+		    	if(vo.getBackBottles().size() > i) {
+		    		cell = row.createCell(3);
+				    cell.setCellStyle(styleLeft);
+			    	sb1.append(vo.getBackBottles().get(i).getProductNm()).append(" ");
+			    	sb1.append(vo.getBackBottles().get(i).getProductCapa()).append(" ");
+			    	sb1.append(vo.getBackBottles().get(i).getProductCount()).append(" ");
+			    	sb1.append("(").append(vo.getBackBottles().get(i).getBottleWorkCdNm()).append(")");
+			    	cell.setCellValue(sb1.toString());
+		    	}else {
+		    		cell = row.createCell(3);
+		    		cell.setCellStyle(styleLeft);
+		    	}
+		    }
+		    lastmergeSeq[j++] = rowNo;
+		}	
+		
+	    for (int x = 0; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
+			sheet.autoSizeColumn(x);
+			int width = sheet.getColumnWidth(x);
+			int minWidth = list.get(x).getBytes().length * 450;
+			int maxWidth = 18000;
+			if (minWidth > width) {
+				sheet.setColumnWidth(x, minWidth);
+			} else if (width > maxWidth) {
+				sheet.setColumnWidth(x, maxWidth);
+			} else {
+				sheet.setColumnWidth(x, width + 2000);
+			}
+		}
+	    
+//		sheet.addMergedRegion(new CellRangeAddress(첫행, 마지막행, 첫열, 마지막열));
+//	    sheet.addMergedRegion(new CellRangeAddress(1, 3, 0, 0));
+//	    sheet.addMergedRegion(new CellRangeAddress(1, 3, 1, 1));
+//	    sheet.addMergedRegion(new CellRangeAddress(1, 3, 4, 4));
+//	    sheet.addMergedRegion(new CellRangeAddress(1, 3, 5, 5));
+	    int startC = 0;
+	    int lastC = 0;
+		for(int i=0; i < workList.size() ; i++) {
+			
+			startC = mergeSeq[i];
+			lastC = lastmergeSeq[i]-1;
+
+			if(lastC > startC) {
+				sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 0, 0));
+			    sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 1, 1));
+			    sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 4, 4));
+			    sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 5, 5));
+			}
+		}
+	    
+		// 컨텐츠 타입과 파일명 지정
+		response.setContentType("ms-vnd/excel"); 
+		//response.setHeader("Content-Disposition", "attachment;filename="+fileName);	
+		response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes(),"ISO8859_1") + ".xls");
+		
+		// 엑셀 출력
+			    wb.write(response.getOutputStream());
+			    wb.close();
+			    
+		   } catch (DataAccessException e) {
+				// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		}
+	}
 }

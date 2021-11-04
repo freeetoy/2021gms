@@ -1,0 +1,212 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+$(document).ready(function(){ 
+	 $("#searchStatDt").val('[[${searchStatDt}]]' );
+	 
+	$("#btn_com_search").click(function()  
+   	{    	
+	  var searchCustomerNm = $("#searchCustomerNm").val();
+
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+
+	      })
+	      .done(function(data){
+	    	$('#searchCustomerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#searchCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+
+});
+	
+	
+$(function() {
+	
+	  $('input[name="searchStatDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });	
+	
+});	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처별 상품 판매현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">
+    
+      <div class="container-fluid">
+        
+        <div class="row">
+    		
+           	<div class="col-1">
+               		<label >거래처</label>
+            </div>               
+            <div class="col-4">     
+            <form id="mainForm" name="mainForm"  method="post">         
+            	<select id="searchCustomerId" name="searchCustomerId" class="form-control">
+	                      <option value="0">거래처 목록</option>
+	                    	<option th:each="row : ${customerList}"
+				                th:text="${row.customerNm}"
+				                th:value="${row.customerId}"
+				                th:if="${searchCustomerId ==row.customerId}" selected>					             
+					        </option>	
+					        <option th:each="row : ${customerList}"
+				                th:text="${row.customerNm}"
+				                th:value="${row.customerId}"
+			                	th:unless="${searchCustomerId ==row.customerId}">				             
+					        </option>			
+				               
+				     </option>		
+			    </select>	                      
+            </div>  
+            <div class="col-2">    
+            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+			</div>	            		  
+			<div class="col-1">
+	        	<input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+	        </div> 
+          
+         </div>
+        
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
+        <div class="row">        	
+    		
+            <div class="col-1">
+                      
+               		<label>기간</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" id="searchStatDt" name="searchStatDt" value=""/>			
+            </div>               
+            <div class="col-1">
+                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+              </div>  
+              <div class="col-2" align=right>
+              <a th:href="@{/gms/customer/excelDownSales.do(searchStatDt=${searchStatDt},searchCustomerId=${searchCustomerId})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+              </div>
+              </form>  
+         </div>       
+    	
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	       </br>
+	         </table>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-8">
+          <div class="card card-primary">
+             
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                  <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                     
+					<!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr style="font-size:13px;">
+                      <th width="20%">상품명</th>
+                      <th width="20%">용량</th>
+                      <th width="10%">구분</th>
+                      <th width="10%">수량</th>
+                      <th width="20%" align="right">단가</th>
+                      <th width="20%" align="right">합계</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( statCustomerList )}" th:each="row : ${statCustomerList}" style="font-size:14px;">
+                      <td width="20%" th:text="${row.productNm}"></td>
+                      <td width="20%" th:text="${row.productCapa}"></td>                      
+                      <td width="10%" th:text="${row.cdNm}">
+                      </td>
+                      <td width="10%" th:text="${row.salesCount}">
+                      </td>
+                      </td>
+                      <td width="20%" align="right" th:if="${row.productPrice >= 1000 && row.productPrice * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productPrice, 3, 'COMMA')}">
+                      <td width="20%" align="right" th:if="${row.productPrice >= 1000 && row.productPrice * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productPrice, 3, 'COMMA', 2,'POINT')}">
+                      <td width="20%" align="right" th:if="${row.productPrice <= 999 }" th:text="${row.productPrice}">
+                      </td>
+                      <td width="20%" align="right" th:if="${row.productPrice * row.salesCount >= 1000 && row.productPrice * row.salesCount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.productPrice *row.salesCount, 3, 'COMMA')}">
+                      <td width="20%" align="right" th:if="${row.productPrice * row.salesCount >= 1000 && row.productPrice *row.salesCount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.productPrice * row.salesCount, 3, 'COMMA', 2,'POINT')}">
+                      <td width="20%" align="right" th:if="${row.productPrice * row.salesCount <= 999 }" th:text="${row.productPrice * row.salesCount}">
+                      </td>                                  
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( statCustomerList )}">
+						<td colspan="3">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body --> 
+                  </div>
+                  
+                  
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
+          
+            <div class="card">
+             
+              
+              
+            </div>
+            <!-- /.card -->
+          </div>
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  
