@@ -2031,10 +2031,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 		} catch (DataAccessException de) {		
 			de.printStackTrace();
-			logger.error("WorkReportServiceImpl modifyWorkBottleManual", de.toString());
+			logger.error("WorkReportServiceImpl modifyWorkBottleManual DataAccessException ", de.toString());
 		} catch (Exception e) {			
 			e.printStackTrace();
-			logger.error("WorkReportServiceImpl modifyWorkBottleManual", e.toString());
+			logger.error("WorkReportServiceImpl modifyWorkBottleManual Exception ", e.toString());
 		}
 		return result;
 	}
@@ -2591,6 +2591,23 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			result = workMapper.insertWorkBottles(workBottleList);			
 			
+			BottleVO bottle = new BottleVO();
+			bottle.setCustomerId(param.getCustomerId());
+			bottle.setBottleWorkCd(param.getBottleWorkCd());
+			bottle.setBottleWorkId(param.getCreateId());
+			bottle.setBottleType(param.getBottleType());
+			bottle.setUpdateId(param.getCreateId());
+			List<String> list1 = null;
+			String tempBottleIds = "";
+			
+			for(int i = 0; i< bottleList.size() ; i++) {
+				tempBottleIds += bottleList.get(i).getBottleId()+",";
+			}
+			list1 = StringUtils.makeForeach(tempBottleIds, ","); 		
+			bottle.setBottList(list1);
+//			logger.debug("WorkReportServiceImpl registerWorkReportMassByBottle bottleList =" + list1.size());	
+			result =  bottleService.changeWorkCdsAndHistory(bottle,bottleList);
+			
 			result = modifyCustomerProductMass(param, orderProductList);
 			
 		} catch (Exception e) {			
@@ -2786,10 +2803,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 					double tempOrderAmount = 0;
-					logger.debug(" registerOrderInfo productTotal.getCustomerProductPrice()="+productTotal.getCustomerProductPrice() );
-					logger.debug(" registerOrderInfo productTotal.getProductPrice()="+productTotal.getProductPrice() );
-					logger.debug(" registerOrderInfo productTotal.getCustomerBottlePrice()="+productTotal.getCustomerBottlePrice());
-					logger.debug(" registerOrderInfo productTotal.getProductBottlePrice()="+productTotal.getProductBottlePrice());
+//					logger.debug(" registerOrderInfo productTotal.getCustomerProductPrice()="+productTotal.getCustomerProductPrice() );
+//					logger.debug(" registerOrderInfo productTotal.getProductPrice()="+productTotal.getProductPrice() );
+//					logger.debug(" registerOrderInfo productTotal.getCustomerBottlePrice()="+productTotal.getCustomerBottlePrice());
+//					logger.debug(" registerOrderInfo productTotal.getProductBottlePrice()="+productTotal.getProductBottlePrice());
 						
 					if(param.getAgencyYn().equals("N")) {
 						if(productTotal.getCustomerProductPrice() > 0) 

@@ -118,7 +118,7 @@ public class BottleServiceImpl implements BottleService {
 		}
 	
 		int bottleCount = 0;
-		logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchWorkCd());
+//		logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchWorkCd());
 		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
 			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
 		}else

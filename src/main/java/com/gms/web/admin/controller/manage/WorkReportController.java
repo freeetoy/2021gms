@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
-import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
@@ -285,7 +284,61 @@ public class WorkReportController {
 		return mav;
 	}
 	
+	/*
+	@RequestMapping(value = "/gms/report/excelDownload.do")
+	public void excelDownloadReport(HttpServletResponse response
+			, WorkReportVO params) throws Exception {
+		
+		if(params.getSearchUserId()!=null && params.getSearchUserId().length() > 1) {
+			params.setUserId(params.getSearchUserId());
+		}else {
+			params.setUserId(params.getCreateId());
+			params.setSearchUserId(params.getCreateId());
+		}
+		
+		
+		
+//		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
+		List<Employee> employees = generateSampleEmployeeData();
+		String fileName = "object_collection_output";
+//		if(workList.size() > 0 ) {
+//			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
+//			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
+//		}
+//		final String sample1 = "/excel/object_collection_template.xlsx";// 클래스패스에 있는 Resource 경로 
 	
+		logger.debug("WorkReportController getWorkReportList start ");	
+//		ClassPathResource classPathResource = new ClassPathResource("C:\workspace1\gms\src\main\resources\object_collection_template.xls");
+		try {
+//			InputStream is = new FileInputStream("C:/workspace1/gms/src/main/resources/object_collection_template.xls");
+			InputStream is = resourceLoader.getResource("classpath:template/excel/object_collection_template.xls").getInputStream();
+			 
+
+
+			logger.debug("WorkReportController getWorkReportList is= "+ is.toString());		
+    	// 5. 엑셀파일로 다운로드위한 response 객체 세팅
+	        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+	//	        response.setHeader(HttpHeaders.CONTENT_TYPE, "attachment; filename="+"object_collection_output.xls");
+	        response.setHeader("Content-disposition", "attachment; filename=" + fileName+".xls");
+	        
+			Context context = new Context();
+			context.putVar("employees", employees);
+	        JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
+		}     catch (Exception e) {
+			logger.error(" excelDownloadReport Exception==="+e.toString());
+			e.printStackTrace();
+		}
+	}
+	public static List<Employee> generateSampleEmployeeData() {
+		List<Employee> employees =  new ArrayList<>();
+		employees.add(new Employee("test1",new Date(), 1500.0, 0.1));
+		employees.add(new Employee("test2",new Date(), 1600.0, 0.2));
+		employees.add(new Employee("test13",new Date(), 1700.0, 0.3));
+		
+		return employees;
+	}
+	
+	*/
 	@RequestMapping(value = "/gms/report/noGasSales.do", method = RequestMethod.POST)
 	public ModelAndView registerWorkReportNoGasProduct(HttpServletRequest request
 			, HttpServletResponse response
