@@ -22,7 +22,8 @@
 		<result property="eCountCd"				column="ECount_CD"			/>	
 		<result property="bottleOwnCount"		column="Bottle_Own_Count"	/>	
 		<result property="bottleRentCount"		column="Bottle_Rent_Count"	/>	
-		<result property="summary"				column="Summary"			/>	
+		<result property="summary"				column="Summary"			/>
+		<result property="taxinvoiceType"		column="Taxinvoice_Type"	/>
 		<result property="createId"				column="CREATE_ID"		/>
 		<result property="createDt"				column="CREATED_DT"		/>
 		<result property="updateId"				column="UPDATE_ID"		/>		
@@ -65,6 +66,7 @@
 		, Bottle_Own_Count
 		, Bottle_Rent_Count
 		, Summary
+		, Taxinvoice_Type
 		, CREATE_ID	
 		, CREATE_DT	
 		, UPDATE_ID	
@@ -91,6 +93,7 @@
 		, Bottle_Own_Count
 		, Bottle_Rent_Count
 		, Summary
+		, Taxinvoice_Type
 		, A.CREATE_ID	
 		, A.CREATE_DT	
 		, A.UPDATE_ID	
@@ -157,6 +160,7 @@
 			, #{bottleOwnCount}
 			, #{bottleRentCount}
 			, #{summary}
+			, #{taxinvoiceType}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -188,6 +192,7 @@
 			, #{item.bottleOwnCount}
 			, #{item.bottleRentCount}
 			, #{item.summary}
+			, #{item.taxinvoiceType}
 			, #{item.createId}			
 			, NOW()
 			, NULL

@@ -71,6 +71,9 @@ public class WorkReportVO extends AbstractVO implements Serializable {
 	/** Order_Product_Capa     	*/
 	private String orderProductCapa;
 	
+	/**Taxinvoice_Type */
+	private String taxinvoiceType;
+	
 	/** searchDt	*/
 	private String  searchDt;
 	

@@ -226,11 +226,22 @@ $(function() {
                       <th class="card-footer">차량여부</th>
                       <th>
 		      			<input type="radio" name="carYn" id="carYn" value="Y" th:if="${customer.carYn =='Y'}" checked="">     
-		      			<input type="radio" name="carYn" id="carYn" value="Y" th:unless="${customer.carYn =='Y'}"> 차량                
+		      			<input type="radio" name="carYn" id="carYn" value="Y" th:unless="${customer.carYn =='Y'}"> 차량 &nbsp;&nbsp;&nbsp;&nbsp;
 		      			<input type="radio" name="carYn" id="carYn" value="G" th:if="${customer.carYn =='G'}" checked="">     
-		      			<input type="radio" name="carYn" id="carYn" value="G" th:unless="${customer.carYn =='G'}"> 가스                              
+		      			<input type="radio" name="carYn" id="carYn" value="G" th:unless="${customer.carYn =='G'}"> 가스  &nbsp;&nbsp;&nbsp;&nbsp;
                       	<input type="radio" name="carYn" id="carYn" value="N" th:if="${customer.carYn =='N'}" checked="">		
                       	<input type="radio" name="carYn" id="carYn" value="N" th:unless="${customer.carYn =='N'}"> 고객		      		
+		      		 </th>  
+                    </tr>
+                    <tr>
+                      <th class="card-footer">세금계산서밣랭구분</th>
+                      <th>
+		      			<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="M" th:if="${customer.taxinvoiceType =='M'}" checked="">     
+		      			<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="M" th:unless="${customer.taxinvoiceType =='M'}"> 월말 &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="C" th:if="${customer.taxinvoiceType =='C'}" checked="">     
+		      			<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="C" th:unless="${customer.taxinvoiceType =='C'}"> 건별  &nbsp;&nbsp;&nbsp;&nbsp;              
+                      	<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="R" th:if="${customer.taxinvoiceType =='R'}" checked="">		
+                      	<input type="radio" name="taxinvoiceType" id="taxinvoiceType" value="R" th:unless="${customer.taxinvoiceType =='R'}"> 요청		      		
 		      		 </th>  
                     </tr>
                     <tr>

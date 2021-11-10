@@ -77,5 +77,6 @@ public class CustomerVO extends AbstractSearchVO implements Serializable {
 	/**Summary */
 	private String summary;
 
-	
+	/**Taxinvoice_Type */
+	private String taxinvoiceType;
 }

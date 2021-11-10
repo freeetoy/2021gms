@@ -1129,6 +1129,7 @@ $(document).ready(function(){
                       <th>회수</th>                      
                       <th>금액</th>
                       <th>수금액</th>
+                      <th>계산서</th>
                       <th>삭제</th>
                     </tr>
                   </thead>
@@ -1160,11 +1161,12 @@ $(document).ready(function(){
                       <td align="right" th:if="${row.receivedAmount > 0 && row.receivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.receivedAmount, 3, 'COMMA', 2,'POINT')} + ${row.incomeWay} ">
 		     		  <td align="right" th:if="${row.receivedAmount == 0 }" th:text="${row.receivedAmount} +  ${row.incomeWay} "></td>	
 		     		  </td>
+		     		  <td th:text="${row.taxinvoiceType}"></td>	
 		     		  <td><a class="btn_select_delete btn btn-danger btn-xs" th:workReportSeq="${row.workReportSeq}" th:customerNm1="${row.customerNm}"   href="#"><i class="fas fa-trash"></i>삭제</a></td>    
                  
                     </tr>
                     <tr th:unless="${not #lists.isEmpty( workList )}">
-						<td colspan="6">조회된 결과가 없습니다.</td>
+						<td colspan="7">조회된 결과가 없습니다.</td>
 					</tr>												  
                   </tbody>					
                 </table>                

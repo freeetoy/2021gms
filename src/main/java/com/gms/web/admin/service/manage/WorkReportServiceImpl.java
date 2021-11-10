@@ -103,6 +103,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				temp.setIncomeWay("");
 			
 			temp.setCustomerNm(reportList.get(i).getCustomerNm());
+			temp.setTaxinvoiceType(reportList.get(i).getTaxinvoiceType());
+			
 			List<WorkBottleVO> tempBottle = new ArrayList<WorkBottleVO>();
 			List<WorkBottleVO> tempBottle1 = new ArrayList<WorkBottleVO>();
 			

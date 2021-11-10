@@ -37,6 +37,9 @@ public class WorkReportViewVO extends AbstractVO implements Serializable {
 	/**Received_Amount     */
 	private double receivedAmount;
 	
+	/**Taxinvoice_Type */
+	private String taxinvoiceType;
+	
 	/** searchDt	*/
 	private String  searchDt;
 	

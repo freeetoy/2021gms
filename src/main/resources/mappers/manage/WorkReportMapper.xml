@@ -415,7 +415,11 @@
 		SELECT
 			Work_Report_Seq , User_ID , TW.Customer_ID , Customer_Nm, Order_ID , 
 			Work_Product_NM , Work_Product_Capa , Work_CD , Work_Dt , Received_Amount, Income_Way,
-			Bottle_Type , TW.Create_ID , TW.Create_Dt , TW.Update_ID , TW.Update_Dt 
+			Bottle_Type , TW.Create_ID , TW.Create_Dt , TW.Update_ID , TW.Update_Dt ,
+			CASE WHEN Taxinvoice_Type = 'M' THEN '월말' 
+			WHEN Taxinvoice_Type = 'C' THEN '건별' 
+			WHEN Taxinvoice_Type = 'R' THEN '요청' 
+			ELSE '' END AS Taxinvoice_Type 
 		FROM
 			TB_Work_Report TW, tb_customer TC
 		WHERE
