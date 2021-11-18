@@ -208,7 +208,7 @@ $(document).ready(function(){
 		.done(function(data){	    
 			var result = data;
 			if(result > 0){
-				alert("저장하였습니다");
+				alert("비고를 저장하였습니다");
 			}else{
 				alert("저장하지 못했습니다. 재시도 해주세요");
 			}
@@ -492,6 +492,7 @@ $(document).ready(function(){
 	                      <td ><input type="text" class="form-control" id="reportEtc" name="reportEtc"  th:value="${workReport.reportEtc}"></td>
 	                        <td ><input type="button" id="saveEtc" value="저장"  class="btn btn-success float-right"> </td>
 	                    </tr>   
+	                    <tr><td colspan=3 ></td></tr>
 	                     </thead>   
 			         </table>	     
 		        </div>
