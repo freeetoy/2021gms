@@ -370,7 +370,6 @@ public class CustomerController {
 			, HttpServletResponse response
 			, Model model) {
 		
-		
 		try {
 			
 			boolean result = false;
@@ -381,14 +380,16 @@ public class CustomerController {
 			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
 			String[] productPriceArray = request.getParameterValues("productPrice");
 			String[] productBottlePriceArray = request.getParameterValues("productBottlePrice");
-		
-			int priceCount  = productIdArray.length;		
+			logger.debug("******registerCustomerPrice 1  *****===*");
+			int priceCount  = 0;
+			if(productIdArray != null && productIdArray.length > 0)
+				priceCount  = productIdArray.length;		
 			
 			//result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
 			CustomerPriceVO[] customerPrice = new CustomerPriceVO[priceCount];
 			String bottlePrice = "";
+			
 			for(int i =0 ; i < priceCount ; i++ ) {
-				
 				CustomerPriceVO priceVo = new CustomerPriceVO();
 				bottlePrice = "";
 				
@@ -410,11 +411,11 @@ public class CustomerController {
 //					
 				customerPrice[i] = priceVo;				
 			}
-			
+			logger.debug("******registerCustomerPrice 2  *****===*"); 
 			int result1 = 1;
-			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) 
+			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) {
 				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
-			else {
+			}else {
 				result = customerService.registerCustomerPrice(customerPrice);
 			
 //				List<WorkBottleVO> workBottleList = workService.getWorkBottleListOfCustomerToday(Integer.parseInt(request.getParameter("customerId1")));
@@ -441,7 +442,7 @@ public class CustomerController {
 			//if(res)
 			
 		} catch (DataAccessException de) {
-			logger.error(" registerCustomerPrice Exception==="+de.toString());
+			logger.error(" registerCustomerPrice DataAccessException==="+de.toString());
 			de.printStackTrace();
 		} catch (Exception e) {
 			logger.error(" registerCustomerPrice Exception==="+e.toString());

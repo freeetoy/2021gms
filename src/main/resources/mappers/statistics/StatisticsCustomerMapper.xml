@@ -134,4 +134,62 @@
 		</if>
 		ORDER BY Create_Dt DESC 
 	</select>
+	
+	<select id="selectStatCustomerBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO">		
+		SELECT
+			wb.Work_Report_Seq, wb.Create_Id, User_Nm Sales_Nm,wb.Customer_Id,Customer_Nm,wb.Product_ID,wb.Product_Price_Seq,Product_Nm,
+			case  when wb.Gas_ID &gt; 0 and instr(pp.Product_Capa,'Kg')  &lt;=0 then concat(pp.Product_Capa,'L') else pp.Product_Capa end Product_Capa,Report_Etc,
+			count(case when Bottle_Work_Cd in ('0309','0314','0316') then 1 end) as Rent_Count,
+			count(case when Bottle_Work_Cd in ('0310','0315','0317') then 1 end) as Back_Count,
+			count(case when Bottle_Work_Cd='0308' then 1 end) as Sale_Count,
+			count(case when Bottle_Work_Cd in ('0311','0312','0313') then 1 end) as As_Count,
+			count(case when Bottle_Work_Cd = '0318' then 1 end) as Charge_Count,
+			count(case when Bottle_Work_Cd = '0306' then 1 end) as Out_Count,
+			count(case when Bottle_Work_Cd = '0301' then 1 end) as In_Count
+		FROM
+			TB_Work_Bottle wb, TB_Customer tc ,TB_Product tp, TB_Product_Price pp , TB_User tu , TB_Work_Report wr
+		WHERE
+			DATE_FORMAT(wb.Create_Dt,'%Y/%m/%d') = #{searchStatDt}		
+		AND Bottle_Work_Cd in ('0309','0314','0316','0310','0315','0317','0308','0311','0312','0313','0318' ,'0301','0306'  )
+		AND wb.Customer_ID = tc.Customer_ID
+		AND wb.Product_ID = tp.Product_ID
+		AND wb.Product_ID = pp.Product_ID
+		AND wb.Product_Price_Seq = pp. Product_Price_Seq
+		AND wb.Create_ID = tu.User_ID
+		AND wb.Work_Report_Seq = wr.Work_Report_Seq
+		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id
+		Order By wb.Work_Report_Seq desc
+	</select>
+	
+	<select id="selectStatSalesCustomerBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO">		
+		SELECT
+			wb.Create_Id, User_Nm Sales_Nm,wb.Customer_Id,Customer_Nm,wb.Product_ID,wb.Product_Price_Seq,Product_Nm,
+			case  when wb.Gas_ID &gt; 0 and instr(pp.Product_Capa,'Kg')  &lt;=0 then concat(pp.Product_Capa,'L') else pp.Product_Capa end Product_Capa,
+			count(case when Bottle_Work_Cd in ('0309','0314','0316') then 1 end) as Rent_Count,
+			count(case when Bottle_Work_Cd in ('0310','0315','0317') then 1 end) as Back_Count,
+			count(case when Bottle_Work_Cd='0308' then 1 end) as Sale_Count,
+			count(case when Bottle_Work_Cd in ('0311','0312','0313') then 1 end) as As_Count,
+			count(case when Bottle_Work_Cd = '0318' then 1 end) as Charge_Count
+		FROM
+			TB_Work_Bottle wb, TB_Customer tc ,TB_Product tp, TB_Product_Price pp , TB_User tu 
+		WHERE
+			DATE_FORMAT(wb.Create_Dt,'%Y/%m/%d') = #{searchStatDt}		
+		AND Bottle_Work_Cd in ('0309','0314','0316','0310','0315','0317','0308','0311','0312','0313','0318'  )
+		AND wb.Customer_ID = tc.Customer_ID
+		AND wb.Product_ID = tp.Product_ID
+		AND wb.Product_ID = pp.Product_ID
+		AND wb.Product_Price_Seq = pp. Product_Price_Seq
+		AND wb.Create_ID = tu.User_ID
+		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id
+		Order By wb.Work_Report_Seq desc
+	</select>
+	
+	<select id="selectCountSalesCustomer" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO">		
+		SELECT  Customer_Id, count(distinct concat(wb.Product_ID,'-',wb.Product_Price_Seq)) ORDER_Count
+		FROM TB_Work_Bottle wb
+		WHERE DATE_FORMAT(wb.Create_Dt,'%Y/%m/%d') = #{searchStatDt}		
+		AND Bottle_Work_Cd in ('0309','0314','0316','0310','0315','0317','0308','0311','0312','0313','0318'  )
+		GROUP By wb.Customer_id
+		Order By wb.Work_Report_Seq desc
+	</select>
 </mapper>

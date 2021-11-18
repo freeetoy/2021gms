@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 
 @Mapper
@@ -19,5 +20,11 @@ public interface StatisticsCustomerMapper {
 	public int deleteDailyStatisticsCustomer();
 
 	public int inserMonthlyStatisticsCustomer();
+	
+	public List<StatisticsCustomerBottleVO> selectStatCustomerBottleList(StatisticsCustomerBottleVO param);	
+	
+	public List<StatisticsCustomerBottleVO> selectStatSalesCustomerBottleList(StatisticsCustomerBottleVO param);
+	
+	public List<StatisticsCustomerVO> selectCountSalesCustomer(StatisticsCustomerBottleVO param);
 
 }

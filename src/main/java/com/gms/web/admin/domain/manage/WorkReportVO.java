@@ -122,4 +122,7 @@ public class WorkReportVO extends AbstractVO implements Serializable {
 	
 	/**MultilYN */
 	private String multiYn = "N";
+	
+	/** Report_Etc           	*/
+	private String reportEtc;
 }

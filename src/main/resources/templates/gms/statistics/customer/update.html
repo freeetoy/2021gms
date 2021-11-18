@@ -1,0 +1,583 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+
+$(document).ready(function(){ 
+	
+	
+	var action = $('#action').val();
+	
+	if(action=='modify'){
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/statistics/customer/bottle.do");
+		
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "searchStatDt" );
+		hiddenField.setAttribute("value",'[[ ${workReport.searchDt} ]]');
+		form.appendChild(hiddenField);     
+
+		document.body.appendChild(form);
+		
+		form.submit();	
+	}
+	
+	
+	var counter = 0;
+	var totalCount = 1;
+	
+	//initProduct(0);
+	initProductPriceList();
+	
+	
+	// 품명 선택 변경
+    $('#productId_0').change( function(){
+
+		var selProductId = $('#productId_0').val();
+
+		getProductList(selProductId,0,"ins");
+	});
+
+	//수정시 row 추가
+
+     var mod_counter = 0;
+
+    $("table.doc-list").on("click", ".ibtnAddMod", function (event) {
+       
+        mod_counter++;       
+        totalCount++;
+        
+        var newRow = $("<tr>");
+        var cols = "";
+
+        cols += '<td style="padding-left:5px;">';
+        cols += '<select class="form-control" id="bottleWorkCd_' + mod_counter +  '" name="bottleWorkCd_' + mod_counter + '" style="width:120px"></select>';
+        cols += '</td><td>';
+        cols += '<select class="form-control" id="productId_' + mod_counter +  '" name="productId_' + mod_counter + '" style="width:250px"></select>';
+        cols += '</td><td>';
+        cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq_' + mod_counter + '" style="width:80px"></select> ';
+		cols += '</td><td>';
+		cols += ' <select class="form-control" id="bottleType_' + mod_counter + '" name="bottleType_' + mod_counter + '" style="width:80px">';
+		cols += '<option></option>'; 
+		cols += '<option value="F">실병</option>'; 
+		cols += '<option value="E">공병</option>'; 
+		cols += '</select> ';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="productCount_' + mod_counter + '" name="productCount_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="1">';
+		cols += '</td><td>'; 
+        cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
+        cols += '</td>';
+        cols +='</tr>';
+
+        newRow.append(cols);
+        $("table.doc-list").append(newRow);
+
+        $("#productCount").val(mod_counter);
+        
+        initBottleWorkCd(mod_counter);
+        initProduct(mod_counter);
+
+        initModProductCapa(mod_counter);
+
+    });
+    
+    
+    // row 삭제
+    $("table.doc-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();       
+       
+        counter -= 1
+        totalCount-=1
+        $("#productCount").val(counter);
+		
+    });
+
+    $("table.doc-list").on("click", ".ibtnDelMod", function (event) {
+        $(this).closest("tr").remove();       
+        
+        mod_counter -= 1
+        totalCount -= 1
+        $("#productCount").val(mod_counter);
+    });
+    
+
+    function initModProductCapa(mod_counter) {
+        // body...      
+		 $('#productId_' + mod_counter).change( function(){      		
+				var mod_select_pumname = $('#productId_' + mod_counter).val();		
+				getProductList(mod_select_pumname,mod_counter,'mod');		
+		});
+      }
+    
+    function initBottleWorkCd(pid){
+
+  		$('#bottleWorkCd_' + pid).append('<option value=0>구분</option>');
+				   
+		$('#bottleWorkCd_' + pid).append('<option value=0308>판매</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0309>대여</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0310>회수</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0311>무료회수</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0312>매입</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0313>무상교체</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0314>가스판매</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0315>판매회수</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0316>공장대여</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0317>대여회수</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0318>Tank충전</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0301>입고</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0306>출고</option>')	
+    } 
+    
+	function initProduct(pid){
+
+        $.ajax({
+  	  	url: '/gms/product/nlist.do',
+  	  	type: 'POST',  	  	
+  	  	dataType: 'json',
+
+       })
+  	 .done(function(data){
+  		  
+  		var i=0;
+  		$('#productId_' + pid).append('<option value=0>상품</option>');
+		for(i=0; i< data.length;i++) {			   
+			$('#productId_' + pid).append('<option value='+data[i].productId+'>'+data[i].productNm+'</option>')			
+		}
+  	 
+       })
+       .fail(function(){
+  			console.log("fail");
+       });
+
+    } 
+    
+    
+    function addProductCapa(counter) {
+   	// body...
+   		$('#productId_' + counter).change( function(){
+   			var select_pumname = $('#productId_' + counter).val();
+
+   			getProductList(select_pumname,counter,'ins');
+   		});
+   	}
+    
+ // 입력된 내용을 작성한다.
+    $("#save").on("click", function () {
+
+		for(i=0 ; i < totalCount ; i++){ 
+	    	if($("#bottleWorkCd_"+i).val() == "0" ){
+	    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+	    		alert('구분을 선택 하세요');      
+	    		return false;
+	    	}
+	    	
+	    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
+	    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+	    		alert('상품을 선택 하세요');     
+	    		return false;
+	    	}
+	    		
+		}
+    	var checkedValue = ""; 
+		var chki=0;
+		
+    	var form = $("#writeForm");	
+    	document.getElementById("productCount").value = totalCount;    	
+    	
+    	form.submit();
+    });
+    
+    $("#saveEtc").on("click", function () {
+
+    	var form = $("#writeForm");	
+    	var reportEtc = document.getElementById("reportEtc").value;    	
+    	var workReportSeq = document.getElementById("workReportSeq").value; 
+    	
+    	$.ajax({
+			url: '/gms/report/saveEtc.do',
+			type: 'POST',
+			data: 'workReportSeq='+ workReportSeq +'&reportEtc='+ reportEtc ,
+			dataType: 'json',
+		 })
+		.done(function(data){	    
+			var result = data;
+			if(result > 0){
+				alert("저장하였습니다");
+			}else{
+				alert("저장하지 못했습니다. 재시도 해주세요");
+			}
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+    	//form.submit();
+    });
+    
+    function getProductList(productId,sel_pid,type){
+
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ productId ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+		  
+			if(type == "ins"){
+		    	var i=0;
+				//$('#productCapa_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					 
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+					
+				}
+			}else if(type == "mod"){
+				
+				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
+				}
+			}  		
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+
+	} 
+
+       
+    function initProductPriceList(){
+		//alert("init_productList");	
+		$.ajax({
+			url: '/gms/report/workBottleList.do',
+			type: 'POST',
+			data: 'workReportSeq='+ [[${workReport.workReportSeq}]] ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+			var counter = 0;
+	        var cols = "";	        
+			    
+			for(i=0; i< data.length;i++) {
+	            $('#productId_' + i).find('option').remove();
+	        }			
+
+	    	var i=0;			
+			
+			if(data.length ==0) {
+				
+				$("table.doc-list").find('tr').remove();
+			 	
+			 	var newRow = $("<tr>");
+		        
+				cols += '<td>상품</td>';
+				cols += '<td>용량</td>';
+				cols += '<td>수량</td>';				
+				cols += '<td></td></tr>';
+
+		        newRow.append(cols);
+		        $("table.doc-list").append(newRow);
+		        
+		        totalCount =1 ;
+		        
+		        var newRow = $("<tr>");
+				var cols = "";
+				cols += '<td style="padding-left:5px;">';
+				cols += '<select class="form-control" id="bottleWorkCd_0" name="bottleWorkCd_0" style="width:120px">'; 
+				cols += '<option value=0308>판매</option>'; 
+				cols += '<option value=0309>대여</option>'; 
+				cols += '<option value=0310>회수</option>'; 
+				cols += '<option value=0311>무료회수</option>'; 
+				cols += '<option value=0312>매입</option>'; 
+				cols += '<option value=0313>무상교체</option>'; 
+				cols += '<option value=0314>가스판매</option>'; 
+				cols += '<option value=0315>판매회수</option>'; 
+				cols += '<option value=0316>공장대여</option>'; 
+				cols += '<option value=0317>대여회수</option>'; 
+				cols += '<option value=0318>Tank충전</option>'; 
+				cols += '<option value=0301>입고</option>';
+				cols += '<option value=0306>출고</option>';
+				cols += '</select>'; 
+				cols += '</td><td>';
+				cols += '<select class="form-control" id="productId_0" name="productId_0" style="width:250px"></select>'; 
+				cols += '</td><td>';
+				cols += ' <select class="form-control" id="productPriceSeq_0" name="productPriceSeq_0" style="width:80px"><option value=0>옵션</option></select> ';
+				cols += '</td><td>';
+				cols += ' <select class="form-control" id="bottleType_0" name="bottleType_0" style="width:80px">';
+				cols += '<option></option>'; 
+				cols += '<option value="F">실병</option>'; 
+				cols += '<option value="E">공병</option>'; 
+				cols += '</select> ';
+				cols += '</td><td>';
+				cols += ' <input type="number" class="form-control" id="productCount_0" name="productCount_0" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+				cols += '</td><td>';  
+				cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-danger" id="mod_addrow" value="삭제" />';
+				cols += '</td>';
+				cols +='</tr>';
+
+				newRow.append(cols);
+				$("table.doc-list").append(newRow);
+				
+				initProduct(counter);
+	            
+				initModProductCapa(counter);
+	            
+			}else {
+
+			 	$("table.doc-list").find('tr').remove();
+			 	
+			 	var newRow = $("<tr>");
+		        
+				cols += '<td>구분</td>';
+				cols += '<td>상품</td>';
+				cols += '<td>용량</td>';
+				cols += '<td>수량</td>';
+				cols += '<td></td></tr>';
+
+				newRow.append(cols);
+		        $("table.doc-list").append(newRow);
+		        var botttleTypeNm = "";
+				for(i=0; i< data.length;i++) {
+					 
+					//if(data[i].workBottleCd=='0309'){ }
+					botttleTypeNm = "";
+					if(data[i].bottleType=='E') botttleTypeNm ="공병";
+					else if(data[i].bottleType=='F') botttleTypeNm ="실병";
+					else botttleTypeNm = "";
+					var newRow = $("<tr>");
+					
+		            cols = "";				
+					cols += '<td style="padding-left:5px;">';
+					
+					cols += '	<select class="form-control" id="bottleWorkCd_' + counter +  '" name="bottleWorkCd_' + counter + '" style="width:120px" readonly>'; 
+					//cols += '	<option value="' + data[i].bottleWorkCd +'" selected>' + data[i].bottleWorkCd + '</option>';
+					if(data[i].bottleWorkCd =='0308')
+						cols += '	<option value="0308" selected>판매</option>';					
+					if(data[i].bottleWorkCd =='0309')					
+						cols += '	<option value="0309" selected>대여</option>';
+					if(data[i].bottleWorkCd =='0310')					
+						cols += '	<option value="0310" selected>회수</option>';
+					if(data[i].bottleWorkCd =='0311')					
+						cols += '	<option value="0311" selected>무료회수</option>';
+					if(data[i].bottleWorkCd =='0312')
+						cols += '	<option value="0312" selected>대여</option>';
+					if(data[i].bottleWorkCd =='0313')
+						cols += '	<option value="0313" selected>무상교체</option>';	
+					if(data[i].bottleWorkCd =='0314')
+						cols += '	<option value="0314" selected>가스판매</option>';	
+					if(data[i].bottleWorkCd =='0315')
+						cols += '	<option value="0315" selected>판매회수</option>';
+					if(data[i].bottleWorkCd =='0316')
+						cols += '	<option value="0316" selected>공장대여</option>';	
+					if(data[i].bottleWorkCd =='0317')
+						cols += '	<option value="0317" selected>대여회수</option>';
+					if(data[i].bottleWorkCd =='0318')
+						cols += '	<option value="0318" selected>Tank충전</option>';
+					if(data[i].bottleWorkCd =='0301')
+						cols += '	<option value="0301" selected>입고</option>';
+					if(data[i].bottleWorkCd =='0306')
+						cols += '	<option value="0306" selected>출고</option>';
+							
+					cols += '	</select>';
+					cols += '</td><td>';
+					cols += '	<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:250px" readonly>'; 
+					cols += '	<option value="' + data[i].productId +'" selected>' + data[i].productNm + '</option>';
+					cols += '	</select>';
+					cols += '</td><td>';
+					cols += '	<select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:80px" readonly>';
+					cols += '	<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
+					cols += '	</select> ';
+					cols += '</td><td>';
+					cols += '	<select class="form-control" id="bottleType_' + counter + '" name="bottleType_' + counter + '" style="width:80px" readonly>';
+					cols += '	<option value="' + data[i].bottleType +'" selected>' + botttleTypeNm + '</option>';
+					cols += '	</select> ';
+					cols += '</td><td>';				
+					cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '</td><td>';  
+	
+					if (counter < 1){	
+						cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	
+					}else{	
+						//cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow_' + counter+'" value="삭제" />';	
+					}
+					cols += '</td>';
+					cols +='</tr>';
+	
+		            newRow.append(cols);
+		            $("table.doc-list").append(newRow);
+		            
+		            //initProduct(counter);
+		            
+		            //initModProductCapa(counter);
+		            
+		            mod_counter = counter;
+		            
+		            totalCount =counter;
+		            counter++;
+		            
+				}
+				totalCount = data.length;
+			}
+		})
+		.fail(function(){
+			console.log("fail");
+		 });		
+    }
+    
+    $("#goBack").on("click", function () {
+    	
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/statistics/customer/bottle.do");
+		
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "searchStatDt" );
+		hiddenField.setAttribute("value",'[[ ${workReport.searchDt} ]]');
+		form.appendChild(hiddenField);     
+		
+		document.body.appendChild(form);
+		
+		form.submit();			
+                		
+    });
+});
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>업무일지 수정</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10">
+            <div class="card">          
+              
+             <!-- general form elements -->
+              
+                <label th:text="${workReport.customerNm}"  class="control-label col-10">상품정보</label>
+              	<div class="form-group">				        
+			        <table class="table table-hover">
+				        <thead>	                    
+	                    <tr> 
+	                      <td >비고 </td>
+	                      <td ><input type="text" class="form-control" id="reportEtc" name="reportEtc"  th:value="${workReport.reportEtc}"></td>
+	                        <td ><input type="button" id="saveEtc" value="저장"  class="btn btn-success float-right"> </td>
+	                    </tr>   
+	                     </thead>   
+			         </table>	     
+		        </div>
+                <div class="form-group">	
+			        <div class="col-md-10">
+			        <table class="table table-hover">
+			         </table>
+			        </div>
+		        </div>
+                <div class="form-group">
+                <form id="writeForm" class="form-horizontal" th:action="@{/gms/statistics/customer/modify.do}" method="post" >
+              	<input type="hidden" id="workReportSeq" name="workReportSeq" th:value="${workReport.workReportSeq}">
+              	<input type="hidden" id="orderId" name="orderId" th:value="${workReport.orderId}">
+              	<input type="hidden" id="customerId" name="customerId" th:value="${workReport.customerId}">
+              	<input type="hidden" id="userId" name="userId" th:value="${workReport.userId}">
+              	<input type="hidden" id="searchDt" name="searchDt" th:value="${workReport.searchDt}">
+              	<input type="hidden" id="productCount" name="productCount" value="">
+              	<input type="hidden" id="action" name="action" th:value="${action}">
+	                   <label class="control-label col-10">납품정보</label>
+	                  
+	                       <table id="myTable" class="table doc-list">
+		                       <tr>
+		                         <td>구분</td>
+		                         <td>상품</td>
+		                         <td>용량</td>
+		                         <td>용기</td>
+		                         <td>수량</td>
+		                         <td></td>
+		                       </tr>
+		                       <tr >
+		                       		<td  style="padding-left: 5px;">                                           
+			                         <select id="bottleWorkCd_0" name="bottleWorkCd_0" class="form-control" style="width:100px">
+				                        
+								    </select>	   
+			                       </td>
+			                       <td  style="padding-left: 5px;">                                           
+			                         <select id="productId_0" name="productId_0" class="form-control" style="width:250px">
+				                        
+								    </select>	   
+			                       </td>
+			                       <td> 
+			                       		<select id="productPriceSeq_0" name="productPriceSeq_0" class="form-control" style="width:80px">
+					                        <option value="0">옵션</option>			                      	
+									    </select>	   
+			                       </td>
+			                       <td> 
+			                       		<select id="bottleType_0" name="bottleType_0" class="form-control" style="width:80px">
+					                        <option value="0">용기</option>			                      	
+									    </select>	   
+			                       </td>
+			                       <td>
+		                             <input type="number" id="orderCount_0" name="orderCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999"> 
+		                           </td>	                      
+			                       <td>
+			                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
+			                       
+			                       </td>
+		                       </tr>
+		                     </table>
+	               
+             
+            </div>
+            <!-- /.card -->
+            
+	            <div class="card-footer">
+	                 <input type="button" id="goBack" value="취소"  class="btn btn-secondary float-left">
+			         <input type="button" id="save" value="저장"  class="btn btn-success float-right">
+	            </div>	
+	       
+	            </form>             	
+        </div>
+        <div class="row">	
+		        <div class="col-10">	        	
+		        <table class="table table-hover">	
+		        <tr><td  style='color: red'>(이미 등록된 납품 상품은 수량을 0으로 등록하면 삭제가 됩니다)</td></tr>
+		         </table>
+		        </div>
+	        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ 
+  </th:block>
+  
+
+  

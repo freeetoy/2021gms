@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.mapper.statistics.StatisticsCustomerMapper;
 
@@ -22,7 +23,6 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 	
 	@Override
 	public List<StatisticsCustomerVO> getDailylStatisticsCustomerList(StatisticsCustomerVO param) {
-		logger.info("****** getDailylStatisticsCustomerList *****start===*");	
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
 
@@ -50,7 +50,6 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 	@Override
 	public List<StatisticsCustomerVO> getMontlylStatisticsCustomerList(StatisticsCustomerVO param) {
 
-		logger.info("****** getMonthlyStatisticsCustomerList *****start===*");	
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
 
@@ -58,17 +57,14 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 		
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
-			logger.debug("****** getMonthlylStatisticsCustomerList *****getSearchStatDt===*"+param.getSearchStatDt());
 		}		
 		
 		if(param.getSearchStatDtFrom() != null) {
 			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
-			logger.debug("****** getMonthlylStatisticsCustomerList *****getSearchStatDtFrom===*"+param.getSearchStatDtFrom());
 		}
 		
 		if(param.getSearchStatDtEnd() != null) {
 			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
-			logger.debug("****** getMonthlylStatisticsCustomerList *****getSearchStatDtEnd===*"+param.getSearchStatDtEnd());
 		}	
 				
 		List<StatisticsCustomerVO> statList = statMapper.selectMontlylStatisticsCustomerList(map);	
@@ -91,4 +87,18 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 		return statMapper.inserMonthlyStatisticsCustomer();
 	}
 
+	@Override
+	public List<StatisticsCustomerBottleVO> getStatisticsCustomerBottleList(StatisticsCustomerBottleVO param) {
+		return statMapper.selectStatCustomerBottleList(param);
+	}
+	
+	@Override
+	public List<StatisticsCustomerBottleVO> getStatSalesCustomerBottleList(StatisticsCustomerBottleVO param) {
+		return statMapper.selectStatSalesCustomerBottleList(param);
+	}
+
+	@Override
+	public List<StatisticsCustomerVO> getStatSalesCustomerCount(StatisticsCustomerBottleVO param) {
+		return statMapper.selectCountSalesCustomer(param);
+	}
 }

@@ -329,6 +329,7 @@
 			, Parent_Customer_ID	= #{parentCustomerId}
 			, ECount_CD				= #{eCountCd}
 			, Summary				= #{summary}
+			, Taxinvoice_Type		= #{taxinvoiceType}
 			, UPDATE_ID				= #{updateId}
 			, UPDATE_DT				= NOW()
 		WHERE

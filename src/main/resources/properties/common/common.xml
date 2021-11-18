@@ -38,6 +38,7 @@
 	<entry key="common.menu.stat_product">sproduct</entry>
 	<entry key="common.menu.stat_customer">scustomer</entry>
 	<entry key="common.menu.stat_bottle">sbottle</entry>
+	<entry key="common.menu.stat_cbottle">scbottle</entry>
 	<entry key="common.menu.stat_agency">sagency</entry>
 	<entry key="common.menu.user">user</entry>
 	<entry key="common.menu.calendar">calendar</entry>
@@ -153,6 +154,8 @@
 	<entry key="excel.stat.bottle.title">날짜,입고,충전,판매,대여,회수</entry>
 	<entry key="excel.stat.product.title">날짜,판매건수,판매금액,대여건수,대여금액</entry>
 	<entry key="excel.stat.customer.title">날짜,판매건수,판매금액,입금액,미수금액</entry>
+	<entry key="excel.stat.customer.bottle.title">날  짜,차량번호,담당자,C.D,거래처,품목,납품(대여),회  수,판  매,A / S,충전,타사(공병반납),타사(실병입고),비고</entry>
+	<entry key="excel.stat.customer.report.title">순번,담당자,거래처,품목,납품(대여),회  수,판  매,A / S,충전,비고</entry>
 	<entry key="excel.report.title">순번,거래처,납품,회수,금액,수금액</entry>
 	
 	<entry key="o2.medical.productId">1</entry>

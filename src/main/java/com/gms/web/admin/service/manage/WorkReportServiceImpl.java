@@ -4247,5 +4247,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 		}
 		return result;
 	}
+
+	@Override
+	public int modifyWorkReportEtc(WorkReportVO param) {
+		return workMapper.modifyWorkReportEtc(param);
+	}
 	
 }

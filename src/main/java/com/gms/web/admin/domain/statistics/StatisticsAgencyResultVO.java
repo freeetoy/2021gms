@@ -3,9 +3,6 @@ package com.gms.web.admin.domain.statistics;
 import java.io.Serializable;
 import java.util.List;
 
-import com.gms.web.admin.domain.manage.CustomerSimpleVO;
-import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
-
 import lombok.Getter;
 import lombok.Setter;
 

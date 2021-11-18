@@ -1,0 +1,165 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+$(document).ready(function(){ 
+	 $("#searchStatDt").val('[[${searchStatDt}]]' );
+});
+	
+	
+$(function() {
+	
+	  $('input[name="searchStatDt"]').daterangepicker({
+		  singleDatePicker: true,
+		  showDropdowns: true,
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }
+	  });
+	
+	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+	  });
+	
+	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });	
+});	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 용기 현황</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">
+    
+      <div class="container-fluid">
+        
+        <div class="row">
+           	<div class="col-1">
+               		<label >거래일</label>
+            </div>               
+            <div class="col-4">     
+            <form id="mainForm" name="mainForm"  method="post">         
+                   
+               <input type="text" class="form-control" id="searchStatDt" name="searchStatDt" value=""/>			
+            </div>               
+            <div class="col-5">
+                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+              </div>  
+               <div class="col-1" align=right>
+					<a th:href="@{/gms/statistics/customer/reportExcelDown.do(searchStatDt=${searchStatDt})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 업무일지</button></a>
+               </div>
+              <div class="col-1" align=right>
+               		<a th:href="@{/gms/statistics/customer/bottleExcelDown.do(searchStatDt=${searchStatDt})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+            </div>
+              </form>  
+         </div>       
+    	
+        <div class="row">	
+	        <div class="col-12">
+	        <table>
+	       </br>
+	         </table>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+          <div class="card card-primary">
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                  <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+					<!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr style="font-size:12px;">
+                      <th>날짜</th>
+                      <th>차량번호</th>
+                      <th>담당자</th>
+                      <th>C.D</th>
+                      <th>거래처</th>
+                      <th>품목</th>
+                      <th align="right">납품(대여)</th>
+                      <th align="right">회수</th>
+                      <th align="right">판매</th>
+                      <th align="right">A/S</th>
+                      <th align="right">충전</th>
+                      <th style="font-size:11px;" align="right">타사(공병반납)</th>
+                      <th style="font-size:11px;" align="right">타사(실병입고)</th>
+                      <th>비고</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( statCustomerList )}" th:each="row : ${statCustomerList}" style="font-size:12px;">
+                      <td th:text="${searchStatDt}"></td>
+                      <td th:text="${row.carNumber}"></td>
+                      <td th:text="${row.salesNm}"></td>
+                      <td th:text="${row.strCD}"></td>
+                      <td><a th:href="@{/gms/statistics/customer/update.do( workReportSeq=${row.workReportSeq})}" th:text="${row.CustomerNm}"></a></td>
+                      <td th:text="${row.productNm} + ' (' + ${row.productCapa}+')'"></td>
+                      
+                      <td align="right" th:text="${row.rentCount}">
+                      </td>
+                      <td align="right" th:text="${row.backCount}">
+                      </td>
+                      <td align="right" th:text="${row.saleCount }">
+                      </td>
+                      <td align="right" th:text="${row.asCount }">
+                      </td>
+                      <td align="right" th:text="${row.chargeCount }">
+                      </td>
+                      <td align="right" th:text="${row.outCount }">
+                      </td>
+                      <td align="right" th:text="${row.inCount }">
+                      </td>
+                      <td th:text="${row.reportEtc}"></td>     
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( statCustomerList )}">
+						<td colspan="14">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body --> 
+                  </div>
+                  
+                  
+                </div>
+              </div>
+              <!-- /.card -->
+            </div>
+          
+            <div class="card">
+             
+              
+              
+            </div>
+            <!-- /.card -->
+          </div>
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

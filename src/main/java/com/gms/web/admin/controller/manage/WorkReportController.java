@@ -89,7 +89,7 @@ public class WorkReportController {
 			, WorkReportVO params) {
 
 		RequestUtils.initUserPrgmInfo(request, params);				
-		logger.debug("WorkReportController getWorkReportListAll=");
+//		logger.debug("WorkReportController getWorkReportListAll=");
 		ModelAndView mav = new ModelAndView();		
 		
 		params.setUserId(params.getCreateId());	
@@ -535,5 +535,18 @@ public class WorkReportController {
 			RequestUtils.responseWriteException(response, alertMessage, "/gms/report/listAll.do?searchUserId="+param.getCreateId() );
 		}
 		return null;
+	}
+	
+	
+	@RequestMapping(value = "/gms/report/saveEtc.do")
+	@ResponseBody
+	public int saveWorkReportEtc(WorkReportVO param)	{			
+		logger.info("saveWorkReportEtc==="+param);
+		
+		List<String> list = null;
+		int result = 0;		
+		result = workService.modifyWorkReportEtc(param);
+		
+		return result;
 	}
 }
