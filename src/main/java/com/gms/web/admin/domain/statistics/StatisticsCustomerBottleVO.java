@@ -55,10 +55,25 @@ public class StatisticsCustomerBottleVO implements Serializable {
 	
 	private int inCount;
 	
-	/** Report_Etc           	*/
-	private String reportEtc;
+	/** Work_Etc           	*/
+	private String workEtc;
 	
 	/** searchStatDt	*/
 	private String  searchStatDt;
+	
+	/** searchStatDtFrom	*/
+	private String  searchStatDtFrom;
+	
+	/** searchStatDtEnd	*/
+	private String  searchStatDtEnd;
+	
+	/** SALE_Dt	*/
+	private String  saleDt;
+	
+	/** searchCustomerId	*/
+	private String  searchCustomerId;
+	
+	/** searchCustomerId	*/
+	private Integer  paramCustomerId;	
 	
 }

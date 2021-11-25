@@ -74,5 +74,5 @@ public interface WorkReportService {
 	
 	public List<WorkBottleVO> getWorkBottleListOfCustomerToday(Integer customerId);	
 	
-	public int modifyWorkReportEtc(WorkReportVO param);
+	public int modifyWorkReportEtc(WorkBottleVO param);
 }

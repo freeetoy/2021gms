@@ -6,14 +6,95 @@
 <script type="text/javascript">
 $(document).ready(function(){ 
 	 $("#searchStatDt").val('[[${searchStatDt}]]' );
+	 
+	 $("#btn_com_search").click(function()  
+   	{    	
+	  var searchCustomerNm = $("#searchCustomerNm").val();
+
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+
+	      })
+	      .done(function(data){
+	    	$('#searchCustomerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#searchCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+	 
+	 $("#reportExcel").on("click", function () {
+	    	
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/statistics/customer/reportExcelDown.do");
+		
+		var searchStatDt = document.getElementById("searchStatDt").value;  
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "searchStatDt" );
+		hiddenField.setAttribute("value",searchStatDt);
+		form.appendChild(hiddenField);
+
+		var searchCustomerId = document.getElementById("searchCustomerId").value;  
+		console.log(searchCustomerId);
+		if(searchCustomerId != 0) {
+			console.log("if");
+			var hiddenField1 = document.createElement("input");
+			hiddenField1.setAttribute("type", "hidden");
+			hiddenField1.setAttribute("name", "searchCustomerId" );
+			hiddenField1.setAttribute("value",searchCustomerId);
+			form.appendChild(hiddenField1);    
+		}
+		document.body.appendChild(form);
+		
+		form.submit();
+    });
+	 
+	 $("#bottleExcel").on("click", function () {
+	    	
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/statistics/customer/bottleExcelDown.do");
+		
+		var searchStatDt = document.getElementById("searchStatDt").value;  
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "searchStatDt" );
+		hiddenField.setAttribute("value",searchStatDt);
+		form.appendChild(hiddenField);
+
+		var searchCustomerId = document.getElementById("searchCustomerId").value;  
+		console.log(searchCustomerId);
+		if(searchCustomerId != 0) {
+			console.log("if");
+			var hiddenField1 = document.createElement("input");
+			hiddenField1.setAttribute("type", "hidden");
+			hiddenField1.setAttribute("name", "searchCustomerId" );
+			hiddenField1.setAttribute("value",searchCustomerId);
+			form.appendChild(hiddenField1);    
+		}
+		document.body.appendChild(form);
+		
+		form.submit();
+    });
+	 
 });
 	
 	
 $(function() {
-	
+	  
 	  $('input[name="searchStatDt"]').daterangepicker({
-		  singleDatePicker: true,
-		  showDropdowns: true,
 	      autoUpdateInput: false,
 	      startDate: new Date(),
 	      locale: {
@@ -22,7 +103,7 @@ $(function() {
 	  });
 	
 	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
 	  });
 	
 	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -47,13 +128,49 @@ $(function() {
     <section class="content">
     
       <div class="container-fluid">
-        
+        <div class="row">
+    		
+           	<div class="col-1">
+               		<label >거래처</label>
+            </div>               
+            <div class="col-4">     
+            <form id="mainForm" name="mainForm"  method="post">         
+            	<select id="searchCustomerId" name="searchCustomerId" class="form-control">
+	                      <option value="0">거래처 목록</option>
+	                    	<option th:each="row : ${customerList}"
+				                th:text="${row.customerNm}"
+				                th:value="${row.customerId}"
+				                th:if="${searchCustomerId ==row.customerId}" selected>					             
+					        </option>	
+					        <option th:each="row : ${customerList}"
+				                th:text="${row.customerNm}"
+				                th:value="${row.customerId}"
+			                	th:unless="${searchCustomerId ==row.customerId}">				             
+					        </option>			
+				               
+				     </option>		
+			    </select>	                      
+            </div>  
+            <div class="col-2">    
+            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+			</div>	            		  
+			<div class="col-1">
+	        	<input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+	        </div> 
+          
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
         <div class="row">
            	<div class="col-1">
                		<label >거래일</label>
             </div>               
             <div class="col-4">     
-            <form id="mainForm" name="mainForm"  method="post">         
                    
                <input type="text" class="form-control" id="searchStatDt" name="searchStatDt" value=""/>			
             </div>               
@@ -61,10 +178,10 @@ $(function() {
                 <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
               </div>  
                <div class="col-1" align=right>
-					<a th:href="@{/gms/statistics/customer/reportExcelDown.do(searchStatDt=${searchStatDt})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 업무일지</button></a>
+					<button type="button" id="reportExcel" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 업무일지</button>
                </div>
               <div class="col-1" align=right>
-               		<a th:href="@{/gms/statistics/customer/bottleExcelDown.do(searchStatDt=${searchStatDt})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+               		<button type="button" id="bottleExcel" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button>
             </div>
               </form>  
          </div>       
@@ -105,12 +222,14 @@ $(function() {
                   </thead>
                   <tbody>
                   	<tr th:if="${not #lists.isEmpty( statCustomerList )}" th:each="row : ${statCustomerList}" style="font-size:12px;">
-                      <td th:text="${searchStatDt}"></td>
+                      <td th:text="${row.saleDt}"></td>
                       <td th:text="${row.carNumber}"></td>
                       <td th:text="${row.salesNm}"></td>
                       <td th:text="${row.strCD}"></td>
-                      <td><a th:href="@{/gms/statistics/customer/update.do( workReportSeq=${row.workReportSeq})}" th:text="${row.CustomerNm}"></a></td>
-                      <td th:text="${row.productNm} + ' (' + ${row.productCapa}+')'"></td>
+                      <td><a th:href="@{/gms/statistics/customer/update.do( workReportSeq=${row.workReportSeq}, productId=${row.productId}, productPriceSeq=${row.productPriceSeq},searchStatDt=${searchStatDt} )}" th:text="${row.CustomerNm}"></a></td>
+                      <td th:if="${row.productCapa ==''}"  th:text="${row.productNm}">
+                      <td th:unless="${row.productCapa ==''}" th:text="${row.productNm} + ' (' + ${row.productCapa}+')'">
+                      </td>
                       
                       <td align="right" th:text="${row.rentCount}">
                       </td>
@@ -126,7 +245,7 @@ $(function() {
                       </td>
                       <td align="right" th:text="${row.inCount }">
                       </td>
-                      <td th:text="${row.reportEtc}"></td>     
+                      <td th:text="${row.workEtc}"></td>     
                     </tr>
                     <tr th:unless="${not #lists.isEmpty( statCustomerList )}">
 						<td colspan="14">조회된 결과가 없습니다.</td>

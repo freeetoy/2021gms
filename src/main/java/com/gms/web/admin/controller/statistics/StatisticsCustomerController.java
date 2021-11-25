@@ -35,6 +35,7 @@ import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
@@ -289,21 +290,62 @@ public class StatisticsCustomerController {
 	@RequestMapping(value = "/gms/statistics/customer/bottle.do")
 	public ModelAndView getStatisticsCustomerBottle(StatisticsCustomerBottleVO param) {
 
-		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle");
+//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle");
 		//logger.debug("StatisticsCustomerContoller searchStatisticsCustomerDt "+ params.getSearchStatDt());
 
 		ModelAndView mav = new ModelAndView();
+				
 		String searchStatDt = param.getSearchStatDt();	
-		if(searchStatDt == null) {
-			searchStatDt = DateUtils.getNextDate(0,"yyyy/MM/dd");
+		
+		String searchStatDtFrom = null;
+		String searchStatDtEnd = null;
+				
+		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			
+			param.setSearchStatDtFrom(searchStatDtFrom);
+			param.setSearchStatDtEnd(searchStatDtEnd);			
+		}else {			
+			searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
+			searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
+			
+			param.setSearchStatDtFrom(searchStatDtFrom);
+			param.setSearchStatDtEnd(searchStatDtEnd);
+	
+			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+			
 			param.setSearchStatDt(searchStatDt);
+		}		
+		if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
+			param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
+		}else {
+			param.setSearchCustomerId(null);
 		}
+		
 		List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatisticsCustomerBottleList(param);
+		
+		for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
+			StatisticsCustomerBottleVO statisticsCustomerBottle = statCustomerBottleList.get(i);
+			
+			if(statisticsCustomerBottle.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) ) {
+				int chargeCount = 0;
+				String strCapa = statisticsCustomerBottle.getProductCapa().replace("병_", "");
+				chargeCount = Integer.parseInt(strCapa) * statisticsCustomerBottle.getSaleCount();
+				
+				statisticsCustomerBottle.setProductCapa("");
+				statisticsCustomerBottle.setSaleCount(0);
+				statisticsCustomerBottle.setChargeCount(chargeCount);
+			}
+		}
 		
 		mav.addObject("statCustomerList", statCustomerBottleList);	
 		mav.addObject("searchStatDt", searchStatDt);	
-		//검색어 셋팅
-		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.stat_cbottle"));	 		
+		
+		Map<String, Object> map = customerService.searchCustomerList("");
+		mav.addObject("customerList", map.get("list"));
+		mav.addObject("searchCustomerId", param.getParamCustomerId());
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.stat_cbottle"));
 		
 		mav.setViewName("gms/statistics/customer/bottle");
 		
@@ -313,16 +355,53 @@ public class StatisticsCustomerController {
 	@RequestMapping(value = "/gms/statistics/customer/bottleExcelDown.do")
 	public void excelDownloadCustomerBottle(HttpServletResponse response,StatisticsCustomerBottleVO param){
 	   try {
-		    String searchStatDt = param.getSearchStatDt();
-		   
-			if(searchStatDt == null) {
-				searchStatDt = DateUtils.getNextDate(0,"yyyy/MM/dd");
+		   String searchStatDt = param.getSearchStatDt();	
+			
+		   String searchStatDtFrom = null;
+		   String searchStatDtEnd = null;
+					
+		   if(searchStatDt != null && searchStatDt.length() > 20) {						
+				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+				
+				param.setSearchStatDtFrom(searchStatDtFrom);
+				param.setSearchStatDtEnd(searchStatDtEnd);			
+		   }else {			
+				searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
+				searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
+				
+				param.setSearchStatDtFrom(searchStatDtFrom);
+				param.setSearchStatDtEnd(searchStatDtEnd);
+		
+				searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+				
 				param.setSearchStatDt(searchStatDt);
+		   }		
+		   String titleDate = searchStatDt.replace("/","");
+		   
+		   if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
+				param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
+			}else {
+				param.setSearchCustomerId(null);
 			}
-			String titleDate = searchStatDt.replace("/","");
 			
 			List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatisticsCustomerBottleList(param);
 					
+			for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
+				StatisticsCustomerBottleVO statisticsCustomerBottle = statCustomerBottleList.get(i);
+				
+				if(statisticsCustomerBottle.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) ) {
+					int chargeCount = 0;
+					String strCapa = statisticsCustomerBottle.getProductCapa().replace("병_", "");
+					
+					chargeCount = Integer.parseInt(strCapa) * statisticsCustomerBottle.getSaleCount();
+					
+					statisticsCustomerBottle.setProductCapa("");
+					statisticsCustomerBottle.setSaleCount(0);
+					statisticsCustomerBottle.setChargeCount(chargeCount);
+				}
+			}
+			
 			String sheetName = "거래처용기현황";
 			
 		    // 워크북 생성
@@ -406,7 +485,7 @@ public class StatisticsCustomerController {
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(searchStatDt);
+		        cell.setCellValue(vo.getSaleDt());
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
@@ -426,8 +505,11 @@ public class StatisticsCustomerController {
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getProductNm()+" ("+vo.getProductCapa()+")");	        
-		        
+		        if(vo.getProductCapa().equals("")) 
+		        		cell.setCellValue(vo.getProductNm());
+		        else
+		        	cell.setCellValue(vo.getProductNm()+" ("+vo.getProductCapa()+")");
+		        	
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(styleRight);
 		        cell.setCellValue(vo.getRentCount());
@@ -458,7 +540,7 @@ public class StatisticsCustomerController {
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getReportEtc());
+		        cell.setCellValue(vo.getWorkEtc());
 		       
 		    }	
 		    for (int x = 0; x < sheet.getRow(2).getPhysicalNumberOfCells(); x++) {
@@ -500,16 +582,54 @@ public class StatisticsCustomerController {
 	@RequestMapping(value = "/gms/statistics/customer/reportExcelDown.do")
 	public void excelDownloadCustomerReport(HttpServletResponse response,StatisticsCustomerBottleVO param){
 	   try {
-		    String searchStatDt = param.getSearchStatDt();	
-		    
-			if(searchStatDt == null) {
-				searchStatDt = DateUtils.getNextDate(0,"yyyy/MM/dd");
+		   String searchStatDt = param.getSearchStatDt();	
+			
+			String searchStatDtFrom = null;
+			String searchStatDtEnd = null;
+					
+			if(searchStatDt != null && searchStatDt.length() > 20) {						
+				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+				
+				param.setSearchStatDtFrom(searchStatDtFrom);
+				param.setSearchStatDtEnd(searchStatDtEnd);			
+			}else {			
+				searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
+				searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
+				
+				param.setSearchStatDtFrom(searchStatDtFrom);
+				param.setSearchStatDtEnd(searchStatDtEnd);
+		
+				searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+				
 				param.setSearchStatDt(searchStatDt);
 			}
+			
+			if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
+				param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
+			}else {
+				param.setSearchCustomerId(null);
+			}
+			
 			String titleDate = searchStatDt.replace("/","");
+			
 			List<StatisticsCustomerVO> statCustomerReportList = statService.getStatSalesCustomerCount(param);
 			List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatSalesCustomerBottleList(param);
 					
+			for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
+				StatisticsCustomerBottleVO statisticsCustomerBottle = statCustomerBottleList.get(i);
+				
+				if(statisticsCustomerBottle.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) ) ) {
+					int chargeCount = 0;
+					String strCapa = statisticsCustomerBottle.getProductCapa().replace("병_", "");
+					chargeCount = Integer.parseInt(strCapa) * statisticsCustomerBottle.getSaleCount();
+					
+					statisticsCustomerBottle.setProductCapa("");
+					statisticsCustomerBottle.setSaleCount(0);
+					statisticsCustomerBottle.setChargeCount(chargeCount);
+				}
+			}
+			
 			String sheetName = "거래처업무일지";
 			
 		    // 워크북 생성
@@ -556,8 +676,8 @@ public class StatisticsCustomerController {
 			    cell.setCellValue(list.get(i));		    
 		    }
 		    
-		    int[] mergeSeq = new int[statCustomerReportList.size()];
-			int[] lastmergeSeq = new int[statCustomerReportList.size()];
+//		    int[] mergeSeq = new int[statCustomerReportList.size()];
+//			int[] lastmergeSeq = new int[statCustomerReportList.size()];
 			
 			int seq =1;
 			Integer preCustomerId = 0;
@@ -581,7 +701,10 @@ public class StatisticsCustomerController {
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getProductNm()+" ("+vo.getProductCapa()+")");	        
+		        if(vo.getProductCapa().equals("")) 
+	        		cell.setCellValue(vo.getProductNm());
+		        else
+		        	cell.setCellValue(vo.getProductNm()+" ("+vo.getProductCapa()+")");
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(styleRight);
@@ -605,31 +728,32 @@ public class StatisticsCustomerController {
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getReportEtc());
+		        cell.setCellValue(vo.getWorkEtc());
 		        preCustomerId = vo.getCustomerId();
 		    }	
 
-		    for (int x = 0; x < sheet.getRow(2).getPhysicalNumberOfCells(); x++) {
-//		    	if(x < 6) {
-			    	sheet.autoSizeColumn(x);
-	 				int width = sheet.getColumnWidth(x);
-	 				int minWidth = list.get(x).getBytes().length * 450;
-	 				int maxWidth = 18000;
-	 				
-	 				if (minWidth > width) {
-	 					sheet.setColumnWidth(x, minWidth);
-	 				} else if (width > maxWidth) {
-	 					sheet.setColumnWidth(x, maxWidth);
-	 				} else {
-	 					sheet.setColumnWidth(x, width + 2000);
-	 				}
-// 				}else {
-// 					sheet.autoSizeColumn(x);
-// 					int minWidth = list.get(x).getBytes().length * 300;
-// 					sheet.setColumnWidth(x, minWidth);
-// 				}
- 			}
-		    
+		    if(statCustomerBottleList.size() > 0) {
+			    for (int x = 0; x < sheet.getRow(2).getPhysicalNumberOfCells(); x++) {
+	//		    	if(x < 6) {
+				    	sheet.autoSizeColumn(x);
+		 				int width = sheet.getColumnWidth(x);
+		 				int minWidth = list.get(x).getBytes().length * 450;
+		 				int maxWidth = 18000;
+		 				
+		 				if (minWidth > width) {
+		 					sheet.setColumnWidth(x, minWidth);
+		 				} else if (width > maxWidth) {
+		 					sheet.setColumnWidth(x, maxWidth);
+		 				} else {
+		 					sheet.setColumnWidth(x, width + 2000);
+		 				}
+	// 				}else {
+	// 					sheet.autoSizeColumn(x);
+	// 					int minWidth = list.get(x).getBytes().length * 300;
+	// 					sheet.setColumnWidth(x, minWidth);
+	// 				}
+	 			}
+		    }
 		    
 		    int startC =1;
 		    int lastC = 0;
@@ -637,7 +761,7 @@ public class StatisticsCustomerController {
 				
 				if( statCustomerReportList.get(i).getOrderCount() > 1) lastC = startC+statCustomerReportList.get(i).getOrderCount()-1;
 				else lastC = startC;
-//				logger.info("StatisticsCustomerContoller count-="+statCustomerReportList.get(i).getOrderCount()+"== startC="+startC+"===lastC="+lastC);
+				
 				if(i==0) startC=1;
 				if(lastC > startC) {
 					sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 0, 0));
@@ -650,7 +774,6 @@ public class StatisticsCustomerController {
 		    response.setContentType("ms-vnd/excel"); 
 		    //response.setHeader("Content-Disposition", "attachment;filename="+fileName);	
 		    response.setHeader("Content-disposition", "attachment; filename=" + new String(sheetName.getBytes(),"ISO8859_1") + "_"+titleDate+ ".xls");
-			
 	
 		    // 엑셀 출력
 		    wb.write(response.getOutputStream());
@@ -667,17 +790,19 @@ public class StatisticsCustomerController {
 	public ModelAndView getWorkReportUpdate(
 			HttpServletRequest request
 			, HttpServletResponse response
-			, WorkReportVO param) {
-
+			, StatisticsCustomerBottleVO param) {
 		
-		RequestUtils.initUserPrgmInfo(request, param);				
+		//RequestUtils.initUserPrgmInfo(request, param);				
 		
-		ModelAndView mav = new ModelAndView();		
-			
+		ModelAndView mav = new ModelAndView();
 		WorkReportVO workReport = workService.getWorkReport(param.getWorkReportSeq());
 		
 		mav.addObject("workReport", workReport);	 	
 		mav.addObject("searchUserId", workReport.getUserId());
+		mav.addObject("productId", param.getProductId());
+		mav.addObject("productPriceSeq", param.getProductPriceSeq());
+		mav.addObject("searchStatDt", param.getSearchStatDt());
+		
 		if(request.getParameter("action") != null) mav.addObject("action", request.getParameter("action"));
 		else mav.addObject("action", "update");	 
 		//mav.addObject("searchDt", DateUtils.convertDateFormat(workReport.getSearchDt(), "yyyy/MM/dd"));
@@ -704,7 +829,6 @@ public class StatisticsCustomerController {
 				param.setUserId(param.getCreateId());
 			}
 			ModelAndView mav = new ModelAndView();		
-
 			result = workService.modifyWorkBottleManual(request,param);
 			// WorkReport 정보 변경			
 			
@@ -715,10 +839,11 @@ public class StatisticsCustomerController {
 			if(result > 0){
 				String alertMessage = "수정되었습니다.";
 				RequestUtils.responseWriteException(response, alertMessage,
-						"/gms/statistics/customer/update.do?workReportSeq="+param.getWorkReportSeq()+"&action=modify");
+						"/gms/statistics/customer/update.do?workReportSeq="+param.getWorkReportSeq()+"&productId="+request.getParameter("productId")
+						+"&productPriceSeq="+request.getParameter("productPriceSeq")+ "&searchStatDt="+param.getSearchStatDt()+"&action=modify");
 			}
 		} catch (DataAccessException e) {		
-			logger.error(" getWorkReportModify Exception==="+e.toString());
+			logger.error(" getWorkReportModify DataAccessException==="+e.toString());
 			e.printStackTrace();
 		} catch (Exception e) {			
 			logger.error(" getWorkReportModify Exception==="+e.toString());

@@ -81,5 +81,5 @@ public interface WorkReportMapper {
 	
 	public int updateWorkReportNoOrder(WorkReportVO param);
 	
-	public int modifyWorkReportEtc(WorkReportVO param);
+	public int modifyWorkReportEtc(WorkBottleVO param);
 }

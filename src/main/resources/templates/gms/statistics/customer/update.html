@@ -20,11 +20,9 @@ $(document).ready(function(){
 		var hiddenField = document.createElement("input");
 		hiddenField.setAttribute("type", "hidden");
 		hiddenField.setAttribute("name", "searchStatDt" );
-		hiddenField.setAttribute("value",'[[ ${workReport.searchDt} ]]');
+		hiddenField.setAttribute("value",'[[ ${"searchStatDt"} ]]');
 		form.appendChild(hiddenField);     
 
-		document.body.appendChild(form);
-		
 		form.submit();	
 	}
 	
@@ -196,13 +194,15 @@ $(document).ready(function(){
     $("#saveEtc").on("click", function () {
 
     	var form = $("#writeForm");	
-    	var reportEtc = document.getElementById("reportEtc").value;    	
+    	var workEtc = document.getElementById("workEtc").value;    	
     	var workReportSeq = document.getElementById("workReportSeq").value; 
-    	
+    	var productId =[[ ${productId} ]];
+		var productPriceSeq = [[ ${productPriceSeq} ]];
+		 
     	$.ajax({
 			url: '/gms/report/saveEtc.do',
 			type: 'POST',
-			data: 'workReportSeq='+ workReportSeq +'&reportEtc='+ reportEtc ,
+			data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ workEtc ,
 			dataType: 'json',
 		 })
 		.done(function(data){	    
@@ -349,6 +349,7 @@ $(document).ready(function(){
 		        var botttleTypeNm = "";
 				for(i=0; i< data.length;i++) {
 					 
+					if(data[i].productId ==[[${productId}]] ) $('#workEtc').val(data[i].workEtc);
 					//if(data[i].workBottleCd=='0309'){ }
 					botttleTypeNm = "";
 					if(data[i].bottleType=='E') botttleTypeNm ="공병";
@@ -444,7 +445,7 @@ $(document).ready(function(){
 		var hiddenField = document.createElement("input");
 		hiddenField.setAttribute("type", "hidden");
 		hiddenField.setAttribute("name", "searchStatDt" );
-		hiddenField.setAttribute("value",'[[ ${workReport.searchDt} ]]');
+		hiddenField.setAttribute("value",'[[ ${searchStatDt} ]]');
 		form.appendChild(hiddenField);     
 		
 		document.body.appendChild(form);
@@ -489,7 +490,7 @@ $(document).ready(function(){
 				        <thead>	                    
 	                    <tr> 
 	                      <td >비고 </td>
-	                      <td ><input type="text" class="form-control" id="reportEtc" name="reportEtc"  th:value="${workReport.reportEtc}"></td>
+	                      <td ><input type="text" class="form-control" id="workEtc" name="workEtc"  value=""></td>
 	                        <td ><input type="button" id="saveEtc" value="저장"  class="btn btn-success float-right"> </td>
 	                    </tr>   
 	                    <tr><td colspan=3 ></td></tr>
@@ -509,7 +510,10 @@ $(document).ready(function(){
               	<input type="hidden" id="customerId" name="customerId" th:value="${workReport.customerId}">
               	<input type="hidden" id="userId" name="userId" th:value="${workReport.userId}">
               	<input type="hidden" id="searchDt" name="searchDt" th:value="${workReport.searchDt}">
+              	<input type="hidden" id="searchStatDt" name="searchStatDt" th:value="${searchStatDt}">
               	<input type="hidden" id="productCount" name="productCount" value="">
+              	<input type="hidden" id="productId" name="productId" th:value="${productId}">
+              	<input type="hidden" id="productPriceSeq" name="productPriceSeq" th:value="${productPriceSeq}">
               	<input type="hidden" id="action" name="action" th:value="${action}">
 	                   <label class="control-label col-10">납품정보</label>
 	                  

@@ -327,7 +327,7 @@
 	</select>
 	<select id="selectWorkReport" resultType="com.gms.web.admin.domain.manage.WorkReportVO" parameterType="int">		
 		SELECT
-			Tw.Work_Report_Seq, Tw.Customer_ID, TC.Customer_Nm, Tw.Order_ID, User_Id, DATE_FORMAT(Tw.Create_Dt,'%Y/%m/%d') Search_Dt, Report_Etc
+			Tw.Work_Report_Seq, Tw.Customer_ID, TC.Customer_Nm, Tw.Order_ID, User_Id, DATE_FORMAT(Tw.Create_Dt,'%Y/%m/%d') Search_Dt
 		FROM
 			TB_Work_Report Tw, TB_Customer Tc
 		WHERE
@@ -341,10 +341,10 @@
 	<select id="selectWorkBottleList" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="int">		
 		SELECT  
 			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, 
-			Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN, Multi_Yn
+			Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN, Multi_Yn,Work_Etc
 		FROM (
-			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, SUM(Product_Price) Product_Price,
-			Bottle_Type,Bottle_Sale_YN,Gas_Cd,Multi_Yn
+			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, 
+				SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN,Gas_Cd,Multi_Yn,Work_Etc
 			FROM TB_Work_Bottle
 			WHERE Work_Report_Seq = #{workReportSeq}
 			Group by Bottle_Work_Cd , Product_ID  ,Product_Price_Seq
@@ -947,13 +947,17 @@
 			DATE_FORMAT(Create_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
 	</select>
 	
-	<update id="modifyWorkReportEtc" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
-		UPDATE TB_Work_Report
+	<update id="modifyWorkReportEtc" parameterType="com.gms.web.admin.domain.manage.WorkBottleVO">
+		UPDATE TB_Work_Bottle
 		SET
-			Report_Etc			= #{reportEtc}
+			Work_Etc			= #{workEtc}
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
 			Work_Report_Seq = #{workReportSeq}
+		AND
+			Product_Id = #{productId}
+		AND
+			Product_Price_Seq = #{productPriceSeq}
 	</update>
 </mapper>

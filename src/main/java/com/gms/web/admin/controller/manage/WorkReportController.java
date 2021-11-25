@@ -540,7 +540,7 @@ public class WorkReportController {
 	
 	@RequestMapping(value = "/gms/report/saveEtc.do")
 	@ResponseBody
-	public int saveWorkReportEtc(WorkReportVO param)	{			
+	public int saveWorkReportEtc(WorkBottleVO param)	{			
 		logger.info("saveWorkReportEtc==="+param);
 		
 		List<String> list = null;

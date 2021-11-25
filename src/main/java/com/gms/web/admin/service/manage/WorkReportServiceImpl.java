@@ -123,7 +123,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(workBottle.getGasId() > 0) {
 				if(workBottle.getProductCapa().indexOf("Kg") < 0) workBottle.setProductCapa(workBottle.getProductCapa() +"L");
 			}
-			
+			//20211123 Charge_Volumn 컬럼 추가
+//			if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.tcharge")) ){
+//				workBottle.setProductCount(workBottle.getChargeVolumn());
+//			}
 			for(int j=0; j < viewList.size() ; j++) {
 				WorkReportViewVO temp = viewList.get(j);
 				
@@ -1500,7 +1503,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 					if(tempOrderProduct.getOrderCount() > 0 ) orderCompleted = false;
 				}
-
 				
 				if(isNewProduct) {	// 신규 상품 주문 추가
 					
@@ -4202,7 +4204,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		ProductTotalVO productTotal = productService.getPrice(bottle);
 		
 		List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();
-		
+		// 20211123 충전 용량 컬럼 추가
 		for(int i = 0 ; i < param.getProductCount() ; i++) {					
 		
 			WorkBottleVO addWorkBottle = new WorkBottleVO();
@@ -4224,6 +4226,25 @@ public class WorkReportServiceImpl implements WorkReportService {
 		}
 		
 		result = workMapper.insertWorkBottles(workBottleList);
+		
+		//20211123 충전용량 컬럼 추가 수정
+//		WorkBottleVO addWorkBottle = new WorkBottleVO();
+//		
+//		addWorkBottle.setWorkReportSeq(workReportSeq);
+//		addWorkBottle.setCustomerId(param.getCustomerId());
+//		
+//		addWorkBottle.setWorkSeq(workSeq++);
+//		addWorkBottle.setBottleWorkCd(param.getBottleWorkCd());
+//		addWorkBottle.setProductId(param.getProductId());
+//		addWorkBottle.setProductPriceSeq(param.getProductPriceSeq());
+//		addWorkBottle.setProductCapa(productTotal.getProductCapa());
+//		addWorkBottle.setBottleWorkCd(param.getBottleWorkCd());
+//		addWorkBottle.setBottleSaleYn("N");
+//		addWorkBottle.setChargeVolumn(param.getProductCount());
+//		addWorkBottle.setCreateId(param.getCreateId());
+//		addWorkBottle.setUpdateId(param.getCreateId());	
+//		
+//		result = workMapper.insertWorkBottle(addWorkBottle);
 		
 		return result;
 	}
@@ -4249,7 +4270,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	}
 
 	@Override
-	public int modifyWorkReportEtc(WorkReportVO param) {
+	public int modifyWorkReportEtc(WorkBottleVO param) {
 		return workMapper.modifyWorkReportEtc(param);
 	}
 	
