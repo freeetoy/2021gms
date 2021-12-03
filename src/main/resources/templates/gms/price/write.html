@@ -102,9 +102,9 @@ $(document).ready(function(){
         cols += '</td><td>';
         cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq" style="width:100px"></select> ';
 		cols += '</td><td>';
-        cols += '<input type="text" class="form-control" id="productPrice_' + mod_counter + '" name="productPrice" value="0">';
+        cols += '<input type="number" class="form-control" id="productPrice_' + mod_counter + '" name="productPrice" value="0">';
         cols += '</td><td>';
-        cols += '<input type="text" class="form-control" id="productBottlePrice_' + mod_counter + '" name="productBottlePrice" value="0">';
+        cols += '<input type="number" class="form-control" id="productBottlePrice_' + mod_counter + '" name="productBottlePrice" value="0">';
         cols += '</td><td>';
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
@@ -279,9 +279,9 @@ $(document).ready(function(){
 					cols += '</td><td>';
 					cols += '	<select class="form-control" id="productPriceSeq_0" name="productPriceSeq" style="width:100px"><option value=0>옵션</option></select> ';
 					cols += '</td><td>';
-					cols += '	<input type="text" class="form-control" id="productPrice_0" name="productPrice" value="0">';
+					cols += '	<input type="number" class="form-control" id="productPrice_0" name="productPrice" value="0">';
 					cols += '</td><td>';
-					cols += '	<input type="text" class="form-control" id="productBottlePrice_0" name="productBottlePrice" value="0">';
+					cols += '	<input type="number" class="form-control" id="productBottlePrice_0" name="productBottlePrice" value="0">';
 					cols += '</td><td>';  
 					
 					//cols += '	<input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';
@@ -325,9 +325,9 @@ $(document).ready(function(){
 			            cols += '<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
 			            cols  += '</select> ';
 			            cols += '</td><td>';
-			            cols += ' <input type="text" id="productPrice_' + counter + '" name="productPrice" class="form-control" value="' + data[i].productPrice + '">';		   
+			            cols += ' <input type="number" id="productPrice_' + counter + '" name="productPrice" class="form-control" value="' + data[i].productPrice + '">';		   
 			            cols += '</td><td>';
-			            cols += ' <input type="text" id="productBottlePrice_' + counter + '" name="productBottlePrice" class="form-control" value="' + data[i].productBottlePrice + '">';		                         
+			            cols += ' <input type="number" id="productBottlePrice_' + counter + '" name="productBottlePrice" class="form-control" value="' + data[i].productBottlePrice + '">';		                         
 			            cols += '</td><td>';		           
 	
 			            if (counter < 1){	
@@ -556,10 +556,10 @@ $(document).ready(function(){
 							    </select>	 	                        
 	                       </td>   
 	                       <td> 
-	                         <input type="text" class="form-control" id="productPrice_0" name="productPrice_0" placeholder="대여가격">
+	                         <input type="number" class="form-control" id="productPrice_0" name="productPrice_0" placeholder="대여가격">
 	                       </td> 
 	                       <td> 
-	                         <input type="text" class="form-control" id="productBottlePrice_0" name="productBottlePrice_0" placeholder="판매가격">
+	                         <input type="number" class="form-control" id="productBottlePrice_0" name="productBottlePrice_0" placeholder="판매가격">
 	                       </td>
 	                       <td>
 	                       	<input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />	                       

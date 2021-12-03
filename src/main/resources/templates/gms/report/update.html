@@ -262,6 +262,7 @@ $(document).ready(function(){
 		        
 				cols += '<td>상품</td>';
 				cols += '<td>용량</td>';
+				cols += '<td>용기</td>';	
 				cols += '<td>수량</td>';				
 				cols += '<td></td></tr>';
 
@@ -321,6 +322,7 @@ $(document).ready(function(){
 				cols += '<td>구분</td>';
 				cols += '<td>상품</td>';
 				cols += '<td>용량</td>';
+				cols += '<td>용기</td>';	
 				cols += '<td>수량</td>';
 				cols += '<td></td></tr>';
 
@@ -382,8 +384,11 @@ $(document).ready(function(){
 					cols += '	<option value="' + data[i].bottleType +'" selected>' + botttleTypeNm + '</option>';
 					cols += '	</select> ';
 					cols += '</td><td>';				
-					cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
-					cols += '</td><td>';  
+					if(data[i].bottleWorkCd =='0318')
+						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].chargeVolumn + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					else
+						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '</td><td>'; 
 	
 					if (counter < 1){	
 						cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	

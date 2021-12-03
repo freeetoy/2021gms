@@ -134,6 +134,7 @@
 		 , Bottle_Sale_YN
 		 , Gas_CD
 		 , Multi_YN
+		 , Charge_Volumn
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -189,6 +190,7 @@
 			, #{bottleSaleYn}
 			, #{gasCd}
 			, #{multiYn}
+			, #{chargeVolumn}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 			, #{searchDt}	
@@ -222,6 +224,7 @@
 			, #{item.bottleSaleYn}
 			, #{item.gasCd}
 			, #{item.multiYn}
+			, #{item.chargeVolumn}
 			, #{item.createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(item.searchDt)">
 			, #{item.searchDt}	
@@ -341,10 +344,10 @@
 	<select id="selectWorkBottleList" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="int">		
 		SELECT  
 			Work_Report_Seq,Product_Count, WB.Product_ID, WB.Product_Price_Seq, Bottle_Work_Cd, Product_Nm, 
-			Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN, Multi_Yn,Work_Etc
+			Product_Capa,Gas_Cd,Gas_Id, Customer_Id, WB.Product_Price,Bottle_Type,Bottle_Sale_YN, Multi_Yn,Charge_Volumn,Work_Etc
 		FROM (
 			SELECT Work_Report_Seq,Count(work_seq) Product_Count,Product_ID,Product_Price_Seq, Bottle_Work_Cd, Customer_Id, 
-				SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN,Gas_Cd,Multi_Yn,Work_Etc
+				SUM(Product_Price) Product_Price,Bottle_Type,Bottle_Sale_YN,Gas_Cd,Multi_Yn,Charge_Volumn,Work_Etc
 			FROM TB_Work_Bottle
 			WHERE Work_Report_Seq = #{workReportSeq}
 			Group by Bottle_Work_Cd , Product_ID  ,Product_Price_Seq
@@ -468,12 +471,12 @@
 				WHEN AA.Bottle_Type = 'E'
 				THEN '공병'		
 				ELSE ''
-			END AS Bottle_Type
+			END AS Bottle_Type, Charge_Volumn
 		FROM 
 			TB_CODE TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP, 
 			(
-				SELECT Count(TB.Product_Price_Seq) Product_Count, 
-				TB.Work_Report_Seq, TB.Customer_ID, TB.Product_ID, TB.Product_Price_Seq, Bottle_work_Cd,Product_Price, Order_Id, Bottle_Sale_YN,TB.Bottle_Type
+				SELECT Count(TB.Product_Price_Seq) Product_Count, TB.Work_Report_Seq, TB.Customer_ID, TB.Product_ID, TB.Product_Price_Seq, 
+					Bottle_work_Cd,	Product_Price, Order_Id, Bottle_Sale_YN,TB.Bottle_Type, Charge_Volumn
 				FROM TB_Work_Bottle TB, TB_Work_Report TW
 				WHERE TB.Work_Report_Seq  = TW.Work_Report_Seq
 				AND User_id = #{searchUserId}
@@ -666,6 +669,7 @@
 				, TW.UPDATE_DT
 				, CD_NM Bottle_Work_CD_NM
 				, TW.Received_Amount
+				, Charge_Volumn Start_Row
 			FROM 
 				TB_Work_Bottle TWB,TB_Work_Report TW, TB_CODE TC,TB_User TU,TB_Customer TCU
 			WHERE
@@ -822,6 +826,7 @@
 				, TW.UPDATE_DT
 				, CD_NM Bottle_Work_CD_NM
 				, TW.Received_Amount
+				, Charge_Volumn start_Row
 			FROM 
 				TB_Work_Bottle TWB,TB_Work_Report TW, TB_CODE TC,TB_User TU,TB_Customer TCU
 			WHERE
@@ -959,5 +964,27 @@
 			Product_Id = #{productId}
 		AND
 			Product_Price_Seq = #{productPriceSeq}
+	</update>
+	
+	<select id="selectWorkBottleSeqTcharge" resultType="int" parameterType="int">
+		SELECT IFNULL(A.Work_Seq, 0)
+		FROM 
+		(
+			SELECT max(Work_Seq) Work_Seq
+			FROM TB_Work_Bottle
+			WHERE Work_Report_Seq =  #{workReportSeq} 
+			AND Bottle_Work_CD ='0318' ) A
+	</select>
+	
+	<update id="modifyWorkBottleCharge" parameterType="com.gms.web.admin.domain.manage.WorkBottleVO">
+		UPDATE TB_Work_Bottle
+		SET
+			Charge_Volumn		= #{chargeVolumn}
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Work_Report_Seq = #{workReportSeq}
+		AND
+			Work_Seq = #{workSeq}
 	</update>
 </mapper>

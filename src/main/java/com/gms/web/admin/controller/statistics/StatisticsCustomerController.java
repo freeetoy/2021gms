@@ -35,11 +35,13 @@ import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.service.manage.CustomerService;
+import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.manage.WorkReportService;
 import com.gms.web.admin.service.statistics.StatisticsCustomerService;
 
@@ -58,6 +60,9 @@ public class StatisticsCustomerController {
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	@RequestMapping(value = "/gms/statistics/customer/daily.do")
 	public ModelAndView getStatisticsCustomerDaily(StatisticsCustomerVO params) {
@@ -757,12 +762,13 @@ public class StatisticsCustomerController {
 		    
 		    int startC =1;
 		    int lastC = 0;
+		    int aCount = 0;
 			for(int i=0; i < statCustomerReportList.size() ; i++) {
-				
 				if( statCustomerReportList.get(i).getOrderCount() > 1) lastC = startC+statCustomerReportList.get(i).getOrderCount()-1;
 				else lastC = startC;
-				
+				aCount += startC+statCustomerReportList.get(i).getOrderCount();
 				if(i==0) startC=1;
+//				logger.info("StatisticsCustomerContoller statCustomerReportList startC="+startC +"== lastC"+lastC);
 				if(lastC > startC) {
 					sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 0, 0));
 				    sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 2, 2));
@@ -802,6 +808,13 @@ public class StatisticsCustomerController {
 		mav.addObject("productId", param.getProductId());
 		mav.addObject("productPriceSeq", param.getProductPriceSeq());
 		mav.addObject("searchStatDt", param.getSearchStatDt());
+		
+		ProductPriceSimpleVO sProduct = new ProductPriceSimpleVO();
+		sProduct.setProductId(param.getProductId());
+		sProduct.setProductPriceSeq(param.getProductPriceSeq());
+		
+		ProductPriceSimpleVO productPriceSimple =  productService.getProductPriceSimple(sProduct);
+		mav.addObject("productPriceSimple", productPriceSimple);
 		
 		if(request.getParameter("action") != null) mav.addObject("action", request.getParameter("action"));
 		else mav.addObject("action", "update");	 

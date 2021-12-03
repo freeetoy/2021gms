@@ -32,7 +32,6 @@ public class ECountController {
 	
 	@RequestMapping(value = "/gms/excelDownloadEcount.do")
    public void excelDownloadBottle(HttpServletResponse response, WorkReportVO workReport){
-	// 게시판 목록조회
 
 	   try {			   
 		   
@@ -164,6 +163,10 @@ public class ECountController {
 		        //productCapa = vo.getProductCapa();	
 		        productCapa = vo.getECountSpec();
 		        orderCount = vo.getOrderCount();
+		        //20211123 TB_Work_Bottle에 Charge_Volumn 컬럼 추가
+//		        if(vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.tcharge") ) ) {
+//		        	orderCount = vo.getChargeVolumn();
+//		        }
 		        supplyPrice = Math.round(vo.getSupplyPrice());
 		        vat = Math.round(vo.getVat());
 		       

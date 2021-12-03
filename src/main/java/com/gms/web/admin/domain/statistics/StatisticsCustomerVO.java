@@ -16,7 +16,8 @@ private static final long serialVersionUID = 8474003342300538104L;
 	
 	/**Customer_ID   */
 	private Integer customerId ;
-	
+	/** Customer_Nm		*/
+	private String customerNm;
 	/**Stat_Dt      */
 	private String statDt;
 	

@@ -530,4 +530,22 @@
 		AND TP.Product_ID = TPP.Product_ID		
 		AND TPP.Product_Capa not like '%병%'	
 	</select>
+	
+	<select id="selectProductPriceSimple" parameterType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO"   resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
+		SELECT
+			TPP.Product_ID ,TPP.Product_Price_Seq, 
+			CASE WHEN `Gas_ID` > 0 THEN concat(Product_Nm , " - " ,Product_Capa) ELSE Product_Nm END Product_Nm,Product_Capa
+		FROM
+			TB_Product  TP, TB_Product_Price TPP
+		WHERE
+			TP.Product_ID =  #{productId}		
+		AND
+			TP.Product_ID = TPP.Product_ID		
+		AND 
+			TPP.Product_Price_Seq = #{productPriceSeq}
+		AND 
+			TP.Product_Status  != '0'
+		AND 
+			TPP.Product_Status  != '0'
+	</select>
 </mapper>
