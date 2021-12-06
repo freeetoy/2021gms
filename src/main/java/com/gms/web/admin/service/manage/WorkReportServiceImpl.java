@@ -2826,10 +2826,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 					double tempOrderAmount = 0;
-//					logger.debug(" registerOrderInfo productTotal.getCustomerProductPrice()="+productTotal.getCustomerProductPrice() );
-//					logger.debug(" registerOrderInfo productTotal.getProductPrice()="+productTotal.getProductPrice() );
-//					logger.debug(" registerOrderInfo productTotal.getCustomerBottlePrice()="+productTotal.getCustomerBottlePrice());
-//					logger.debug(" registerOrderInfo productTotal.getProductBottlePrice()="+productTotal.getProductBottlePrice());
 						
 					if(param.getAgencyYn().equals("N")) {
 						if(productTotal.getCustomerProductPrice() > 0) 

@@ -159,6 +159,9 @@
 		AND wb.Product_ID = pp.Product_ID
 		AND wb.Product_Price_Seq = pp. Product_Price_Seq
 		AND wb.Create_ID = tu.User_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND wb.Create_ID = #{searchUserId} 
+		</if>
 		AND wb.Work_Report_Seq = wr.Work_Report_Seq
 		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id
 		Order By wb.Work_Report_Seq desc
@@ -185,6 +188,9 @@
 		AND wb.Product_ID = tp.Product_ID
 		AND wb.Product_ID = pp.Product_ID
 		AND wb.Product_Price_Seq = pp. Product_Price_Seq
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND wb.Create_ID = #{searchUserId} 
+		</if>
 		AND wb.Create_ID = tu.User_ID
 		AND wb.Work_Report_Seq = wr.Work_Report_Seq
 		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id
@@ -198,6 +204,9 @@
 		AND Bottle_Work_Cd in ('0309','0314','0316','0310','0315','0317','0308','0311','0312','0313','0318'  )
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerId)">
 		AND wb.Customer_ID = #{paramCustomerId} 
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND wb.Create_ID = #{searchUserId} 
 		</if>
 		GROUP By wb.Customer_id, wb.Create_ID
 		Order By wb.Work_Report_Seq desc

@@ -229,6 +229,13 @@ $(document).ready(function(){
     		hiddenField.setAttribute("value",'[[ ${searchStatDt} ]]');
     		form.appendChild(hiddenField);     
     		
+    		var hiddenField1 = document.createElement("input");
+    		hiddenField1.setAttribute("type", "hidden");
+    		hiddenField1.setAttribute("name", "searchUserId" );
+    		hiddenField1.setAttribute("value",'[[ ${searchUserId} ]]');
+    		form.appendChild(hiddenField1);     
+    		
+    		
     		document.body.appendChild(form);
     		
     		form.submit();			
@@ -537,6 +544,7 @@ $(document).ready(function(){
               	<input type="hidden" id="userId" name="userId" th:value="${workReport.userId}">
               	<input type="hidden" id="searchDt" name="searchDt" th:value="${workReport.searchDt}">
               	<input type="hidden" id="searchStatDt" name="searchStatDt" th:value="${searchStatDt}">
+              	<input type="hidden" id="searchUserId" name="searchUserId" th:value="${searchUserId}">
               	<input type="hidden" id="productCount" name="productCount" value="">
               	<input type="hidden" id="productId" name="productId" th:value="${productPriceSimple.productId}">
               	<input type="hidden" id="productPriceSeq" name="productPriceSeq" th:value="${productPriceSimple.productPriceSeq}">

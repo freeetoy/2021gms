@@ -76,4 +76,7 @@ public class StatisticsCustomerBottleVO implements Serializable {
 	/** searchCustomerId	*/
 	private Integer  paramCustomerId;	
 	
+	/** searchUserId   	*/
+	private String searchUserId;
+	
 }

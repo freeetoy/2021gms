@@ -166,6 +166,35 @@ $(function() {
 	         </table>
 	        </div>
         </div>
+         <div class="row">	
+	        <div class="col-1">
+               		<label >담당자</label>
+            </div>               
+            <div class="col-2">     
+                   
+               <select id="searchUserId" name="searchUserId" class="form-control">  
+               <option value="">영업담당자</option>
+            	<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					                th:if="${searchUserId ==row.userId}" selected>
+				<option th:each="row : ${userList}"
+					                th:text="${row.userNm}"
+					                th:value="${row.userId}"
+					                th:unless="${searchUserId ==row.userId}" >	             
+				</option>		
+            	</select>   	
+            </div>               
+            <div class="col-9">
+            </div>
+        </div>
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	        <tr></tr>
+	         </table>
+	        </div>
+        </div>
         <div class="row">
            	<div class="col-1">
                		<label >거래일</label>
@@ -226,7 +255,7 @@ $(function() {
                       <td th:text="${row.carNumber}"></td>
                       <td th:text="${row.salesNm}"></td>
                       <td th:text="${row.strCD}"></td>
-                      <td><a th:href="@{/gms/statistics/customer/update.do( workReportSeq=${row.workReportSeq}, productId=${row.productId}, productPriceSeq=${row.productPriceSeq},searchStatDt=${searchStatDt} )}" th:text="${row.CustomerNm}"></a></td>
+                      <td><a th:href="@{/gms/statistics/customer/update.do( workReportSeq=${row.workReportSeq}, productId=${row.productId}, productPriceSeq=${row.productPriceSeq},searchStatDt=${searchStatDt} ,searchUserId=${searchUserId})}" th:text="${row.CustomerNm}"></a></td>
                       <td th:if="${row.productCapa ==''}"  th:text="${row.productNm}">
                       <td th:unless="${row.productCapa ==''}" th:text="${row.productNm} + ' (' + ${row.productCapa}+')'">
                       </td>

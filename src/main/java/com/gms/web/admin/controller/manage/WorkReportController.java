@@ -431,7 +431,7 @@ public class WorkReportController {
 				param.setUserId(param.getCreateId());
 			}
 			ModelAndView mav = new ModelAndView();		
-
+			logger.info("getWorkReportModify== workReportSeq="+param.getWorkReportSeq());
 			result = workService.modifyWorkBottleManual(request,param);
 			// WorkReport 정보 변경			
 			
@@ -541,9 +541,8 @@ public class WorkReportController {
 	@RequestMapping(value = "/gms/report/saveEtc.do")
 	@ResponseBody
 	public int saveWorkReportEtc(WorkBottleVO param)	{			
-		logger.info("saveWorkReportEtc==="+param);
+		logger.info("saveWorkReportEtc==="+param.getWorkEtc()+ " workReportSeq="+param.getWorkReportSeq());
 		
-		List<String> list = null;
 		int result = 0;		
 		result = workService.modifyWorkReportEtc(param);
 		

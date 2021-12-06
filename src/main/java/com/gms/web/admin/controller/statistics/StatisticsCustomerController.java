@@ -36,12 +36,14 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
+import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.service.manage.CustomerService;
 import com.gms.web.admin.service.manage.ProductService;
+import com.gms.web.admin.service.manage.UserService;
 import com.gms.web.admin.service.manage.WorkReportService;
 import com.gms.web.admin.service.statistics.StatisticsCustomerService;
 
@@ -63,6 +65,9 @@ public class StatisticsCustomerController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "/gms/statistics/customer/daily.do")
 	public ModelAndView getStatisticsCustomerDaily(StatisticsCustomerVO params) {
@@ -328,6 +333,12 @@ public class StatisticsCustomerController {
 			param.setSearchCustomerId(null);
 		}
 		
+		//param.setSearchUserId(param.getSearchUserId());
+		
+		UserVO tempUser = new UserVO();	
+		tempUser.setUserPartCd(PropertyFactory.getProperty("common.user.part.account"));
+		List<UserVO> userList = userService.getUserListPartNot(tempUser);
+		
 		List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatisticsCustomerBottleList(param);
 		
 		for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
@@ -343,6 +354,8 @@ public class StatisticsCustomerController {
 				statisticsCustomerBottle.setChargeCount(chargeCount);
 			}
 		}
+		mav.addObject("userList", userList);	
+		mav.addObject("searchUserId", param.getSearchUserId());	
 		
 		mav.addObject("statCustomerList", statCustomerBottleList);	
 		mav.addObject("searchStatDt", searchStatDt);	
@@ -853,7 +866,7 @@ public class StatisticsCustomerController {
 				String alertMessage = "수정되었습니다.";
 				RequestUtils.responseWriteException(response, alertMessage,
 						"/gms/statistics/customer/update.do?workReportSeq="+param.getWorkReportSeq()+"&productId="+request.getParameter("productId")
-						+"&productPriceSeq="+request.getParameter("productPriceSeq")+ "&searchStatDt="+param.getSearchStatDt()+"&action=modify");
+						+"&productPriceSeq="+request.getParameter("productPriceSeq")+ "&searchStatDt="+param.getSearchStatDt()+"&searchUserId="+param.getSearchUserId()+"&action=modify");
 			}
 		} catch (DataAccessException e) {		
 			logger.error(" getWorkReportModify DataAccessException==="+e.toString());
