@@ -46,9 +46,7 @@ $(document).ready(function(){
 		form.appendChild(hiddenField);
 
 		var searchCustomerId = document.getElementById("searchCustomerId").value;  
-		console.log(searchCustomerId);
 		if(searchCustomerId != 0) {
-			console.log("if");
 			var hiddenField1 = document.createElement("input");
 			hiddenField1.setAttribute("type", "hidden");
 			hiddenField1.setAttribute("name", "searchCustomerId" );
@@ -56,6 +54,15 @@ $(document).ready(function(){
 			form.appendChild(hiddenField1);    
 		}
 		document.body.appendChild(form);
+		
+		var searchUserId = document.getElementById("searchUserId").value;  
+		if(searchUserId != "") {
+			var hiddenField2 = document.createElement("input");
+			hiddenField2.setAttribute("type", "hidden");
+			hiddenField2.setAttribute("name", "searchUserId" );
+			hiddenField2.setAttribute("value",searchUserId);
+			form.appendChild(hiddenField2);    
+		}
 		
 		form.submit();
     });
@@ -75,15 +82,23 @@ $(document).ready(function(){
 		form.appendChild(hiddenField);
 
 		var searchCustomerId = document.getElementById("searchCustomerId").value;  
-		console.log(searchCustomerId);
 		if(searchCustomerId != 0) {
-			console.log("if");
 			var hiddenField1 = document.createElement("input");
 			hiddenField1.setAttribute("type", "hidden");
 			hiddenField1.setAttribute("name", "searchCustomerId" );
 			hiddenField1.setAttribute("value",searchCustomerId);
 			form.appendChild(hiddenField1);    
 		}
+		
+		var searchUserId = document.getElementById("searchUserId").value;  
+		if(searchUserId != "") {
+			var hiddenField2 = document.createElement("input");
+			hiddenField2.setAttribute("type", "hidden");
+			hiddenField2.setAttribute("name", "searchUserId" );
+			hiddenField2.setAttribute("value",searchUserId);
+			form.appendChild(hiddenField2);    
+		}
+		
 		document.body.appendChild(form);
 		
 		form.submit();

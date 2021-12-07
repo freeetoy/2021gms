@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.statistics;
 
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,10 @@ import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.UserVO;
+import com.gms.web.admin.domain.manage.WorkBottleRegisterVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
@@ -301,7 +304,7 @@ public class StatisticsCustomerController {
 	public ModelAndView getStatisticsCustomerBottle(StatisticsCustomerBottleVO param) {
 
 //		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle");
-		//logger.debug("StatisticsCustomerContoller searchStatisticsCustomerDt "+ params.getSearchStatDt());
+		
 
 		ModelAndView mav = new ModelAndView();
 				
@@ -402,7 +405,7 @@ public class StatisticsCustomerController {
 			}else {
 				param.setSearchCustomerId(null);
 			}
-			
+		 logger.debug("StatisticsCustomerContoller searchUserId "+ param.getSearchUserId());
 			List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatisticsCustomerBottleList(param);
 					
 			for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
@@ -631,9 +634,10 @@ public class StatisticsCustomerController {
 			
 			String titleDate = searchStatDt.replace("/","");
 			
-			List<StatisticsCustomerVO> statCustomerReportList = statService.getStatSalesCustomerCount(param);
+//			List<StatisticsCustomerVO> statCustomerReportList = statService.getStatSalesCustomerCount(param);
 			List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatSalesCustomerBottleList(param);
-					
+			List<WorkBottleRegisterVO> mergeList = new ArrayList<WorkBottleRegisterVO>();	
+			
 			for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
 				StatisticsCustomerBottleVO statisticsCustomerBottle = statCustomerBottleList.get(i);
 				
@@ -693,17 +697,47 @@ public class StatisticsCustomerController {
 			    cell.setCellStyle(headStyle);
 			    cell.setCellValue(list.get(i));		    
 		    }
-		    
-//		    int[] mergeSeq = new int[statCustomerReportList.size()];
-//			int[] lastmergeSeq = new int[statCustomerReportList.size()];
-			
+
 			int seq =1;
 			Integer preCustomerId = 0;
 		    // 데이터 부분 생성
-		    for(StatisticsCustomerBottleVO vo : statCustomerBottleList) {
+//		    for(StatisticsCustomerBottleVO vo : statCustomerBottleList) {
+			StatisticsCustomerBottleVO oldVo = null;
+			WorkBottleRegisterVO scVo = new WorkBottleRegisterVO();
+			int ordeCount = 0;
+			for(int j=0; j < statCustomerBottleList.size() ; j++) {
+				
+				StatisticsCustomerBottleVO vo = statCustomerBottleList.get(j);
+
 		    	int i=0;
 		    	if(rowNo > 1 && !preCustomerId.equals(vo.getCustomerId()) ) seq++; 
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+
+		        if(j==0) {
+		        	ordeCount++;
+		        	scVo.setRegisteredCount(ordeCount);
+		        }else  if( j < statCustomerBottleList.size()-1){
+		        	if(vo.getCustomerId().equals(oldVo.getCustomerId())) {
+		        		ordeCount++;
+		        		scVo.setRegisteredCount(ordeCount);
+		        	}else {
+						scVo.setRegisteredCount(ordeCount);
+		        		mergeList.add(scVo);
+		        		scVo = new WorkBottleRegisterVO();
+		        		ordeCount =1;
+		        	}
+		        }else {
+		        	if(!vo.getCustomerId().equals(oldVo.getCustomerId())) {
+		        		ordeCount=1;
+		        		scVo.setRegisteredCount(ordeCount);
+		        		mergeList.add(scVo);
+		        		scVo = new WorkBottleRegisterVO();
+		        	}else {
+		        		ordeCount++;
+		        		scVo.setRegisteredCount(ordeCount);
+		        		mergeList.add(scVo);
+		        	}
+		        }
 		        
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
@@ -748,6 +782,7 @@ public class StatisticsCustomerController {
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getWorkEtc());
 		        preCustomerId = vo.getCustomerId();
+		        oldVo= vo;
 		    }	
 
 		    if(statCustomerBottleList.size() > 0) {
@@ -773,15 +808,16 @@ public class StatisticsCustomerController {
 	 			}
 		    }
 		    
+		    
 		    int startC =1;
 		    int lastC = 0;
 		    int aCount = 0;
-			for(int i=0; i < statCustomerReportList.size() ; i++) {
-				if( statCustomerReportList.get(i).getOrderCount() > 1) lastC = startC+statCustomerReportList.get(i).getOrderCount()-1;
+			for(int i=0; i < mergeList.size() ; i++) {
+				if( mergeList.get(i).getRegisteredCount() > 1) lastC = startC+mergeList.get(i).getRegisteredCount()-1;
 				else lastC = startC;
-				aCount += startC+statCustomerReportList.get(i).getOrderCount();
+				aCount += startC+mergeList.get(i).getRegisteredCount();
 				if(i==0) startC=1;
-//				logger.info("StatisticsCustomerContoller statCustomerReportList startC="+startC +"== lastC"+lastC);
+				
 				if(lastC > startC) {
 					sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 0, 0));
 				    sheet.addMergedRegion(new CellRangeAddress(startC, lastC, 2, 2));
