@@ -195,6 +195,10 @@ $(document).ready(function(){
 
     	var form = $("#writeForm");	
     	var workEtc = document.getElementById("workEtc").value;    	
+    	if(workEtc ==''){
+    		alert("비고를 입력하세요");
+    		return;
+    	}
     	var workReportSeq = document.getElementById("workReportSeq").value; 
     	var productId =[[ ${productId} ]];
 		var productPriceSeq = [[ ${productPriceSeq} ]];
@@ -202,7 +206,7 @@ $(document).ready(function(){
     	$.ajax({
 			url: '/gms/report/saveEtc.do',
 			type: 'POST',
-			data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ workEtc ,
+			data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ encodeURI(workEtc) ,
 			dataType: 'json',
 		 })
 		.done(function(data){	    
