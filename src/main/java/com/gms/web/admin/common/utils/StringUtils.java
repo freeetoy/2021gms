@@ -25,6 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import com.gms.web.admin.common.config.PropertyFactory;
+
 /**
  * <pre>
  * org.apache.commons.lang3.StringUtils
@@ -1894,4 +1896,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
 	}
 
+	public static boolean isTankProduct(Integer productId) {
+		boolean result = false;
+		
+		if(productId >=  Integer.parseInt(PropertyFactory.getProperty("product.Tank.ProductId.start")) 
+				&&  productId <=  Integer.parseInt(PropertyFactory.getProperty("product.Tank.ProductId.end"))  )
+			result = true;
+		return result;
+	}
 }

@@ -182,7 +182,7 @@ public class ECountController {
 		        		}
 		        	}
 		        }
-//		        logger.debug("****** registerWorkReportNoGas orderCount*****="+orderCount);
+//		        logger.debug("****** registerWorkReportNoGas orderCount111*****="+orderCount);
 		        if(vo.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) ) {
 		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
 		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";

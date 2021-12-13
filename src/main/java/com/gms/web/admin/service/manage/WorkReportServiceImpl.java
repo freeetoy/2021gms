@@ -2,6 +2,7 @@ package com.gms.web.admin.service.manage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +197,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			//Order_Product 비교
 			List<OrderProductVO> orderProductList = orderService.getOrderProducSimpletList(param.getOrderId());
 			int orderProductSeq = orderProductList.size() +1;
+			if(orderProductList.size() > 0) orderProductSeq = orderProductList.get(orderProductList.size()-1).getOrderProductSeq()+1;
 			
 			for(int i=orderProductList.size()-1 ; i >= 0  ; i-- ) {
 				OrderProductVO removeP = orderProductList.get(i);
@@ -1296,11 +1298,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 			result = workMapper.insertWorkBottles(workBottleList);	
 			
 		} catch (DataAccessException e) {
-			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
 			e.printStackTrace();
 			return result;
 		} catch (Exception e) {
-			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
 			e.printStackTrace();
 			return result;
 		}
@@ -1602,9 +1602,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 //					logger.debug(" registerWorkNoBottle addWorkBottle getSearchDt=" + addWorkBottle.getSearchDt() );
 					workBottleList.add(addWorkBottle);
 				}
-				//
-				result = workMapper.insertWorkBottles(workBottleList);
-				
 				//Order 정보 확인 후  업데이트 필요
 				orderProductList = orderService.getOrderProductList(orderTemp.getOrderId());
 				registeredWorkBottleList = getWorkBottleListAndCountOfOrder(orderTemp.getOrderId());
@@ -1854,6 +1851,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		int result = 0;
 		try {
 			int productCount = 0;
+			Enumeration params = request.getParameterNames();
+			while(params.hasMoreElements()) {
+			  String name = (String) params.nextElement();
+			  logger.debug("modifyWorkBottleManual ==="+name + " : " + request.getParameter(name) + "     "); 
+			}
 			
 			if(request.getParameter("productCount") !=null) productCount = Integer.parseInt(request.getParameter("productCount"));
 			
@@ -1930,7 +1932,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			for(int j=0; j< afterWorkBottleList.size() ; j++) {
 				WorkBottleVO afterWorkBottle = afterWorkBottleList.get(j);		
 				afterWorkBottleList.get(j).setWorkReportSeq(param.getWorkReportSeq());				
-				
+//				logger.debug("WorkReportServiceImpl -11-afterWorkBottle.getChargeVolumn="+afterWorkBottle.getChargeVolumn() );
 				for(int i =0 ; i< beforeWorkBottleList.size() ; i++) {
 					WorkBottleVO beforeWorkBottle = beforeWorkBottleList.get(i);		
 					customerId = beforeWorkBottle.getCustomerId();
@@ -2741,7 +2743,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 
 	@Transactional
 	private OrderVO registerOrderInfo(WorkReportVO param,int workSeq, List<BottleVO> params, List<String> bottles, List<String> productCounts) {
-		logger.debug(" registerOrderInfo" );
+//		logger.debug(" registerOrderInfo" );
 		try {
 			int result = 0;
 			//Order
@@ -3864,6 +3866,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 			}
 			
+			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.tcharge")))
+					return 1;
+					
 			if(checkYn1) {
 				if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.sale"))
 						|| bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.freeback"))
@@ -4181,7 +4186,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 
 	@Override
 	public int registerWorkBottleChargeTank(WorkBottleVO param) {
-		logger.debug(" -registerWorkBottleChargeTank" );
+//		logger.debug(" -registerWorkBottleChargeTank" );
 		int result = 0;
 		int workSeq=1;
 		boolean registerFlag = false;

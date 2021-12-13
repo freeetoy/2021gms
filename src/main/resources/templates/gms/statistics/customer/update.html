@@ -481,6 +481,12 @@ $(document).ready(function(){
 		hiddenField.setAttribute("value",'[[ ${searchStatDt} ]]');
 		form.appendChild(hiddenField);     
 		
+		var hiddenField1 = document.createElement("input");
+		hiddenField1.setAttribute("type", "hidden");
+		hiddenField1.setAttribute("name", "searchUserId" );
+		hiddenField1.setAttribute("value",'[[ ${searchUserId} ]]');
+		form.appendChild(hiddenField1);     
+		
 		document.body.appendChild(form);
 		
 		form.submit();			

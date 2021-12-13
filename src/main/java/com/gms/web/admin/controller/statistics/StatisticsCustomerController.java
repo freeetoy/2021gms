@@ -853,7 +853,7 @@ public class StatisticsCustomerController {
 		WorkReportVO workReport = workService.getWorkReport(param.getWorkReportSeq());
 		
 		mav.addObject("workReport", workReport);	 	
-		mav.addObject("searchUserId", workReport.getUserId());
+		mav.addObject("searchUserId", param.getSearchUserId());
 		mav.addObject("productId", param.getProductId());
 		mav.addObject("productPriceSeq", param.getProductPriceSeq());
 		mav.addObject("searchStatDt", param.getSearchStatDt());
@@ -890,7 +890,8 @@ public class StatisticsCustomerController {
 				RequestUtils.initUserPrgmInfo(request, param);	
 				param.setUserId(param.getCreateId());
 			}
-			ModelAndView mav = new ModelAndView();		
+			ModelAndView mav = new ModelAndView();	
+			logger.info("stat getWorkReportModify== workReportSeq="+param.getWorkReportSeq());
 			result = workService.modifyWorkBottleManual(request,param);
 			// WorkReport 정보 변경			
 			
@@ -901,8 +902,7 @@ public class StatisticsCustomerController {
 			if(result > 0){
 				String alertMessage = "수정되었습니다.";
 				RequestUtils.responseWriteException(response, alertMessage,
-						"/gms/statistics/customer/update.do?workReportSeq="+param.getWorkReportSeq()+"&productId="+request.getParameter("productId")
-						+"&productPriceSeq="+request.getParameter("productPriceSeq")+ "&searchStatDt="+param.getSearchStatDt()+"&searchUserId="+param.getSearchUserId()+"&action=modify");
+						"/gms/statistics/customer/bottle.do?searchStatDt="+param.getSearchStatDt()+"&searchUserId="+param.getSearchUserId());
 			}
 		} catch (DataAccessException e) {		
 			logger.error(" getWorkReportModify DataAccessException==="+e.toString());
