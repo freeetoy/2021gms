@@ -1545,7 +1545,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 					receivableAmount += newOrderProduct.getOrderAmount();
 				}				
-//				logger.debug("WorkReportServiceImpl registerWorkNoBottle  receivableAmount=" + receivableAmount  );
+
 				if(!registerFlag) {	//WorkReport 업데이트
 					workReport.setWorkProductNm(orderProductList.get(0).getProductNm()+" 외 "+(orderProductList.size()-1));
 					workReport.setWorkProductCapa(orderProductList.get(0).getProductCapa()+" 외 "+(orderProductList.size()-1));
@@ -1563,7 +1563,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					result = workMapper.updateWorkReportOrder(workReport);
 					
 				}
-				
+				logger.debug("WorkReportServiceImpl registerWorkNoBottle  param.getProductCount()=" + param.getProductCount()  );
 				for(int i = 0 ; i < param.getProductCount() ; i++) {					
 				
 					WorkBottleVO addWorkBottle = new WorkBottleVO();
@@ -1602,6 +1602,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 //					logger.debug(" registerWorkNoBottle addWorkBottle getSearchDt=" + addWorkBottle.getSearchDt() );
 					workBottleList.add(addWorkBottle);
 				}
+				result = workMapper.insertWorkBottles(workBottleList);
+				
 				//Order 정보 확인 후  업데이트 필요
 				orderProductList = orderService.getOrderProductList(orderTemp.getOrderId());
 				registeredWorkBottleList = getWorkBottleListAndCountOfOrder(orderTemp.getOrderId());
@@ -1891,7 +1893,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 					else if(PropertyFactory.getProperty("common.bottle.status.sale").equals(strBottleWorkCd)) workBottle.setBottleSaleYn("Y");
 					
 					//20211125 Charge_Volumn 추가
-					
 				}
 				else rightYn = false;
 				
@@ -1961,8 +1962,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 						afterWorkBottle.setCustomerId(customerId);
 						afterWorkBottle.setCreateDt(beforeWorkBottle.getCreateDt());
 						afterWorkBottle.setSearchDt(param.getSearchDt());
+						
 						beforeWorkBottle.setProductCount(remainCount);		
-						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle.getMultiYn()=" + beforeWorkBottle.getMultiYn() );
+//						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle.getMultiYn()=" + beforeWorkBottle.getMultiYn() );
 						if(beforeWorkBottle.getMultiYn().equals("Y")) afterWorkBottle.setMultiYn("Y");
 						// 남은처리 workBottle 처리 
 						if(remainCount > 0) { // 추가			
@@ -1978,7 +1980,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 								if(PropertyFactory.getProperty("common.bottle.status.tcharge").equals(request.getParameter("bottleWorkCd_"+i))) {
 									beforeWorkBottle.setChargeVolumn(afterWorkBottle.getChargeVolumn());
 								}
-								logger.debug("WorkReportServiceImpl -11-beforeWorkBottle.getCH="+beforeWorkBottle.getChargeVolumn() );
+//								logger.debug("WorkReportServiceImpl -11-beforeWorkBottle.getCH="+beforeWorkBottle.getChargeVolumn() );
 								result = addWorkBottleNoGas(beforeWorkBottle);	
 							}
 						}else if(remainCount < 0 ){
