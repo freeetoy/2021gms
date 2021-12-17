@@ -143,7 +143,8 @@
 			count(case when Bottle_Work_Cd in ('0310','0315','0317') then 1 end) as Back_Count,
 			count(case when (Bottle_Work_Cd='0308' and agency_yn='N' )  OR (Bottle_Work_Cd='0308' and agency_yn='Y' and multi_yn='N' ) then 1 end) as Sale_Count,
 			count(case when Bottle_Work_Cd in ('0311','0312','0313') then 1 end) as As_Count,
-			sum(case when Bottle_Work_Cd = '0318' then `Charge_Volumn` end) as Charge_Count,
+			sum(case when Bottle_Work_Cd = '0318' then Charge_Volumn end) as Charge_Count,
+			sum(case when Bottle_Work_Cd = '0308' then Charge_Volumn end) as Charge_Volumn,
 			count(case when Bottle_Work_Cd = '0306' then 1 end) as Out_Count,
 			count(case when Bottle_Work_Cd = '0301' then 1 end) as In_Count
 		FROM
@@ -175,7 +176,8 @@
 			count(case when Bottle_Work_Cd in ('0310','0315','0317') then 1 end) as Back_Count,
 			count(case when (Bottle_Work_Cd='0308' and agency_yn='N' )  OR (Bottle_Work_Cd='0308' and agency_yn='Y' and multi_yn='N' ) then 1 end) as Sale_Count,
 			count(case when Bottle_Work_Cd in ('0311','0312','0313') then 1 end) as As_Count,
-			sum(case when Bottle_Work_Cd = '0318' then `Charge_Volumn` end) as Charge_Count
+			sum(case when Bottle_Work_Cd = '0318' then `Charge_Volumn` end) as Charge_Count,
+			sum(case when Bottle_Work_Cd = '0308' then Charge_Volumn end) as Charge_Volumn
 		FROM
 			TB_Work_Bottle wb, TB_Customer tc ,TB_Product tp, TB_Product_Price pp , TB_User tu , TB_Work_Report wr
 		WHERE

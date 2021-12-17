@@ -164,11 +164,17 @@ public class ECountController {
 		        productCapa = vo.getECountSpec();
 		        orderCount = vo.getOrderCount();
 		        //20211123 TB_Work_Bottle에 Charge_Volumn 컬럼 추가
-//		        if(vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.tcharge") ) ) {
-//		        	orderCount = vo.getChargeVolumn();
-//		        }
+		        if(StringUtils.isTankProduct(vo.getProductId()) )
+		        	orderCount = vo.getChargeVolumn();
+		  
 		        supplyPrice = Math.round(vo.getSupplyPrice());
 		        vat = Math.round(vo.getVat());
+		        
+		        if(StringUtils.isTankProduct(vo.getProductId()) ) {
+		        	supplyPrice = Math.round(vo.getProductPrice()*vo.getChargeVolumn());
+		        	vat = Math.round(supplyPrice * 0.1);
+		        }
+		       
 		       
 		        if(vo.getAgencyYn().equals("Y")) {
 		        	for(int i= 0 ; i < eMList.size() ; i++) {
@@ -225,11 +231,9 @@ public class ECountController {
 		        	}else {
 		        		cell.setCellValue(vo.getProductPrice()/orderCount);
 		        	}
-		        	
 		        }else {
-		        	cell.setCellValue(Math.round(vo.getProductPrice()));
+	        		cell.setCellValue(Math.round(vo.getProductPrice()));
 		        }
-		        
 		        
 		        //외화금액
 		        cell = row.createCell(k++);
@@ -267,6 +271,7 @@ public class ECountController {
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getEcountString());
 	
+		        //판매주문 (판매 + 가스판매)/ 주문은 하나로, 이카운트 & 명세서는 분리, 용기목록 엑셀다운로드 수정
 		        if(vo.getAgencyYn().equals("N") && vo.getGasPrice() > 0 && vo.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 		        	k=0;
 			        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
@@ -337,6 +342,8 @@ public class ECountController {
 			        //productCapa = vo.getProductCapa();	
 			        productCapa = vo.getECountSpec();
 			        orderCount = vo.getOrderCount();
+			        if(StringUtils.isTankProduct(vo.getProductId()) )
+			        	orderCount = vo.getChargeVolumn();
 			        supplyPrice = Math.round(vo.getGasPrice()*orderCount);
 			        vat = Math.round(supplyPrice*0.1);			       
 			        			        

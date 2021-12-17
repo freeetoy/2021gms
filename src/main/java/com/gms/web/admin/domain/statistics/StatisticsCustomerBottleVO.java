@@ -41,19 +41,21 @@ public class StatisticsCustomerBottleVO implements Serializable {
 	
 	private String strCD;
 	
-	private int rentCount;
+	private int rentCount = 0;
 	
-	private int backCount;
+	private int backCount = 0;
 	
-	private int saleCount;
+	private int saleCount = 0;
 	
-	private int asCount;
+	private int asCount = 0;
 	
-	private int chargeCount;
+	private int chargeCount = 0;
 	
-	private int outCount;
+	private int outCount = 0;
 	
-	private int inCount;
+	private int inCount = 0;
+	
+	private int chargeVolumn = 0;
 	
 	/** Work_Etc           	*/
 	private String workEtc;

@@ -384,7 +384,7 @@ $(document).ready(function(){
 					cols += '	<option value="' + data[i].bottleType +'" selected>' + botttleTypeNm + '</option>';
 					cols += '	</select> ';
 					cols += '</td><td>';				
-					if(data[i].bottleWorkCd =='0318')
+					if(data[i].productId >=65 && data[i].productId <=71)
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].chargeVolumn + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 					else
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';

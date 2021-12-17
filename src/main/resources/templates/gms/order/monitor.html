@@ -171,8 +171,8 @@ $(document).ready(function(){
                       <td th:text="${row.CustomerNm}"></td>
                       <td th:if="${row.bottleWorkCd=='0330'}" th:text="${#numbers.formatDecimal(row.productNm, 3, 'COMMA' ,2,'POINT')}"></td>
                       <td th:unless="${row.bottleWorkCd=='0330'}" th:text="${row.productNm}"></td>
-                      <td th:if="${row.bottleWorkCd=='0318'}" th:text="|${row.bottleCapa}(${row.startRow})| "></td>
-                      <td th:unless="${row.bottleWorkCd=='0318'}" th:text="${row.bottleCapa}"></td>
+                      <td th:if="${row.productId >= 65 && row.productId <=71}" th:text="|${row.startRow}(${row.bottleCapa})| "></td>
+                      <td th:unless="${row.productId >= 65 && row.productId <=71}" th:text="${row.bottleCapa}"></td>
                       <th th:text="${row.bottleWorkCdNm}"></th>                      
                       <td th:text="|${row.bottleWorkNm}(${row.bottleWorkId})|"></td>      
                       <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd HH:mm' )}"></td> 

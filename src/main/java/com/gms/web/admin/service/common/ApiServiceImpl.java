@@ -199,7 +199,7 @@ public class ApiServiceImpl implements ApiService {
 //					ProductPriceVO productPrice1 = productService.getProductPriceDetailsByCapa(productPrice);
 //					param.setProductPriceSeq(productPrice1.getProductPriceSeq());
 				}
-//				logger.debug("****** registerWorkReportNoGas *****="+param.getProductPriceSeq());
+//				logger.debug("****** registerWorkReportNoGas *****="+param.getProductCount());
 				result = workService.registerWorkNoBottle(param);		
 			}else {
 				return CUSOTMER_NOT_EXIST;

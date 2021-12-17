@@ -356,6 +356,8 @@ public class StatisticsCustomerController {
 				statisticsCustomerBottle.setSaleCount(0);
 				statisticsCustomerBottle.setChargeCount(chargeCount);
 			}
+			if(StringUtils.isTankProduct(statisticsCustomerBottle.getProductId()) )
+				 statisticsCustomerBottle.setSaleCount(statisticsCustomerBottle.getChargeVolumn());
 		}
 		mav.addObject("userList", userList);	
 		mav.addObject("searchUserId", param.getSearchUserId());	
@@ -421,6 +423,9 @@ public class StatisticsCustomerController {
 					statisticsCustomerBottle.setSaleCount(0);
 					statisticsCustomerBottle.setChargeCount(chargeCount);
 				}
+				
+				if(StringUtils.isTankProduct(statisticsCustomerBottle.getProductId()) )
+					 statisticsCustomerBottle.setSaleCount(statisticsCustomerBottle.getChargeVolumn());
 			}
 			
 			String sheetName = "거래처용기현황";
@@ -650,6 +655,9 @@ public class StatisticsCustomerController {
 					statisticsCustomerBottle.setSaleCount(0);
 					statisticsCustomerBottle.setChargeCount(chargeCount);
 				}
+				
+				if(StringUtils.isTankProduct(statisticsCustomerBottle.getProductId()) )
+					 statisticsCustomerBottle.setSaleCount(statisticsCustomerBottle.getChargeVolumn());
 			}
 			
 			String sheetName = "거래처업무일지";
@@ -704,7 +712,8 @@ public class StatisticsCustomerController {
 //		    for(StatisticsCustomerBottleVO vo : statCustomerBottleList) {
 			StatisticsCustomerBottleVO oldVo = null;
 			WorkBottleRegisterVO scVo = new WorkBottleRegisterVO();
-			int ordeCount = 0;
+			int ordeCount = 1;
+			
 			for(int j=0; j < statCustomerBottleList.size() ; j++) {
 				
 				StatisticsCustomerBottleVO vo = statCustomerBottleList.get(j);
@@ -713,11 +722,8 @@ public class StatisticsCustomerController {
 		    	if(rowNo > 1 && !preCustomerId.equals(vo.getCustomerId()) ) seq++; 
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 
-		        if(j==0) {
-		        	ordeCount++;
-		        	scVo.setRegisteredCount(ordeCount);
-		        }else  if( j < statCustomerBottleList.size()-1){
-		        	if(vo.getCustomerId().equals(oldVo.getCustomerId())) {
+		        if( j < statCustomerBottleList.size()-1){
+		        	if(vo.getCustomerId().equals(statCustomerBottleList.get(j+1).getCustomerId())) {
 		        		ordeCount++;
 		        		scVo.setRegisteredCount(ordeCount);
 		        	}else {
@@ -733,7 +739,7 @@ public class StatisticsCustomerController {
 		        		mergeList.add(scVo);
 		        		scVo = new WorkBottleRegisterVO();
 		        	}else {
-		        		ordeCount++;
+//		        		ordeCount++;
 		        		scVo.setRegisteredCount(ordeCount);
 		        		mergeList.add(scVo);
 		        	}
@@ -807,12 +813,12 @@ public class StatisticsCustomerController {
 	// 				}
 	 			}
 		    }
-		    
-		    
+		   
 		    int startC =1;
 		    int lastC = 0;
 		    int aCount = 0;
 			for(int i=0; i < mergeList.size() ; i++) {
+				
 				if( mergeList.get(i).getRegisteredCount() > 1) lastC = startC+mergeList.get(i).getRegisteredCount()-1;
 				else lastC = startC;
 				aCount += startC+mergeList.get(i).getRegisteredCount();

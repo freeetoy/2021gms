@@ -33,7 +33,9 @@
 			SELECT tb.user_id, DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Sale_Count, IFNULL(Order_Amount,0) Sale_Amount,'admin', NOW()
 			FROM  tb_user tb left join 
 			(
-				SELECT TWR.User_ID, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
+				SELECT TWR.User_ID,
+					Case When Product_Id &gt;=65 and `Product_ID` &lt;=71 then sum(Charge_Volumn) else Count(Work_Seq) end Order_Count, 
+					Case When Product_Id &gt;=65 and Product_ID &lt;=71 then sum( Charge_Volumn * Product_Price) else  Sum(Product_Price) end Order_Amount
 				FROM TB_Work_Bottle TWB, tb_work_report TWR 
 				WHERE Bottle_Work_Cd in ('0308','0314')
 				AND TWB.Work_Report_Seq = TWR.Work_Report_Seq
