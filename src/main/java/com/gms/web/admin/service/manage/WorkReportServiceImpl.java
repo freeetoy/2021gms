@@ -1946,7 +1946,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setSearchDt(param.getSearchDt());
 				workBottle.setManualYn("Y");
 				boolean rightYn = true;
-				
+				logger.debug("modifyWorkBottleManual workBottle.setSearchDt==" + workBottle.getSearchDt() ); 
 				if(request.getParameter("bottleWorkCd_"+i) !=null) {
 					String strBottleWorkCd = request.getParameter("bottleWorkCd_"+i);
 					
@@ -2009,7 +2009,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					beforeWorkBottle.setCreateId(param.getCreateId());;
 					beforeWorkBottle.setWorkReportSeq(param.getWorkReportSeq());
 					beforeWorkBottle.setSearchDt(param.getSearchDt());
-					
+					logger.debug("modifyWorkBottleManual beforeWorkBottle.setSearchDt==" + beforeWorkBottle.getSearchDt() ); 
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
 							&& beforeWorkBottle.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){		
@@ -2145,7 +2145,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	private int addWorkBottle(WorkBottleVO param) {
 		int result= 1;
-//		logger.debug("WorkReportServiceImpl --addWorkBottle  param.getSearchDt=" + param.getSearchDt() );
+		logger.debug("WorkReportServiceImpl --addWorkBottle  param.getSearchDt=" + param.getSearchDt() );
 		//logger.debug("WorkReportServiceImpl --addWorkBottle  param.getProductCount=" + param.getProductCount() );
 		BottleVO bottle = new BottleVO();
 		bottle.setProductId(param.getProductId());
@@ -2187,7 +2187,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	private int addWorkBottleNoGas(WorkBottleVO param) {
 		int result= 1;
-//		logger.debug("WorkReportServiceImpl --param.getCH="+param.getChargeVolumn() );
+		logger.debug("WorkReportServiceImpl addWorkBottleNoGas --param.getSearchDt="+param.getSearchDt() );
 		List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();		
 		int workSeq = 0;
 		
