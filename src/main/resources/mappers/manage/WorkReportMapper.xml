@@ -898,6 +898,8 @@
 		WHERE
 			Work_Report_Seq = #{workReportSeq}
 		AND 
+			Bottle_Work_CD 		= #{bottleWorkCd}	
+		AND 
 			Product_Id 		= #{productId}		
 		AND 
 			Product_Price_Seq 	= #{productPriceSeq}	

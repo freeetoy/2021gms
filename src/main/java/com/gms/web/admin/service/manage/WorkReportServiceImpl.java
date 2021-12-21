@@ -1984,7 +1984,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setNewYn("Y");
 				workBottle.setNewProductYn("Y");
 				
-				//logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  workBottle.bottleWorkCd=" + workBottle.getBottleWorkCd() );
 				if(rightYn) afterWorkBottleList.add(workBottle);				
 			}
 			
@@ -2009,16 +2008,24 @@ public class WorkReportServiceImpl implements WorkReportService {
 					beforeWorkBottle.setCreateId(param.getCreateId());;
 					beforeWorkBottle.setWorkReportSeq(param.getWorkReportSeq());
 					beforeWorkBottle.setSearchDt(param.getSearchDt());
-					logger.debug("modifyWorkBottleManual beforeWorkBottle.setSearchDt==" + beforeWorkBottle.getSearchDt() ); 
+
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
 							&& beforeWorkBottle.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){		
-						
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getBottleWorkCd==" + beforeWorkBottle.getBottleWorkCd() ); 
+//						logger.debug("modifyWorkBottleManual afterWorkBottle.getBottleWorkCd()==" + afterWorkBottle.getBottleWorkCd() ); 
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductId==" + beforeWorkBottle.getProductId() ); 
+//						logger.debug("modifyWorkBottleManual afterWorkBottle.getProductId==" + afterWorkBottle.getProductId() ); 
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductPriceSeq==" + beforeWorkBottle.getProductPriceSeq() ); 
+//						logger.debug("modifyWorkBottleManual afterWorkBottle.getBottleWorkCd==" + afterWorkBottle.getProductPriceSeq() ); 
+//						
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getBottleWorkCd==" + beforeWorkBottle.getProductCount() ); 
+//						logger.debug("modifyWorkBottleManual afterWorkBottle.getBottleWorkCd==" + afterWorkBottle.getProductCount() ); 
 						double fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
-//						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  fPrice=" + fPrice );
+
 						beforeWorkBottle.setProductPrice(fPrice);
 						int remainCount = afterWorkBottle.getProductCount() - beforeWorkBottle.getProductCount();
-						
+						logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  remainCount=" + remainCount );						
 						if(StringUtils.isTankProduct(beforeWorkBottle.getProductId() ) ) {
 							remainCount = afterWorkBottle.getChargeVolumn()- beforeWorkBottle.getChargeVolumn();
 							beforeWorkBottle.setChargeVolumn( afterWorkBottle.getChargeVolumn());
@@ -2068,7 +2075,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 							if(!afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) )
 								result = modifyCustomerProduct(beforeWorkBottle);
 							
-							result = minusWorkBottle(beforeWorkBottle);							
+							logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle.getWorkSeq=" + beforeWorkBottle.getWorkSeq() );		
+							result = minusWorkBottle(beforeWorkBottle);		
+							
 						}
 						// orderProduct처리 -orderBottle도 처리
 					}					
@@ -2221,7 +2230,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	private int minusWorkBottle(WorkBottleVO param) {
 		int result= 1;
-
+//		logger.debug("WorkReportServiceImpl minusWorkBottle -"+param.getWorkSeq() );
 		param.setProductCount(param.getProductCount()*-1);
 		List<WorkBottleVO> workBottleList = workMapper.selectWorkBottleListOfProduct(param);
 	
