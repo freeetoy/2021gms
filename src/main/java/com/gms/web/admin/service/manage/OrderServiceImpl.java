@@ -736,8 +736,8 @@ public class OrderServiceImpl implements OrderService {
 					result1 = orderMapper.insertOrderProducts(orderProduct);
 					
 					result1 = orderMapper.deleteOrderBottles(orderId);
-					
-					result1 = orderMapper.insertOrderBottles(orderBottleList);
+					if(orderBottleList.size() > 0)
+						result1 = orderMapper.insertOrderBottles(orderBottleList);
 				}
 				params.setOrderProductNm(orderProductNm);
 				params.setOrderProductCapa(orderProductCapa);
