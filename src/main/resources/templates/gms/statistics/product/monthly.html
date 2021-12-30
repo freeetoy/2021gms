@@ -138,11 +138,11 @@ $(function() {
                   	<tr th:if="${not #lists.isEmpty( statProductList )}" th:each="row : ${statProductList}" style="font-size:14px;">
                       <td th:text="${row.statDt}"></td>
                       <td align="right" th:text="${row.saleCount}"></td>
-                      <td align="right" th:if="${row.saleAmount > 0 && row.saleAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.saleAmount, 3, 'COMMA')}">
+                      <td align="right" th:if="${row.saleAmount > 0 && row.saleAmount * 100 % 100 == 0 }" th:text="${#numbers.formatDecimal(row.saleAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.saleAmount > 0 && row.saleAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.saleAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.saleAmount == 0 }" th:text="${row.saleAmount}">
                       <td align="right" th:text="${row.rentCount}"></td>
-                      <td align="right" th:if="${row.rentAmount > 0 && row.rentAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.rentAmount, 3, 'COMMA')}">
+                      <td align="right" th:if="${row.rentAmount > 0 && row.rentAmount * 100 % 100 == 0 }" th:text="${#numbers.formatDecimal(row.rentAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.rentAmount > 0 && row.rentAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.rentAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.rentAmount == 0 }" th:text="${row.rentAmount}">
                       </td>                      
