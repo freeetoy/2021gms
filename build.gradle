@@ -31,15 +31,24 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	//implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
 	compileOnly 'org.projectlombok:lombok'	
-	compile ('org.apache.poi:poi:3.17')
-    compile ('org.apache.poi:poi-ooxml:3.17')
+	implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+	implementation 'org.jxls:jxls:2.10.0'
+	implementation 'org.jxls:jxls-poi:1.0.15'
+	//implementation group: 'org.jxls', name: 'jxls', version: '2.6.0'
+	//implementation group: 'org.jxls', name: 'jxls-poi', version: '1.2.0'
+	
+	//compile ('org.apache.poi:poi:3.17')
+   //compile ('org.apache.poi:poi-ooxml:3.17')
     compile group: 'org.json', name: 'json', version: '20190722'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+    compile 'com.zaxxer:HikariCP:3.4.5'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'mysql:mysql-connector-java'
+	//runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

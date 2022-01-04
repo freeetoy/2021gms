@@ -1,14 +1,20 @@
 package com.gms.web.admin.controller.manage;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -284,11 +290,14 @@ public class WorkReportController {
 		return mav;
 	}
 	
-	/*
 	@RequestMapping(value = "/gms/report/excelDownload.do")
 	public void excelDownloadReport(HttpServletResponse response
 			, WorkReportVO params) throws Exception {
 		
+		UserVO user = userService.getUserDetails( params.getSearchUserId());
+		String fileName = "업무일지";
+			if(user != null) fileName = fileName + "_"+user.getUserNm()+"_"+params.getSearchDt();
+			
 		if(params.getSearchUserId()!=null && params.getSearchUserId().length() > 1) {
 			params.setUserId(params.getSearchUserId());
 		}else {
@@ -296,49 +305,52 @@ public class WorkReportController {
 			params.setSearchUserId(params.getCreateId());
 		}
 		
+		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
+		for(int i=0; i < workList.size() ; i++) {
+			WorkReportViewVO workReport = workList.get(i);
+			StringBuffer sf = new StringBuffer();
+
+			for(int j=0; j < workReport.getSalesBottles().size() ; j++) {
+				WorkBottleVO workBottle = workReport.getSalesBottles().get(j);
+				if(j > 0) sf.append("\n");
+				sf.append(workBottle.getProductNm()).append(" ")
+					.append(workBottle.getProductCapa()).append(" ")
+					.append(workBottle.getProductCount()).append(" (")
+					.append(workBottle.getBottleWorkCdNm()).append(") ");
+			}
+			workReport.setStrSalesBottles(sf.toString());
+			
+			StringBuffer sf1 = new StringBuffer();
+			for(int j=0; j < workReport.getBackBottles().size() ; j++) {
+				WorkBottleVO workBottle = workReport.getBackBottles().get(j);
+				if(j > 0) sf1.append("\n");
+				sf1.append(workBottle.getProductNm()).append(" ")
+					.append(workBottle.getProductCapa()).append(" ")
+					.append(workBottle.getProductCount()).append(" ");
+				if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back")) )
+					sf1.append("(").append(workBottle.getBottleWorkCdNm()).append(") ");
+			}
+			workReport.setStrBackBottles(sf1.toString());
+		}
 		
-		
-//		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
-		List<Employee> employees = generateSampleEmployeeData();
-		String fileName = "object_collection_output";
-//		if(workList.size() > 0 ) {
-//			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
-//			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
-//		}
-//		final String sample1 = "/excel/object_collection_template.xlsx";// 클래스패스에 있는 Resource 경로 
 	
 		logger.debug("WorkReportController getWorkReportList start ");	
-//		ClassPathResource classPathResource = new ClassPathResource("C:\workspace1\gms\src\main\resources\object_collection_template.xls");
-		try {
-//			InputStream is = new FileInputStream("C:/workspace1/gms/src/main/resources/object_collection_template.xls");
-			InputStream is = resourceLoader.getResource("classpath:template/excel/object_collection_template.xls").getInputStream();
-			 
-
-
-			logger.debug("WorkReportController getWorkReportList is= "+ is.toString());		
-    	// 5. 엑셀파일로 다운로드위한 response 객체 세팅
-	        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-	//	        response.setHeader(HttpHeaders.CONTENT_TYPE, "attachment; filename="+"object_collection_output.xls");
-	        response.setHeader("Content-disposition", "attachment; filename=" + fileName+".xls");
-	        
-			Context context = new Context();
-			context.putVar("employees", employees);
-	        JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
-		}     catch (Exception e) {
-			logger.error(" excelDownloadReport Exception==="+e.toString());
-			e.printStackTrace();
-		}
-	}
-	public static List<Employee> generateSampleEmployeeData() {
-		List<Employee> employees =  new ArrayList<>();
-		employees.add(new Employee("test1",new Date(), 1500.0, 0.1));
-		employees.add(new Employee("test2",new Date(), 1600.0, 0.2));
-		employees.add(new Employee("test13",new Date(), 1700.0, 0.3));
 		
-		return employees;
+		try(
+	    		
+	    		InputStream is = WorkReportController.class.getResourceAsStream("report_template.xls")){
+		        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		        response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes(),"ISO8859_1") + ".xls");
+		       
+        		Context context = new Context();
+        		context.putVar("workList", workList);
+        		context.putVar("searchDt", params.getSearchDt());
+	            JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
+	       
+	    }
 	}
-	
-	*/
+
+
 	@RequestMapping(value = "/gms/report/noGasSales.do", method = RequestMethod.POST)
 	public ModelAndView registerWorkReportNoGasProduct(HttpServletRequest request
 			, HttpServletResponse response

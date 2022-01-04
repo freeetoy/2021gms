@@ -1098,7 +1098,7 @@ public class ExcelDownloadController {
 	}
 
    
-   @RequestMapping(value = "/gms/report/excelDownload.do")
+   @RequestMapping(value = "/gms/report/excelDownload1.do")
 	public void excelDownloadReport(HttpServletRequest request
 			,HttpServletResponse response,WorkReportVO params){
 	// 게시판 목록조회
