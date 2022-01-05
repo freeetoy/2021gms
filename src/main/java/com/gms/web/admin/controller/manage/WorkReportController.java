@@ -308,6 +308,7 @@ public class WorkReportController {
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
 		for(int i=0; i < workList.size() ; i++) {
 			WorkReportViewVO workReport = workList.get(i);
+			workReport.setSeqNumber(Integer.toString(i+1));
 			StringBuffer sf = new StringBuffer();
 
 			for(int j=0; j < workReport.getSalesBottles().size() ; j++) {
@@ -333,9 +334,14 @@ public class WorkReportController {
 			workReport.setStrBackBottles(sf1.toString());
 		}
 		
+		int iSeq = 25-workList.size();
+		for(int i=0; i < iSeq ; i++) {
+			WorkReportViewVO workReport = new WorkReportViewVO();
+			workReport.setCustomerNm("");
+			workList.add(workReport);
+		}
 	
-		logger.debug("WorkReportController getWorkReportList start ");	
-		
+//		logger.debug("WorkReportController getWorkReportList start ");	
 		try(
 	    		
 	    		InputStream is = WorkReportController.class.getResourceAsStream("report_template.xls")){
