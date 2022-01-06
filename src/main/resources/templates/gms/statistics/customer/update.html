@@ -379,7 +379,9 @@ $(document).ready(function(){
 		        var botttleTypeNm = "";
 				for(i=0; i< data.length;i++) {
 					 
-					if(data[i].productId ==[[${productId}]] ) $('#workEtc').val(data[i].workEtc);
+					if(data[i].productId ==[[${productId}]] && data[i].productPriceSeq ==[[${productPriceSeq}]]){
+						$('#workEtc').val(data[i].workEtc);
+					}
 					//if(data[i].workBottleCd=='0309'){ }
 					botttleTypeNm = "";
 					if(data[i].bottleType=='E') botttleTypeNm ="공병";
