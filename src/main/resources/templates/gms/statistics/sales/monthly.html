@@ -22,7 +22,7 @@ $(function() {
 	  });
 	
 	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY/MM') + ' - ' + picker.endDate.format('YYYY/MM'));
 	  });
 	
 	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {

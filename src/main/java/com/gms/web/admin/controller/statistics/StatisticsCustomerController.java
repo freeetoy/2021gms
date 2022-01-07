@@ -141,8 +141,8 @@ public class StatisticsCustomerController {
 		String searchStatDtEnd = null;
 				
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
-			searchStatDtFrom = searchStatDt.substring(0, 8) ;			
-			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()-2) ;
+			searchStatDtFrom = searchStatDt.substring(0, 7) ;			
+			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()-3) ;
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
 			params.setSearchStatDtEnd(searchStatDtEnd);			

@@ -100,15 +100,15 @@ public class StatisticsBottleController {
 		String searchStatDtEnd = null;
 				
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
-			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
-			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			searchStatDtFrom = searchStatDt.substring(0, 7) ;			
+			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()-3) ;
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
 			params.setSearchStatDtEnd(searchStatDtEnd);			
 		}else {			
-			searchStatDtFrom = DateUtils.getNextDate(-366,"yyyy/MM/dd");
+			searchStatDtFrom = DateUtils.getNextDate(-366,"yyyy/MM");
 			//logger.debug("****** getStatisticsBottleMonthly *****getSearchStatDtFrom===*"+searchStatDtFrom);			
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
+			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM");
 			//logger.debug("****** getStatisticsBottleMonthly *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
