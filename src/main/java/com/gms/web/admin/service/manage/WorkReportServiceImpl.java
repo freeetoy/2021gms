@@ -1006,6 +1006,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setBottleType(param.getBottleType());
 				workBottle.setBottleWorkCd(param.getBottleWorkCd());
 				workBottle.setAgencyYn(param.getAgencyYn());
+				workBottle.setSearchDt(param.getSearchDt());
 				if(i==0) {
 					orderProductNm = tempBottle.getProductNm();
 					orderProductCapa = tempBottle.getBottleCapa();
@@ -1848,7 +1849,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			cashFlow.setCreateId(param.getUserId());
 		else
 			cashFlow.setCreateId(param.getCreateId());
-		
+		cashFlow.setSearchCreateDt(param.getSearchDt());
 		result = cashService.registerCashFlow(cashFlow);
 		return result;
 	}
@@ -3281,7 +3282,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			cashFlow.setCreateId(param.getUserId());
 		else
 			cashFlow.setCreateId(param.getCreateId());
-		
+		cashFlow.setSearchCreateDt(param.getSearchDt());
 		result = cashService.registerCashFlow(cashFlow);
 				
 		return result;

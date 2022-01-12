@@ -638,8 +638,13 @@ $(document).ready(function(){
 			hiddenField5.setAttribute("type", "hidden");
 			hiddenField5.setAttribute("name", "createId");
 			hiddenField5.setAttribute("value", $("#searchUserId").val());
-
 			form.appendChild(hiddenField5); 
+			
+			var hiddenField6 = document.createElement("input");
+	        hiddenField6.setAttribute("type", "hidden");
+	        hiddenField6.setAttribute("name", "searchCreateDt");
+	        hiddenField6.setAttribute("value", $("#searchDt").val());
+	        
 			document.body.appendChild(form);
  		        
 			form.submit();				

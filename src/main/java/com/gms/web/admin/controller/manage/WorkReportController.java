@@ -517,7 +517,6 @@ public class WorkReportController {
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.diary"));	 	
 		
 		// 수금액 정보 업데이트			
-		
 		WorkReportVO workReport = new WorkReportVO();
 		workReport.setCustomerId(param.getCustomerId());
 		workReport.setUserId(param.getCreateId());
