@@ -1,6 +1,8 @@
 package com.gms.web.admin.service.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,8 @@ import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
@@ -25,6 +29,7 @@ import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CashFlowService;
 import com.gms.web.admin.service.manage.CustomerService;
+import com.gms.web.admin.service.manage.OrderService;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.manage.UserService;
 import com.gms.web.admin.service.manage.WorkReportService;
@@ -61,6 +66,9 @@ public class ApiServiceImpl implements ApiService {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Override
 	public int registerWorkReportForSale(WorkReportVO param) { 
@@ -432,6 +440,83 @@ public class ApiServiceImpl implements ApiService {
 			return USER_NOT_EXIST;
 		}			
 		return result;
+	}
+
+	@Override
+	public int registerOrder(OrderVO param) {
+		int result = 0;	
+		
+		UserVO user = userService.getUserDetails(param.getCreateId());
+		
+		if(user != null) {
+			//사용자 최종접속일 정보 업데이트
+			LoginUserVO loginUser = new LoginUserVO();
+			loginUser.setUserId(user.getUserId());
+			
+			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
+				result = loginService.modifyLastConnect(loginUser);
+			
+			//Customer 정보가져
+			CustomerVO customer = getCustomer(param.getCustomerNm());
+			
+			if(customer!=null) {
+				param.setCustomerId(customer.getCustomerId());
+				
+				List<String> list = null;
+				if(param.getOrderIds()!=null && param.getOrderIds().length() > 0) {
+					//bottleIds= request.getParameter("bottleIds");
+					list = StringUtils.makeForeach(param.getOrderIds(), ";"); 			
+				}		
+				List<OrderProductVO> orderProductList = new ArrayList<OrderProductVO>();
+				for(int i =0 ; i < list.size() ; i++) {
+
+					List<String> detail = StringUtils.makeForeach(list.get(i), "#");
+					
+					OrderProductVO productVo = new OrderProductVO();
+					productVo.setOrderProductSeq(i+1);
+					productVo.setProductId(Integer.parseInt(detail.get(0)));
+					productVo.setProductPriceSeq(Integer.parseInt(detail.get(1)));
+					productVo.setOrderProductEtc(detail.get(2));
+					productVo.setOrderCount(Integer.parseInt(detail.get(3)) );
+					productVo.setBottleChangeYn(detail.get(4));	
+					productVo.setBottleSaleYn(detail.get(5));
+					productVo.setRetrievedYn(detail.get(6));
+					productVo.setAsYn(detail.get(7));
+					
+					orderProductList.add(productVo);
+				}
+				
+				result = orderService.registerOrderFromApi(param, orderProductList, customer);
+			}else {
+				return CUSOTMER_NOT_EXIST;
+			}
+		}else {
+			return USER_NOT_EXIST;
+		}			
+		return result;
+	}
+
+	@Override
+	public List<OrderVO> getOrderList(OrderVO param) {
+		param.setSearchOrderDtFrom(param.getSearchOrderDt());
+		param.setSearchOrderDtEnd(param.getSearchOrderDt());
+		
+		Map<String, Object> map = orderService.getOrderList(param);
+		List<OrderVO> orderList = (List<OrderVO>) map.get("list");
+		
+		return orderList;
+	}
+
+	@Override
+	public int deleteOrder(OrderVO param) {
+
+		return orderService.deleteOrder(param);
+	}
+
+	@Override
+	public List<OrderProductVO> getOrderProductList(OrderVO param) {
+		
+		return orderService.getOrderProductList(param.getOrderId());
 	}
 
 

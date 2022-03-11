@@ -74,4 +74,6 @@ public interface ProductService {
 	public List<ProductPriceSimpleVO> getLn2LProductList();
 	
 	public ProductPriceSimpleVO getProductPriceSimple(ProductPriceSimpleVO param);
+	
+	public List<ProductPriceSimpleVO> getAllProductSimpleList();
 }

@@ -1382,4 +1382,105 @@ public class OrderServiceImpl implements OrderService {
 		return orderInfo;
 	}
 
+	@Override
+	public int registerOrderFromApi(OrderVO param, List<OrderProductVO> orderProductList, CustomerVO customer) {
+		int result = 0;
+		try {
+			String orderProductNm = "";
+			String orderProductCapa = "";
+			double orderTotalAmount = 0;
+			
+			param.setMemberCompSeq(1);
+			param.setOrderTypeCd(PropertyFactory.getProperty("common.code.order.type.order"));
+			param.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
+			param.setSalesId(customer.getSalesId());
+						
+			result =  orderMapper.insertOrder(param);	
+			
+			int orderId = getNewOrderId(param);
+			param.setOrderId(Integer.valueOf(orderId));
+			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("bottleList", orderProductList);
+			map.put("customerId", param.getCustomerId());
+			
+			List<ProductTotalVO> productTotalList =  productService.getPriceList(map);	
+			
+			List<OrderBottleVO> orderBottleList = new ArrayList<OrderBottleVO>();
+			
+			for(int i =0 ; i < orderProductList.size() ; i++) {
+				OrderProductVO orderProduct = orderProductList.get(i);
+				double orderAmount = 0;
+				boolean  bottleFlag = false;
+				String bottleSaleYn = orderProduct.getBottleSaleYn();
+				orderProduct.setOrderId(orderId);
+				for(int j=0 ; j < productTotalList.size() ; j++) {
+					ProductTotalVO productTotal = productTotalList.get(j);
+					
+					if(orderProduct.getProductId().equals(productTotal.getProductId()) && orderProduct.getProductPriceSeq().equals(productTotal.getProductPriceSeq()) ){
+						if(productTotal.getGasId()!=null && productTotal.getGasId() > 0) bottleFlag = true;
+						//orderProduct.setOrderAmount(orderAmount);
+						if(bottleFlag) {
+							if(bottleSaleYn.equals("Y")) {								
+								if(bottleFlag && customer.getAgencyYn().equals("N")){	// 가스 및 용기 판매
+									orderAmount = productTotal.getProductBottlePrice() + productTotal.getProductPrice()* orderProduct.getOrderCount();
+								}else 
+									orderAmount = productTotal.getProductBottlePrice() * orderProduct.getOrderCount();		
+							}else
+								orderAmount = productTotal.getProductPrice() *orderProduct.getOrderCount();
+						}else {
+							orderAmount = productTotal.getProductBottlePrice() * orderProduct.getOrderCount();		
+						}
+						orderTotalAmount += orderAmount;
+						orderProduct.setProductNm(productTotal.getProductNm());
+						orderProduct.setProductCapa(productTotal.getProductCapa());
+						orderProduct.setOrderAmount(orderAmount);
+					}
+				}		
+				if(bottleFlag) {
+					
+					for(int k=0; k< orderProduct.getOrderCount() ; k++) {
+					
+						OrderBottleVO orderBottle = new OrderBottleVO();
+						
+						orderBottle.setOrderId(orderId);
+						orderBottle.setOrderProductSeq(i+1);
+						orderBottle.setProductId(orderProduct.getProductId());
+						orderBottle.setProductPriceSeq(orderProduct.getProductPriceSeq());
+						orderBottle.setCreateId(param.getCreateId());
+						orderBottle.setUpdateId(param.getCreateId());
+						
+						orderBottleList.add(orderBottle);			
+					}
+				}
+			}
+			
+			if(orderProductList.size() > 1) {
+				orderProductNm = orderProductList.get(0).getProductNm()+"외 "+ (orderProductList.size()-1);
+				orderProductCapa = orderProductList.get(0).getProductCapa()+"외 "+ (orderProductList.size()-1);
+			} else {
+				orderProductNm = orderProductList.get(0).getProductNm();
+				orderProductCapa = orderProductList.get(0).getProductCapa();
+			}
+			param.setOrderProductNm(orderProductNm);
+			param.setOrderTotalAmount(orderTotalAmount);
+			param.setOrderProductCapa(orderProductCapa);
+			
+			if(orderBottleList.size() > 0)
+				result = orderMapper.insertOrderBottles(orderBottleList);
+			
+			result = orderMapper.insertOrderProducts(orderProductList);		
+		
+			result =  orderMapper.updateOrder(param);	
+			
+		} catch (DataAccessException de) {
+			logger.error("registerOrder DataAccessException==="+de.toString());
+			de.printStackTrace();
+		} catch (Exception e) {
+			logger.error("registerOrder Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }

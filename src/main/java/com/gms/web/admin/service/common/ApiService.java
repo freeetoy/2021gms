@@ -6,6 +6,8 @@ import com.gms.web.admin.domain.common.AppVersionVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
@@ -42,4 +44,12 @@ public interface ApiService {
 	public int deleteWorkBottle(WorkBottleVO param);
 	
 	public int registerWorkReportTank(WorkBottleVO param);
+	
+	public int registerOrder(OrderVO param);
+	
+	public List<OrderVO> getOrderList(OrderVO param);
+	
+	public List<OrderProductVO> getOrderProductList(OrderVO param);
+	
+	public int deleteOrder(OrderVO param);
 }

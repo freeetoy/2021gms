@@ -2,6 +2,9 @@ package com.gms.web.admin.controller.common;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
@@ -24,6 +29,7 @@ import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.service.common.ApiService;
 import com.gms.web.admin.service.manage.BottleService;
+import com.gms.web.admin.service.manage.ProductService;
 
 @Controller
 public class ApiController {
@@ -42,6 +48,9 @@ public class ApiController {
 	
 	@Autowired
 	private BottleService bottleService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	@RequestMapping(value = "/api/controlAction.do")
 	@ResponseBody
@@ -444,6 +453,54 @@ public class ApiController {
 				result = apiService.deleteWorkBottle(workBottle);
 			}
 		}		
+		
+		if(result > 0)
+			return "success";
+		else
+			return "fail";
+	}
+	
+	@RequestMapping(value = "/api/allProductSimpleList.do")
+	@ResponseBody
+	public List<ProductPriceSimpleVO> getAllProductSimpleList()	{	
+						
+		return productService.getAllProductSimpleList() ;
+	}
+	
+	@RequestMapping(value = "/api/registerOrder.do")
+	@ResponseBody
+	public String registerOrderApi(OrderVO param)	{	
+		int result = 0;		
+				
+		result = apiService.registerOrder(param);
+		
+		if(result > 0)
+			return "success";
+		else
+			return "fail";
+	}
+	
+	
+	@RequestMapping(value = "/api/orderList.do")
+	@ResponseBody
+	public List<OrderVO> getOrderList(OrderVO param)	{	
+						
+		return apiService.getOrderList(param) ;
+	}
+	
+	@RequestMapping(value = "/api/orderProductList.do")
+	@ResponseBody
+	public List<OrderProductVO> getOrderProductList(OrderVO param)	{	
+						
+		return apiService.getOrderProductList(param) ;
+	}
+	
+	@RequestMapping(value = "/api/deleteOrder.do")
+	@ResponseBody
+	public String deleteOrderApi(OrderVO param)	{	
+		int result = 0;		
+				
+		result = apiService.deleteOrder(param);
 		
 		if(result > 0)
 			return "success";

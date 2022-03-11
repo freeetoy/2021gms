@@ -79,4 +79,6 @@ public interface ProductMapper {
 	public List<ProductPriceSimpleVO> selectLn2LProductList();
 	
 	public ProductPriceSimpleVO selectProductPriceSimple(ProductPriceSimpleVO param);
+	
+	public List<ProductPriceSimpleVO> selectAllProductPriceSimpleList();
 }

@@ -491,8 +491,7 @@
 			TP.Product_ID = TPP.Product_ID
 		AND 
 			GAS_ID > 0 
-		AND
-			
+		
 	</select>
 	
 	<select id="selectCustomerLn2List"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
@@ -547,5 +546,18 @@
 			TP.Product_Status  != '0'
 		AND 
 			TPP.Product_Status  != '0'
+	</select>
+	
+	<select id="selectAllProductPriceSimpleList"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
+		SELECT
+			TP.Product_ID ,Product_Price_Seq,Product_Nm,Product_Capa
+		FROM
+			TB_Product  TP, TB_Product_Price TPP
+		WHERE
+			TP.Product_Status  = '2'
+		AND 
+			TPP.Product_Status  = '2'
+		AND 
+			TP.Product_ID = TPP.Product_ID
 	</select>
 </mapper>
