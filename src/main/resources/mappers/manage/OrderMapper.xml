@@ -815,6 +815,7 @@
 		WHERE
 			Customer_ID = #{customerId}
 		AND Order_Process_CD != '0299'
+		AND Order_Type_CD = '0101'
 		AND date_format(Create_Dt,'%Y/%m/%d') = date_format(now(),'%Y/%m/%d') 
 	</select>
 	

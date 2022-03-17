@@ -211,6 +211,7 @@ public class OrderController {
 			mav.addObject("currentPage", params.getCurrentPage());
 			mav.addObject("searchCustomerNm", params.getSearchCustomerNm());
 			mav.addObject("searchOrderDt", params.getSearchOrderDt());
+			mav.addObject("searchOrderProcessCd", params.getSearchOrderProcessCd());
 			
 		}
 		mav.setViewName("gms/order/update");
@@ -237,7 +238,7 @@ public class OrderController {
 		if(result > 0){
 			String alertMessage = "수정되었습니다.";
 			RequestUtils.responseWriteException(response, alertMessage,
-					"/gms/order/list.do?currentPage="+params.getCurrentPage()+"&searchCustomerNm="+params.getSearchCustomerNm()+"&searchOrderDt="+params.getSearchOrderDt());
+					"/gms/order/list.do?currentPage="+params.getCurrentPage()+"&searchCustomerNm="+params.getSearchCustomerNm()+"&searchOrderDt="+params.getSearchOrderDt()+"&searchOrderProcessCd="+params.getSearchOrderProcessCd());
 		}
 		return null;
 	}
