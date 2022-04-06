@@ -91,7 +91,8 @@
 		, Order_Product_Seq	
 		, Bottle_Type	
 		, Delete_YN
-		, Bottle_Work_DT	
+		, Bottle_Work_DT
+		, Dummy_YN
 		, CREATE_ID
 		, CREATE_DT
 		, UPDATE_ID
@@ -188,6 +189,7 @@
 			, #{bottleType}
 			, 'N'
 			, NOW()
+			, #{dummyYn}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -224,6 +226,7 @@
 			, #{item.bottleType}
 			, 'N'
 			, NOW()
+			, #{item.dummyYn}
 			, #{item.createId}			
 			, NOW()
 			, NULL
@@ -231,6 +234,8 @@
 		)
 		</foreach>
 	</insert>
+	
+	
 	<!-- 
 	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
 		INSERT INTO TB_Bottle_Hist

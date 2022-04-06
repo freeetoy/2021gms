@@ -195,7 +195,7 @@ public class ProductController {
 			List<ProductPriceVO> productPriceList = productService.getProductPriceList(params.getProductId());
 			Integer lastPriceSeqInt = productPriceList.get(productPriceList.size()-1).getProductPriceSeq();
 			int lastPriceSeq = lastPriceSeqInt.intValue();			
-			logger.debug("************* modifyProduct priceCount="+priceCount);
+//			logger.debug("************* modifyProduct priceCount="+priceCount);
 			ProductPriceVO[] priceVo = new ProductPriceVO[priceCount] ;
 						
 			int listIndex=0;
@@ -264,9 +264,7 @@ public class ProductController {
 		try { 
 			
 			boolean result = productService.deleteProduct(productId);
-			if (result == false) {
-				// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
-			}
+			
 			
 			List<ProductTotalVO> productList = productService.getProductTotalList();
 			model.addAttribute("productList", productList);

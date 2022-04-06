@@ -122,6 +122,9 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** 삭제여부  Delete_YN*/
 	private String deleteYn;
 	
+	/** Dummy_Yn	*/
+	private String dummyYn = "N";
+	
 	/** 복수 삭제용 Ids*/
 	private String bottleIds;
 	

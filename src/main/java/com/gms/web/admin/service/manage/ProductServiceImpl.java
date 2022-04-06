@@ -1,5 +1,7 @@
 package com.gms.web.admin.service.manage;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,11 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.GasVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.ProductVO;
+import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.mapper.manage.ProductMapper;
 
 @Service
@@ -23,6 +28,12 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private GasService gasService;
+	
+	@Autowired
+	private BottleService bottleService;
 /*
 	
 	@Override
@@ -193,9 +204,11 @@ public class ProductServiceImpl implements ProductService {
 			
 			param.setProductId(Integer.valueOf(productId));
 			param.setMemberCompSeq(1);				
-					
+			
+			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
 			//logger.debug("****** before registerProduct param. result *****===*"+result);
 			result = productMapper.insertProduct(param);
+			
 			
 			if (result > 0) {
 				ProductPriceVO priceVo = null;				
@@ -209,6 +222,47 @@ public class ProductServiceImpl implements ProductService {
 					
 					pResult = registerProductPrice(priceVo);
 					
+					List<BottleVO> insertBottleList = new ArrayList<BottleVO>();
+					logger.debug("****** before registerProduct param. priceVo.getProductPriceSeq *****===*"+priceVo.getProductPriceSeq());
+					int productPriceSeq = priceVo.getProductPriceSeq();
+					//2022-03-28 Dummy  용기등록
+					if(gas != null && gas.getGasId() > 0) {
+					
+						for(int j=0 ; j < 5 ; j++) {
+							BottleVO bottle = new BottleVO();
+							
+							if(j==0) {
+								bottle.setBottleBarCd("DHD"+productId+productPriceSeq);
+								bottle.setBottleId("DHD"+productId+productPriceSeq);
+								bottle.setDummyYn("Y");
+							}else {
+								
+								bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+								bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+								bottle.setDummyYn("X");
+							}
+							bottle.setMemberCompSeq(1);
+							bottle.setGasId(gas.getGasId());
+							bottle.setGasCd(gas.getGasCd());
+							bottle.setProductId(productId);
+							bottle.setProductPriceSeq(priceVo.getProductPriceSeq());
+							bottle.setBottleCapa(priceVo.getProductCapa());
+							bottle.setChargeCapa(priceVo.getProductCapa());
+							bottle.setBottleOwnYn("Y");
+							bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+							bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
+							Calendar sDate 	= Calendar.getInstance();
+							sDate.set(3000, 0, 0);
+
+							bottle.setBottleChargeDt(sDate.getTime());
+							bottle.setCreateId(param.getCreateId());
+							
+							insertBottleList.add(bottle);
+						}
+					}
+					
+					if(insertBottleList.size() > 0 )
+						result = bottleService.registerBottles(insertBottleList);
 					if (pResult == false) {
 						// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
 						successFlag = false;
