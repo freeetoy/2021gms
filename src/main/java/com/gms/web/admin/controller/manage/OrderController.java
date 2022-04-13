@@ -362,7 +362,11 @@ public class OrderController {
 		OrderExtCustomerVO result = orderService.getOrderPopup(orderId);			
 		
 		model.addAttribute("orderExt", result.getOrderExt());		
-		model.addAttribute("orderTotalAmountHan",StringUtils.numberToHan(String.valueOf(Math.round(result.getOrderExt().getOrder().getOrderTotalAmount()))));
+//		if(result.getOrderExt().getOrder().getOrderTotalAmount() < 0) {
+//			double orderTotalAmount = result.getOrderExt().getOrder().getOrderTotalAmount() * -1;
+//			model.addAttribute("orderTotalAmountHan","-"+StringUtils.numberToHan(String.valueOf(Math.round(orderTotalAmount))));
+//		}else
+//			model.addAttribute("orderTotalAmountHan",StringUtils.numberToHan(String.valueOf(Math.round(result.getOrderExt().getOrder().getOrderTotalAmount()))));
 		model.addAttribute("customer", result.getCustomer());
 		
 		//Customer_Product 목록
@@ -462,9 +466,13 @@ public class OrderController {
 				cashSum.setReceivableAmountSum(0);				
 			}
 			//model.addAttribute("cashSum", cashSum);			
-			
+//			logger.debug("****************OrderContoller after service result.getOrder().getOrderTotalAmount()=="+result.getOrder().getOrderTotalAmount());
 			orderPrint.setOrderExt(result);
-			orderPrint.setOrderTotalAmountHan(StringUtils.numberToHan(String.valueOf(Math.round(result.getOrder().getOrderTotalAmount()))));
+//			if(result.getOrder().getOrderTotalAmount() < 0) {
+//				double orderTotalAmount = result.getOrder().getOrderTotalAmount() * -1;
+//				orderPrint.setOrderTotalAmountHan("-"+StringUtils.numberToHan(String.valueOf(Math.round(orderTotalAmount))));
+//			}else 
+//				orderPrint.setOrderTotalAmountHan(StringUtils.numberToHan(String.valueOf(Math.round(result.getOrder().getOrderTotalAmount()))));
 			orderPrint.setCustomer(customer);
 			orderPrint.setRentBottle(rentList.toString());
 			//orderPrint.setCustomerProduct(rentBottleList);
