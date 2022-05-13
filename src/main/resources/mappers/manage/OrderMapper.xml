@@ -40,6 +40,8 @@
 		<result property="bottleSaleYn"			column="Bottle_Sale_YN"		/>
 		<result property="retrievedYn"			column="Retrieved_YN"		/>
 		<result property="asYn"					column="AS_YN"				/>
+		<result property="incomeYn"				column="INCOME_YN"			/>
+		<result property="outYn"				column="OUT_YN"				/>
 		<result property="orderAmount"			column="Order_Amount"		/>
 		<result property="bottleBarCd"			column="Bottle_BarCD"		/>
 		<result property="gasID"				column="GAS_ID"				/>
@@ -146,7 +148,9 @@
 		 , Bottle_Change_YN 
 		 , Bottle_Sale_YN 
 		 , Retrieved_YN 
-		 , AS_YN 
+		 , AS_YN
+		 , Income_YN 
+		 , Out_YN
 		 , Order_Amount 
 		 , Bottle_BarCD  
 		 , Create_ID        
@@ -167,6 +171,8 @@
 		 , A.Bottle_Sale_YN 
 		 , Retrieved_YN 
 		 , AS_YN 
+		 , INCOME_YN 
+		 , OUT_YN 
 		 , Order_Amount 
 		 , Bottle_BarCD    
 		 , GAS_ID 
@@ -243,6 +249,8 @@
 			, #{bottleSaleYn}
 			, #{retrievedYn}		
 			, #{asYn}
+			, #{incomeYn}
+			, #{outYn}
 			, #{orderAmount}		
 			, #{bottleBarCd}
 			, #{createId}			
@@ -267,7 +275,9 @@
 			, #{item.bottleChangeYn}
 			, #{item.bottleSaleYn}
 			, #{item.retrievedYn}		
-			, #{item.asYn}	
+			, #{item.asYn}
+			, #{item.incomeYn}	
+			, #{item.outYn}	
 			, #{item.orderAmount}		
 			, #{item.bottleBarCd}
 			, #{item.createId}			

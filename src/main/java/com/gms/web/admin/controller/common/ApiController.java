@@ -76,11 +76,11 @@ public class ApiController {
 			
 			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
-				result = apiService.registerWorkReportForChangeCd(workReport);
+				result = apiService.registerWorkReportForSale(workReport);
 				
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.out"))) {		//출고
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
-				result = apiService.registerWorkReportForChangeCd(workReport);
+				result = apiService.registerWorkReportForSale(workReport);
 				
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.incar"))) {		// 상차
 				
@@ -346,11 +346,11 @@ public class ApiController {
 		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massCome"))) {			//대량입고
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));	
-			result = apiService.registerWorkReportMassForChangeCd(workReport);		
+			result = apiService.registerWorkReportMassForSale(workReport);		
 		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massOut"))) {			//대량출고
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));	
-			result = apiService.registerWorkReportMassForChangeCd(workReport);		
+			result = apiService.registerWorkReportMassForSale(workReport);		
 		}
 		
 		Long endTime = System.currentTimeMillis();

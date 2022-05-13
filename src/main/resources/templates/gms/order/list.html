@@ -220,8 +220,12 @@ $(document).ready(function(){
 						cols += '<td>용량</td>';
 						cols += '<td>수량</td>';
 						cols += '<td>적요</td>';
-						cols += '<td>용기교환</td>';
-						cols += '<td>용기판매</td></tr>';
+						cols += '<td>교환</td>';
+						cols += '<td>판매</td>';
+						cols += '<td>회수</td>';
+						cols += '<td>AS</td>';
+						cols += '<td>입고</td>';
+						cols += '<td>출고</td></tr>';
 
 						newRow.append(cols);
 						$("table.mod-doc-list").append(newRow);
@@ -245,6 +249,15 @@ $(document).ready(function(){
 				        	else cols1 += '<th>'+data.orderProduct[i].bottleChangeYn+'</th>';
 				        	if(data.orderProduct[i].bottleSaleYn==null ) cols1 += '<th></th>';
 				        	else cols1 += '<th>'+data.orderProduct[i].bottleSaleYn+'</th>';
+				        	
+				        	if(data.orderProduct[i].retrievedYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].retrievedYn+'</th>';
+				        	if(data.orderProduct[i].asYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].asYn+'</th>';
+				        	if(data.orderProduct[i].incomeYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].incomeYn+'</th>';
+				        	if(data.orderProduct[i].outYn==null ) cols1 += '<th></th>';
+				        	else cols1 += '<th>'+data.orderProduct[i].outYn+'</th>';
 				        	cols1 += '</tr>'     ;    
 				        	newRow1.append(cols1);
 					        $("table.mod-doc-list").append(newRow1);

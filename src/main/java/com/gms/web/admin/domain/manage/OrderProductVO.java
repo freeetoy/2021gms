@@ -42,7 +42,13 @@ public class OrderProductVO extends AbstractVO implements Serializable {
 	private String retrievedYn;	
 	
 	/** AS_YN 	*/
-	private String asYn;	
+	private String asYn;
+	
+	/** INCOME_YN 	*/
+	private String incomeYn = "N";	
+	
+	/** OUT_YN 	*/
+	private String outYn = "N";	
 	
 	/** Order_Amount     	*/
 	private double orderAmount;

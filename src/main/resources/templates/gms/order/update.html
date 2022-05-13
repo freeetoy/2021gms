@@ -80,7 +80,11 @@ $(document).ready(function(){
 		cols += '</td><td>'; 
 		cols += ' <input type="checkbox" class="form-control" id="retrievedYn_' + mod_counter + '" name="retrievedYn_' + mod_counter + '" ">';
 		cols += '</td><td>'; 
-		cols += ' <input type="checkbox" class="form-control" id="asYn_' + mod_counter + '" name="asYn_' + mod_counter + '" ">';
+		cols += ' <input type="checkbox" class="form-control" id="asYn_' + mod_counter + '" name="asYn_' + mod_counter + '" ">';		
+		cols += '</td><td>'; 
+		cols += ' <input type="checkbox" class="form-control" id="incomeYn_' + mod_counter + '" name="incomeYn_' + mod_counter + '" ">';
+		cols += '</td><td>'; 
+		cols += ' <input type="checkbox" class="form-control" id="outYn_' + mod_counter + '" name="outYn_' + mod_counter + '" ">';
 		cols += '</td><td>'; 
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
@@ -313,6 +317,8 @@ $(document).ready(function(){
 				cols += '<td>용기판매</td>';
 				cols += '<td>용기회수</td>';
 				cols += '<td>용기 AS</td>';
+				cols += '<td>용기입고</td>';
+				cols += '<td>용기출고</td>';
 				cols += '<td></td></tr>';
 
 		        newRow.append(cols);
@@ -335,6 +341,14 @@ $(document).ready(function(){
 				cols += ' <input type="checkbox" class="form-control" id="bottleChangeYn_0" name="bottleChangeYn_0">';
 				cols += '</td><td>'; 
 				cols += ' <input type="checkbox" class="form-control" id="bottleSaleYn_0" name="bottleSaleYn_0">';
+				cols += '</td><td>'; 
+				cols += ' <input type="checkbox" class="form-control" id="retrievedYn_0" name="retrievedYn_0">';
+				cols += '</td><td>'; 
+				cols += ' <input type="checkbox" class="form-control" id="asYn_0" name="asYn_0">';
+				cols += '</td><td>'; 
+				cols += ' <input type="checkbox" class="form-control" id="income_0" name="income_0">';
+				cols += '</td><td>'; 
+				cols += ' <input type="checkbox" class="form-control" id="outYn_0" name="outYn_0">';
 				cols += '</td><td>'; 
 				cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-danger" id="mod_addrow" value="삭제" />';
 				cols += '</td>';
@@ -395,6 +409,20 @@ $(document).ready(function(){
 						cols += '	<input type="checkbox" class="form-control" id="asYn_' + counter + '" name="asYn_' + counter + '" checked>';
 					}else {
 						cols += '	<input type="checkbox" class="form-control" id="asYn_' + counter + '" name="asYn_' + counter + '" ">';
+					}
+					
+					cols += '</td><td>'; 
+					if(data[i].incomeYn=='Y'){
+						cols += '	<input type="checkbox" class="form-control" id="incomeYn_' + counter + '" name="incomeYn_' + counter + '" checked>';
+					}else {
+						cols += '	<input type="checkbox" class="form-control" id="incomeYn_' + counter + '" name="incomeYn_' + counter + '" ">';
+					}
+					
+					cols += '</td><td>'; 
+					if(data[i].outYn=='Y'){
+						cols += '	<input type="checkbox" class="form-control" id="outYn_' + counter + '" name="outYn_' + counter + '" checked>';
+					}else {
+						cols += '	<input type="checkbox" class="form-control" id="outYn_' + counter + '" name="outYn_' + counter + '" ">';
 					}
 					cols += '</td><td>'; 
 	
@@ -555,6 +583,8 @@ $(document).ready(function(){
 								 <td>용기판매</td>
 								 <td>용기회수</td>
 		                         <td>용기 AS</td>
+		                         <td>용기입고</td>
+		                         <td>용기출고</td>
 		                         <td></td>
 		                       </tr>
 		                       <tr >
@@ -585,6 +615,12 @@ $(document).ready(function(){
 					                   </td> 
 				                   <td> 
 			                         <input type="checkbox" class="form-control" id="asYn_0" name="asYn_0">
+				                   </td> 
+				                   <td> 
+		                         <input type="checkbox" class="form-control" id="incomeYn_0" name="incomeYn_0">
+				                   </td> 
+				                    <td> 
+			                         <input type="checkbox" class="form-control" id="outYn_0" name="outYn_0">
 				                   </td> 
 			                       <td>
 			                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
