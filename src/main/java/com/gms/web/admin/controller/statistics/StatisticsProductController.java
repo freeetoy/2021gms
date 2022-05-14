@@ -2,6 +2,7 @@ package com.gms.web.admin.controller.statistics;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
@@ -23,6 +25,7 @@ import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.ProductVO;
+import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsProductVO;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.statistics.StatisticsProductService;
@@ -273,5 +276,15 @@ public class StatisticsProductController {
 			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value = "/gms/statistics/product/regProduct1.do")
+	public ModelAndView insertDailyProduct(HttpServletRequest request
+			, HttpServletResponse response			) {
+		int result =0;
+		for(int i =838;i>0;i--) {
+			result = statService.registerDailyStatisticsProduct1(i);
+		}
+			return null;
 	}
 }

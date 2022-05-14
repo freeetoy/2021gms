@@ -86,5 +86,12 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		// TODO Auto-generated method stub
 		return statMapper.inserMonthlyStatisticsProduct();
 	}
+	
+	@Override
+	public int registerDailyStatisticsProduct1(int day) {
+		// TODO Auto-generated method stub
+		
+		return statMapper.inserDailyStatisticsProduct1(day);
+	}
 
 }

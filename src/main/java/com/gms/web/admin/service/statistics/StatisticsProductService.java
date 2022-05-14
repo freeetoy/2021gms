@@ -13,4 +13,6 @@ public interface StatisticsProductService {
 	public int registerDailyStatisticsProduct();
 
 	public int registerMonthlyStatisticsProduct();
+	
+	public int registerDailyStatisticsProduct1(int day);
 }

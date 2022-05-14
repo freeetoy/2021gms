@@ -17,4 +17,7 @@ public interface StatisticsProductMapper {
 	public int inserDailyStatisticsProduct();
 
 	public int inserMonthlyStatisticsProduct();
+	
+	public int inserDailyStatisticsProduct1(int day);
+
 }
