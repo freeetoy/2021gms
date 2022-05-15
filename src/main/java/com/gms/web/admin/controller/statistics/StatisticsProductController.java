@@ -17,15 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
+import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.ProductVO;
-import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsProductVO;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.statistics.StatisticsProductService;
@@ -83,6 +83,10 @@ public class StatisticsProductController {
 		//검색어 셋팅
 		mav.addObject("searchStatDt", searchStatDt);	
 		mav.addObject("searchProductId", params.getSearchProductId());	
+		if(params.getProductPriceSeq() !=null)
+			mav.addObject("productPriceSeq", params.getProductPriceSeq());	
+		else 
+			mav.addObject("productPriceSeq", "0");
 		
 		List<ProductVO> productList = productService.getProductList();
 		mav.addObject("productList", productList);
@@ -137,8 +141,11 @@ public class StatisticsProductController {
 		
 		//검색어 셋팅
 		mav.addObject("searchStatDt", searchStatDt);	
-		mav.addObject("searchProductId", params.getSearchProductId());	
-		
+		mav.addObject("searchProductId", params.getSearchProductId());
+		if(params.getProductPriceSeq() !=null)
+			mav.addObject("productPriceSeq", params.getProductPriceSeq());	
+		else 
+			mav.addObject("productPriceSeq", "0");
 		List<ProductVO> productList = productService.getProductList();
 		mav.addObject("productList", productList);
 		
@@ -177,9 +184,6 @@ public class StatisticsProductController {
 					searchStatDtFrom = searchStatDtFrom.substring(0,7);
 					searchStatDtEnd = searchStatDtEnd.substring(0,7);
 				}
-				//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);				
-				//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
-				
 				params.setSearchStatDtFrom(searchStatDtFrom);
 				params.setSearchStatDtEnd(searchStatDtEnd);
 		
@@ -188,9 +192,13 @@ public class StatisticsProductController {
 				params.setSearchStatDt(searchStatDt);
 			}		
 			
-			ProductVO product = productService.getProductDetails(params.getSearchProductId());
+			BottleVO prdouctPriceParm = new BottleVO();
+			prdouctPriceParm.setProductId(params.getSearchProductId());
+			prdouctPriceParm.setProductPriceSeq(params.getProductPriceSeq());
+			
+			ProductTotalVO productPrice = productService.getBottleGasCapa(prdouctPriceParm);
 			String sheetName = "상품";
-			if(product!= null) sheetName = product.getProductNm();
+			if(productPrice!= null) sheetName = productPrice.getProductNm()+"_"+productPrice.getProductCapa()+"_";
 			
 			List<StatisticsProductVO> statProductList = null;
 			

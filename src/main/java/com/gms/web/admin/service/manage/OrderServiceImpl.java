@@ -1472,6 +1472,7 @@ public class OrderServiceImpl implements OrderService {
 						}else {
 							orderAmount = productTotal.getProductBottlePrice() * orderProduct.getOrderCount();		
 						}
+						if(!orderProduct.getBottleSaleYn().equals("Y") && !orderProduct.getBottleChangeYn().equals("Y")) orderAmount = 0;						
 						orderTotalAmount += orderAmount;
 						orderProduct.setProductNm(productTotal.getProductNm());
 						orderProduct.setProductCapa(productTotal.getProductCapa());

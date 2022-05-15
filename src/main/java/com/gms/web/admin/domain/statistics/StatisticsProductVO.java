@@ -17,6 +17,9 @@ public class StatisticsProductVO extends AbstractVO implements Serializable {
 	/**Product_ID   */
 	private Integer productId ;
 	
+	/**Product_Price_Seq  */
+	private Integer productPriceSeq ;
+	
 	/**Stat_Dt      */
 	private String statDt;
 	

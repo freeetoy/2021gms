@@ -22,7 +22,7 @@
 		 , Create_ID        
 		 , Create_Dt
 	</sql>
-	<sql id="StatisticsProductColumns1">
+	<sql id="StatisticsProductColumns_new">
 		 Product_ID         
 		 , Product_Price_Seq
 		 , Stat_Dt  
@@ -87,6 +87,7 @@
 			<include refid="StatisticsProductColumns" />
 		)
 		SELECT Product_ID
+			, Product_Price_Seq
 			, LEFT(Stat_Dt,7) 
 			, SUM(Sale_Count)   
 			, SUM(Sale_Amount)  	
@@ -99,7 +100,7 @@
 		GROUP BY Product_ID,LEFT(Stat_Dt,7)
 	</insert>
 	
-	
+	<!-- 
 	<select id="selectDailylStatisticsProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
 		SELECT
 			<include refid="StatisticsProductColumns" />
@@ -112,14 +113,29 @@
 		</if>
 		ORDER BY Create_Dt DESC 
 	</select>
+	 -->
+	<select id="selectDailylStatisticsProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsProductColumns_new" />
+		FROM
+			TB_Daily_Stat_Product_New
+		WHERE
+			Product_Id = #{searchProductId}	
+		AND Product_Price_Seq = #{productPriceSeq}	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
 	
 	<select id="selectMontlylStatisticsProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
 		SELECT
-			<include refid="StatisticsProductColumns" />
+			<include refid="StatisticsProductColumns_new" />
 		FROM
-			TB_Monthly_Stat_Product
+			TB_Monthly_Stat_Product_New
 		WHERE
 			Product_Id = #{searchProductId}		
+		AND Product_Price_Seq = #{productPriceSeq}	
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
 		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
 		</if>
@@ -129,7 +145,7 @@
 	
 	<insert id="inserDailyStatisticsProduct1" parameterType="int">
 		INSERT INTO TB_Daily_Stat_Product_New(
-			<include refid="StatisticsProductColumns1" />
+			<include refid="StatisticsProductColumns_new" />
 		) 
 		SELECT A.product_id,A.Product_Price_Seq, A.Stat_Dt,Sale_Count,Sale_Amount,Rent_Count,Rent_Amount,'admin',now()
 		FROM 

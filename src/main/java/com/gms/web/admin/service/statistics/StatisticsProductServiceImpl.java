@@ -25,7 +25,8 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		logger.info("****** getDailylStatisticsProductList *****start===*");	
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
-		map.put("searchProductId", param.getSearchProductId());			
+		map.put("searchProductId", param.getSearchProductId());		
+		map.put("productPriceSeq", param.getProductPriceSeq());	
 		
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
@@ -53,7 +54,8 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
 
-		map.put("searchProductId", param.getSearchProductId());			
+		map.put("searchProductId", param.getSearchProductId());	
+		map.put("productPriceSeq", param.getProductPriceSeq());	
 		
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
@@ -77,20 +79,16 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 
 	@Override
 	public int registerDailyStatisticsProduct() {
-		// TODO Auto-generated method stub
 		return statMapper.inserDailyStatisticsProduct();
 	}
 
 	@Override
 	public int registerMonthlyStatisticsProduct() {
-		// TODO Auto-generated method stub
 		return statMapper.inserMonthlyStatisticsProduct();
 	}
 	
 	@Override
 	public int registerDailyStatisticsProduct1(int day) {
-		// TODO Auto-generated method stub
-		
 		return statMapper.inserDailyStatisticsProduct1(day);
 	}
 

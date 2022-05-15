@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gms.web.admin.common.utils.ShRunner;
 import com.gms.web.admin.common.web.utils.SessionUtil;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.UserVO;
@@ -240,17 +239,17 @@ public class LoginController {
 	}
 	
 
-	@RequestMapping(value="/command")
-	public String command(Model model,HttpServletRequest req){
-		model.addAttribute("message",req.getServletContext());
-		
-		ShRunner shRunner = new ShRunner();
-		logger.debug("LoginContoller command start ");
-		String cmds = "sh /home/data/restart.sh";
-        String[] callCmd = {"/bin/bash", "-c", cmds};
-        Map map = shRunner.execCommand(callCmd);
-        
-		return "";
-	}
+//	@RequestMapping(value="/command")
+//	public String command(Model model,HttpServletRequest req){
+//		model.addAttribute("message",req.getServletContext());
+//		
+//		ShRunner shRunner = new ShRunner();
+//		logger.debug("LoginContoller command start ");
+//		String cmds = "sh /home/data/restart.sh";
+//        String[] callCmd = {"/bin/bash", "-c", cmds};
+//        Map map = shRunner.execCommand(callCmd);
+//        
+//		return "";
+//	}
 	
 }

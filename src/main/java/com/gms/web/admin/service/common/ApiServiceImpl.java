@@ -483,6 +483,9 @@ public class ApiServiceImpl implements ApiService {
 					productVo.setRetrievedYn(detail.get(6));
 					productVo.setAsYn(detail.get(7));
 					
+					productVo.setIncomeYn(detail.get(8));
+					productVo.setOutYn(detail.get(9));
+					
 					orderProductList.add(productVo);
 				}
 				

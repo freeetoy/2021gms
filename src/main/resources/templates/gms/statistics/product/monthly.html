@@ -6,6 +6,20 @@
 <script type="text/javascript">
 $(document).ready(function(){ 
 	 $("#searchStatDt").val('[[${searchStatDt}]]' );
+	 
+	var searchProductId =  $('#searchProductId').val();
+	 
+	 if('[[${productPriceSeq}]]' > 0) {
+		 getProductPriceList(searchProductId,2);
+	 }
+
+	// 품명 선택 변경
+    $('#searchProductId').change( function(){
+
+		var productId = $('#searchProductId').val();
+
+		getProductPriceList(productId,1);
+	});
 });
 	
 	
@@ -29,6 +43,31 @@ $(function() {
 	
 });	
 
+function getProductPriceList(searchProductId, type){  
+	
+	$.ajax({
+		url: '/gms/product/priceList.do',
+		type: 'POST',
+		data: 'productId='+ searchProductId ,
+		dataType: 'json',
+
+	 })
+	.done(function(data){	           
+    	var i=0;
+    	$('#productPriceSeq' ).find('option').remove(); 
+		//$('#productCapa_' + sel_pid).find('option').remove(); 
+		for(i=0; i< data.length;i++) {
+			if(type==2 && '[[${productPriceSeq}]]' == data[i].productPriceSeq )
+				$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+' selected>'+data[i].productCapa+'</option>')
+			else
+				$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')					
+		}
+		
+	})
+	.fail(function(){
+		console.log("fail");
+	 });
+} 
 </script>
 
    <div class="content-wrapper">
@@ -66,11 +105,13 @@ $(function() {
 				                th:value="${row.productId}"
 			                	th:unless="${searchProductId ==row.productId}">				             
 					        </option>			
-				               
-				     </option>		
 			    </select>	                      
             </div>  
-          
+          <div class="col-3">     
+            	<select id="productPriceSeq" name="productPriceSeq" class="form-control" style="width:120px">
+                     	                      	
+		    	</select>	   
+             </div>
          </div>
          <div class="row">	
 	        <div class="col-12">
@@ -92,7 +133,7 @@ $(function() {
                 <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
               </div>  
               <div class="col-2" align=right>
-               		<a th:href="@{/gms/statistics/product/excelDown.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},periodType=2)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+               		<a th:href="@{/gms/statistics/product/excelDown.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},productPriceSeq=${productPriceSeq},periodType=2)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
             </div>
               </form>  
          </div>       
