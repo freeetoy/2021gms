@@ -49,7 +49,7 @@
 			Group by Product_Id
 		) tc on tb.Product_ID = tc.product_id
 	</insert> -->
-	<insert id="inserDailyStatisticsProduct">
+	<insert id="inserDailyStatisticsProduct_old">
 		INSERT INTO TB_Daily_Stat_Product(
 			<include refid="StatisticsProductColumns" />
 		) 
@@ -82,7 +82,7 @@
 		WHERE A.Product_ID= B.Product_ID		
 	</insert>
 	
-	<insert id="inserMonthlyStatisticsProduct">
+	<insert id="inserMonthlyStatisticsProduct_old">
 		INSERT INTO TB_Monthly_Stat_Product(
 			<include refid="StatisticsProductColumns" />
 		)
@@ -143,14 +143,14 @@
 	</select>
 	
 	
-	<insert id="inserDailyStatisticsProduct1" parameterType="int">
+	<insert id="inserDailyStatisticsProduct" parameterType="int">
 		INSERT INTO TB_Daily_Stat_Product_New(
 			<include refid="StatisticsProductColumns_new" />
 		) 
 		SELECT A.product_id,A.Product_Price_Seq, A.Stat_Dt,Sale_Count,Sale_Amount,Rent_Count,Rent_Amount,'admin',now()
 		FROM 
 		(
-			SELECT tb.Product_ID, tb.Product_Price_Seq, DATE_FORMAT(date_sub(curdate(), interval  #{day} day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Sale_Count, IFNULL(Order_Amount,0) Sale_Amount,'admin', NOW()
+			SELECT tb.Product_ID, tb.Product_Price_Seq, DATE_FORMAT(date_sub(curdate(), interval  1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Sale_Count, IFNULL(Order_Amount,0) Sale_Amount,'admin', NOW()
 			FROM  TB_Product_Price tb left join 
 			(
 				SELECT Product_Id,  Product_Price_Seq,
@@ -158,23 +158,45 @@
 					Case When Product_Id &gt;=65 and Product_ID &lt;=71 then sum( Charge_Volumn * Product_Price) else  Sum(Product_Price) end Order_Amount
 				FROM TB_Work_Bottle
 				WHERE Bottle_Work_Cd in ('0308','0314')
-				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval #{day}  day),'%Y/%m/%d')	
+				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1  day),'%Y/%m/%d')	
 				Group by Product_Id,Product_Price_Seq
 			) tc on tb.Product_ID = tc.Product_ID and tb.Product_Price_Seq = tc.Product_Price_Seq
 		)A,
 		( 
-			SELECT tb.Product_ID,tb.Product_Price_Seq, DATE_FORMAT(date_sub(curdate(), interval #{day}  day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Rent_Count, IFNULL(Order_Amount,0) Rent_Amount,'admin', NOW()
+			SELECT tb.Product_ID,tb.Product_Price_Seq, DATE_FORMAT(date_sub(curdate(), interval 1  day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Rent_Count, IFNULL(Order_Amount,0) Rent_Amount,'admin', NOW()
 			FROM  TB_Product_Price tb left join 
 			(
 				SELECT Product_Id,Product_Price_Seq, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
 				FROM TB_Work_Bottle
 				WHERE Bottle_Work_Cd in ('0309','0316')
-				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval #{day}  day),'%Y/%m/%d')	
+				AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
 				Group by Product_Id,Product_Price_Seq
 			) tc on tb.Product_ID = tc.Product_ID and tb.Product_Price_Seq = tc.Product_Price_Seq
 		) B 
 		WHERE A.Product_ID= B.Product_ID		
 		AND A.Product_Price_Seq = B.Product_Price_Seq
-		AND A.Stat_Dt = B.Stat_Dt
 	</insert>
+	
+	<insert id="inserMonthlyStatisticsProduct">
+		INSERT INTO TB_Monthly_Stat_Product_New(
+			<include refid="StatisticsProductColumns_new" />
+		)
+		SELECT Product_ID
+			, Product_Price_Seq
+			, LEFT(Stat_Dt,7) 
+			, SUM(Sale_Count)   
+			, SUM(Sale_Amount)  	
+			, SUM(Rent_Count)   
+			, SUM(Rent_Amount)   
+			, 'admin'
+			, NOW()
+		FROM TB_Daily_Stat_Product_New
+		WHERE LEFT(Stat_Dt,7)=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m')
+		GROUP BY Product_ID,Product_Price_Seq,LEFT(Stat_Dt,7)
+	</insert>
+	<update id="deleteDailyStatProduct">
+		DELETE FROM TB_Daily_Stat_Product_New
+		WHERE Sale_Count  = 0
+		AND Rent_Count  = 0
+	</update>
 </mapper>

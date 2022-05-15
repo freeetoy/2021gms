@@ -286,13 +286,5 @@ public class StatisticsProductController {
 		}
 	}
 	
-	@RequestMapping(value = "/gms/statistics/product/regProduct1.do")
-	public ModelAndView insertDailyProduct(HttpServletRequest request
-			, HttpServletResponse response			) {
-		int result =0;
-		for(int i =838;i>0;i--) {
-			result = statService.registerDailyStatisticsProduct1(i);
-		}
-			return null;
-	}
+
 }

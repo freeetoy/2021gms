@@ -79,7 +79,9 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 
 	@Override
 	public int registerDailyStatisticsProduct() {
-		return statMapper.inserDailyStatisticsProduct();
+		int result = 0;
+		result = statMapper.inserDailyStatisticsProduct();
+		return statMapper.deleteDailyStatProduct();
 	}
 
 	@Override
@@ -87,9 +89,4 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		return statMapper.inserMonthlyStatisticsProduct();
 	}
 	
-	@Override
-	public int registerDailyStatisticsProduct1(int day) {
-		return statMapper.inserDailyStatisticsProduct1(day);
-	}
-
 }

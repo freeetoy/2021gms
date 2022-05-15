@@ -14,5 +14,6 @@ public interface StatisticsProductService {
 
 	public int registerMonthlyStatisticsProduct();
 	
-	public int registerDailyStatisticsProduct1(int day);
+//	public int deleteDailyStatProduct();
+	
 }

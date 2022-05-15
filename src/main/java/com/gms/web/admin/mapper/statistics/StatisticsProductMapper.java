@@ -18,6 +18,6 @@ public interface StatisticsProductMapper {
 
 	public int inserMonthlyStatisticsProduct();
 	
-	public int inserDailyStatisticsProduct1(int day);
+	public int deleteDailyStatProduct();
 
 }
