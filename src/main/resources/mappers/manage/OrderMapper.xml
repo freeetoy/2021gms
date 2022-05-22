@@ -47,6 +47,7 @@
 		<result property="gasID"				column="GAS_ID"				/>
 		<result property="orderBottleSeq"		column="Order_Bottle_Seq"	/>
 		<result property="Sales_Count"			column="SalesCount"			/>
+		<result property="bottleWorkCd"			column="Bottle_Work_Cd"		/>
 		<result property="createId"				column="CREATE_ID"			/>
 		<result property="createDt"				column="CREATE_DT"			/>
 		<result property="updateId"				column="UPDATE_ID"			/>		
@@ -153,6 +154,7 @@
 		 , Out_YN
 		 , Order_Amount 
 		 , Bottle_BarCD  
+		 , Bottle_Work_CD 
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -253,6 +255,7 @@
 			, #{outYn}
 			, #{orderAmount}		
 			, #{bottleBarCd}
+			, #{bottleWorkCd}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -280,6 +283,7 @@
 			, #{item.outYn}	
 			, #{item.orderAmount}		
 			, #{item.bottleBarCd}
+			, #{item.bottleWorkCd}
 			, #{item.createId}			
 			, NOW()
 			, NULL
@@ -326,6 +330,7 @@
 		UPDATE TB_Order
 		SET
 			Delivery_Req_Dt			= #{deliveryReqDt}
+			, Order_Process_CD 		= #{orderProcessCd}
 			, Delivery_Req_AmPm		= #{deliveryReqAmpm}
 			, Order_Etc				= #{orderEtc}
 			, Order_Product_Nm		= #{orderProductNm}
@@ -333,6 +338,10 @@
 			, Customer_ID			= #{customerId}
 			, Order_Total_Amount	= #{orderTotalAmount}
 			, Customer_City			= #{customerCity}
+			, Sales_ID				= #{salesId}
+			 <if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(orderDeliveryDt)">
+			  ,Order_Delivery_Dt = #{orderDeliveryDt}
+			  </if>
 			, UPDATE_ID 			= #{updateId}
 			, UPDATE_DT 			= NOW()
 		WHERE
@@ -455,6 +464,30 @@
 			Order_Product_Seq = #{orderProductSeq}	
 	</update>	
 	
+	<update id="updateOrderProducts" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=",">
+		UPDATE TB_Order_Product
+		SET
+			  Order_Count 	= #{item.orderCount}
+			, Order_Amount 	= #{item.orderAmount}
+			, UPDATE_ID 	= #{item.updateId}
+			, UPDATE_DT 	= NOW()
+		WHERE
+			Order_ID = #{item.orderId}
+		AND
+			Order_Product_Seq = #{item.orderProductSeq}	
+		</foreach>
+	</update>
+	<update id="deleteOrderProductsNew" parameterType="java.util.Map">
+		
+		DELETE FROM  TB_Order_Product		
+		WHERE
+			Order_ID = #{orderId}
+		AND Order_Product_Seq in 		
+		 <foreach collection="OrderProductSeqList" item="item" index="idx" separator=","  open="(" close=")">
+		#{item} 
+		</foreach>
+	</update>	
 	<update id="updateOrderBottle" parameterType="com.gms.web.admin.domain.manage.OrderBottleVO">		
 		UPDATE TB_Order_Bottle
 		SET
@@ -655,6 +688,49 @@
 		ORDER BY A.Create_Dt DESC 
 	</select>
 	
+	<select id="selectOrderProductListNew" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
+		SELECT
+			Order_ID         
+		 , Order_Product_Seq
+		 , A.Product_ID       
+		 , Product_Nm       
+		 , A.Product_Price_Seq
+		 , Product_Capa     
+		 , Order_Count   
+		 , Order_Product_ETC
+		 , Bottle_Change_YN 
+		 , A.Bottle_Sale_YN 
+		 , A.Bottle_Work_Cd
+		 , Retrieved_YN 
+		 , AS_YN 
+		 , INCOME_YN 
+		 , OUT_YN 
+		 , Order_Amount 
+		 , Bottle_BarCD    
+		 , GAS_ID 
+		 , Order_Count-IFNULL(Registered_Count,0) Sales_Count
+		 , A.Create_ID        
+		 , A.Create_Dt        
+		 , A.Update_ID        
+		 , A.Update_Dt   
+		FROM
+			TB_Product b ,TB_Product_Price C,
+			TB_Order_Product A Left Join (
+					SELECT Count(Work_Seq) Registered_Count,Product_ID, Product_Price_Seq  ,TB.Bottle_Sale_YN, TB.Bottle_Work_Cd
+					FROM TB_Work_Bottle TB,TB_Work_Report TWR 
+					WHERE TB.Work_Report_Seq = TWR.Work_Report_Seq 
+					AND TWR.Delete_YN = 'N'
+					AND Order_Id = #{orderId}	
+					Group By Product_ID, Product_Price_Seq  ,TB.Bottle_Sale_YN ,Bottle_Work_Cd
+			) TW on (A.Product_ID = TW.product_id AND A.Product_Price_Seq = TW.Product_Price_Seq AND A.Bottle_Work_Cd = TW.Bottle_Work_Cd)
+		WHERE
+			Order_ID = #{orderId}	
+		AND A.Product_ID = B.Product_ID
+		AND A.Product_ID = C.Product_ID
+		AND A.Product_Price_Seq = C.Product_Price_Seq								
+		ORDER BY A.Create_Dt DESC 
+	</select>
+	
 	<select id="selectOrderProductSimpleList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
 		SELECT
 			<include refid="OrderProductColumns" />
@@ -786,13 +862,17 @@
 	
 	<select id="selectOrderBottleListNotDelivery" resultType="com.gms.web.admin.domain.manage.OrderBottleVO" parameterType="Integer">		
 		SELECT
-			<include refid="OrderBottleColumns" />
+			Order_Bottle_Seq , OB.Order_ID , OB.Order_Product_Seq , OB.Product_ID , OB.Product_Price_Seq , TP.Bottle_Work_CD
 		FROM
-			TB_Order_Bottle
+			TB_Order_Bottle OB, TB_Order_Product TP
 		WHERE
-			Order_ID = #{orderId}
+			OB.Order_ID = #{orderId}
 		AND 
-			Bottle_BarCD is null
+			OB.Bottle_BarCD is null
+		AND 
+			OB.Order_ID = TP.Order_ID
+		AND 
+			OB.Order_Product_Seq = TP.Order_Product_Seq
 	</select>
 	
 	<select id="selectOrderBottleListOfProduct" resultType="com.gms.web.admin.domain.manage.OrderBottleVO" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">		

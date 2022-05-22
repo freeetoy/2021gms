@@ -32,7 +32,6 @@ var validation = function(){
 	*/
 	var result = (
 			isValid(customerNm, "거래처명", null, null)
-		&& isValid(salesId, "영업 담당자", null, null)
 	);
 	
 	if ( result === false ) {
@@ -280,7 +279,7 @@ $(function() {
                       <th class="card-footer">영업 담당자</th>
                       <th>
                        <select id="salesId" name="salesId" class="form-control">
-                        <option value="0">영업담당자</option>
+                        <option value="">영업담당자</option>
                       	<option th:each="row : ${userList}"
 					                th:text="${row.userNm}"
 					                th:value="${row.userId}"

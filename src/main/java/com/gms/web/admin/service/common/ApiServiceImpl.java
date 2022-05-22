@@ -317,7 +317,7 @@ public class ApiServiceImpl implements ApiService {
 			if(customer!=null) {
 				param.setCustomerId(customer.getCustomerId());
 				param.setAgencyYn(customer.getAgencyYn());				//20201220	
-				result = workService.registerWorkReportMassNoOrder(param);		
+				result = workService.registerWorkReportMassNoOrder(param);
 				
 			}else {
 				return CUSOTMER_NOT_EXIST;

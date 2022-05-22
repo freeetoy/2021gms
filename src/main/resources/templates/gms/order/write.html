@@ -186,10 +186,9 @@ $(document).ready(function(){
 	        $("#productCount").val(counter++);
         }	
     	
-    	
     	var checkedValue = ""; 
 		var chki=0;
-		//var inputElements = document.getElementsByClassName('IdCheckbox');
+
 		for(var i=0; i < totalCount; ++i){
 			 //alert("checke ")
 			var inputElements = 'bottleChangeYn_'+1;
@@ -214,10 +213,8 @@ $(document).ready(function(){
 
     	var form = $("#writeForm");	
 
-    	//document.getElementById("priceCount").value = counter+mod_counter;
     	document.getElementById("productCount").value = totalCount;
     	
-    	//alert("save");
     	form.submit();
     });
     

@@ -27,11 +27,15 @@ public interface OrderService {
 	
 	public OrderExtVO getOrder(Integer orderId) ;
 	
+	public OrderExtVO getOrderNew(Integer orderId) ;
+	
 	public OrderExtCustomerVO getOrderPopup(Integer orderId) ;
 	
 	public OrderExtVO getOrderNotDelivery(Integer orderId) ;
 	
 	public List<OrderProductVO> getOrderProductList(Integer orderId);
+	
+	public List<OrderProductVO> getOrderProductListNew(Integer orderId);
 
 	public int getOrderCount(Map<String, Object> map);	
 
@@ -122,6 +126,10 @@ public interface OrderService {
 	public int modifyOrderProcessCd0250();
 	
 	public int modifyOrderProduct(OrderProductVO param);
+	
+	public int modifyOrderProducts(List<OrderProductVO> param);
+	
+	public int deleteOrderProducts(List<OrderProductVO> param);
 	
 	public int modifyOrderInfo(OrderVO param);
 

@@ -308,7 +308,7 @@ public class OrderController {
 	@ResponseBody
 	public OrderExtVO getOrderDetail(@RequestParam(value = "orderId", required = false) Integer orderId, Model model)	{
 		
-		OrderExtVO result = orderService.getOrder(orderId);			
+		OrderExtVO result = orderService.getOrderNew(orderId);			
 		
 		return result;
 	}

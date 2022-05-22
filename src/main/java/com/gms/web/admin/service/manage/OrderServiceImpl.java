@@ -197,7 +197,11 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderProductVO> getOrderProductList(Integer orderId) {
 		return orderMapper.selectOrderProductList(orderId);	
 	}
-
+	
+	@Override
+	public List<OrderProductVO> getOrderProductListNew(Integer orderId) {
+		return orderMapper.selectOrderProductListNew(orderId);	
+	}
 	
 	@Override
 	public int getOrderCount(Map<String, Object> map) {
@@ -227,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
 			// Sales ID 설정
 			CustomerVO customer = customerService.getCustomerDetails(params.getCustomerId());
 			params.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
-			params.setSalesId(customer.getSalesId());
+			//params.setSalesId(customer.getSalesId());
 			result =  orderMapper.insertOrder(params);	
 						
 			int orderId = getNewOrderId(params);
@@ -252,6 +256,7 @@ public class OrderServiceImpl implements OrderService {
 			String asYn = "N";
 			String incomeYn = "N";
 			String outYn = "N";
+			String bottleWorkCd = "";
 			
 			ProductTotalVO tempProduct = null;			
 			
@@ -280,6 +285,7 @@ public class OrderServiceImpl implements OrderService {
 					asYn = "N";
 					incomeYn = "N";
 					outYn = "N";
+					bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.sale");
 					boolean bottleFlag = false;
 					
 					productId = Integer.parseInt(request.getParameter("productId_"+i));
@@ -289,13 +295,31 @@ public class OrderServiceImpl implements OrderService {
 					else 
 						orderCount = 1;
 					
-					if(request.getParameter("bottleChangeYn_"+i) !=null)  bottleChangeYn = "Y";
-					if(request.getParameter("bottleSaleYn_"+i) !=null )  bottleSaleYn = "Y";									
+					if(request.getParameter("bottleChangeYn_"+i) !=null) {
+						bottleChangeYn = "Y";
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.rent");
+					}
+					if(request.getParameter("bottleSaleYn_"+i) !=null ) {
+						bottleSaleYn = "Y";			
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.sale");
+					}
 					
-					if(request.getParameter("retrievedYn_"+i) !=null )  retrievedYn = "Y";	
-					if(request.getParameter("asYn_"+i) !=null )  asYn = "Y";
-					if(request.getParameter("incomeYn_"+i) !=null )  incomeYn = "Y";	
-					if(request.getParameter("outYn_"+i) !=null )  outYn = "Y";	
+					if(request.getParameter("retrievedYn_"+i) !=null ) {
+						retrievedYn = "Y";
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.back");
+					}
+					if(request.getParameter("asYn_"+i) !=null ) {
+						asYn = "Y";
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.freeback");
+					}
+					if(request.getParameter("incomeYn_"+i) !=null ) {
+						incomeYn = "Y";	
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.come");
+					}
+					if(request.getParameter("outYn_"+i) !=null ) {
+						outYn = "Y";	
+						bottleWorkCd = PropertyFactory.getProperty("common.bottle.status.out");
+					}
 					
 					for(int k=0;k<productPriceList.size();k++) {
 						orderAmount = 0;
@@ -316,7 +340,7 @@ public class OrderServiceImpl implements OrderService {
 									
 									if(bottleSaleYn.equals("Y")) {						
 										if(bottleFlag && customer.getAgencyYn().equals("N")){	// 가스 및 용기 판매
-											orderAmount = tempProduct.getProductBottlePrice() + tempProduct.getProductPrice()* orderCount;
+											orderAmount = (tempProduct.getProductBottlePrice() + tempProduct.getProductPrice() ) * orderCount;
 										}else 
 											orderAmount = tempProduct.getProductBottlePrice() * orderCount;		
 									}else
@@ -383,6 +407,7 @@ public class OrderServiceImpl implements OrderService {
 					productVo.setAsYn(asYn);
 					productVo.setIncomeYn(incomeYn);
 					productVo.setOutYn(outYn);
+					productVo.setBottleWorkCd(bottleWorkCd);
 					//productVo.setProductDeliveryDt(null);
 					
 					orderProduct.add(productVo);
@@ -1010,6 +1035,32 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Override
+	public OrderExtVO getOrderNew(Integer orderId) {
+		
+		OrderVO order = orderMapper.selectOrderDetail(orderId);	
+		
+		List<OrderProductVO> orderProductList = null;
+		
+		if(order.getOrderTypeCd().equals(PropertyFactory.getProperty("common.code.order.type.order")) )
+			orderProductList = orderMapper.selectOrderProductListNew(orderId);
+		else
+			orderProductList = orderMapper.selectOrderInfoOfNotProduct(orderId);
+		
+		OrderExtVO result = new OrderExtVO();
+		int productCount = 0;
+		for(int i=0 ; i < orderProductList.size() ; i++) {
+			productCount += orderProductList.get(i).getOrderCount();
+			orderProductList.get(i).setOrderVat(Math.round(orderProductList.get(i).getOrderAmount()*0.1 *100)/100.0 );
+		}
+		order.setProductCount(productCount);
+		
+		result.setOrderProduct(orderProductList);
+		result.setOrder(order);
+		
+		return result;
+	}
+	
+	@Override
 	public OrderExtCustomerVO getOrderPopup(Integer orderId) {
 		OrderVO order = orderMapper.selectOrderDetail(orderId);	
 		
@@ -1523,6 +1574,24 @@ public class OrderServiceImpl implements OrderService {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	public int modifyOrderProducts(List<OrderProductVO> param) {
+		return orderMapper.updateOrderProducts(param);
+	}
+
+	@Override
+	public int deleteOrderProducts(List<OrderProductVO> param) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Integer> list =  new ArrayList<Integer>();
+		for(int i = 0 ; i < param.size() ; i++) {
+			if(i==0) map.put("orderId",param.get(i).getOrderId());
+			
+			list.add(param.get(i).getOrderProductSeq());
+		}
+		map.put("OrderProductSeqList", list);
+		return orderMapper.deleteOrderProductsNew(map);
 	}
 
 }

@@ -19,6 +19,8 @@ public interface OrderMapper {
 	public List<OrderProductVO> selectOrderProductSimpleList(Integer orderId);	
 	
 	public List<OrderProductVO> selectOrderProductList(Integer orderId);	
+	
+	public List<OrderProductVO> selectOrderProductListNew(Integer orderId);	
 
 	public List<OrderProductVO> selectOrderInfoOfNotProduct(Integer orderId);	
 	
@@ -60,6 +62,8 @@ public interface OrderMapper {
 	
 	public int updateOrderProduct(OrderProductVO param);
 	
+	public int updateOrderProducts(List<OrderProductVO>  param);
+	
 	public int updateOrderAdditionBottles(OrderVO param);
 	
 	public int updateOrderProductCount(OrderProductVO param);
@@ -81,6 +85,8 @@ public interface OrderMapper {
 	public int deleteOrder(OrderVO param);
 
 	public int deleteOrderProduct(OrderProductVO param);
+	
+	public int deleteOrderProductsNew(Map<String, Object> map);
 	
 	public int deleteOrderProducts(Integer orderId);
 	

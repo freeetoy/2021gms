@@ -33,5 +33,8 @@ public class OrderBottleVO extends AbstractVO {
 	/** Bottle_BarCD		*/
 	private String bottleBarCd;
 	
+	/** Bottle_Work_CD		*/
+	private String bottleWorkCd;
+	
 	private List<Integer> orderBottleList;
 }

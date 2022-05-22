@@ -123,6 +123,7 @@
 		, Order_Product_Seq	
 		, Bottle_Type
 		, Bottle_Work_DT
+		, Dummy_YN
 		, TB.CREATE_ID
 		, TB.CREATE_DT
 		, TB.UPDATE_ID

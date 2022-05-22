@@ -232,10 +232,8 @@ $(document).ready(function(){
 
 						for(var i=0;i<data.orderProduct.length;i++){
 							var newRow1 = $("<tr >");
-							if(data.order.orderProcessCd =='0240' ) newRow1 = $("<tr style='color: blue'>"); 
-							else{
-								if(data.orderProduct[i].salesCount <=0) newRow1 = $("<tr style='color: blue'>"); 
-							}
+							if(data.order.orderProcessCd =='0240' || data.order.orderProcessCd =='0250') newRow1 = $("<tr style='color: blue'>"); 
+							
 							var cols1 = "";
 							if(data.orderProduct[i].productNm==null || data.orderProduct[i].productNm=='') cols1 += '<th></th>';
 							else cols1 += '<th>'+data.orderProduct[i].productNm+'</th>';

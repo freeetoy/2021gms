@@ -37,17 +37,17 @@ public class CashFlowServiceImpl implements CashFlowService {
 	public int registerCashFlow(CashFlowVO param) {
 		
 		int result = 0;
-		OrderVO order = orderService.getPayOrderForCustomer(param.getCustomerId());
-		
-		if(order !=null) {
-			Calendar cal = Calendar.getInstance();
-			
-			order.setDeliveryReqDt(cal.getTime());			
-			order.setChOrderId(order.getOrderId());
-			order.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.delivery"));
-			
-			result = orderService.changeOrderProcessCd(order);
-		}
+//		OrderVO order = orderService.getPayOrderForCustomer(param.getCustomerId());
+//		
+//		if(order !=null) {
+//			Calendar cal = Calendar.getInstance();
+//			
+//			order.setDeliveryReqDt(cal.getTime());			
+//			order.setChOrderId(order.getOrderId());
+//			order.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.delivery"));
+//			
+//			result = orderService.changeOrderProcessCd(order);
+//		}
 	
 		return cashMapper.insertCashFlow(param);
 	}
