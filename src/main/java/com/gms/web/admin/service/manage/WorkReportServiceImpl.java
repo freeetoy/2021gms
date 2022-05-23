@@ -4136,9 +4136,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				//Bottle정보 업데이트
 			}			   
-//			logger.debug("WorkReportServiceImpl --deleteWorkReport  param.getWorkReportSeq() " + param.getWorkReportSeq() );
-			result = workMapper.deleteWorkBottle(param.getWorkReportSeq());
-			if(result <=0 ) return -1;
+			logger.debug("WorkReportServiceImpl --deleteWorkReport  pbeforeWorkBottleList.size() " + beforeWorkBottleList.size() );
+			if(beforeWorkBottleList.size() > 0) result = workMapper.deleteWorkBottle(param.getWorkReportSeq());
+//			if(result <=0 ) return -1;
 					
 			result = workMapper.deleteWorkReport(param);		
 			if(result <=0 ) return -1;			
