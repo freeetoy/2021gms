@@ -560,7 +560,8 @@ public class ExcelDownloadController {
 	
 		    // 데이터용 경계 스타일 테두리만 지정
 		    CellStyle bodyStyle = wb.createCellStyle();
-		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		   
+		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		
+		    bodyStyle.setWrapText(true);
 		   
 		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		    //순번,지역,거래처명,상품명,용량,접수자,상태,요청일자,접수일
@@ -608,24 +609,28 @@ public class ExcelDownloadController {
 				        String strPrice = df.format(price);
 		        		sb.append("   ").append(prd.getOrderCount()).append(", ").append(strPrice).append(" ");
 		        		if(prd.getBottleChangeYn() !=null && prd.getBottleChangeYn().equals("Y") ){
-		        			sb.append("대여 / ");
+		        			sb.append("대여/");
 		        		}else {
-		        			sb.append("판매 / ");
+		        			sb.append("판매/");
 		        		}
 		        		
 		        		if(prd.getRetrievedYn().equals("Y")) {
-		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" 회수 / ");
+		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" 회수/");
 		        		}
 		        		if(prd.getAsYn().equals("Y")) {
-		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" AS / ");
+		        			sb.append(" ").append(prd.getProductNm()).append(" ").append(prd.getProductCapa()).append(" AS/");
 		        		}
 		        	}
 		        }
-		        cell.setCellValue(sb.toString());  
+		        if(sb.toString() != null && sb.toString().length() > 0) {
+		        	
+		        	cell.setCellValue(sb.toString().substring(0,sb.toString().lastIndexOf("/")).replaceAll("/", "\n"));  
+		        }else
+		        	cell.setCellValue(sb.toString());  
 			        
-		        cell = row.createCell(idx++);
-		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(df.format(vo.getOrderTotalAmount()*1.1));
+//		        cell = row.createCell(idx++);
+//		        cell.setCellStyle(bodyStyle);
+//		        cell.setCellValue(df.format(vo.getOrderTotalAmount()*1.1));
 		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
@@ -638,23 +643,28 @@ public class ExcelDownloadController {
 		    }	
 		    idx = 0;
 	        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
-	        cell = row.createCell(0);
-	       // cell.setCellStyle(bodyStyle);
-	        cell.setCellValue("주문금액은 부가세 포함입니다");
+//	        cell = row.createCell(0);
+//	       // cell.setCellStyle(bodyStyle);
+//	        cell.setCellValue("주문금액은 부가세 포함입니다");
 	
 		 // width 자동조절
 		    if(orderlist.size() > 0 ) {
 	 			for (int x = 1; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
 	 				sheet.autoSizeColumn(x);
 	 				int width = sheet.getColumnWidth(x);
-	 				int minWidth = list.get(x).getBytes().length * 350;
+	 				int minWidth = list.get(x).getBytes().length * 300;
 	 				int maxWidth = 18000;
-	 				if (minWidth > width) {
-	 					sheet.setColumnWidth(x, minWidth);
-	 				} else if (width > maxWidth) {
-	 					sheet.setColumnWidth(x, maxWidth);
-	 				} else {
-	 					sheet.setColumnWidth(x, width + 2000);
+//	 				logger.debug(" width "+width+"=minWidth="+minWidth);
+	 				if(x==0) sheet.setColumnWidth(x, 800);
+	 				else if(x==1) sheet.setColumnWidth(x, 2500);
+	 				else {
+		 				if (minWidth > width) {
+		 					sheet.setColumnWidth(x, minWidth);
+		 				} else if (width > maxWidth) {
+		 					sheet.setColumnWidth(x, maxWidth);
+		 				} else {
+		 					sheet.setColumnWidth(x, width + 1000);
+		 				}
 	 				}
 	 			}
 		    }
