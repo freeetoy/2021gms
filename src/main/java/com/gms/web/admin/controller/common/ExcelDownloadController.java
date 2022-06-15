@@ -562,6 +562,11 @@ public class ExcelDownloadController {
 		    CellStyle bodyStyle = wb.createCellStyle();
 		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		
 		    bodyStyle.setWrapText(true);
+		    
+		    CellStyle amountStyle = wb.createCellStyle();
+		    amountStyle= ExcelStyle.getBodyStyle(amountStyle);		
+		    amountStyle.setWrapText(true);
+		    amountStyle.setAlignment(HorizontalAlignment.RIGHT); // 가로 오른쪽 정렬
 		   
 		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		    //순번,지역,거래처명,상품명,용량,접수자,상태,요청일자,접수일
@@ -607,7 +612,7 @@ public class ExcelDownloadController {
 				        
 				        double price = prd.getOrderAmount() / prd.getOrderCount();
 				        String strPrice = df.format(price);
-		        		sb.append("   ").append(prd.getOrderCount()).append(", ").append(strPrice).append(" ");
+		        		sb.append("   ").append(prd.getOrderCount()).append(" ");
 		        		if(prd.getBottleChangeYn() !=null && prd.getBottleChangeYn().equals("Y") ){
 		        			sb.append("대여/");
 		        		}else {
@@ -628,9 +633,9 @@ public class ExcelDownloadController {
 		        }else
 		        	cell.setCellValue(sb.toString());  
 			        
-//		        cell = row.createCell(idx++);
-//		        cell.setCellStyle(bodyStyle);
-//		        cell.setCellValue(df.format(vo.getOrderTotalAmount()*1.1));
+		        cell = row.createCell(idx++);
+		        cell.setCellStyle(amountStyle);
+		        cell.setCellValue(df.format(vo.getOrderTotalAmount()*1.1));
 		        
 		        cell = row.createCell(idx++);
 		        cell.setCellStyle(bodyStyle);
