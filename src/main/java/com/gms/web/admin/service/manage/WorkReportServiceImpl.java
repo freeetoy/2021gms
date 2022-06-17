@@ -2164,10 +2164,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
 							&& beforeWorkBottle.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){		
-//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getBottleWorkCd==" + beforeWorkBottle.getProductCount() ); 
-//						logger.debug("modifyWorkBottleManual afterWorkBottle.getBottleWorkCd==" + afterWorkBottle.getProductCount() ); 
-						double fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
-
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductPrice==" + beforeWorkBottle.getProductPrice() ); 
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductPrice==" + beforeWorkBottle.getProductPrice() ); 
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductCount==" + beforeWorkBottle.getProductCount() ); 
+						double fPrice = 0;
+						if(beforeWorkBottle.getProductCount() > 0) fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
+						else fPrice = beforeWorkBottle.getProductPrice();
+//						logger.debug("modifyWorkBottleManual fPrice==" + fPrice ); 
 						beforeWorkBottle.setProductPrice(fPrice);
 						int remainCount = afterWorkBottle.getProductCount() - beforeWorkBottle.getProductCount();
 					
@@ -2188,6 +2191,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 							else
 								afterWorkBottle.setProductPrice(0.0);
 						}
+//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getBottleType()=" + beforeWorkBottle.getBottleType() ); 
 						afterWorkBottle.setBottleType(beforeWorkBottle.getBottleType());
 						afterWorkBottle.setProductPrice(beforeWorkBottle.getProductPrice());
 						afterWorkBottle.setBottleSaleYn(beforeWorkBottle.getBottleSaleYn());
@@ -2311,7 +2315,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	private int addWorkBottle(WorkBottleVO param) {
 		int result= 1;
-		logger.debug("WorkReportServiceImpl --addWorkBottle  param.getSearchDt=" + param.getSearchDt() );
+//		logger.debug("WorkReportServiceImpl --addWorkBottle  param.getSearchDt=" + param.getSearchDt() );
 		//logger.debug("WorkReportServiceImpl --addWorkBottle  param.getProductCount=" + param.getProductCount() );
 		BottleVO bottle = new BottleVO();
 		bottle.setProductId(param.getProductId());
@@ -2326,6 +2330,19 @@ public class WorkReportServiceImpl implements WorkReportService {
 		for(int i=0; i < param.getProductCount() ; i++) {
 			WorkBottleVO workBottle = new WorkBottleVO();
 			//logger.debug("workSeq="+workSeq);
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getWorkReportSeq()=" + param.getWorkReportSeq() );
+//			logger.debug("WorkReportServiceImpl --addWorkBottle workSeq=" + workSeq );
+//			logger.debug("WorkReportServiceImpl --addWorkBottle bottle.getBottleId()=" + bottle.getBottleId());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle bottle.getBottleBarCd()=" + bottle.getBottleBarCd());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getCustomerId()=" + param.getCustomerId());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getBottleWorkCd()=" + param.getBottleWorkCd());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getGasId()=" + param.getGasId());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getGasCd()=" + param.getGasCd());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getProductId()=" + param.getProductId());
+//			logger.debug("WorkReportServiceImpl --addWorkBottle param.getProductPriceSeq()=" + param.getProductPriceSeq());
+			logger.debug("WorkReportServiceImpl --addWorkBottle param.getProductPrice()=" + param.getProductPrice());
+
+			
 			workBottle.setWorkReportSeq(param.getWorkReportSeq());
 			workBottle.setWorkSeq(workSeq++);
 			workBottle.setBottleId(bottle.getBottleId());
@@ -3089,7 +3106,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				bottle.setBottleType(param.getBottleType());
 				bottle.setUpdateId(param.getUserId());
 				
-				
+				//대리점의 경우 판매->가스판매로 변경
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) && param.getAgencyYn().equals("Y"))  bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));
 				else bottle.setBottleWorkCd(param.getBottleWorkCd());
 				
