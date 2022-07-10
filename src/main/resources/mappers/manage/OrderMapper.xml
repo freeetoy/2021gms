@@ -942,6 +942,7 @@
 			 , A.Customer_ID      
 			 , B.Customer_nm
 			 , A.Customer_City
+			 , A.PRINT_YN
 		 	, Order_Total_Amount
 		FROM TB_Order A, TB_Customer B, TB_Code C
 		WHERE A.Order_Process_CD =  #{searchOrderProcessCd}			
@@ -980,4 +981,28 @@
 		</if>		
 		ORDER BY A.Create_Dt DESC 
 	</select>
+	
+	<update id="updateOrderPrintYn" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order
+		SET
+			PRINT_YN = #{printYn}
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Order_ID = #{orderId}
+	</update>	
+	
+	<update id="updateOrdersPrintYn" parameterType="com.gms.web.admin.domain.manage.OrderVO">
+		UPDATE TB_Order A
+		SET
+			PRINT_YN = #{printYn}
+			, A.UPDATE_ID = #{updateId}
+			, A.UPDATE_DT = NOW()
+		WHERE
+			A.Order_Process_CD =  #{searchOrderProcessCd}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
+		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		</if>
+	</update>	
+	
 </mapper>

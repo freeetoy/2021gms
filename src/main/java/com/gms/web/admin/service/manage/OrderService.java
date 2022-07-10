@@ -133,5 +133,8 @@ public interface OrderService {
 	
 	public int modifyOrderInfo(OrderVO param);
 
+	public int modifyOrderPrintYn(OrderVO param);
+	
+	public int modifyOrdersPrintYn(OrderVO param);
 
 }

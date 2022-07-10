@@ -433,6 +433,7 @@ $(document).ready(function(){
 	             scrollbars: 'true'
 	        });
 		}
+	
    	});
 	
 	$(".btn_orderlist_print_all").click(function()  
@@ -454,14 +455,14 @@ $(document).ready(function(){
 	    		form.setAttribute("charset","UTF-8");
 	    		form.setAttribute("method","post");
 	    		form.setAttribute("action","/gms/order/excelOrder.do?searchOrderDt="+searchOrderDt+"&searchOrderProcessCd="+searchOrderProcessCd);
-	    		
 	           
 	            document.body.appendChild(form);
-	
+	           
 	            form.submit();			
-            
 			}
 		}
+		$('#modal-print').modal('hide');
+		
    	});
 	
 	//Ajax공통 호출
@@ -688,6 +689,28 @@ $(document).ready(function(){
 		</div>
 		<!-- /.modal -->
     	
+    	
+    	<div class="modal modal-info fade" id="modal-print">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Primary Modal</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+              <p>접수목록을 프린트 하시겠습니까?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+             <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				<a class="btn_orderlist_print_all btn-info btn-sm" href="#" ><i class="fas fa-pencil-alt"></i>프린트</a>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
     	<div class="row">        	
     		
             <div class="col-1">
@@ -702,7 +725,7 @@ $(document).ready(function(){
             <div class="col-6">  
             </div>         
             <div   align="right" class="col-1" >
-            <a class="btn_orderlist_print_all btn btn-secondary btn-xs"  href="#" >
+            <a class="btn btn-secondary btn-xs"  data-toggle="modal" data-target="#modal-print" href="#" >
                               <i class="fas fa-print"></i>접수목록</a>
              <!-- <a th:href="@{/gms/order/excelOrder.do( searchOrderDt= ${searchOrderDt},searchOrderProcessCd=0210 )}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i>접수목록</button></a>  
              --></div>

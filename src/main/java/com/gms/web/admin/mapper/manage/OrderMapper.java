@@ -111,5 +111,9 @@ public interface OrderMapper {
 	public List<OrderVO> selectOrderListExcel(OrderVO param);	
 	
 	public List<OrderProductVO> selectAllOrderProductListExcel(OrderVO param);
+	
+	public int updateOrderPrintYn(OrderVO param);
+	
+	public int updateOrdersPrintYn(OrderVO param);
 		
 }

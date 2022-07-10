@@ -809,6 +809,8 @@ public class OrderServiceImpl implements OrderService {
 			params.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.receive"));
 		
 			result =  orderMapper.updateOrder(params);	
+			params.setPrintYn("N");
+			result =  modifyOrderPrintYn(params);
 		
 		} catch (DataAccessException e) {
 			logger.error("modifyOrder Exception==="+e.toString());
@@ -1592,6 +1594,17 @@ public class OrderServiceImpl implements OrderService {
 		}
 		map.put("OrderProductSeqList", list);
 		return orderMapper.deleteOrderProductsNew(map);
+	}
+
+	@Override
+	public int modifyOrderPrintYn(OrderVO param) {
+		
+		return orderMapper.updateOrderPrintYn(param);
+	}
+
+	@Override
+	public int modifyOrdersPrintYn(OrderVO param) {
+		return orderMapper.updateOrdersPrintYn(param);
 	}
 
 }

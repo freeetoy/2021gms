@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -562,12 +563,19 @@ public class ExcelDownloadController {
 		    CellStyle bodyStyle = wb.createCellStyle();
 		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);		
 		    bodyStyle.setWrapText(true);
+		   
+		    CellStyle bodyStyle1 = wb.createCellStyle();
+		    bodyStyle1 = ExcelStyle.getBodyStyle(bodyStyle1);		
+		    bodyStyle1.setWrapText(true);
+		    bodyStyle1.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());  // 배경색
+ 		    bodyStyle1.setFillPattern(FillPatternType.SOLID_FOREGROUND);	//채우기 적용
 		    
 		    CellStyle amountStyle = wb.createCellStyle();
 		    amountStyle= ExcelStyle.getBodyStyle(amountStyle);		
 		    amountStyle.setWrapText(true);
-		    amountStyle.setAlignment(HorizontalAlignment.RIGHT); // 가로 오른쪽 정렬
-		   
+		    amountStyle.setAlignment(HorizontalAlignment.RIGHT); // 가로 오른쪽 정렬 styleBlueColor.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+
+		    
 		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		    //순번,지역,거래처명,상품명,용량,접수자,상태,요청일자,접수일
 		    // 헤더 생성
@@ -587,9 +595,13 @@ public class ExcelDownloadController {
 		    for(OrderVO vo : orderlist) {
 		    	idx = 0;
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
-		        
+		       
 		        cell = row.createCell(idx++);
-		        cell.setCellStyle(bodyStyle);
+		        if(vo.getPrintYn().equals("Y")) {
+		        	 cell.setCellStyle(bodyStyle1);
+		        }else {
+		        	 cell.setCellStyle(bodyStyle);
+		        }
 		        cell.setCellValue(i++);
 		        
 		        cell = row.createCell(idx++);
@@ -680,6 +692,10 @@ public class ExcelDownloadController {
 		    // 엑셀 출력
 		    wb.write(response.getOutputStream());
 		    wb.close();
+		    
+		    param.setPrintYn("Y");
+		    int result = orderService.modifyOrdersPrintYn(param);	
+			
 		    
 	   } catch (DataAccessException e) {
 			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달

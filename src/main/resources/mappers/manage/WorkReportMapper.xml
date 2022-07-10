@@ -242,6 +242,7 @@
 		UPDATE TB_Work_Report
 		SET
 			Order_Id			= #{orderId}
+			, Work_CD			= #{workCd}
 			, Work_Product_NM	= #{workProductNm}
 			, Work_Product_Capa	= #{workProductCapa}
 			, UPDATE_ID 		= #{updateId}

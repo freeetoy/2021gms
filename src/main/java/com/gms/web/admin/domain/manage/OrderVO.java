@@ -140,4 +140,8 @@ public class OrderVO extends AbstractSearchVO implements Serializable {
 	private String  orderIds;
 
 	private List<Integer> orderList;
+	
+	
+	/** PRINT_YN 	*/
+	private String printYn = "N";	
 }
