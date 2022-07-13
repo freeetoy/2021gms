@@ -437,9 +437,10 @@ public class ApiController {
 	
 	@RequestMapping(value = "/api/deleteWorkBottle.do")
 	@ResponseBody
-	public String deleteWorkBottle(String param)	{			
+	public String deleteWorkBottle(String param)	{
+		logger.info("###################################################");
 		logger.info("deleteWorkBottle==="+param);
-		
+		logger.info("###################################################");
 		List<String> list = null;
 		int result = 0;		
 		WorkBottleVO workBottle = new WorkBottleVO();		
