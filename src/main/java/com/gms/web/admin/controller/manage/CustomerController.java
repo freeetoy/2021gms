@@ -380,7 +380,7 @@ public class CustomerController {
 			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
 			String[] productPriceArray = request.getParameterValues("productPrice");
 			String[] productBottlePriceArray = request.getParameterValues("productBottlePrice");
-			logger.debug("******registerCustomerPrice 1  *****===*");
+//			logger.debug("******registerCustomerPrice 1  *****===*");
 			int priceCount  = 0;
 			if(productIdArray != null && productIdArray.length > 0)
 				priceCount  = productIdArray.length;		
@@ -411,7 +411,7 @@ public class CustomerController {
 //					
 				customerPrice[i] = priceVo;				
 			}
-			logger.debug("******registerCustomerPrice 2  *****===*"); 
+//			logger.debug("******registerCustomerPrice 2  *****===*"); 
 			int result1 = 1;
 			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) {
 				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));

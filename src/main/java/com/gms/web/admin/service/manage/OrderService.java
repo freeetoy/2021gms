@@ -95,6 +95,8 @@ public interface OrderService {
 	
 	public OrderVO getTodayOrderForCustomer(Integer customerId) ;
 	
+	public List<OrderVO> getWeekOrderForCustomer(Integer customerId) ;
+	
 	public OrderVO getPayOrderForCustomer(Integer customerId) ;
 	
 	public int modifyOrderAmount(Integer customerId) ;

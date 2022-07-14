@@ -378,6 +378,8 @@
 			, UPDATE_DT 			= NOW()
 		WHERE
 			Order_ID = #{orderId}
+		AND 
+			Order_Product_Seq = #{orderProductSeq}	
 	</update>
 	
 	<update id="updateOrdersProcessCd" parameterType="com.gms.web.admin.domain.manage.OrderVO">
@@ -907,6 +909,18 @@
 		AND Order_Process_CD != '0299'
 		AND Order_Type_CD = '0101'
 		AND date_format(Create_Dt,'%Y/%m/%d') = date_format(now(),'%Y/%m/%d') 
+	</select>
+	
+	<select id="selectOrderWeekOfCustomer" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="Integer">		
+		SELECT
+			<include refid="OrderColumns" />
+		FROM
+			TB_Order
+		WHERE
+			Customer_ID = #{customerId}
+		AND Order_Process_CD != '0299'
+		AND Order_Type_CD = '0101'
+		AND Create_Dt &gt;  date_sub(curdate(), interval 7 day)
 	</select>
 	
 	<select id="selectOrderReqDtTomorrow" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="com.gms.web.admin.domain.manage.OrderVO">		

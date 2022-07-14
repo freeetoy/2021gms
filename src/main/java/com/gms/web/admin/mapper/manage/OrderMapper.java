@@ -102,6 +102,8 @@ public interface OrderMapper {
 	
 	public OrderVO selectOrderTodayOfCustomer(Integer custoerId);	
 	
+	public List<OrderVO> selectOrderWeekOfCustomer(Integer custoerId);	
+	
 	public List<OrderVO> selectOrderReqDtTomorrow(OrderVO param);	
 	
 	public int deleteOrderProductByProduct(OrderProductVO param);

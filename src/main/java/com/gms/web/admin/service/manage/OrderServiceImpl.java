@@ -1255,63 +1255,79 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public List<OrderVO> getWeekOrderForCustomer(Integer customerId) {
+		return orderMapper.selectOrderWeekOfCustomer(customerId);
+	}
+	
+	@Override
 	public int modifyOrderAmount(Integer customerId) {
 		int result = 0 ;
 
 		List<CustomerPriceExtVO> productList = customerService.getCustomerPriceList(customerId);
 		
-		OrderVO order = getTodayOrderForCustomer(customerId);
-		List<OrderProductVO> orderProductList = null;
-		List<WorkBottleVO> workBottleList = null;
-		if(order !=null) {
-			orderProductList = getOrderProductList(order.getOrderId());
+		List<OrderVO> orderList = getWeekOrderForCustomer(customerId);
 		
-			workBottleList = workService.getWorkBottleListOfOrder(order.getOrderId());
-		}
+		for(int idx =0 ; idx < orderList.size() ; idx++) {
+			OrderVO order = orderList.get(idx);
 		
-		double orderTotalAmount = 0;
-		
-		for(int j=0;j<productList.size();j++) {
-			CustomerPriceExtVO customerProduct = productList.get(j);
+			List<OrderProductVO> orderProductList = null;
+			List<WorkBottleVO> workBottleList = null;
+			if(order !=null) {
+				orderProductList = getOrderProductList(order.getOrderId());
 			
-			if(orderProductList != null) {
-				for(int i=0;i<orderProductList.size() ; i++) {
-					
-					if(orderProductList.get(i).getProductId() == customerProduct.getProductId() 
-							&& orderProductList.get(i).getProductPriceSeq() == customerProduct.getProductPriceSeq()) {
-						if(orderProductList.get(i).getBottleSaleYn() !=null && orderProductList.get(i).getBottleSaleYn().equals("N"))
-							orderProductList.get(i).setOrderAmount(orderProductList.get(i).getOrderCount()*customerProduct.getProductPrice());
-						else
-							orderProductList.get(i).setOrderAmount(orderProductList.get(i).getOrderCount()*customerProduct.getProductBottlePrice());
-					
-					result = orderMapper.updateOrderProductAmount(orderProductList.get(i));
-					orderTotalAmount += orderProductList.get(i).getOrderAmount();
-					}
-				}			
+				workBottleList = workService.getWorkBottleListOfOrder(order.getOrderId());
 			}
-			if(workBottleList !=null) {
-				for(int i=0;i<workBottleList.size();i++) {
-					
-					if(workBottleList.get(i).getProductId() == customerProduct.getProductId() 
-							&& workBottleList.get(i).getProductPriceSeq() == customerProduct.getProductPriceSeq()) {
-						if(workBottleList.get(i).getBottleSaleYn()!=null && workBottleList.get(i).getBottleSaleYn().equals("N"))
-							workBottleList.get(i).setProductPrice(customerProduct.getProductPrice());
-						else
-							workBottleList.get(i).setProductPrice(customerProduct.getProductBottlePrice());
+			
+			for(int j=0;j<productList.size();j++) {
+				CustomerPriceExtVO customerProduct = productList.get(j);
+				
+				if(orderProductList != null) {
+					for(int i=0;i<orderProductList.size() ; i++) {
 						
-						result = workService.modifyWorkBottlePrice(workBottleList.get(i));
+						if(orderProductList.get(i).getProductId().equals(customerProduct.getProductId() )
+								&& orderProductList.get(i).getProductPriceSeq().equals(customerProduct.getProductPriceSeq())) {
+							
+							if(orderProductList.get(i).getBottleSaleYn() !=null && orderProductList.get(i).getBottleSaleYn().equals("N"))
+								orderProductList.get(i).setOrderAmount(orderProductList.get(i).getOrderCount()*customerProduct.getProductPrice());
+							else
+								orderProductList.get(i).setOrderAmount(orderProductList.get(i).getOrderCount()*customerProduct.getProductBottlePrice());
+						
+							result = orderMapper.updateOrderProductAmount(orderProductList.get(i));
+							
+						}
+					}			
+				}
+				
+				if(workBottleList !=null) {
+					for(int i=0;i<workBottleList.size();i++) {
+						
+						if(workBottleList.get(i).getProductId() == customerProduct.getProductId() 
+								&& workBottleList.get(i).getProductPriceSeq() == customerProduct.getProductPriceSeq()) {
+							if(workBottleList.get(i).getBottleSaleYn()!=null && workBottleList.get(i).getBottleSaleYn().equals("N"))
+								workBottleList.get(i).setProductPrice(customerProduct.getProductPrice());
+							else
+								workBottleList.get(i).setProductPrice(customerProduct.getProductBottlePrice());
+							
+							result = workService.modifyWorkBottlePrice(workBottleList.get(i));
+						}
 					}
 				}
 			}
+			
+			double orderTotalAmount = 0;
+			for(int i=0;i<orderProductList.size() ; i++) {
+				orderTotalAmount += orderProductList.get(i).getOrderAmount();
+			}
+			
+			if(order !=null) {
+				order.setOrderTotalAmount(orderTotalAmount);
+				
+				result = orderMapper.updateOrderTotalAmount(order);
+			}else {
+				result = 1;
+			}
 		}
 		
-		if(order !=null) {
-			order.setOrderTotalAmount(orderTotalAmount);
-			
-			result = orderMapper.updateOrderTotalAmount(order);
-		}else {
-			result = 1;
-		}
 		return result;
 	}
 	
