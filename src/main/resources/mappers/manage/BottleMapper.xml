@@ -918,4 +918,12 @@
 			AND A.Bottle_BarCd = B.Bottle_BarCd
 			AND B.Bottle_Hist_Seq = (SELECT max(Bottle_Hist_Seq) from tb_bottle_hist where Bottle_BarCd = #{bottleBarCd})
 	</update>	
+	
+	<update id="deleteProductDummyBottle" parameterType="com.gms.web.admin.domain.manage.ProductVO">
+		DELETE FROM TB_Bottle
+		WHERE
+			Product_ID=  #{productId}
+		AND
+			Dummy_YN != 'N'
+	</update>
 </mapper>

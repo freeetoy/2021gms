@@ -7,6 +7,7 @@ import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 
 public interface BottleService {
@@ -80,4 +81,6 @@ public interface BottleService {
 	public int modifyBottleAfterDelete(OrderBottleVO param);
 	
 	public int registerBottlesHistory(List<BottleVO> param);	
+	
+	public int deleteProductDummyBottle(ProductVO param);
 }

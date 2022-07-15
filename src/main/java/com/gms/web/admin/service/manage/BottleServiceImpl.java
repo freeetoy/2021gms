@@ -22,6 +22,7 @@ import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
+import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.mapper.manage.BottleMapper;
@@ -770,6 +771,13 @@ public class BottleServiceImpl implements BottleService {
 	public int registerBottlesHistory(List<BottleVO> param) {
 	
 		return bottleMapper.insertBottleHistorys(param);
+	}
+
+
+
+	@Override
+	public int deleteProductDummyBottle(ProductVO param) {
+		return bottleMapper.deleteProductDummyBottle(param);
 	}
 	
 

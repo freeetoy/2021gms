@@ -209,7 +209,6 @@ public class ProductServiceImpl implements ProductService {
 			//logger.debug("****** before registerProduct param. result *****===*"+result);
 			result = productMapper.insertProduct(param);
 			
-			
 			if (result > 0) {
 				ProductPriceVO priceVo = null;				
 				
@@ -289,10 +288,14 @@ public class ProductServiceImpl implements ProductService {
 		
 			result = productMapper.updateProduct(param);
 			
+			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
+			
 			if (result > 0) {
 				
-				int delProductPrice = productMapper.deleteProductPrice(param.getProductId());
+				int delProductPrice = bottleService.deleteProductDummyBottle(param);
+				delProductPrice = productMapper.deleteProductPrice(param.getProductId());
 				
+				List<BottleVO> insertBottleList = new ArrayList<BottleVO>();
 				if(delProductPrice > 0) {
 					ProductPriceVO priceVo = null;
 					
@@ -303,12 +306,50 @@ public class ProductServiceImpl implements ProductService {
 												
 						//pResult = modifyProductPrice(priceVo);
 						pResult = registerProductPrice(priceVo);
-						
-						if (pResult == false) {
-							// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
-							successFlag = false;
-						}				
+						logger.debug("****** before modifyProduct 1 *****===*");
+						if(gas != null && gas.getGasId() > 0) {
+							
+							for(int j=0 ; j < 5 ; j++) {
+								BottleVO bottle = new BottleVO();
+								
+								if(j==0) {
+									bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq());
+									bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq());
+									bottle.setDummyYn("Y");
+								}else {
+									
+									bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+									bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+									bottle.setDummyYn("X");
+								}
+								bottle.setMemberCompSeq(1);
+								bottle.setGasId(gas.getGasId());
+								bottle.setGasCd(gas.getGasCd());
+								bottle.setProductId(productId);
+								bottle.setProductPriceSeq(priceVo.getProductPriceSeq());
+								bottle.setBottleCapa(priceVo.getProductCapa());
+								bottle.setChargeCapa(priceVo.getProductCapa());
+								bottle.setBottleOwnYn("Y");
+								bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+								bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
+								Calendar sDate 	= Calendar.getInstance();
+								sDate.set(3000, 0, 0);
+
+								bottle.setBottleChargeDt(sDate.getTime());
+								bottle.setCreateId(param.getCreateId());
+								
+								insertBottleList.add(bottle);
+							}
+						}
+							
 					}		
+					logger.debug("****** before modifyProduct 3 *****===*");
+					if(insertBottleList.size() > 0 )
+						result = bottleService.registerBottles(insertBottleList);
+					if (pResult == false) {
+						// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+						successFlag = false;
+					}			
 					successFlag = true;
 				}				
 			}

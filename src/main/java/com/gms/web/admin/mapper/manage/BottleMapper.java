@@ -9,6 +9,7 @@ import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 
 @Mapper
@@ -87,4 +88,6 @@ public interface BottleMapper {
 	public List<BottleVO> selectBottleHistListToExcelOfCustomer(Map<String, Object> map);
 	
 	public int updateBottleAfterDelete(OrderBottleVO param);
+	
+	public int deleteProductDummyBottle(ProductVO param);
 }
