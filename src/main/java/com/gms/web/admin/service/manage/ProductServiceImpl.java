@@ -194,8 +194,16 @@ public class ProductServiceImpl implements ProductService {
 	public boolean registerProduct(ProductVO param, ProductPriceVO[] param1) {
 		boolean successFlag = false;
 		int productId = 0;
+		String productNm = param.getProductNm();
+		String productNm1 = productNm.replace("의료용", "M").replace("(","").replace(")", "").replace("일반","G").replace(" ","") ;
 		
-		// 가스정보 등록
+		if(productNm.indexOf("고순도믹스가스") >=0) productNm1 = productNm.replace("고순도믹스가스","HMix");
+		else if(productNm.indexOf("대한의료용산화에틸렌20%") >=0) productNm1 = productNm.replace("대한의료용산화에틸렌20%","EO20");
+		else if(productNm.indexOf("대한E.O가스") >=0) productNm1.replace("대한E.O가스","EOHF");
+		else if(productNm.indexOf("믹스가스") >=0) productNm1.replace("믹스가스","Mix");
+		else if(productNm.indexOf("냉매가스") >=0) productNm1.replace("냉매가스","ICE");
+		else if(productNm.indexOf("특수가스") >=0) productNm1.replace("특수가스","SP");
+		
 		int result = 0;
 		
 		if (param.getProductId() == null) {
@@ -206,7 +214,7 @@ public class ProductServiceImpl implements ProductService {
 			param.setMemberCompSeq(1);				
 			
 			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
-			//logger.debug("****** before registerProduct param. result *****===*"+result);
+		
 			result = productMapper.insertProduct(param);
 			
 			if (result > 0) {
@@ -219,11 +227,11 @@ public class ProductServiceImpl implements ProductService {
 					priceVo.setProductId(productId);
 					priceVo.setProductPriceSeq(i+1);
 					
+					String productCapa = priceVo.getProductCapa().replace(",", "").replace("{", "").replace(")", "");
 					pResult = registerProductPrice(priceVo);
 					
 					List<BottleVO> insertBottleList = new ArrayList<BottleVO>();
-					logger.debug("****** before registerProduct param. priceVo.getProductPriceSeq *****===*"+priceVo.getProductPriceSeq());
-					int productPriceSeq = priceVo.getProductPriceSeq();
+					
 					//2022-03-28 Dummy  용기등록
 					if(gas != null && gas.getGasId() > 0) {
 					
@@ -231,13 +239,13 @@ public class ProductServiceImpl implements ProductService {
 							BottleVO bottle = new BottleVO();
 							
 							if(j==0) {
-								bottle.setBottleBarCd("DHD"+productId+productPriceSeq);
-								bottle.setBottleId("DHD"+productId+productPriceSeq);
+								bottle.setBottleBarCd("DH"+productNm1+productCapa);
+								bottle.setBottleId("DH"+productNm1+productCapa);
 								bottle.setDummyYn("Y");
 							}else {
 								
-								bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
-								bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+								bottle.setBottleBarCd("DH"+productNm1  +productCapa+"_"+(j));
+								bottle.setBottleId("DH"+productNm1 + productCapa+"_"+(j));
 								bottle.setDummyYn("X");
 							}
 							bottle.setMemberCompSeq(1);
@@ -278,6 +286,16 @@ public class ProductServiceImpl implements ProductService {
 	public boolean modifyProduct(ProductVO param, ProductPriceVO[] param1) {
 		boolean successFlag = false;
 		int productId = 0;
+		String productNm = param.getProductNm();
+//		logger.debug("****** before registerProduct param. indexOf *****===*"+productNm.indexOf("특수가스"));
+		String productNm1 = productNm.replace("의료용", "M").replace("(","").replace(")", "").replace("일반","G").replace(" ","") ;
+		
+		if(productNm.indexOf("고순도믹스가스") >=0) productNm1 = productNm.replace("고순도믹스가스","HMix");
+		else if(productNm.indexOf("대한의료용산화에틸렌20%") >=0) productNm1 = productNm.replace("대한의료용산화에틸렌20%","EO20");
+		else if(productNm.indexOf("대한E.O가스") >=0) productNm1 = productNm.replace("대한E.O가스","EOHF");
+		else if(productNm.indexOf("믹스가스") >=0) productNm1 = productNm.replace("믹스가스","Mix");
+		else if(productNm.indexOf("냉매가스") >=0) productNm1 = productNm.replace("냉매가스","ICE");
+		else if(productNm.indexOf("특수가스") >=0) productNm1 = productNm.replace("특수가스","SP");
 		
 		// 가스정보 등록
 		int result = 0;
@@ -304,22 +322,24 @@ public class ProductServiceImpl implements ProductService {
 						pResult = false;
 						priceVo = param1[i];
 												
+						String productCapa = priceVo.getProductCapa().replace(",", "").replace("{", "").replace(")", "");
+//						logger.debug("****** before registerProduct param. productCapa *****===*"+productCapa);
 						//pResult = modifyProductPrice(priceVo);
 						pResult = registerProductPrice(priceVo);
-						logger.debug("****** before modifyProduct 1 *****===*");
+	
 						if(gas != null && gas.getGasId() > 0) {
 							
 							for(int j=0 ; j < 5 ; j++) {
 								BottleVO bottle = new BottleVO();
 								
 								if(j==0) {
-									bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq());
-									bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq());
+									bottle.setBottleBarCd("DH"+productNm1+productCapa);
+									bottle.setBottleId("DH"+productNm1+productCapa);
 									bottle.setDummyYn("Y");
 								}else {
 									
-									bottle.setBottleBarCd("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
-									bottle.setBottleId("DHD"+productId+priceVo.getProductPriceSeq()+"_"+(j+1));
+									bottle.setBottleBarCd("DH"+productNm1  +productCapa+"_"+(j));
+									bottle.setBottleId("DH"+productNm1 + productCapa+"_"+(j));
 									bottle.setDummyYn("X");
 								}
 								bottle.setMemberCompSeq(1);
