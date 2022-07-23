@@ -22,6 +22,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderExtVO;
@@ -30,6 +31,7 @@ import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.WorkBottleRegisterVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
+import com.gms.web.admin.domain.manage.WorkBottleViewVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.mapper.manage.WorkReportMapper;
@@ -4779,6 +4781,115 @@ public class WorkReportServiceImpl implements WorkReportService {
 		result = cashService.registerCashFlow(cashFlow);
 				
 		return result;
+	}
+
+	@Override
+	public Map<String,Object> getCustomerWorkReportList(CustomerSalesVO param) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();	
+		List<WorkReportViewVO> viewList = new ArrayList<WorkReportViewVO>();
+		List<WorkBottleViewVO> bottleViewList = new ArrayList<WorkBottleViewVO>();
+		
+		List<WorkBottleVO> workBottleList = workMapper.selectCustomerWorkBottleListAll(param);
+		
+		List<WorkReportVO> reportList = workMapper.selectCustomerWorkReportOnlyListAll(param);
+
+		for(int i = 0 ; i < reportList.size() ; i++ ) {
+			WorkReportViewVO temp = new WorkReportViewVO();
+			temp.setWorkReportSeq(reportList.get(i).getWorkReportSeq());
+			temp.setReceivedAmount(reportList.get(i).getReceivedAmount());
+			temp.setCreateDt(reportList.get(i).getCreateDt());
+			
+			if(reportList.get(i).getIncomeWay()!=null && reportList.get(i).getIncomeWay().equals("CASH")) 
+				temp.setIncomeWay("(현금)");
+			else if(reportList.get(i).getIncomeWay()!=null && reportList.get(i).getIncomeWay().equals("CARD")) 
+				temp.setIncomeWay("(카드)");
+			else
+				temp.setIncomeWay("");
+			
+			temp.setCustomerNm(reportList.get(i).getCustomerNm());
+			temp.setTaxinvoiceType(reportList.get(i).getTaxinvoiceType());
+			
+			List<WorkBottleVO> tempBottle1 = new ArrayList<WorkBottleVO>();
+			
+			temp.setSalesBottles(tempBottle1);
+			viewList.add(temp);			
+			
+		}		
+		
+		for(int i = 0 ; i < workBottleList.size() ; i++ ) {
+			
+			WorkBottleVO workBottle = workBottleList.get(i);
+			if(workBottle.getGasId() > 0) {
+				if(workBottle.getProductCapa().indexOf("Kg") < 0) workBottle.setProductCapa(workBottle.getProductCapa() +"L");
+			}
+			if(StringUtils.isTankProduct(workBottle.getProductId()) ){
+				workBottle.setProductCount(workBottle.getChargeVolumn());
+			}
+			for(int j=0; j < viewList.size() ; j++) {
+				WorkReportViewVO temp = viewList.get(j);
+				
+				// Work_Report_Seq 동일
+				if((temp.getWorkReportSeq() - workBottle.getWorkReportSeq())==0) {
+					
+					temp.setCustomerId(workBottle.getCustomerId());
+					temp.setCustomerNm(workBottle.getCustomerNm());					
+					
+					temp.getSalesBottles().add(workBottle);
+				}
+			}
+		}
+		
+		double totalAmount=0;
+		int idx = 0;
+		int idxj = 0 ;
+		double aggregateAmount=0;
+		double aggregateReceviedAmount=0;
+		
+		for(int i=0;i<viewList.size() ; i++) {
+			totalAmount = 0;
+			WorkBottleViewVO bottleView = new WorkBottleViewVO();
+			
+			bottleView.setCreateDt(viewList.get(i).getCreateDt());
+			bottleView.setReceivedAmount(viewList.get(i).getReceivedAmount());
+			bottleView.setIncomeWay(viewList.get(i).getIncomeWay());
+
+			bottleViewList.add(bottleView);
+			idxj = idx;
+			idx++;
+			
+			for(int j=0;j<viewList.get(i).getSalesBottles().size();j++) {
+				totalAmount += Math.round(viewList.get(i).getSalesBottles().get(j).getProductPrice()*viewList.get(i).getSalesBottles().get(j).getProductCount()*100)/100.0;
+				
+				WorkBottleViewVO bottleView1 = new WorkBottleViewVO();
+				bottleView1.setProductNm(viewList.get(i).getSalesBottles().get(j).getProductNm());
+				bottleView1.setProductCapa(viewList.get(i).getSalesBottles().get(j).getProductCapa());
+				bottleView1.setProductCount(viewList.get(i).getSalesBottles().get(j).getProductCount());
+				bottleView1.setOrderTotalAmount(viewList.get(i).getSalesBottles().get(j).getProductPrice()*viewList.get(i).getSalesBottles().get(j).getProductCount());
+				bottleView1.setBottleWorkCdNm(viewList.get(i).getSalesBottles().get(j).getBottleWorkCdNm());
+				bottleView1.setProductPrice(viewList.get(i).getSalesBottles().get(j).getProductPrice());
+				
+				bottleViewList.add(bottleView1);
+				idx++;
+			}
+		
+			bottleViewList.get(idxj).setOrderTotalAmount(totalAmount);
+			
+			bottleViewList.get(idxj).setReceivableAmount(totalAmount-viewList.get(i).getReceivedAmount());
+
+			aggregateAmount +=totalAmount;
+			aggregateReceviedAmount += viewList.get(i).getReceivedAmount();
+//			logger.debug(" -totalAmount-viewList.get(i).getReceivableAmount() ==" +(totalAmount-viewList.get(idxj).getReceivedAmount()));
+		}
+		map.put("bottleViewList", bottleViewList);
+		WorkBottleViewVO bottleView = new WorkBottleViewVO();
+		bottleView.setProductNm("누계");
+		bottleView.setOrderTotalAmount(aggregateAmount);
+		bottleView.setReceivedAmount(aggregateReceviedAmount);
+		bottleView.setReceivableAmount(aggregateAmount-aggregateReceviedAmount);
+	
+		map.put("aggredateView", bottleView);
+		return map;
 	}
 	
 }

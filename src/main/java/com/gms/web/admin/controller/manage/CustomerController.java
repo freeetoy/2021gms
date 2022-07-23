@@ -32,6 +32,9 @@ import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
+import com.gms.web.admin.domain.manage.WorkBottleViewVO;
+import com.gms.web.admin.domain.manage.WorkReportVO;
+import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
@@ -680,6 +683,47 @@ public class CustomerController {
 		mav.setViewName("gms/customer/sales");
 		
 		return mav;
+	}
+	
+	@RequestMapping(value = "/gms/customer/transaction.do")
+	public ModelAndView getCustomerTransactionString (CustomerSalesVO param, 
+			HttpServletRequest request , HttpServletResponse response) {
+		
+		ModelAndView mav = new ModelAndView();
+		CustomerVO customer = customerService.getCustomerDetails(param.getCustomerId());
+		String searchDt = param.getSearchStatDt();		
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {						
+			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			param.setSearchStatDtFrom(searchDtFrom);
+			param.setSearchStatDtEnd(searchDtEnd);			
+		}else {				
+			searchDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+			searchDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			
+			param.setSearchStatDtFrom(searchDtFrom);
+			param.setSearchStatDtEnd(searchDtEnd);
+			
+			searchDt = searchDtFrom +" - "+ searchDtEnd;
+		}
+		
+		param.setSearchStatDt(searchDt);
+		mav.addObject("customer",customer);
+		
+		Map<String, Object> map  = workService.getCustomerWorkReportList(param);
+		
+		mav.addObject("workList", map.get("bottleViewList"));	
+		mav.addObject("aggredateView", map.get("aggredateView"));	
+		mav.addObject("searchDt", param.getSearchStatDt());			 
+		
+		mav.setViewName("gms/customer/transaction");
+		return mav;
+		
 	}
 	
 	@RequestMapping(value = "/api/customerList.do")

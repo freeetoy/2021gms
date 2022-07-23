@@ -58,46 +58,6 @@ public class LoginController {
 		//req.getSession().invalidate();
 		else return "gms/login";
 	}
-	/*
-	@RequestMapping(value="/loginAction.do")
-	public ModelAndView loginAction(
-			HttpServletRequest request
-			, HttpServletResponse response
-			, LoginUserVO param) {
-		
-		logger.info("LoginContoller loginAction Start");
-		
-		ModelAndView mav = new ModelAndView();				
-		
-		LoginUserVO user = loginService.getUserInfo(param);
-		
-		HttpSession session = request.getSession();
-		
-		if(user!= null) {
-			logger.info("LoginContoller loginAction userNm "+user.getUserNm());			
-			logger.info("LoginContoller loginAction userAuthoriy "+user.getUserAuthority());
-			logger.info("LoginContoller loginAction userPart "+user.getUserPartCd());
-			user.setUserId(param.getUserId());
-			session.setAttribute(LoginUserVO.ATTRIBUTE_NAME, user);		
-			
-			session.setAttribute("userId", user.getUserId());		
-		}
-			
-		
-		if(user != null && user.getUserId() != null){
-			String alertMessage = "로그인 되었습니다.";
-			session.setAttribute(LoginUserVO.ATTRIBUTE_NAME, user);		
-			
-			RequestUtils.responseWriteException(response, alertMessage, "/gms/order/list.do");
-		}else {
-			String alertMessage = user.getErrorMessage();
-			RequestUtils.responseWriteException(response, alertMessage, RETURN_LOGINPAGE);
-		}
-		
-		return null;
-		
-	}
-	*/
 	
 	@RequestMapping(value="/loginAction.do")
 	public String loginAction(Model model,
@@ -121,9 +81,9 @@ public class LoginController {
 				
 				session.setAttribute("userId", loginUser.getUserId());		
 				
-				//Cookie 설정
+				//Cookie 설정(3시간)
 				Cookie cookie = new Cookie(LoginUserVO.ATTRIBUTE_NAME,loginUser.getUserId());
-				cookie.setMaxAge(60*60);
+				cookie.setMaxAge(60*60*3);
 				
 				response.addCookie(cookie);
 				logger.info("LoginContollern loginUser.getUserId() ",loginUser.getUserId());	

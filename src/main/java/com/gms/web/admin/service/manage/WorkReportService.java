@@ -6,8 +6,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.WorkBottleRegisterVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
+import com.gms.web.admin.domain.manage.WorkBottleViewVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.manage.WorkReportViewVO;
 
@@ -75,4 +77,6 @@ public interface WorkReportService {
 	public List<WorkBottleVO> getWorkBottleListOfCustomerToday(Integer customerId);	
 	
 	public int modifyWorkReportEtc(WorkBottleVO param);
+	
+	public Map<String,Object> getCustomerWorkReportList(CustomerSalesVO param);	
 }

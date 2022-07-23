@@ -1,0 +1,216 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+$(function() { 
+	 $('input[name="searchStatDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      language: "kr",
+	      locale: {
+	          cancelLabel: 'Clear'
+	      }	  	
+	  });
+
+  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+  });
+
+  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+  });
+});
+	// end of function
+	
+	
+	
+	// 입력된 내용을 작성한다.
+	function goSearch(){	
+		
+		var form = document.mainForm;	
+		
+		$("#currentPage").val(1);  
+		mainForm.submit();
+	};
+
+
+
+	function gotoPage(pageNo) {
+		
+		var form =  document.mainForm;			
+		
+		$("#currentPage").val(pageNo);      	
+        //validate checkt시 confirm 중복되는 부분 처리         
+    	mainForm.submit();
+    }	
+	
+	function doExcelUploadProcess(){
+        var f = new FormData(document.getElementById('form1'));        
+        form1.submit();    
+    }
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+		   
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>거래처 관리대장</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">          
+		<div class="row mb-2">
+          <div class="col-sm-6">
+            <h3 th:text="${customer.customerNm}">거래처 관리대장</h3>
+          </div>
+        </div>  	  
+		<div class="row"> 
+		   <div class="col-3">
+              	<div class="card-header p-0 pt-1">
+               <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                 <li class="nav-item">
+                   <a class="nav-link " id="custom-tabs-one-home-tab" th:href="@{/gms/customer/update.do( customerId=${customer.customerId})}" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">거래처수정</a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link active" id="custom-tabs-one-profile-tab" th:href="@{/gms/customer/transaction.do( customerId=${customer.customerId})}" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">관리대장</a>
+                 </li>
+                
+               </ul>
+             </div>
+             </div>
+          </div>
+		<div class="row"> 
+	        <div class="col-12">
+	        <br>
+	        </div>
+        </div>
+        
+         <div class="row">
+            <div class="col-1">
+            <form id="mainForm" name="mainForm"  method="post">
+               <input type="hidden" id="customerId" name="customerId" th:value="${customer.customerId}">
+               		<label>기간</label>
+            </div>               
+            <div class="col-4">              
+               <input type="text" class="form-control" name="searchStatDt" id="searchStatDt" th:value="${searchDt}"/>			
+            </div>               
+         
+            <div class="col-7">         
+            	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
+            </div>
+            
+             </form> 
+         </div>
+        <div class="row">	
+	        <div class="col-12">
+	       <br>
+	        </div>
+        </div>
+        
+        <!-- 
+        <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+                  <thead>
+                    <tr style="font-size:14px;">
+                      <th th:text="${customer.customerNm}">일자</th>
+                    </tr>
+                  </thead>
+                  </table>
+	        </div>
+        </div> -->
+        <div class="row">	
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr style="text-align:center;font-size:14px;">
+                      <th  width="15%">일자</th>
+                      <th align="center" width="40%">적요</th>
+                      <th align="center" width="15%">판매</th>
+                      <th align="center" width="15%">수금</th>
+                      <th align="center" width="15%">잔액</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}" style="text-align:center;font-size:13px;">
+                      <th  width="15%" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">일자</th>
+                      <th  th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">
+                      <td th:unless="${row.productCount > 0}" "">
+                      </th>
+                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.OrderTotalAmount,3,'POINT',2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount == 0 }" th:text="${row.OrderTotalAmount}"> 
+                      </th>
+                      <th  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivedAmount, 3, 'COMMA')} +''+${row.incomeWay}">
+                      <th  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivedAmount, 3, 'POINT', 2,'COMMA') +''+${row.incomeWay} }">
+                      <th  width="15%" align="right" th:if="${row.ReceivedAmount == 0 }">
+                      </th>
+                      <th  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${row.ReceivableAmount == 0 }" >
+                      </th>
+                    </tr>
+                    <tr style="text-align:center;font-size:14px;">
+                      <th colspan=2  align="center" >누 계</th>
+                      <th  width="15%" align="right" th:if="${aggredateView.OrderTotalAmount > 0 && aggredateView.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.OrderTotalAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.OrderTotalAmount > 0 && aggredateView.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.OrderTotalAmount,3,'POINT',2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.OrderTotalAmount == 0 }" th:text="${aggredateView.OrderTotalAmount}"> 
+                      </th>
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivedAmount > 0 && aggredateView.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivedAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivedAmount > 0 && aggredateView.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivedAmount, 3, 'POINT', 2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivedAmount == 0 }">
+                      </th>
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivableAmount > 0 && aggredateView.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivableAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivableAmount > 0 && aggredateView.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivableAmount < 0 && aggredateView.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivableAmount, 3, 'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivableAmount < 0 && aggredateView.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <th  width="15%" align="right" th:if="${aggredateView.ReceivableAmount == 0 }" >
+                      
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( workList )}">
+						<td colspan="5">조회된 결과가 없습니다.</td>
+					</tr>						
+                  </tbody>
+					
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>    
+        <!-- /.row -->
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+
+</body>
+</html>
