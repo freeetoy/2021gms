@@ -720,6 +720,7 @@ public class CustomerController {
 		mav.addObject("workList", map.get("bottleViewList"));	
 		mav.addObject("aggredateView", map.get("aggredateView"));	
 		mav.addObject("searchDt", param.getSearchStatDt());			 
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer"));
 		
 		mav.setViewName("gms/customer/transaction");
 		return mav;

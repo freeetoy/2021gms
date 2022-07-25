@@ -7,12 +7,14 @@
 		<result property="userNm"						column="USER_NM"				/>
 		<result property="userPartCd"					column="USER_PART_CD"	    	/>
 		<result property="userAuthority"				column="USER_AUTHORITY"	    	/>
-		<result property="userPasswd"					column="USER_PASSWD"	    	/>	</resultMap>
+		<result property="userPasswd"					column="USER_PASSWD"	    	/>	
+</resultMap>
 	
 	
 	<!-- 사용자 정보 조회 -->
 	<select id="selectUserInfo" parameterType="com.gms.web.admin.domain.common.LoginUserVO" resultMap="UserInfoMap">
        SELECT TA.USER_ID
+			 	,TA.Member_Comp_Seq
 			 	,TA.USER_NM
 			 	,TA.USER_PART_CD
 			 	,TA.USER_AUTHORITY
@@ -29,6 +31,7 @@
 	
 	<select id="selectLoginUser" parameterType="com.gms.web.admin.domain.common.LoginUserVO" resultMap="UserInfoMap">
        SELECT TA.USER_ID
+       			,TA.Member_Comp_Seq
 			 	,TA.USER_NM
 			 	,TA.USER_PART_CD
 			 	,TA.USER_AUTHORITY

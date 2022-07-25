@@ -21,7 +21,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
+import com.gms.web.admin.common.web.utils.SessionUtil;
 import com.gms.web.admin.domain.common.CodeVO;
+import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CashSumVO;
@@ -62,11 +64,16 @@ public class OrderController {
 	private CashFlowService cashService;
 	
 	@RequestMapping(value = "/gms/order/list.do")
-	public ModelAndView getOrderList(OrderVO params) {
+	public ModelAndView getOrderList(HttpServletRequest request
+			, HttpServletResponse response, OrderVO params) {
 
 		logger.debug(" getOrderList");
 
 		ModelAndView mav = new ModelAndView();
+//		
+//		LoginUserVO sessionInfo = SessionUtil.getSessionInfo(request);  
+//		logger.debug(" sessionInfo="+sessionInfo.getUserId()+"=="+sessionInfo.getMemberCompSeq());
+//		
 		
 		String searchOrderDt = params.getSearchOrderDt();	
 		

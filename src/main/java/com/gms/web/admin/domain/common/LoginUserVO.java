@@ -19,6 +19,8 @@ public class LoginUserVO implements Serializable {
 	/** 사용자명 */
 	private String userNm;
 	
+	/** Member_Comp_Seq	 */
+	private Integer memberCompSeq ;
 	/** 사용자부서
 	 * 01:영업팀
 	 * 02:회계팀
