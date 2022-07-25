@@ -51,7 +51,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
             
             userId 		= StringUtils.defaultString(sessionInfo.getUserId());
             systemRole 	= StringUtils.defaultString(sessionInfo.getUserAuthority());
-         
+            
             session.setAttribute("compNm", PropertyFactory.getProperty("common.Member.Comp.Daehan.name"));		
             
             // Session에 있는 ID가 존재하는지 확인하여 없으면, 강제 로그아웃 처리
