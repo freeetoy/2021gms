@@ -3672,7 +3672,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				addOrderProductSeq++;
 			}
-			
+			addOrderProductSeq = orderProductList.size()+1;
 			for(int i = 0 ; i < remainOrderProductList.size() ; i++) {
 				boolean regiFlag = true;
 				OrderProductVO remainOrderProduct = remainOrderProductList.get(i);
