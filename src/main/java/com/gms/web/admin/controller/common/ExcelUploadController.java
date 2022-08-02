@@ -109,7 +109,7 @@ public class ExcelUploadController {
     					"/gms/bottle/list.do");
     			return null;
         	}
-        	logger.debug("$$$$$$$$$$$$$$ ExcelService fileSize "+ fileSize);
+        	logger.debug("$$$$$$$$$$$$$$ ExcelService fileSize "+ fileSize+" , fileName= "+file.getOriginalFilename());
         	
         	map = excelService.uploadBottleExcelFile(request, file);	        
 	      

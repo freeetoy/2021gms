@@ -198,7 +198,7 @@ public class ECountController {
 		        	else {
 		        		productNm = vo.getProductNm();
 		        		productCapa = "L";
-		        		orderCount = Integer.parseInt(vo.getProductCapa());
+		        		orderCount = Integer.parseInt(vo.getProductCapa())*vo.getOrderCount();
 		        	}
 //		        	logger.debug("****** registerWorkReportNoGas orderCount*****="+orderCount);
 		        }
@@ -229,7 +229,10 @@ public class ECountController {
 		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {	
 		        		cell.setCellValue(vo.getProductPrice());
 		        	}else {
-		        		cell.setCellValue(vo.getProductPrice()/orderCount);
+//		        		logger.debug("****** registerWorkReportNoGas orderCount*****="+orderCount);
+//		        		logger.debug("****** registerWorkReportNoGas supplyPrice*****="+supplyPrice);
+//		        		logger.debug("****** registerWorkReportNoGas vo.getProductPrice()*****="+vo.getProductPrice());
+		        		cell.setCellValue(supplyPrice/orderCount);
 		        	}
 		        }else {
 	        		cell.setCellValue(Math.round(vo.getProductPrice()));
@@ -259,7 +262,18 @@ public class ECountController {
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
 		       // int totalAmount = (int) Double..vo.getProductPrice()*1.1;
-		        cell.setCellValue(Math.round(vo.getProductPrice()*1.1) );
+		        if(vo.getProductId() == Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) {
+		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {	
+		        		cell.setCellValue(Math.round(vo.getProductPrice()*1.1) );
+		        	}else {
+//		        		cell.setCellValue(Math.round(vo.getProductPrice()*1.1) );
+		        		cell.setCellValue(supplyPrice/orderCount*1.1);
+		        	}
+		        }else {
+		        	cell.setCellValue(Math.round(vo.getProductPrice()*1.1) );
+		        }
+		        
+		        
 		        
 		        //생산전표생성	
 		        cell = row.createCell(k++);
