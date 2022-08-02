@@ -1,0 +1,139 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/blank}">
+
+<th:block layout:fragment="content"> 
+  <!-- jQuery -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="972" style="border-collapse:collapse;width:720pt;">
+
+ <colgroup><col width="54" span="18" style="width:40pt;">
+ </colgroup><tbody><tr height="48" style="height:36.0pt;">
+  <td colspan="18" height="48" width="972" style="text-decoration:underline;text-underline-style:single;text-align:center;height:36.0pt;width:720pt;"><font><span style="font-size: 18pt;" th:text="|${customer.customerNm}: 관리대장|" >차량운행 및 판매일지 관리대장</span></font><font><span style="font-size: 18pt;">
+  (거래명세서별)</span></font></td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="18" height="23" style="text-align:center;height:17.4pt;"><br></td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="12" height="23" style="text-align:left;border-top:none;border-right:none;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;height:17.4pt;">회사명 : ㈜대한특수가스 / 담당
+  :<span> </span></td>
+  <td colspan="6" style="text-align:right;border-top:none;border-right:none;border-bottom:1pt solid windowtext;border-left:none;" th:text="${searchDt}">2022/02/01 ~ 2022/07/21</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="3" height="23" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;padding-left:18px;height:17.4pt;">사업자등록번호</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;" th:text="${customer.businessRegId}">　</td>
+  <td colspan="3" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:18px;">대표자</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;" th:text="${customer.customerRepNm}">　</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="3" height="23" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;padding-left:18px;height:17.4pt;">여신한도</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;">0</td>
+  <td colspan="3" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:18px;">전화</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;" th:text="${customer.customerPhone}">　</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="3" height="23" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;padding-left:18px;height:17.4pt;">Email</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;" th:text="${customer.customerEmail}">　</td>
+  <td colspan="3" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:18px;">FAX</td>
+  <td colspan="6" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;">　</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="3" height="23" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;padding-left:18px;height:17.4pt;">주소</td>
+  <td colspan="15" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;" th:text="${customer.customerAddr}">　</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="3" height="23" style="text-align:left;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;padding-left:18px;height:17.4pt;">적요</td>
+  <td colspan="15" style="text-align:center;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;">　</td>
+ </tr>
+ <tr height="10" style="height:7.2pt;">
+  <td colspan="18" height="10" style="text-align:center;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;height:7.2pt;">　</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="18" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">판매 / 수금 내역</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="2" width="12%" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">일자</td>
+  <td colspan="9" width="47%" style="text-align:center;border:1pt solid windowtext;border-left:none;">적 요</td>
+  <td colspan="2" width="12%"  style="text-align:center;border:1pt solid windowtext;border-left:none;">판매</td>
+  <td colspan="2" width="12%"  style="text-align:center;border:1pt solid windowtext;border-left:none;">수금</td>
+  <td colspan="3" width="17%"  style="text-align:center;border:1pt solid windowtext;border-left:none;">잔액</td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td colspan="11" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">이 월 잔 액</td>
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;">　</td>
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;">　</td>
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;"></td>
+ </tr>
+ <tr height="23" style="height:17.4pt;font-size:12px;" th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList} ">
+  <td colspan="2" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">2022-08-02</td>
+  <td colspan="9" style="text-align:center;border:1pt solid windowtext;border-left:none;" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">　
+  <td colspan="9" style="text-align:center;border:1pt solid windowtext;border-left:none;" th:unless="${row.productCount > 0}" "">
+  </td>
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.OrderTotalAmount,3,'POINT',2,'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.OrderTotalAmount == 0 }" th:text="${row.OrderTotalAmount}">
+  </td>
+  <td width="12%" colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivedAmount, 3, 'COMMA')} +''+${row.incomeWay}">
+  <td width="12%" colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivedAmount, 3, 'POINT', 2,'COMMA') +''+${row.incomeWay} }">
+  <td width="12%" colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivedAmount == 0 }" >
+  </td>
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">　
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">　
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">　
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.ReceivableAmount == 0 }" >　
+  </td>
+ </tr>
+ 
+ <tr height="23" style="height:17.4pt;font-size:13px;">
+  <td colspan="11" height="23" style="text-align:center;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;height:17.4pt;">누 계</td>
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.OrderTotalAmount > 0 && aggredateView.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.OrderTotalAmount, 3, 'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.OrderTotalAmount > 0 && aggredateView.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.OrderTotalAmount,3,'POINT',2,'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.OrderTotalAmount == 0 }" th:text="${aggredateView.OrderTotalAmount}">
+  13,131,313</td>
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivedAmount > 0 && aggredateView.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivedAmount, 3, 'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivedAmount > 0 && aggredateView.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivedAmount, 3, 'POINT', 2,'COMMA')}">
+  <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivedAmount == 0 }">
+  </td>
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivableAmount > 0 && aggredateView.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivableAmount, 3, 'COMMA')}">
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivableAmount > 0 && aggredateView.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivableAmount < 0 && aggredateView.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(aggredateView.ReceivableAmount, 3, 'COMMA')}">
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivableAmount < 0 && aggredateView.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(aggredateView.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+  <td colspan="3" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${aggredateView.ReceivableAmount == 0 }" >
+ </td>
+ </tr>
+ <tr height="23" style="height:17.4pt;">
+  <td height="23" style="height:17.4pt;"><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td><br></td>
+  <td colspan="4" style="text-align:right;border-top:1pt solid windowtext;border-right:none;border-bottom:none;border-left:none;" th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd HH:mm:ss')}">2022-07-21 오전 9:30:30</td>
+ </tr>
+
+</tbody></table><p><br></p>
+<p><br></p>
+<p><br></p>
+
+
+
+<!-- 
+<input type="button" onclick="pagePrintPreview()" value="프린트하기"> <input type="button" value="닫기" onclick="window.close();">
+ -->
+<script type="text/javascript">
+//function pagePrintPreview(){
+
+	window.print();
+//} 
+</script>
+</th:block>

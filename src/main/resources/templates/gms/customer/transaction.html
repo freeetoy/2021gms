@@ -3,6 +3,7 @@
 <div class="wrapper">
 
 <th:block layout:fragment="content"> 
+<script src="/dist/js/jquery.popupWindow.js"></script>
 <script type="text/javascript">
 $(function() { 
 	 $('input[name="searchStatDt"]').daterangepicker({
@@ -60,8 +61,20 @@ $(function() {
 		
 		return dfd.promise();
 	}
-	
-		   
+$(document).ready(function(){ 
+	$(".btn_print").click(function()  
+    {
+ 	   var searchDt = $('#searchDt').val();
+ 	   var customerId = $('#customerId').val();
+ 	   
+       $.popupWindow('/gms/customer/print.do?searchDt='+searchDt+"&customerId="+customerId, {
+    	   width: 1000,
+           height: 700,
+           center: 'screen',          
+           scrollbars: 'true'
+          });
+    });
+});
 </script>
 
    <div class="content-wrapper">
@@ -99,7 +112,7 @@ $(function() {
              </div>
           </div>
 		<div class="row"> 
-	        <div class="col-12">
+	        <div class="col-8">
 	        <br>
 	        </div>
         </div>
@@ -110,25 +123,30 @@ $(function() {
                <input type="hidden" id="customerId" name="customerId" th:value="${customer.customerId}">
                		<label>기간</label>
             </div>               
-            <div class="col-4">              
+            <div class="col-3">              
                <input type="text" class="form-control" name="searchStatDt" id="searchStatDt" th:value="${searchDt}"/>			
             </div>               
          
-            <div class="col-7">         
+            <div class="col-3">         
             	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
             </div>
-            
+
+            <div class="col-1" align=right>
+
+         	<a class="btn_print btn btn-secondary btn-sm"   href="#" >
+                              <i class="fas fa-print"></i>프린트</a>
+         	</div>	
              </form> 
          </div>
         <div class="row">	
-	        <div class="col-12">
+	        <div class="col-8">
 	       <br>
 	        </div>
         </div>
         
         <!-- 
         <div class="row">	
-	        <div class="col-12">
+	        <div class="col-8">
 	        <table class="table table-hover">
                   <thead>
                     <tr style="font-size:14px;">
@@ -139,7 +157,7 @@ $(function() {
 	        </div>
         </div> -->
         <div class="row">	
-          <div class="col-12">
+          <div class="col-8">
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -156,7 +174,7 @@ $(function() {
                   <tbody>
                   	<tr th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}" style="text-align:center;font-size:13px;">
                       <th  width="15%" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">일자</th>
-                      <th  th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">
+                      <th  align="left" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">
                       <td th:unless="${row.productCount > 0}" "">
                       </th>
                       <th  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">

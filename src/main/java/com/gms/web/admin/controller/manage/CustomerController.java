@@ -727,6 +727,48 @@ public class CustomerController {
 		
 	}
 	
+	@RequestMapping(value = "/gms/customer/print.do")
+	public ModelAndView getCustomerTransactionPrint (CustomerSalesVO param, 
+			HttpServletRequest request , HttpServletResponse response) {
+		
+		ModelAndView mav = new ModelAndView();
+		CustomerVO customer = customerService.getCustomerDetails(param.getCustomerId());
+		String searchDt = param.getSearchStatDt();		
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {						
+			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			param.setSearchStatDtFrom(searchDtFrom);
+			param.setSearchStatDtEnd(searchDtEnd);			
+		}else {				
+			searchDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+			searchDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			
+			param.setSearchStatDtFrom(searchDtFrom);
+			param.setSearchStatDtEnd(searchDtEnd);
+			
+			searchDt = searchDtFrom +" - "+ searchDtEnd;
+		}
+		
+		param.setSearchStatDt(searchDt);
+		mav.addObject("customer",customer);
+		
+		Map<String, Object> map  = workService.getCustomerWorkReportList(param);
+		
+		mav.addObject("workList", map.get("bottleViewList"));	
+		mav.addObject("aggredateView", map.get("aggredateView"));	
+		mav.addObject("searchDt", param.getSearchStatDt());			 
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer"));
+		
+		mav.setViewName("gms/customer/print");
+		return mav;
+		
+	}
+	
 	@RequestMapping(value = "/api/customerList.do")
 	@ResponseBody
 	public List<CustomerSimpleVO> getCustomerList(@RequestParam(value = "searchCustomerNm", required = false) String searchCustomerNm)	{	
