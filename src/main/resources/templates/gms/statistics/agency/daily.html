@@ -52,7 +52,8 @@ $(function() {
       <div class="container-fluid">
        
          
-        <div class="row">       		 
+        <div class="row">
+        <!--     		 
             <div class="col-1">                      
                		<label>기간</label>
             </div>               
@@ -63,7 +64,8 @@ $(function() {
             <div class="col-3">
                 <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
             </div>  
-            <div class="col-4" align=right>
+       -->   
+            <div class="col-12" align=right>
                		<a th:href="@{/gms/statistics/agency/excelDown.do(searchStatDt=${searchStatDt},periodType=1)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
             </div>
             </form>  

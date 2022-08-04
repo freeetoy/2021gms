@@ -47,10 +47,10 @@
   <td colspan="15" style="text-align:center;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:none;padding-left:5px;">　</td>
  </tr>
  <tr height="10" style="height:7.2pt;">
-  <td colspan="18" height="10" style="text-align:center;border-top:1pt solid windowtext;border-right:1pt solid black;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;height:7.2pt;">　</td>
+  <td colspan="18" height="7" style="text-align:center;border-top:1pt solid windowtext;border-right:0pt solid black;border-bottom:1pt solid windowtext;border-left:0pt solid windowtext;height:7.2pt;">　</td>
  </tr>
- <tr height="23" style="height:17.4pt;">
-  <td colspan="18" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">판매 / 수금 내역</td>
+ <tr height="23" style="height:20.4pt;">
+  <td colspan="18" height="26" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">판매 / 수금 내역</td>
  </tr>
  <tr height="23" style="height:17.4pt;">
   <td colspan="2" width="12%" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;">일자</td>
@@ -67,8 +67,8 @@
  </tr>
  <tr height="23" style="height:17.4pt;font-size:12px;" th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList} ">
   <td colspan="2" height="23" style="text-align:center;border:1pt solid windowtext;height:17.4pt;" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">2022-08-02</td>
-  <td colspan="9" style="text-align:center;border:1pt solid windowtext;border-left:none;" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">　
-  <td colspan="9" style="text-align:center;border:1pt solid windowtext;border-left:none;" th:unless="${row.productCount > 0}" "">
+  <td colspan="9" style="text-align:left;border:1pt solid windowtext;border-left:none;padding-left:5px;" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">　
+  <td colspan="9" style="text-align:left;border:1pt solid windowtext;border-left:none;" th:unless="${row.productCount > 0}" "">
   </td>
   <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">
   <td colspan="2" style="text-align:right;border:1pt solid windowtext;padding-right:5px;border-left:none;" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.OrderTotalAmount,3,'POINT',2,'COMMA')}">
