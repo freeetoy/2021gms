@@ -302,6 +302,7 @@
 			, Bottle_Own_YN		= #{bottleOwnYn}
 			, Own_Customer_ID	= #{ownCustomerId}
 			, Delete_YN			= 'N'
+			, Dummy_YN			= #{dummyYn}
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE

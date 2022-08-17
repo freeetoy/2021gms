@@ -466,6 +466,39 @@ public class ApiController {
 			return "fail";
 	}
 	
+	@RequestMapping(value = "/api/deleteWorkBottleNew.do")
+	@ResponseBody
+	public String deleteWorkBottleNew(String userId,String param)	{
+		logger.info("###################################################");
+		logger.info("deleteWorkBottle==="+param+"-==userId="+userId);
+		logger.info("###################################################");
+		List<String> list = null;
+		int result = 0;		
+		WorkBottleVO workBottle = new WorkBottleVO();		
+		workBottle.setUserId(userId);
+		workBottle.setUpdateId(userId);
+		
+		if(param !=null && param.length() > 0) {
+			//bottleIds= request.getParameter("bottleIds");
+			list = StringUtils.makeForeach(param, ";"); 		
+			
+			int idx=0;
+			if(list.size() == 4) {
+				workBottle.setWorkReportSeq(Integer.parseInt(list.get(idx++)));
+				workBottle.setProductId(Integer.parseInt(list.get(idx++)));
+				workBottle.setProductPriceSeq(Integer.parseInt(list.get(idx++)));
+				workBottle.setBottleWorkCd(list.get(idx++));
+				
+				result = apiService.deleteWorkBottle(workBottle);
+			}
+		}		
+		
+		if(result > 0)
+			return "success";
+		else
+			return "fail";
+	}
+	
 	@RequestMapping(value = "/api/allProductSimpleList.do")
 	@ResponseBody
 	public List<ProductPriceSimpleVO> getAllProductSimpleList()	{	
@@ -505,7 +538,7 @@ public class ApiController {
 	@ResponseBody
 	public String deleteOrderApi(OrderVO param)	{	
 		int result = 0;		
-				
+		logger.info("<<<< deleteOrderApi  userId="+param.getUpdateId());
 		result = apiService.deleteOrder(param);
 		
 		if(result > 0)

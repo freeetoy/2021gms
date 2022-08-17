@@ -318,7 +318,22 @@ var goList = function(){
                       	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
 					  </th>   
                     </tr>                   
-                    
+                    <tr>
+                      <th class="card-footer">더미여부</th>
+                      <th>      
+                      	<select id="dummyYn" name="dummyYn" class="form-control">
+                          <option value='N' th:if="${#strings.equals(bottle.dummyYn,'N')}" selected>NO
+                          <option value='N' th:unless="${#strings.equals(bottle.dummyYn,'N')}">NO
+                          </option>				    
+					      <option value='Y' th:if="${bottle.dummyYn =='Y'}" selected>기본더미
+					      <option value='Y' th:unless="${bottle.dummyYn =='Y'}" >기본더미
+					      </option>	
+					       <option value='X' th:if="${bottle.dummyYn =='X'}" selected>추가더미
+					      <option value='X' th:unless="${bottle.dummyYn =='X'}" >추가더미
+					      </option>	
+                        </select>       
+					  </th>   
+                    </tr>   
                   </thead>
                               
                 </table>               

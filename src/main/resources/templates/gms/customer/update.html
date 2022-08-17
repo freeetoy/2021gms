@@ -184,10 +184,13 @@ $(function() {
                   <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-one-home-tab" th:href="@{/gms/customer/update.do( customerId=${customer.customerId})}" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">거래처수정</a>
                   </li>
+                  <!-- 
+                  <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-one-profile-tab" th:href="@{/gms/customer/transaction.do( customerId=${customer.customerId})}" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">대여용기</a>
+                  </li> -->
                   <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-one-profile-tab" th:href="@{/gms/customer/transaction.do( customerId=${customer.customerId})}" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">관리대장</a>
                   </li>
-                 
                 </ul>
               </div>
             
