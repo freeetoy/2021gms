@@ -126,7 +126,7 @@ public class ExcelServiceImpl implements ExcelService {
                 String productNm = "";
             	String productCapa = "";
             	
-            	if(row.getCell(0).toString() !=null && row.getCell(0).toString().length() > 0) {
+            	if(row.getCell(0) != null && row.getCell(0).toString() !=null && row.getCell(0).toString().length() > 0) {
 	                for(int j=0; j< COLUMN_COUNT; j++) {
 	                	XSSFCell cell = row.getCell(j);
 	                	
@@ -255,7 +255,6 @@ public class ExcelServiceImpl implements ExcelService {
 	                	sb.append(bottle.getBottleBarCd());
 	                	sb.append(";");
                 	}
-                	
                 }
             }
             logger.error("$$$$$$$$$$$$$$ ExcelService sb "+ sb.toString());
