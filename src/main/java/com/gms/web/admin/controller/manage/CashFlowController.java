@@ -76,8 +76,8 @@ public class CashFlowController {
 		
 		int result = 0;
 		//TODO 판매완료된 상품 주문 수정 안되게 처리
-		logger.debug(" modifyCashFlow customerId="+param.getCustomerId());
-		logger.debug(" modifyCashFlow getSearchCreateDt="+param.getSearchCreateDt());
+//		logger.debug(" modifyCashFlow customerId="+param.getCustomerId());
+//		logger.debug(" modifyCashFlow getSearchCreateDt="+param.getSearchCreateDt());
 		
 		result = cashService.modifyCashFlow(param);
 		if(result > 0){

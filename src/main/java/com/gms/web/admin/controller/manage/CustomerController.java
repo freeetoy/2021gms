@@ -383,11 +383,16 @@ public class CustomerController {
 			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
 			String[] productPriceArray = request.getParameterValues("productPrice");
 			String[] productBottlePriceArray = request.getParameterValues("productBottlePrice");
-//			logger.debug("******registerCustomerPrice 1  *****===*");
+			
 			int priceCount  = 0;
 			if(productIdArray != null && productIdArray.length > 0)
 				priceCount  = productIdArray.length;		
 			
+			//20220914 null값 0으로 처리
+			for(int i =0 ; i < priceCount ; i++ ) {
+				if(productPriceArray[i] == null || (productPriceArray[i] !=null && productPriceArray[i].length()==0)  ) productPriceArray[i] ="0";
+				if(productBottlePriceArray[i] == null || (productBottlePriceArray[i] !=null && productBottlePriceArray[i].length()==0) ) productBottlePriceArray[i] ="0";
+			}
 			//result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
 			CustomerPriceVO[] customerPrice = new CustomerPriceVO[priceCount];
 			String bottlePrice = "";
@@ -401,6 +406,7 @@ public class CustomerController {
 				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
 				priceVo.setProductId(Integer.parseInt(productIdArray[i]));
 				priceVo.setProductPriceSeq(Integer.parseInt(productPriceSeqArray[i]));
+			
 				priceVo.setProductPrice(Double.parseDouble(productPriceArray[i]));
 				priceVo.setProductBottlePrice(Double.parseDouble(productBottlePriceArray[i]));
 				
@@ -414,7 +420,7 @@ public class CustomerController {
 //					
 				customerPrice[i] = priceVo;				
 			}
-//			logger.debug("******registerCustomerPrice 2  *****===*"); 
+
 			int result1 = 1;
 			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) {
 				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
