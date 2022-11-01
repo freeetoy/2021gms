@@ -105,7 +105,9 @@ public class ApiController {
 				result = apiService.registerWorkReportForChangeCd(workReport);
 																		
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.freeback"))) {			//무료회수
-				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.freeback"));
+//				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.freeback"));
+				//20221101 처리
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
 				result = apiService.registerWorkReportForChangeCd(workReport);
 				
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.buyback"))) {			//매입
