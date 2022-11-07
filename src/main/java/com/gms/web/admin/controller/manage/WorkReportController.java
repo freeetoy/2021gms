@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,8 @@ import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.OrderBottlesVO;
+import com.gms.web.admin.domain.manage.ReportProductPriceSimpleVO;
+import com.gms.web.admin.domain.manage.ReportViewVO;
 import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
@@ -107,9 +110,18 @@ public class WorkReportController {
 		
 		if(params.getSearchUserId() == null && userList.size() > 0) params.setSearchUserId(userList.get(0).getUserId());
 		
-		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);		
+		Map<String, Object> resultMap = workService.getWorkReportListAllEwha(params);		
+
+		mav.addObject("productList", resultMap.get("productList"));	
 		
-		mav.addObject("workList", workList);	
+		mav.addObject("productNmList", resultMap.get("productNmList"));	
+		mav.addObject("reportList", resultMap.get("reportList"));
+		mav.addObject("totalCountList", resultMap.get("totalCountList"));	
+		mav.addObject("totalChargeCountList", resultMap.get("totalChargeCountList"));	
+		mav.addObject("totalStockCountList", resultMap.get("totalStockCountList"));	
+		mav.addObject("totalStockCountTodayList", resultMap.get("totalStockCountTodayList"));	
+		mav.addObject("addedCnt", resultMap.get("addedCnt"));
+		
 		mav.addObject("searchDt", params.getSearchDt());	
 		mav.addObject("searchUserId", params.getSearchUserId());			
 				

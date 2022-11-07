@@ -1,7 +1,5 @@
 package com.gms.web.admin.controller.common;
 
-import java.util.Calendar;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,7 +34,11 @@ public class SchedulerController {
 		//statOrderService.
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
-		int result = scheduleService.registerDailyStatistics();				
+		// Car Inventory 등록
+		int result = scheduleService.registerCarInventoryEwha();		
+		logger.info("************* ScheduleController scheduleDaily registerCarInventoryEwha end *************");
+		
+		result = scheduleService.registerDailyStatistics();				
 		logger.info("******************* ScheduleController scheduleDaily End*************** ");		
 	}
 	

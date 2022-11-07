@@ -81,6 +81,7 @@ public class ApiServiceImpl implements ApiService {
 			//사용자 최종접속일 정보 업데이트
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
+			param.setCarCustomerId(user.getCarCustomerId());
 			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
@@ -113,7 +114,7 @@ public class ApiServiceImpl implements ApiService {
 			//사용자 최종접속일 정보 업데이트
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
-			
+			param.setCarCustomerId(user.getCarCustomerId());
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
 			

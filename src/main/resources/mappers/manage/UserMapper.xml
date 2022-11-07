@@ -35,7 +35,6 @@
 		, Create_Dt      
 		, Update_ID      
 		, Update_Dt      
-
 	</sql>
 	
 	
@@ -62,9 +61,23 @@
 
 	<select id="selectUserDetail" parameterType="String" resultType="com.gms.web.admin.domain.manage.UserVO">
 		SELECT
-			<include refid="UserColumns" />
+			User_ID        
+			, TU.Member_Comp_Seq
+			, User_Nm        
+			, User_Phone     
+			, User_Part_CD   
+			, User_Authority 
+			, User_Passwd    
+			, Last_Connect_Dt
+			, Delete_Yn
+			, ECount_User_CD
+			, TU.Create_ID      
+			, TU.Create_Dt      
+			, TU.Update_ID      
+			, TU.Update_Dt 
+			, Customer_ID CarCustomerId
 		FROM
-			TB_USER
+			TB_USER TU Left Join TB_CUSTOMER TC On TU.User_ID  =TC.Sales_ID 
 		WHERE
 			delete_yn = 'N'
 		AND

@@ -83,8 +83,7 @@ public class UserServiceImpl implements UserService {
 		UserVO user = userMapper.selectUserDetail(userId);
 		
 		try {
-			//user.setUserPasswd(CryptoUtils.decryptAES256(user.getUserPasswd(),  PropertyFactory.getProperty("common.crypto.key")) );
-			//logger.debug("****** getUserDetails. start user.getUserPasswd()===*"+user.getUserPasswd());
+
 			AES256Util aescipher = new AES256Util(PropertyFactory.getProperty("common.crypto.key"));
 			//String rsaEn = aescipher.aesEncode( user.getUserPasswd());
 			String rsaEn = aescipher.aesDecode( user.getUserPasswd());

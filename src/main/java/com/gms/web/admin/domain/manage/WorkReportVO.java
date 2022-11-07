@@ -127,4 +127,7 @@ public class WorkReportVO extends AbstractVO implements Serializable {
 	private String reportEtc;
 	/** searchStatDt	*/
 	private String  searchStatDt;
+	
+	/** Customer_Id	 */
+	private Integer CarCustomerId ;
 }

@@ -58,6 +58,10 @@ public class WorkReportViewVO extends AbstractVO implements Serializable {
 	
 	private List<WorkBottleVO> backBottles;
 	
+	private List<ReportProductPriceSimpleVO> productList;
+	
+	private List<ReportViewVO> reportViewList;
+	
 	private String strSalesBottles;
 	
 	private String strBackBottles;

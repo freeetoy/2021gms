@@ -62,7 +62,7 @@ dependencies {
  
 bootJar {
     archiveBaseName = 'gms'
-    archiveFileName = 'gmsBoot.jar'
+    archiveFileName = 'gmsBootEwha.jar'
     archiveVersion = "0.0.0"
 }
 

@@ -4,10 +4,10 @@
 	<!-- 공통화면 -->
 	<entry key="common.page.title">GMS System</entry>
 	<entry key="common.Member.Comp.Daehan">1</entry>
-	<entry key="common.Member.Comp.Daehan.name">(주)대한특수가스</entry>
-	<entry key="common.Member.Comp.Daehan.businessNum">2348102444</entry>
+	<entry key="common.Member.Comp.Daehan.name">이화산업가스(주)</entry>
+	<entry key="common.Member.Comp.Daehan.businessNum">1228188232</entry>
 	<entry key="common.index.page">/start</entry>
-	
+	<entry key="common.Barcode.Prefix">HN</entry>
 	
 	<entry key="common.crypto.key">daehangaskey1234</entry>
 	<entry key="common.ROW.PER.PAGE">15</entry>

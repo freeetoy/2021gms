@@ -481,7 +481,7 @@
 				FROM TB_Work_Bottle TB, TB_Work_Report TW
 				WHERE TB.Work_Report_Seq  = TW.Work_Report_Seq
 				AND User_id = #{searchUserId}
-				AND Bottle_WorK_CD in ('0301','0306','0308','0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317','0318','0320','0330')
+				AND Bottle_WorK_CD in ('0307','0308','0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317','0318','0320','0330')
 				AND TW.Delete_YN = 'N'
 				<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 				AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')  =   #{searchDt}
@@ -1048,4 +1048,21 @@
 		AND worK_CD in  ('0308','0309', '0314', '0316','0318','0330')
 		ORDER BY Work_Report_Seq DESC 		
 	</select>
+	<!-- 
+	<select id="selectCarInventoryList" resultType="com.gms.web.admin.domain.manage.CarInventoryVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
+		SELECT TC.Customer_ID,Inventory_Dt, TC.Product_ID  , TC.Product_Price_Seq ,CNT
+		FROM 
+			TB_Car_Inventory TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP
+		WHERE
+			TC.Customer_ID 			= TS.Customer_ID
+		AND TC.Product_ID 		= TP.Product_ID
+		AND TC.Product_ID 		= TPP.Product_ID
+		AND TC.Product_Price_Seq = Tpp.Product_Price_Seq
+		AND TS.Sales_ID = #{searchUserId}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+		AND DATE_FORMAT(Inventory_Dt,'%Y/%m/%d')  Between   #{searchStatDt} AND #{searchDt}
+		</if>
+		ORDER BY Inventory_Dt,TC.Product_ID  , TC.Product_Price_Seq 
+	</select>
+	 -->
 </mapper>

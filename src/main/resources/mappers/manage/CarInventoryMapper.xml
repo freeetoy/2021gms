@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.gms.web.admin.mapper.manage.CarInventoryMapper">
+	
+	<sql id="CarInventoryColumns">
+		Customer_ID
+		 , Inventory_Dt
+		 , Product_ID  
+		 , Product_Price_Seq 
+		 , FULL_CNT
+		 , EMPTY_CNT
+		 , Create_ID        
+		 , Create_Dt        
+		 , Update_ID        
+		 , Update_Dt   
+	</sql>
+	
+	<insert id="insertCarInventory" parameterType="com.gms.web.admin.domain.manage.CarInventoryVO">
+		INSERT INTO TB_Car_Inventory(
+			<include refid="CarInventoryColumns" />
+		) VALUES (
+			 #{customerId}
+			, #{inventoryDt}	
+			, #{productId}	
+			, #{productPriceSeq}	
+			, #{fullCnt}
+			, #{emptyCnt}	
+			, #{createId}			
+			, NOW()	
+			, NULL
+			, NOW()
+		)
+	</insert>
+	
+	<insert id="insertCarInventories" parameterType="java.util.List">
+		INSERT INTO TB_Car_Inventory(
+			<include refid="CarInventoryColumns" />
+		) VALUES 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			#{item.customerId}
+			, #{item.inventoryDt}	
+			, #{item.productId}	
+			, #{item.productPriceSeq}	
+			, #{item.fullCnt}
+			, #{item.emptyCnt}
+			, #{item.createId}			
+			, NOW()	
+			, NULL
+			, NOW()
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insertCarInventoriesDay" parameterType="com.gms.web.admin.domain.manage.CarInventoryVO">
+		INSERT INTO TB_Car_Inventory
+		SELECT Customer_ID,  DATE_FORMAT(curdate(),'%Y/%m/%d'), Product_ID, Product_Price_Seq, FULL_CNT, 0, Create_ID, Create_Dt, Update_ID, Update_Dt 
+		FROM TB_Car_Inventory
+		WHERE Customer_ID	= #{customerId}
+		AND Inventory_Dt 	= #{inventoryDt}
+	</insert>
+	
+	<update id="updateCarInventory" parameterType="com.gms.web.admin.domain.manage.CarInventoryVO">
+		UPDATE TB_Car_Inventory
+		SET
+			FULL_CNT		= #{fullCnt}
+			, EMPTY_CNT		= #{emptyCnt}
+			, UPDATE_ID 	= #{item.updateId}
+			, UPDATE_DT 	= NOW()	
+		WHERE Customer_ID	= #{customerId}
+		AND Product_ID 		= #{productId}
+		AND Product_Price_Seq  = #{productPriceSeq}
+		AND Inventory_Dt 	= #{inventoryDt}
+	</update>
+	
+	<update id="updateCarInventories" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
+		UPDATE TB_Car_Inventory
+		SET
+			FULL_CNT			= FULL_CNT + #{item.fullCnt}
+			, EMPTY_CNT			= EMPTY_CNT + #{item.emptyCnt}
+			, UPDATE_ID 		= #{item.updateId}
+			, UPDATE_DT 		= NOW()	
+		WHERE Customer_ID		= #{item.customerId}
+		AND Product_ID 			= #{item.productId}
+		AND Product_Price_Seq  	= #{item.productPriceSeq}
+		AND Inventory_Dt 		= #{item.inventoryDt}
+		</foreach>
+	</update>
+	
+	<update id="updateCarInventoriesYesterDay" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
+		UPDATE TB_Car_Inventory
+		SET
+			FULL_CNT		= FULL_CNT + #{item.fullCnt}
+			, EMPTY_CNT		= EMPTY_CNT + #{item.emptyCnt}
+			, UPDATE_ID 	= #{item.updateId}
+			, UPDATE_DT 	= NOW()	
+		WHERE Customer_ID	= #{item.customerId}
+		AND Product_ID 		= #{item.productId}
+		AND Product_Price_Seq  = #{item.productPriceSeq}
+		AND Inventory_Dt 	= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		</foreach>
+	</update>
+	
+	<select id="selectCarInventoryList" resultType="com.gms.web.admin.domain.manage.CarInventoryVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
+		SELECT TC.Customer_ID,Inventory_Dt, TC.Product_ID  , TP.Product_Nm, TC.Product_Price_Seq ,TPP.Product_Capa , FULL_CNT,EMPTY_CNT
+		FROM 
+			TB_Car_Inventory TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP
+		WHERE
+			TC.Customer_ID 		= TS.Customer_ID
+		AND TC.Product_ID 		= TP.Product_ID
+		AND TC.Product_ID 		= TPP.Product_ID
+		AND TC.Product_Price_Seq = Tpp.Product_Price_Seq
+		AND TS.Sales_ID = #{searchUserId}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+		AND Inventory_Dt Between   #{searchStatDt} AND #{searchDt}
+		</if>
+		ORDER BY Inventory_Dt,TC.Product_ID  , TC.Product_Price_Seq 
+	</select>
+	
+	<select id="selectDayCarInventoryList" resultType="com.gms.web.admin.domain.manage.CarInventoryVO" parameterType="com.gms.web.admin.domain.manage.CarInventoryVO">		
+		SELECT TC.Customer_ID,Inventory_Dt, TC.Product_ID  , TC.Product_Price_Seq ,FULL_CNT
+		FROM 
+			TB_Car_Inventory TC
+		WHERE
+			TC.Customer_ID 	= #{customerId}
+		AND Inventory_Dt 	= #{inventoryDt}
+		ORDER BY Product_ID  ,Product_Price_Seq 
+	</select>
+	
+	<insert id="insertCarInventoriesDayScheduler" >
+		INSERT INTO TB_Car_Inventory
+		SELECT Customer_ID,  DATE_FORMAT(curdate(),'%Y/%m/%d'), Product_ID, Product_Price_Seq, FULL_CNT, 0, 'admin', now(), Update_ID, Update_Dt 
+		FROM TB_Car_Inventory
+		WHERE Inventory_Dt 	= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		AND Customer_ID NOT IN ( 
+			SELECT a.Customer_ID 
+			FROM 
+			( 
+				SELECT distinct Customer_ID from TB_Car_Inventory WHERE Inventory_Dt = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+			) a Right Outer JOIN
+			( 
+				SELECT distinct Customer_ID from TB_Car_Inventory WHERE Inventory_Dt = DATE_FORMAT(curdate(),'%Y/%m/%d')
+			) b 
+			ON a.Customer_ID = b.Customer_ID
+		)
+	</insert>
+</mapper>

@@ -7,6 +7,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gms.web.admin.common.utils.DateUtils;
+import com.gms.web.admin.domain.manage.CarInventoryVO;
+import com.gms.web.admin.domain.manage.WorkReportVO;
+import com.gms.web.admin.service.manage.CarInventoryService;
 import com.gms.web.admin.service.statistics.StatisticsAgencyService;
 import com.gms.web.admin.service.statistics.StatisticsBottleService;
 import com.gms.web.admin.service.statistics.StatisticsCustomerService;
@@ -34,10 +38,12 @@ public class SchedulerServiceImpl implements SchedulerService {
 	@Autowired
 	private StatisticsUserService statUserService;
 
-
 	@Autowired
 	private StatisticsAgencyService statAgencyService;
-
+	
+	@Autowired
+	private CarInventoryService inventoryService;
+	
 	@Override
 	@Transactional
 	public int registerDailyStatistics() {
@@ -104,6 +110,12 @@ public class SchedulerServiceImpl implements SchedulerService {
 		}
 	
 		return result ;
+	}
+
+	@Override
+	public int registerCarInventoryEwha() {
+		
+		return inventoryService.registerCarInventoriesScheduler();
 	}
 
 }

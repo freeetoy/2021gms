@@ -23,6 +23,8 @@ public interface WorkReportService {
 	
 	public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param);	
 	
+	public Map<String,Object> getWorkReportListAllEwha(WorkReportVO param);	
+	
 	public List<WorkBottleVO> getWorkBottleList(Integer workReportSeq);	
 	
 	public List<WorkBottleVO> getWorkBottleListOfOrder(Integer orderId);	

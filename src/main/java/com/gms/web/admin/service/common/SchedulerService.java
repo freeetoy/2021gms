@@ -6,4 +6,6 @@ public interface SchedulerService {
 	public int registerDailyStatistics();
 
 	public int registerMonthlyStatistics();
+	
+	public int registerCarInventoryEwha();
 }

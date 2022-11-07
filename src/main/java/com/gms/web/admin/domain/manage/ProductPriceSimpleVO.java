@@ -22,4 +22,6 @@ public class ProductPriceSimpleVO implements Serializable {
 	
 	/** Product_Capa     */
 	private String productCapa;
+
+	
 }

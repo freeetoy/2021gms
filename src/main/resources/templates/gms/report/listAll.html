@@ -1103,8 +1103,8 @@ $(document).ready(function(){
             	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
             </div>
             <div class="col-3" align=right>
-         	<a class="btn_excel btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
-                              <i class="fas fa-file-excel"></i>엑셀</a>
+         	<!-- <a class="btn_excel btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
+                              <i class="fas fa-file-excel"></i>엑셀</a> -->
          	<a class="btn_print btn btn-secondary btn-sm"   th:userId="${session.userId}"  href="#" >
                               <i class="fas fa-print"></i>프린트</a>
          	</div>	
@@ -1123,56 +1123,222 @@ $(document).ready(function(){
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
-                <table class="table table-hover">                
-                  <thead>
-                    <tr>
-                      <th>순번</th>
-                      <th>거래처</th>
-                      <th>납품</th>
-                      <th>회수</th>                      
-                      <th>금액</th>
-                      <th>수금액</th>
-                      <th>계산서</th>
-                      <th>삭제</th>
-                    </tr>
-                  </thead>
-                  <tbody>                 
-                  	<tr th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}" style="font-size:13px;">
-                      <td th:text="${workList.indexOf(row)+1}"></td>
-                      <th><a th:href="@{/gms/report/update.do( workReportSeq=${row.workReportSeq})}" th:text="${row.CustomerNm}"></a></th>
-                      <!-- td th:text="${row.CustomerNm}"></td> -->
-                      <td >
-                      	<table>     
-                      	<tr th:if="${not #lists.isEmpty(row.salesBottles )}" th:each="row1 : ${row.salesBottles}"  >
-                      		<td th:if="${row1.bottleWorkCd=='0306'}" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ',' +${row1.bottleType}+')' ">
-                      		<td th:unless="${row1.bottleWorkCd =='0306'}" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' ">
-                      	</tr>
-                      	</table>
-                      </td>
-                      <td>
-                    	<table>     
-                      	<tr th:if="${not #lists.isEmpty(row.backBottles )}" th:each="row2 : ${row.backBottles}" >
-                      		<td th:if="${row2.bottleWorkCd=='0301'}"  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm}  + ',' +${row2.bottleType}+')'">
-                      		<td th:unless="${row2.bottleWorkCd=='0301'}"  th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount}  + ' (' + ${row2.bottleWorkCdNm}  + ')'">
-                      	</tr>
-                      	</table>
-                      </td>
-                      <td align="right" th:if="${row.orderAmount > 0 && row.orderAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.orderAmount, 3, 'COMMA')}">
-                      <td align="right" th:if="${row.orderAmount > 0 && row.orderAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.orderAmount, 3, 'COMMA', 2,'POINT')}">
-                      <td align="right" th:if="${row.orderAmount == 0 }" th:text="${row.orderAmount}">
-                      <td align="right" th:if="${row.receivedAmount > 0 && row.receivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA')} + ${row.incomeWay} ">
-                      <td align="right" th:if="${row.receivedAmount > 0 && row.receivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.receivedAmount, 3, 'COMMA', 2,'POINT')} + ${row.incomeWay} ">
-		     		  <td align="right" th:if="${row.receivedAmount == 0 }" th:text="${row.receivedAmount} +  ${row.incomeWay} "></td>	
-		     		  </td>
-		     		  <td th:text="${row.taxinvoiceType}"></td>	
-		     		  <td><a class="btn_select_delete btn btn-danger btn-xs" th:workReportSeq="${row.workReportSeq}" th:customerNm1="${row.customerNm}"   href="#"><i class="fas fa-trash"></i>삭제</a></td>    
-                 
-                    </tr>
-                    <tr th:unless="${not #lists.isEmpty( workList )}">
-						<td colspan="7">조회된 결과가 없습니다.</td>
-					</tr>												  
-                  </tbody>					
-                </table>                
+                <style>
+				.slash {
+				  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="100%" x2="100%" y2="0" stroke="gray" /></svg>');
+				}
+				.backslash {
+				  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100%" y2="100%" stroke="gray" /></svg>');
+				}
+				.slash, .backslash { text-align: left; }
+				.slash div, .backslash div { text-align: right; }
+				table {
+					border-collapse: collapse;
+					border: 0px solid gray;
+				}  
+				th, td {
+					border: 1px solid gray;
+					padding: 5px;
+					text-align: center;
+				}
+				</style>
+				<table style="box-sizing:border-box;border-collapse:collapse;border:0px solid gray;color:rgb(33, 37, 41);font-family:&quot;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-transform:none;white-space:normal;widows:2;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:rgb(255, 255, 255);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial;">
+			    <tbody style="box-sizing:border-box;">
+			        <tr style="height:50px;box-sizing:border-box;font-size:14px;">
+			            <th rowspan="3" style="box-sizing:border-box;text-align:center;border:1px solid gray;padding:5px;width:200px;">거래처</th>
+			            <td style='width:60px;word-break: break-all;' th:if="${not #lists.isEmpty( productNmList )}" th:each="row : ${productNmList}"   th:colspan="${row.sameNmCnt}" th:text="${row.productNm}">산소</td>
+			            <td style='width:60px' th:each="seq :${#numbers.sequence(1,16-productNmList.size()-addedCnt)}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>-->
+			        </tr>
+			        <tr style="height:40px;box-sizing:border-box;font-size:13.5px;">
+			            <td style='width:50px' th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}"  th:text="${row.productCapa}">산소</td>
+			            <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-productList.size())}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>-->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+					    <td class='slash' style='width:50px' th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}" >실<div>공</div></td>
+			            <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-productList.size())}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td> -->
+			        </tr>
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>전일재고</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalStockCountList )}" th:each="row3 : ${ totalStockCountList}" th:utext="${row3}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalStockCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash' style="color:#FFFFFF;">0<div>0</div></td> -->
+			        </tr>
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;" th:if="${not #lists.isEmpty( reportList )}" th:each="row : ${ reportList}"  >
+			            <td style='width:200px'><a th:href="@{/gms/report/update.do( workReportSeq=${row.workReportSeq})}" th:text="${row.CustomerNm}"></a></td>
+					    <td class='slash' th:if="${not #lists.isEmpty( row.countList )}" th:each="row1 : ${ row.countList}" th:utext="${row1}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-row.countList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'>6<div>21</div></td> -->
+			        </tr>
+			        <!-- 
+			        <tr height="20" style="box-sizing:border-box;height:20 pt;font-size:13.5px;" th:each="seq :${#numbers.sequence(1,10-reportList.size())}">
+			            <td style='width:150px;height:20 pt;'></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+			        </tr>
+			         -->
+			        
+			         
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>충   전</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalChargeCountList )}" th:each="row2 : ${ totalChargeCountList}" th:utext="${row2}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalChargeCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>-->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			           <td style='width:200px'>판   대</td>
+					   <td class='slash' th:if="${not #lists.isEmpty( totalCountList )}" th:each="row1 : ${ totalCountList}" th:utext="${row1}"><div></div></td>
+					   <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'> <div> </div></td> -->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			           <td style='width:200px'>차량재고</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalStockCountTodayList )}" th:each="row3 : ${ totalStockCountTodayList }" th:utext="${row3}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalStockCountTodayList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td> -->
+			        </tr>
+			        <tr height="30" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>비  고</td>
+					    <td><div></div></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+			        </tr>
+			    </tbody>
+			</table>
               </div>
               <!-- /.card-body -->
             </div>
