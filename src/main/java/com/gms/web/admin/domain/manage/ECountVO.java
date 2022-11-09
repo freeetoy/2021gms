@@ -20,7 +20,7 @@ public class ECountVO {
 	
 	private String salesNm;
 	
-	private String wareHouse ="대한특수가스";
+	private String wareHouse ="이화산업가스";
 	
 	private String dealType = PropertyFactory.getProperty("ecount.dealtype.tax.include");		// 거래유형
 	

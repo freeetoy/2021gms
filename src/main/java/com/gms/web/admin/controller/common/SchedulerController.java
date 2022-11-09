@@ -34,12 +34,12 @@ public class SchedulerController {
 		//statOrderService.
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
-		// Car Inventory 등록
-		int result = scheduleService.registerCarInventoryEwha();		
-		logger.info("************* ScheduleController scheduleDaily registerCarInventoryEwha end *************");
+		int result = scheduleService.registerDailyStatistics();				
 		
-		result = scheduleService.registerDailyStatistics();				
 		logger.info("******************* ScheduleController scheduleDaily End*************** ");		
+		// Car Inventory 등록
+		 result = scheduleService.registerCarInventoryEwha();		
+		logger.info("************* ScheduleController scheduleDaily registerCarInventoryEwha end *************");
 	}
 	
 	 

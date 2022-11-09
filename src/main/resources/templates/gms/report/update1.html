@@ -1,0 +1,369 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+<div class="wrapper">
+<th:block layout:fragment="content">
+<script type="text/javascript">
+$(document).ready(function(){ 
+
+	var counter = 0;
+	var totalCount = 1;
+	//initProduct(0);
+	initProductPriceList();
+	
+	// 품명 선택 변경
+    $('#productId_0').change( function(){
+		var selProductId = $('#productId_0').val();
+		getProductList(selProductId,0,"ins");
+	});
+
+	//수정시 row 추가
+    var mod_counter = 0;
+
+    $("table.doc-list").on("click", ".ibtnAddMod", function (event) {
+       
+        mod_counter++;       
+        totalCount++;
+        
+        var newRow = $("<tr>");
+        var cols = "";
+
+        cols += '<td style="padding-left:5px;">';
+        cols += '<select class="form-control" id="productId_' + mod_counter +  '" name="productId_' + mod_counter + '" style="width:250px"></select>';
+        cols += '</td><td>';
+        cols += ' <select class="form-control" id="productPriceSeq_' + mod_counter + '" name="productPriceSeq_' + mod_counter + '" style="width:80px"></select> ';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="fullCnt_' + mod_counter + '" name="fullCnt_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="1">';
+		cols += '</td><td>';
+		cols += ' <input type="number" class="form-control" id="emptyCnt_' + mod_counter + '" name="emptyCnt_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="1">';
+		cols += '</td><td>'; 
+        cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
+        cols += '</td>';
+        cols +='</tr>';
+
+        newRow.append(cols);
+        $("table.doc-list").append(newRow);
+
+        $("#productCount").val(mod_counter);
+        
+        //initBottleWorkCd(mod_counter);
+        initProduct(mod_counter);
+
+        initModProductCapa(mod_counter);
+    });
+    
+ // row 삭제
+    $("table.doc-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();       
+       
+        counter -= 1
+        totalCount-=1
+        $("#productCount").val(counter);
+		
+    });
+
+    $("table.doc-list").on("click", ".ibtnDelMod", function (event) {
+        $(this).closest("tr").remove();       
+        
+        mod_counter -= 1
+        totalCount -= 1
+        $("#productCount").val(mod_counter);
+    });
+    
+    
+	$("#save").on("click", function () {
+
+		for(i=0 ; i < totalCount ; i++){ 
+	    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
+	    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+	    		alert('상품을 선택 하세요');     
+	    		return false;
+	    	}
+		}
+    	var checkedValue = ""; 
+		var chki=0;
+		
+    	var form = $("#writeForm");	
+    	document.getElementById("productCount").value = totalCount;    	
+    	
+    	form.submit();
+    });
+	
+	$("#goBack").on("click", function () {
+    	
+		var form = document.createElement("form");
+		form.setAttribute("charset","UTF-8");
+		form.setAttribute("method","post");
+		form.setAttribute("action","/gms/report/listAll.do");
+		
+		var hiddenField = document.createElement("input");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", "searchDt" );
+		hiddenField.setAttribute("value",'[[ ${workReport.searchDt} ]]');
+		form.appendChild(hiddenField);     
+		
+		var hiddenField1 = document.createElement("input");
+		hiddenField1.setAttribute("type", "hidden");
+		hiddenField1.setAttribute("name", "searchUserId");
+		hiddenField1.setAttribute("value", '[[ ${workReport.searchUserId} ]]' );
+		form.appendChild(hiddenField1);     
+		 
+		document.body.appendChild(form);
+		
+		form.submit();			
+    });
+	
+	function initProduct(pid){
+
+		$.ajax({
+	  	  	url: '/gms/product/nlist.do',
+	  	  	type: 'POST',  	  	
+	  	  	dataType: 'json',
+		})
+  	 	.done(function(data){
+	  		var i=0;
+	  		$('#productId_' + pid).append('<option value=0>상품</option>');
+			for(i=0; i< data.length;i++) {			   
+				$('#productId_' + pid).append('<option value='+data[i].productId+'>'+data[i].productNm+'</option>')			
+			}
+		})
+       .fail(function(){
+  			console.log("fail");
+       });
+    } 
+	
+	function initProductPriceList(){
+		
+		var parm = 'searchUserId=[[${workReport.searchUserId}]]&searchStatDt=[[${workReport.searchStatDt}]]';
+		$.ajax({
+			url: '/gms/report/carInventoryList.do',
+			type: 'POST',
+			data: parm,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+			var counter = 0;
+	        var cols = "";	        
+			    
+			for(i=0; i< data.length;i++) {
+	            $('#productId_' + i).find('option').remove();
+	        }			
+
+	    	var i=0;			
+	    	console.log(data.length);
+			
+		 	$("table.doc-list").find('tr').remove();
+		 	
+		 	var newRow = $("<tr>");
+	        
+			cols += '<td>상품</td>';
+			cols += '<td>용량</td>';
+			cols += '<td>실병</td>';	
+			cols += '<td>공병</td>';
+			cols += '<td></td></tr>';
+
+			newRow.append(cols);
+	        $("table.doc-list").append(newRow);
+			for(i=0; i< data.length;i++) {
+				document.getElementById("productCount").value = totalCount;  
+				//if(data[i].workBottleCd=='0309'){ }
+
+				var newRow = $("<tr>");
+				
+	            cols = "";				
+				cols += '<td style="padding-left:5px;">';
+				
+				cols += '	<select class="form-control" id="productId_' + counter +  '" name="productId_' + counter + '" style="width:250px" readonly>'; 
+				cols += '	<option value="' + data[i].productId +'" selected>' + data[i].productNm + '</option>';
+				cols += '	</select>';
+				cols += '</td><td>';
+				cols += '	<select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq_' + counter + '" style="width:80px" readonly>';
+				cols += '	<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
+				cols += '	</select> ';
+				cols += '</td><td>';				
+				cols += '	<input type="number" class="form-control" id="fullCnt_' + counter + '" name="fullCnt_' + counter + '" value="' + data[i].fullCnt + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+				cols += '</td><td>'; 
+				cols += '	<input type="number" class="form-control" id="emptyCnt_' + counter + '" name="emptyCnt_' + counter + '" value="' + data[i].emptyCnt + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+				cols += '</td><td>'; 
+				if (counter < 1){	
+					cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	
+				}else{	
+					//cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow_' + counter+'" value="삭제" />';	
+				}
+				cols += '</td>';
+				cols +='</tr>';
+
+	            newRow.append(cols);
+	            $("table.doc-list").append(newRow);
+	            document.getElementById("customerId").value = data[i].customerId;  
+	            console.log(data[i].customerId);
+	            //initProduct(counter);
+	            
+	            mod_counter = counter;
+	            
+	            totalCount =counter;
+	            counter++;
+	            
+			}
+			totalCount = data.length;
+			
+		})
+		.fail(function(){
+			console.log("fail");
+		 });		
+    }
+	
+	function getProductList(productId,sel_pid,type){
+
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ productId ,
+			dataType: 'json',
+
+		 })
+		.done(function(data){	           
+		  
+			if(type == "ins"){
+		    	var i=0;
+				//$('#productCapa_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					 
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+					
+				}
+			}else if(type == "mod"){
+				
+				$('#productPriceSeq_' + sel_pid).find('option').remove(); 
+				for(i=0; i< data.length;i++) {
+					
+					$('#productPriceSeq_' + sel_pid).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')
+				//$('#productPriceSeq_' + sel_pid).append(json_obj.productPriceList);
+				}
+			}  		
+		})
+		.fail(function(){
+			console.log("fail");
+		 });
+	} 
+	
+	function initModProductCapa(mod_counter) {
+       // body...      
+		 $('#productId_' + mod_counter).change( function(){      		
+				var mod_select_pumname = $('#productId_' + mod_counter).val();		
+				getProductList(mod_select_pumname,mod_counter,'mod');		
+		});
+     }
+});
+</script>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>차량재고 수정</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10">
+            <div class="card">          
+              
+             <!-- general form elements -->
+              <form id="writeForm" class="form-horizontal" th:action="@{/gms/report/inventoryModify.do}" method="post" >
+              	<input type="hidden" id="customerId" name="customerId" value="">
+              	<input type="hidden" id="userId" name="userId" th:value="${workReport.searchUserId}">
+              	<input type="hidden" id="searchUserId" name="searchUserId" th:value="${workReport.searchUserId}">
+              	<input type="hidden" id="searchDt" name="searchDt" th:value="${workReport.searchDt}">
+              	<input type="hidden" id="searchStatDt" name="searchStatDt" th:value="${workReport.searchStatDt}">
+              	<input type="hidden" id="action" name="action" th:value="${action}">
+              	<input type="hidden" id="dayFlag" name="dayFlag" th:value="${dayFlag}">
+              	<input type="hidden" id="productCount" name="productCount" value="">
+                <label th:text="${workReport.customerNm}"  class="control-label col-10">상품정보</label>
+              	<!-- <div class="form-group">				        
+			        <table class="table table-hover">
+				        <thead>	                    
+	                    <tr> 
+	                      <td ></td>
+	                    </tr>   
+	                     </thead>   
+			         </table>	     
+		        </div> -->
+                <div class="form-group">	
+			        <div class="col-md-10">
+			        <table class="table table-hover">
+			         </table>
+			        </div>
+		        </div>
+                <div class="form-group">
+	                   <label class="control-label col-10">차량재고</label>
+	                       <table id="myTable" class="table doc-list">
+		                       <tr>
+		                         <td>상품</td>
+		                         <td>용량</td>
+		                         <td>실병</td>
+		                         <td>공병</td>
+		                         <td></td>
+		                       </tr>
+		                       <tr >
+			                       <td  style="padding-left: 5px;">                                           
+			                         <select id="productId_0" name="productId_0" class="form-control" style="width:250px">
+								    </select>	   
+			                       </td>
+			                       <td> 
+			                       		<select id="productPriceSeq_0" name="productPriceSeq_0" class="form-control" style="width:80px">
+					                        <option value="0">옵션</option>			                      	
+									    </select>	   
+			                       </td>
+			                      <td>
+		                             <input type="number" id="orderCount_0" name="orderCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999"> 
+		                           </td>
+			                       <td>
+		                             <input type="number" id="orderCount_0" name="orderCount_0" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999"> 
+		                           </td>	                      
+			                       <td>
+			                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
+			                       
+			                       </td>
+		                       </tr>
+		                     </table>
+	               
+             
+            </div>
+            <!-- /.card -->
+            
+	            <div class="card-footer">
+	                 <input type="button" id="goBack" value="취소"  class="btn btn-secondary float-left">
+			         <input type="button" id="save" value="저장"  class="btn btn-success float-right">
+	            </div>	
+	       
+	            </form>             	
+        </div>
+        <div class="row">	
+		        <div class="col-10">	        	
+		        <!-- 
+		        <table class="table table-hover">	
+		        <tr><td  style='color: red'>(실병과 공병  0으로 등록하면 삭제가 됩니다)</td></tr>
+		         </table> -->
+		        </div>
+	        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+</th:block>
+</div>

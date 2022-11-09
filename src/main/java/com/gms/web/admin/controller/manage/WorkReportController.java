@@ -28,6 +28,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.CarInventoryVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.OrderBottlesVO;
 import com.gms.web.admin.domain.manage.ReportProductPriceSimpleVO;
@@ -37,6 +38,7 @@ import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.service.manage.BottleService;
+import com.gms.web.admin.service.manage.CarInventoryService;
 import com.gms.web.admin.service.manage.CashFlowService;
 import com.gms.web.admin.service.manage.UserService;
 import com.gms.web.admin.service.manage.WorkReportService;
@@ -62,6 +64,9 @@ public class WorkReportController {
 	
 	@Autowired
 	private CashFlowService cashService;
+	
+	@Autowired
+	private CarInventoryService inventoryService;
 	
 	@RequestMapping(value = "/gms/report/list.do")
 	public ModelAndView getWorkReportList(
@@ -112,13 +117,15 @@ public class WorkReportController {
 		
 		Map<String, Object> resultMap = workService.getWorkReportListAllEwha(params);		
 
+		mav.addObject("userId", params.getSearchUserId());	
+		mav.addObject("chargeWorkSeq", resultMap.get("chargeWorkSeq"));	
 		mav.addObject("productList", resultMap.get("productList"));	
 		
 		mav.addObject("productNmList", resultMap.get("productNmList"));	
 		mav.addObject("reportList", resultMap.get("reportList"));
 		mav.addObject("totalCountList", resultMap.get("totalCountList"));	
 		mav.addObject("totalChargeCountList", resultMap.get("totalChargeCountList"));	
-		mav.addObject("totalStockCountList", resultMap.get("totalStockCountList"));	
+		mav.addObject("totalYesterStockCountList", resultMap.get("totalYesterStockCountList"));	
 		mav.addObject("totalStockCountTodayList", resultMap.get("totalStockCountTodayList"));	
 		mav.addObject("addedCnt", resultMap.get("addedCnt"));
 		
@@ -284,7 +291,7 @@ public class WorkReportController {
 			params.setSearchUserId(params.getCreateId());
 		}
 		
-		//logger.debug("WorkReportController getWorkReportList User_id= "+ params.getUserId());		
+//		logger.debug("WorkReportController getWorkReportList User_id= "+ params.getUserId());		
 		
 		//List<WorkReportViewVO> workList = workService.getWorkReportList1(params);
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
@@ -296,6 +303,22 @@ public class WorkReportController {
 			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
 			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
 		}
+		
+		
+		Map<String, Object> resultMap = workService.getWorkReportListAllEwha(params);		
+
+		mav.addObject("productList", resultMap.get("productList"));	
+		
+		mav.addObject("productNmList", resultMap.get("productNmList"));	
+		mav.addObject("reportList", resultMap.get("reportList"));
+		mav.addObject("totalCountList", resultMap.get("totalCountList"));	
+		mav.addObject("totalChargeCountList", resultMap.get("totalChargeCountList"));	
+		mav.addObject("totalYesterStockCountList", resultMap.get("totalYesterStockCountList"));	
+		mav.addObject("totalStockCountTodayList", resultMap.get("totalStockCountTodayList"));	
+		mav.addObject("addedCnt", resultMap.get("addedCnt"));
+		
+		mav.addObject("searchDt", params.getSearchDt());	
+		mav.addObject("searchUserId", params.getSearchUserId());			
 		
 		mav.setViewName("gms/report/print");
 		
@@ -364,10 +387,8 @@ public class WorkReportController {
         		context.putVar("workList", workList);
         		context.putVar("searchDt", params.getSearchDt());
 	            JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
-	       
 	    }
 	}
-
 
 	@RequestMapping(value = "/gms/report/noGasSales.do", method = RequestMethod.POST)
 	public ModelAndView registerWorkReportNoGasProduct(HttpServletRequest request
@@ -483,6 +504,8 @@ public class WorkReportController {
 		}
 		return null;		
 	}
+	
+	
 	
 	@RequestMapping(value = "/gms/report/delete.do", method = RequestMethod.POST)
 	public ModelAndView deleteWorkReport(HttpServletRequest request

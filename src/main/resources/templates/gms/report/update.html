@@ -125,7 +125,8 @@ $(document).ready(function(){
 
   		$('#bottleWorkCd_' + pid).append('<option value=0>구분</option>');
 				   
-		$('#bottleWorkCd_' + pid).append('<option value=0308>판매</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0307>상차</option>')	
+		$('#bottleWorkCd_' + pid).append('<option value=0308>판매</option>')
 		$('#bottleWorkCd_' + pid).append('<option value=0309>대여</option>')	
 		$('#bottleWorkCd_' + pid).append('<option value=0310>회수</option>')	
 		$('#bottleWorkCd_' + pid).append('<option value=0311>무료회수</option>')	
@@ -275,6 +276,7 @@ $(document).ready(function(){
 				var cols = "";
 				cols += '<td style="padding-left:5px;">';
 				cols += '<select class="form-control" id="bottleWorkCd_0" name="bottleWorkCd_0" style="width:120px">'; 
+				cols += '<option value=0307>상차</option>'; 
 				cols += '<option value=0308>판매</option>'; 
 				cols += '<option value=0309>대여</option>'; 
 				cols += '<option value=0310>회수</option>'; 
@@ -343,6 +345,8 @@ $(document).ready(function(){
 					
 					cols += '	<select class="form-control" id="bottleWorkCd_' + counter +  '" name="bottleWorkCd_' + counter + '" style="width:120px" readonly>'; 
 					//cols += '	<option value="' + data[i].bottleWorkCd +'" selected>' + data[i].bottleWorkCd + '</option>';
+					if(data[i].bottleWorkCd =='0307')
+						cols += '	<option value="0307" selected>상차</option>';		
 					if(data[i].bottleWorkCd =='0308')
 						cols += '	<option value="0308" selected>판매</option>';					
 					if(data[i].bottleWorkCd =='0309')					
@@ -352,7 +356,7 @@ $(document).ready(function(){
 					if(data[i].bottleWorkCd =='0311')					
 						cols += '	<option value="0311" selected>무료회수</option>';
 					if(data[i].bottleWorkCd =='0312')
-						cols += '	<option value="0312" selected>대여</option>';
+						cols += '	<option value="0312" selected>매입</option>';
 					if(data[i].bottleWorkCd =='0313')
 						cols += '	<option value="0313" selected>무상교체</option>';	
 					if(data[i].bottleWorkCd =='0314')
@@ -566,6 +570,6 @@ $(document).ready(function(){
  
  
   </th:block>
-  
+    </div>
 
   

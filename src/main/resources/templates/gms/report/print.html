@@ -37,70 +37,222 @@
  </tr> 
  </table>
 
- <table border="0" cellpadding="0" cellspacing="0" width="1242" style="border-collapse:collapse;width:936pt;">
- <tr height="35" style="height:24.9pt;">
-  <td height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">#</td>
-  <td colspan="3" width="207" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">거 래 처</td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">납 품 </td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">회수</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">주 문 금 액</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">수 금 액</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">계산서</td>
-  <td colspan="2" width="114" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">비 고</td>
- </tr>
- <tr height="35" style="height:24.6pt;" th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}">
-  <td th:text="${workList.indexOf(row)+1}" height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.6pt;width:52pt;">8</td>
-  <td th:text="${row.CustomerNm}" colspan="3" width="207" style="text-align:left;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">O2(의료용)</td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">
-  	<table>     
-       	<tr th:if="${not #lists.isEmpty(row.salesBottles )}" th:each="row1 : ${row.salesBottles}"  >
-			<td style="text-align:left;" th:text="${row1.productNm} + ' ' + ${row1.productCapa}+ ' ' + ${row1.productCount} + ' (' + ${row1.bottleWorkCdNm} + ')' "></td>
-        </tr>
-	</table>
-  </td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">
-  <table>     
-    	<tr  th:if="${not #lists.isEmpty(row.backBottles )}" th:each="row2 : ${row.backBottles}" >
-    		<td th:if="${row2.bottleWorkCd !='0310'}" style="text-align:left;" th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount} + ' (' + ${row2.bottleWorkCdNm} + ')'"></td>
-    		<td th:unless="${row2.bottleWorkCd !='0310'}" style="text-align:left;" th:text="${row2.productNm} + ' ' + ${row2.productCapa}+ ' ' + ${row2.productCount} "></td>
-    	</tr>
-   </table>
-  </td>
-  <td th:if="${row.orderAmount> 0 && row.orderAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.orderAmount, 3, 'COMMA')}" colspan="2" width="100" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
-  <td th:if="${row.orderAmount> 0 && row.orderAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.orderAmount, 3, 'COMMA', 2,'POINT')}" colspan="2" width="100" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
-  <td th:if="${row.orderAmount == 0 }" th:text="${row.orderAmount}" colspan="2" width="100" style="text-align:right;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px"><span>                 </span>20,000 </td>
-  
-  <td th:if="${row.receivedAmount > 0 && row.receivedAmount * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA')}" colspan="2" width="100" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
-  <td th:if="${row.receivedAmount > 0 && row.receivedAmount * 100 % 100 > 0 }" th:text="${#numbers.formatInteger(row.receivedAmount, 3, 'COMMA', 2,'POINT')}" colspan="2" width="100" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
-  <td th:if="${row.receivedAmount == 0}" th:text="${row.receivedAmount}" colspan="2" width="138" style="text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;padding-right:5px">　</td>
-  <td th:text="${row.taxinvoiceType}" colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
-  <td th:text="${row.receivedAmount} + ' ' + ${row.incomeWay}" colspan="2" width="114" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:none;border-left:none;white-space:normal;width:104pt;">비 고</td>
- </tr>
- <tr height="35" style="height:24.9pt;" th:each="seq :${#numbers.sequence(1,25-workList.size())}">
-  <td height="35" width="69" style="text-align:center;border-top:none;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">　</td>
-  <td colspan="3" width="207" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:156pt;">　</td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">　</td>
-  <td colspan="4" width="276" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:208pt;">　</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
-  <td colspan="2" width="100" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
-  <td colspan="2" width="114" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
- </tr>
- 
- <tr height="35" style="height:24.9pt;">
-  <td height="35" width="69" style="text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;height:24.9pt;width:52pt;">비고</td>
-  <td colspan="8" style="text-align:center;border-top:1pt solid #0606DE;border-right:none;border-bottom:1pt solid #0606DE;border-left:none;">　</td>
-  <td colspan="3" width="207" style="color:windowtext;font-weight:700;text-align:center;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:1pt solid #0606DE;white-space:normal;width:156pt;">합<span>     </span>계<span>     </span>금<span>   
-  </span>액</td>
-  <td colspan="2" width="100" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px"></td>
-  <td colspan="2" width="100" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday > 0 && receivedAmountToday * 100 % 100 == 0 }" th:text="${#numbers.formatInteger(receivedAmountToday, 3, 'COMMA')}">22,000</td>
-  <td colspan="2" width="100" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday > 0 && receivedAmountToday * 100 % 100 > 0 }" th:text="${#numbers.formatInteger(receivedAmountToday, 3, 'COMMA', 2,'POINT')}">22,000</td>
-  <td colspan="2" width="100" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px" th:if="${receivedAmountToday == 0}" th:text="${receivedAmountToday}">22,000</td>
-  <td colspan="2" width="100" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt; padding-right:5px"></td>
-  <td colspan="2" width="114" style="color:windowtext;font-weight:700;text-align:right;border-top:1pt solid #0606DE;border-right:1pt solid #0606DE;border-bottom:1pt solid #0606DE;border-left:none;white-space:normal;width:104pt;">　</td>
- </tr>
-
-</tbody></table><p><br></p>
+ <style>
+				.slash {
+				  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="100%" x2="100%" y2="0" stroke="gray" /></svg>');
+				}
+				.backslash {
+				  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100%" y2="100%" stroke="gray" /></svg>');
+				}
+				.slash, .backslash { text-align: left; }
+				.slash div, .backslash div { text-align: right; }
+				table {
+					border-collapse: collapse;
+					border: 0px solid gray;
+				}  
+				th, td {
+					border: 1px solid gray;
+					padding: 5px;
+					text-align: center;
+				}
+				</style>
+				<table style="box-sizing:border-box;border-collapse:collapse;border:0px solid gray;color:rgb(33, 37, 41);font-family:&quot;font-size:16px;font-style:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-transform:none;white-space:normal;widows:2;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:rgb(255, 255, 255);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial;">
+			    <tbody style="box-sizing:border-box;">
+			        <tr style="height:50px;box-sizing:border-box;font-size:14px;">
+			            <th rowspan="3" style="box-sizing:border-box;text-align:center;border:1px solid gray;padding:5px;width:200px;">거래처</th>
+			            <td style='width:70px;word-break: break-all;' th:if="${not #lists.isEmpty( productNmList )}" th:each="row : ${productNmList}"   th:colspan="${row.sameNmCnt}" th:text="${row.productNm}">산소</td>
+			            <td style='width:70px' th:each="seq :${#numbers.sequence(1,16-productNmList.size()-addedCnt)}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>-->
+			        </tr>
+			        <tr style="height:40px;box-sizing:border-box;font-size:13.5px;">
+			            <td style='width:70px' th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}"  th:text="${row.productCapa}">산소</td>
+			            <td style='width:70px' th:each="seq :${#numbers.sequence(1,16-productList.size())}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>
+			            <td style='width:50px'>산소</td>-->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+					    <td class='slash' style='width:70px' th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}" >실<div>공</div></td>
+			            <td style='width:70px' th:each="seq :${#numbers.sequence(1,16-productList.size())}"></td>
+			            <!-- <td style='width:50px'>산소</td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td>
+					    <td class='slash'>실<div>공</div></td> -->
+			        </tr>
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>전일재고</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalYesterStockCountList )}" th:each="row3 : ${ totalYesterStockCountList }" th:utext="${row3}"><div></div></td>
+					    <td style='width:70px' th:each="seq :${#numbers.sequence(1,16-totalYesterStockCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash' style="color:#FFFFFF;">0<div>0</div></td> -->
+			        </tr>
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;" th:if="${not #lists.isEmpty( reportList )}" th:each="row : ${ reportList}"  >
+			            <td style='width:200px' th:text="${row.CustomerNm}"></td>
+					    <td class='slash' th:if="${not #lists.isEmpty( row.countList )}" th:each="row1 : ${ row.countList}" th:utext="${row1}"><div></div></td>
+					    <td style='width:70px' th:each="seq :${#numbers.sequence(1,16-row.countList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'>6<div>21</div></td> -->
+			        </tr>
+			       
+			        <tr height="40" style="height:40px; box-sizing:border-box;height:20 pt;font-size:13.5px;" th:each="seq :${#numbers.sequence(1,26-reportList.size())}">
+			            <td style='width:150px;height:20 pt;'></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+			        </tr>
+			        
+			         
+			       <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>충   전</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalChargeCountList )}" th:each="row2 : ${ totalChargeCountList}" th:utext="${row2}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalChargeCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>-->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			           <td style='width:200px'>판   대</td>
+					   <td class='slash' th:if="${not #lists.isEmpty( totalCountList )}" th:each="row1 : ${ totalCountList}" th:utext="${row1}"><div></div></td>
+					   <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalCountList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'> <div> </div></td> -->
+			        </tr>
+			        <tr height="20" style="box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			           <td style='width:200px'>차량재고</td>
+					    <td class='slash' th:if="${not #lists.isEmpty( totalStockCountTodayList )}" th:each="row3 : ${ totalStockCountTodayList }" th:utext="${row3}"><div></div></td>
+					    <td style='width:50px' th:each="seq :${#numbers.sequence(1,16-totalStockCountTodayList.size())}"><div></div></td>
+					   <!--  <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td>
+					    <td class='slash'><div></div></td> -->
+			        </tr>
+			        <tr  style="height:40px; box-sizing:border-box;height:15.9pt;font-size:13.5px;">
+			            <td style='width:200px'>비  고</td>
+					    <td><div></div></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+					    <td></td>
+			        </tr>
+			    </tbody>
+			</table>
+			<p><br></p>
 <p><br></p>
 
 

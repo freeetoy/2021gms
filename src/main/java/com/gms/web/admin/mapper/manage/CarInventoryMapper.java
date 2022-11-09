@@ -24,9 +24,13 @@ public interface CarInventoryMapper {
 	
 	public int updateCarInventories(List<CarInventoryVO> param);
 	
+	public int addCarInventories(List<CarInventoryVO> param);
+	
 	public int updateCarInventoriesYesterDay(List<CarInventoryVO> param);
 	
 	public List<CarInventoryVO> selectDayCarInventoryList(CarInventoryVO param);
+	
+	public List<CarInventoryVO> selectCarInventoryDayList(WorkReportVO param);
 	
 	public int updateCarInventoryAfterInCar(CarInventoryVO param);
 	
