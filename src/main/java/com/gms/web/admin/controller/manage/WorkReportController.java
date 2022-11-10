@@ -294,19 +294,19 @@ public class WorkReportController {
 //		logger.debug("WorkReportController getWorkReportList User_id= "+ params.getUserId());		
 		
 		//List<WorkReportViewVO> workList = workService.getWorkReportList1(params);
-		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
-		
-		mav.addObject("workList", workList);	
-		mav.addObject("searchDt", params.getSearchDt());			 
-		
-		if(workList.size() > 0 ) {
-			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
-			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
-		}
-		
+//		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
+//		
+//		mav.addObject("workList", workList);	
+//		mav.addObject("searchDt", params.getSearchDt());			 
+//		
+//		if(workList.size() > 0 ) {
+//			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
+//			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
+//		}
 		
 		Map<String, Object> resultMap = workService.getWorkReportListAllEwha(params);		
 
+		mav.addObject("searchDt", params.getSearchDt());	
 		mav.addObject("productList", resultMap.get("productList"));	
 		
 		mav.addObject("productNmList", resultMap.get("productNmList"));	

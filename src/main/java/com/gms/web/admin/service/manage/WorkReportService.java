@@ -49,10 +49,6 @@ public interface WorkReportService {
 	
 	public int registerWorkReport0310(WorkReportVO param);
 	
-	public int registerWorkBottle(WorkBottleVO param);
-	
-	public int registerWorkBottleList(List<WorkBottleVO> param);
-	
 	public int registerWorkNoBottle(WorkBottleVO param);
 	
 	public int modifyWorkReportReceivedAmount(WorkReportVO param);

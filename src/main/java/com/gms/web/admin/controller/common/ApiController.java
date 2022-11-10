@@ -351,11 +351,13 @@ public class ApiController {
 		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massCome"))) {			//대량입고
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));	
-			result = apiService.registerWorkReportMassForSale(workReport);		
+//			result = apiService.registerWorkReportMassForSale(workReport);	//대한특수가스
+			result = apiService.registerWorkReportMassForChangeCd(workReport);		
 		}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.massOut"))) {			//대량출고
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
 			workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));	
-			result = apiService.registerWorkReportMassForSale(workReport);		
+//			result = apiService.registerWorkReportMassForSale(workReport);//대한특수가스
+			result = apiService.registerWorkReportMassForChangeCd(workReport);
 		}
 		
 		Long endTime = System.currentTimeMillis();

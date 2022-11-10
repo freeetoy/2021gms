@@ -37,6 +37,7 @@ import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.ReportProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ReportViewVO;
+import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleRegisterVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkBottleViewVO;
@@ -69,6 +70,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	@Autowired
 	private CarInventoryService inventoryService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public WorkReportVO getWorkReport(Integer workReportSeq) {
@@ -205,7 +209,6 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 	public Map<String,Object> getWorkReportListAllEwha(WorkReportVO param) {		
 		
 		Map<String, Object> resutlMap = new HashMap<String, Object>();
-		List<WorkReportViewVO> viewList = new ArrayList<WorkReportViewVO>();
 		List<ReportProductPriceSimpleVO> productList = new ArrayList<ReportProductPriceSimpleVO>();
 		List<ReportViewVO> resultList = new ArrayList<ReportViewVO>();
 		
@@ -308,7 +311,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 		
 		//logger.debug("WorkReportServiceImpl getWorkReportListAllEwha viewList.size= "+ viewList.size());
 		int chargeWorkSeq = 0;
-		for(int i=0;i<reportList.size() ; i++) {
+		for(int i=0; i < reportList.size() ; i++) {
 			boolean onlyInCar = false;
 			ReportViewVO reportView = new ReportViewVO();
 			reportView.setWorkReportSeq(reportList.get(i).getWorkReportSeq());
@@ -1508,8 +1511,9 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 				result = workMapper.updateWorkReportNoOrder(param);
 			}
 			
-			
-			result = doCarInventory(param, productList, workBottleList);
+			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
+				result = doCarInventory(param, productList, workBottleList);
+			}
 			//CarInventory  변경
 //			int iCnt = 1;
 //			List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
@@ -1595,19 +1599,6 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 	@Override
 	public List<WorkBottleRegisterVO> getWorkBottleListAndCountOfOrder(Integer orderId) {		
 		return workMapper.selectWorkBottleListAndCountOfOrder(orderId);	
-	}
-
-	
-	@Override
-	public int registerWorkBottle(WorkBottleVO param) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int registerWorkBottleList(List<WorkBottleVO> param) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -2528,6 +2519,9 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 				if(rightYn) afterWorkBottleList.add(workBottle);				
 			}
 			
+			//2022/11/09  Car_inventory 체크
+			result = doCarInventoryManual (param, afterWorkBottleList);
+
 			//이전 WorkBottle 과 비교
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -2676,12 +2670,10 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 						newOrderProductList.add(orderProduct);
 					}					
 				}
-						
-				
 			}			
-//			logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  addNewWorkBottle="  );
+			logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  afterWorkBottleList=" +afterWorkBottleList.size() );
 			result = addNewWorkBottle(getNewWorkBottle(afterWorkBottleList,1));			
-			
+			logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  111 afterWorkBottleList=" +afterWorkBottleList.size() );
 			//20210220 수정
 			//result = addNewOrderProduct(getNewWorkBottle(afterWorkBottleList,-1));		
 			if(newOrderProductList.size() >0) {
@@ -2922,7 +2914,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 		List<WorkBottleVO> addWorkBottleList = new ArrayList<WorkBottleVO>();
 		
 		for(int i = 0 ; i < params.size() ; i++) {
-//			logger.debug("************* bottleType =="+params.get(i).getBottleType());
+//			logger.debug("************* getNewYn =="+params.get(i).getNewYn()+ "= getNewProductYn="+params.get(i).getNewProductYn());
 			if(flag > 0) {
 				if(params.get(i).getNewYn().equals("Y")) {
 					addWorkBottleList.add(params.get(i));				
@@ -3318,10 +3310,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 				} //for(int j=0;j<bottles.size() ; j++) {
 				orderProductList.add(orderProduct);
 			}
-//			logger.debug("WorkReportServiceImpl registerWorkReportByBottle productList.size() =" + productList.size() );
-//			for(int k=0; k < productList.size() ; k++) { 
-//				logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productList.get(k).getProductid() =" + productList.get(k).getProductId() +"==getProductPriceSeq ="+productList.get(k).getProductPriceSeq());
-//			}
+
 			productList.sort(Comparator.naturalOrder());
 			
 			result = workMapper.insertWorkBottles(workBottleList);			
@@ -3346,64 +3335,68 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			result = modifyCustomerProductMass(param, orderProductList);
 			
 			//CarInventory  변경
-			int iCnt = 1;
-			List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
 			
 			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
-				for(int m=0; m < productList.size() ; m++) {
-					boolean isExist = false;
-					
-					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),productList.get(m).getProductId(), productList.get(m).getProductPriceSeq(),0,0);
-					carInventory.setCreateId(param.getCreateId());
-					carInventory.setUpdateId(param.getCreateId());
-					carInventory.setInventoryDt(DateUtils.getNextDate(-1, "yyyy/MM/dd"));
-//					logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.size()= "+productNmList.size());
-					for(int j=0; j < productNmList.size() ; j++) { 
-						if(carInventory.getProductId().equals(productNmList.get(j).getProductId() )
-								&& carInventory.getProductPriceSeq().equals(productNmList.get(j).getProductPriceSeq()) ) {
-							isExist = true;
-						}
-					}
-					if(!isExist) {
-						logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle add");
-						productNmList.add(carInventory);
-						isExist = false;
-					}
-					isExist = false;
-				}
-				
-				for(int k=0; k < workBottleList.size() ; k++) { 
-					//2022/11/05
-					for(int m=0; m < productNmList.size() ; m++) { 
-						if(workBottleList.get(k).getProductId().equals(productNmList.get(m).getProductId())
-								&& workBottleList.get(k).getProductPriceSeq().equals(productNmList.get(m).getProductPriceSeq())) {
-							if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
-									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
-									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
-								productNmList.get(m).setEmptyCnt(productNmList.get(m).getEmptyCnt()+1);
-								productNmList.get(m).setInventoryDt(DateUtils.getNextDate(-1,"yyyy/MM/dd"));
-							}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) ){
-								productNmList.get(m).setFullCnt(productNmList.get(m).getFullCnt()+1);
-								productNmList.get(m).setInventoryDt(DateUtils.getDate("yyyy/MM/dd"));
-							}
-						}
-					}
-				}
-//				logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.size()= "+productNmList.size());
-//				for(int k=0; k < productNmList.size() ; k++) { 
-//					logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.get(k).getProductid() =" + productNmList.get(k).getProductId() +"==icnt ="+productNmList.get(k).getFullCnt()+"==emptyicnt ="+productNmList.get(k).getEmptyCnt());
-//				}
-				
-				if(productNmList.size() > 0) {
-					if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
-							|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
-							|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
-						result = inventoryService.modifyCarInventoriesYesterDay(productNmList);	
-					}
-					else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) )
-						result = inventoryService.modifyCarInventoriesInCar(productNmList);
-				}
+				result = doCarInventory(param, productList, workBottleList);
 			}
+//			int iCnt = 1;
+//			List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
+			
+//			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
+//				for(int m=0; m < productList.size() ; m++) {
+//					boolean isExist = false;
+//					
+//					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),productList.get(m).getProductId(), productList.get(m).getProductPriceSeq(),0,0);
+//					carInventory.setCreateId(param.getCreateId());
+//					carInventory.setUpdateId(param.getCreateId());
+//					carInventory.setInventoryDt(DateUtils.getNextDate(-1, "yyyy/MM/dd"));
+////					logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.size()= "+productNmList.size());
+//					for(int j=0; j < productNmList.size() ; j++) { 
+//						if(carInventory.getProductId().equals(productNmList.get(j).getProductId() )
+//								&& carInventory.getProductPriceSeq().equals(productNmList.get(j).getProductPriceSeq()) ) {
+//							isExist = true;
+//						}
+//					}
+//					if(!isExist) {
+//						logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle add");
+//						productNmList.add(carInventory);
+//						isExist = false;
+//					}
+//					isExist = false;
+//				}
+//				
+//				for(int k=0; k < workBottleList.size() ; k++) { 
+//					//2022/11/05
+//					for(int m=0; m < productNmList.size() ; m++) { 
+//						if(workBottleList.get(k).getProductId().equals(productNmList.get(m).getProductId())
+//								&& workBottleList.get(k).getProductPriceSeq().equals(productNmList.get(m).getProductPriceSeq())) {
+//							if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
+//									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
+//									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
+//								productNmList.get(m).setEmptyCnt(productNmList.get(m).getEmptyCnt()+1);
+//								productNmList.get(m).setInventoryDt(DateUtils.getNextDate(-1,"yyyy/MM/dd"));
+//							}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) ){
+//								productNmList.get(m).setFullCnt(productNmList.get(m).getFullCnt()+1);
+//								productNmList.get(m).setInventoryDt(DateUtils.getDate("yyyy/MM/dd"));
+//							}
+//						}
+//					}
+//				}
+////				logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.size()= "+productNmList.size());
+////				for(int k=0; k < productNmList.size() ; k++) { 
+////					logger.debug("*********** WorkReportServiceImpl registerWorkReportMassByBottle productNmList.get(k).getProductid() =" + productNmList.get(k).getProductId() +"==icnt ="+productNmList.get(k).getFullCnt()+"==emptyicnt ="+productNmList.get(k).getEmptyCnt());
+////				}
+//				
+//				if(productNmList.size() > 0) {
+//					if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
+//							|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
+//							|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
+//						result = inventoryService.modifyCarInventoriesYesterDay(productNmList);	
+//					}
+//					else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) )
+//						result = inventoryService.modifyCarInventoriesInCar(productNmList);
+//				}
+//			}
 			
 		} catch (Exception e) {			
 			e.printStackTrace();
@@ -3731,13 +3724,15 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 							workBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));
 						}
 						
-						ReportProductPriceSimpleVO reprotProduct = new ReportProductPriceSimpleVO(workBottle.getProductId(),workBottle.getProductNm(),workBottle.getProductPriceSeq(),workBottle.getProductCapa());
-						productList.add(reprotProduct);
+						
 					}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) || param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {	
 						workBottle.setProductPrice(0);	
 					}
 //					logger.debug(" registerWorkReportMassNoOrder orderTotalAmount =" + orderTotalAmount);
 					workBottleList.add(workBottle);
+					
+					ReportProductPriceSimpleVO reprotProduct = new ReportProductPriceSimpleVO(workBottle.getProductId(),workBottle.getProductNm(),workBottle.getProductPriceSeq(),workBottle.getProductCapa());
+					productList.add(reprotProduct);
 				}
 				
 			} // bottleList for
@@ -3789,52 +3784,61 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			
 			result = bottleService.modifyBottlesOrder(params);		
 			result = bottleService.registerBottlesHistory(params);
+			logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle getCarCustomerId =" + param.getCarCustomerId());
+			logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle getBottleWorkCd =" + param.getBottleWorkCd());
+			logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle workBottleList size =" + workBottleList.size());
+			logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productList size =" + productList.size());
 			
-			int iCnt = 1;
-			List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
 			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
-				for(int m=0; m < productList.size() ; m++) { 
-					boolean isExist = false;
-					logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productList.get(k).getProductid() =" + productList.get(m).getProductId() +"==getProductPriceSeq ="+productList.get(m).getProductPriceSeq());
-					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),productList.get(m).getProductId(), productList.get(m).getProductPriceSeq(),0,0);
-					carInventory.setCreateId(param.getCreateId());
-					carInventory.setUpdateId(param.getCreateId());
-					carInventory.setInventoryDt(DateUtils.getNextDate(-1, "yyyy/MM/dd"));
-					logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productNmList.size()= "+productNmList.size());
-					for(int j1=0; j1 < productNmList.size() ; j1++) { 
-						if(carInventory.getProductId().equals(productNmList.get(j1).getProductId() )
-								&& carInventory.getProductPriceSeq().equals(productNmList.get(j1).getProductPriceSeq()) ) {
-							isExist = true;
-						}
-					}
-					if(!isExist) {
-						logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle add");
-						productNmList.add(carInventory);
-						isExist = false;
-					}
-					isExist = false;
-				}
-				
-				for(int k=0; k < workBottleList.size() ; k++) { 
-					//2022/11/05
-					for(int m=0; m < productNmList.size() ; m++) { 
-						if(workBottleList.get(k).getProductId().equals(productNmList.get(m).getProductId())
-								&& workBottleList.get(k).getProductPriceSeq().equals(productNmList.get(m).getProductPriceSeq())) {
-							if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
-									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) {
-								productNmList.get(m).setFullCnt(productNmList.get(m).getFullCnt()-1);
-								productNmList.get(m).setInventoryDt(DateUtils.getNextDate(-1,"yyyy/MM/dd"));
-							}
-						}
-					}
-				}
+				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
+						|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) 
+					result = doCarInventory(param, productList, workBottleList);
 			}
+//			int iCnt = 1;
+//			List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
+//			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
+//				for(int m=0; m < productList.size() ; m++) { 
+//					boolean isExist = false;
+//					logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productList.get(k).getProductid() =" + productList.get(m).getProductId() +"==getProductPriceSeq ="+productList.get(m).getProductPriceSeq());
+//					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),productList.get(m).getProductId(), productList.get(m).getProductPriceSeq(),0,0);
+//					carInventory.setCreateId(param.getCreateId());
+//					carInventory.setUpdateId(param.getCreateId());
+//					carInventory.setInventoryDt(DateUtils.getNextDate(-1, "yyyy/MM/dd"));
+//					logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle productNmList.size()= "+productNmList.size());
+//					for(int j1=0; j1 < productNmList.size() ; j1++) { 
+//						if(carInventory.getProductId().equals(productNmList.get(j1).getProductId() )
+//								&& carInventory.getProductPriceSeq().equals(productNmList.get(j1).getProductPriceSeq()) ) {
+//							isExist = true;
+//						}
+//					}
+//					if(!isExist) {
+//						logger.debug("*********** WorkReportServiceImpl registerWorkReportByBottle add");
+//						productNmList.add(carInventory);
+//						isExist = false;
+//					}
+//					isExist = false;
+//				}
+//				
+//				for(int k=0; k < workBottleList.size() ; k++) { 
+//					//2022/11/05
+//					for(int m=0; m < productNmList.size() ; m++) { 
+//						if(workBottleList.get(k).getProductId().equals(productNmList.get(m).getProductId())
+//								&& workBottleList.get(k).getProductPriceSeq().equals(productNmList.get(m).getProductPriceSeq())) {
+//							if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
+//									|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) {
+//								productNmList.get(m).setFullCnt(productNmList.get(m).getFullCnt()-1);
+//								productNmList.get(m).setInventoryDt(DateUtils.getNextDate(-1,"yyyy/MM/dd"));
+//							}
+//						}
+//					}
+//				}
+//			}
 //			for(int k=0; k < productNmList.size() ; k++) { 
 //				logger.debug("*********** WorkReportServiceImpl registerWorkReportNoOrder productNmList.get(k).getProductid() =" + productNmList.get(k).getProductId() +"==icnt ="+productNmList.get(k).getFullCnt()+"==dt ="+productNmList.get(k).getInventoryDt());
 //			}
-			if(productNmList.size() > 0)
-				result = inventoryService.modifyCarInventoriesYesterDay(productNmList);	
-			
+//			if(productNmList.size() > 0)
+//				result = inventoryService.modifyCarInventoriesYesterDay(productNmList);	
+			logger.debug("*********** WorkReportServiceImpl registerWorkReportNoOrder result ="+result);
 			if(result > 0) 			
 				return order;
 			else
@@ -3994,7 +3998,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 	@Transactional
 	private int registerWorkReportMassForOrder(WorkReportVO param, WorkBottleVO workB, OrderVO order, List<BottleVO> bottleList, List<String> bottles, List<String> productCounts) {
 		int result = 0;
-		
+//		logger.debug("WorkReportServiceImpl registerWorkReportMassForOrder 1 ");
 		try {
 			int workSeq = workB.getWorkSeq();
 			List<OrderProductVO> soldOrderProductList = new ArrayList<OrderProductVO>();	
@@ -4003,10 +4007,9 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			
 			List<OrderBottleVO> orderBottleList = new ArrayList<OrderBottleVO>();
 			List<WorkBottleVO> workBottleList = new ArrayList<WorkBottleVO>();	
-			
 			//Order_Product 비교
 			List<OrderProductVO> orderProductList = orderService.getOrderProductListNew(order.getOrderId());
-//			logger.debug("WorkReportServiceImpl registerWorkReportMassForOrder 1 ");
+
 			List<OrderBottleVO> orderBottleListNot = orderService.getOrderBottleListNotDelivery(order.getOrderId());
 			double addOrderTotalAmount = 0;
 			double orderTotalAmount = 0;
@@ -4046,7 +4049,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			map.put("customerId", param.getCustomerId());
 			
 			List<ProductTotalVO> productTotalList =  productService.getPriceList(map);
-			
+			List<ReportProductPriceSimpleVO> productList = new ArrayList<ReportProductPriceSimpleVO>();
 			for(int j=0; j < soldOrderProductList.size() ; j++) {
 				OrderProductVO orderProduct = soldOrderProductList.get(j);
 				orderProductCount = orderProduct.getOrderCount();				
@@ -4154,7 +4157,8 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 							orderTotalAmount += workBottle.getProductPrice();
 							workBottleList.add(workBottle); 
 							orderProductCount--;
-							
+							ReportProductPriceSimpleVO reprotProduct = new ReportProductPriceSimpleVO(workBottle.getProductId(),workBottle.getProductNm(),workBottle.getProductPriceSeq(),workBottle.getProductCapa());
+							productList.add(reprotProduct);
 						}
 					}
 				} //for(int k =0 ; k < orderProduct.getOrderCount() ; k++) {
@@ -4308,6 +4312,8 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 							}
 							
 							workBottleList.add(workBottle);
+							ReportProductPriceSimpleVO reprotProduct = new ReportProductPriceSimpleVO(workBottle.getProductId(),workBottle.getProductNm(),workBottle.getProductPriceSeq(),workBottle.getProductCapa());
+							productList.add(reprotProduct);
 						}
 					}	
 				}
@@ -4475,7 +4481,8 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 					}
 //					logger.debug("!!!!!!!!!!***workBottle.getProductPrice ="+workBottle.getProductPrice());
 					workBottleList.add(workBottle);
-					
+					ReportProductPriceSimpleVO reprotProduct = new ReportProductPriceSimpleVO(workBottle.getProductId(),workBottle.getProductNm(),workBottle.getProductPriceSeq(),workBottle.getProductCapa());
+					productList.add(reprotProduct);
 					addOrderTotalAmount += workBottle.getProductPrice();
 				}							
 			}
@@ -4488,7 +4495,7 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 				result = orderService.registerOrderBottles(orderBottleList);
 			if(workBottleList.size() > 0)
 				result = workMapper.insertWorkBottles(workBottleList);			
-						
+
 			//WorkReprot
 			param.setOrderId(order.getOrderId());
 			//param.setOrderAmount(orderResult.getOrderTotalAmount());
@@ -4508,7 +4515,6 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			
 			List<OrderProductVO> updateOrderProducts = new ArrayList<OrderProductVO>();
 			List<OrderProductVO> deleteOrderProducts = new ArrayList<OrderProductVO>();
-//			logger.debug("WorkReportServiceImpl registerWorkReportMassForOrder 6 ");
 			for(int j=0; j < allOrderProductList.size() ; j++) {
 				OrderProductVO paramOrderProduct = allOrderProductList.get(j);
 //				logger.debug("!!!!!!!!!!***paramOrderProduct.getOrderCount ="+paramOrderProduct.getOrderCount());
@@ -4607,7 +4613,11 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			
 			if(orderTotalAmount+addOrderTotalAmount >0)
 				result = registerCashFlow(param,order.getOrderTotalAmount());
-						
+			logger.debug("!!!!!!!!!!***pparam.getCarCustomerId() ="+param.getCarCustomerId());
+			logger.debug("!!!!!!!!!!***pparam.productList() ="+productList.size());
+			if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
+				result = doCarInventory(param, productList, workBottleList);
+			}
 		} catch (DataAccessException e) {		
 			e.printStackTrace();
 			logger.error(" registerWorkReportMassForOrder", e.toString());
@@ -5310,13 +5320,13 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 	
 	public int doCarInventory(WorkReportVO param, List<ReportProductPriceSimpleVO> productList, List<WorkBottleVO> workBottleList) {
 		int result = 0;
-		
+		logger.debug("*********** WorkReportServiceImpl doCarInventory start ");
 		productList.sort(Comparator.naturalOrder());
 		int iCnt = 1;
 		List<CarInventoryVO> productNmList = new ArrayList<CarInventoryVO>();
 		for(int m=0; m < productList.size() ; m++) { 
 			boolean isExist = false;
-			logger.debug("*********** WorkReportServiceImpl doCarInventory productList.get(k).getProductid() =" + productList.get(m).getProductId() +"==getProductPriceSeq ="+productList.get(m).getProductPriceSeq());
+
 			CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),productList.get(m).getProductId(), productList.get(m).getProductPriceSeq(),0,0);
 			carInventory.setCreateId(param.getCreateId());
 			carInventory.setUpdateId(param.getCreateId());
@@ -5329,7 +5339,6 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 				}
 			}
 			if(!isExist) {
-				logger.debug("*********** WorkReportServiceImpl doCarInventory add");
 				productNmList.add(carInventory);
 				isExist = false;
 			}
@@ -5366,10 +5375,84 @@ public List<WorkReportViewVO> getWorkReportListAll(WorkReportVO param) {
 			}
 			else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) )
 				result = inventoryService.modifyCarInventoriesInCar(productNmList);
-			else
+			else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
+					|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) {
 				result = inventoryService.modifyCarInventoriesYesterDay(productNmList);	
+			}
 		}
 			
 		return result;
 	}
+	
+	public int doCarInventoryManual(WorkReportVO param, List<WorkBottleVO> workBottleList) {
+		int result = 1;
+		logger.debug("*********** WorkReportServiceImpl doCarInventoryManual start");
+		UserVO user = userService.getUserDetails(param.getUserId());
+		
+		if(user != null) param.setCarCustomerId(user.getCarCustomerId());
+		
+		List<CarInventoryVO> inventoryList = new ArrayList<CarInventoryVO>();
+		
+		if(param.getCarCustomerId() != null && param.getCarCustomerId() > 0) {
+			
+			if(param.getSearchDt() == null || param.getSearchDt().length() == 0) {			
+				param.setSearchDt(DateUtils.getDate("yyyy/MM/dd"));
+			}		
+			
+			LocalDate localDate1 = LocalDate.parse(param.getSearchDt(),DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+			param.setSearchStatDt(localDate1.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+			
+			//기존 workBottlist 와 비교
+			List<WorkBottleVO> oldWorkBottleList = getWorkBottleList(param.getWorkReportSeq());
+			
+			
+			for(int i = 0 ; i < workBottleList.size() ; i++ ) {
+				boolean isExist = true;
+				int iCnt = 0 ;
+				if(workBottleList.get(i).getBottleWorkCd() !=null && workBottleList.get(i).getBottleWorkCd().length() > 0) {
+					
+					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),workBottleList.get(i).getProductId(), workBottleList.get(i).getProductPriceSeq(),0,0);
+					carInventory.setCreateId(param.getCreateId());
+					carInventory.setUpdateId(param.getCreateId());
+					iCnt = workBottleList.get(i).getProductCount() ;
+					for(int j = 0 ; j < oldWorkBottleList.size() ; j++ ) {
+						//productid/productpriceSeq/count 비교
+						// 없으면 추가
+						if(workBottleList.get(i).getProductId().equals(oldWorkBottleList.get(j).getProductId() ) 
+							&& workBottleList.get(i).getProductPriceSeq().equals(oldWorkBottleList.get(j).getProductPriceSeq() ) 
+							&& workBottleList.get(i).getBottleWorkCd().equals(oldWorkBottleList.get(j).getBottleWorkCd() ) ){
+							if(workBottleList.get(i).getProductCount() == oldWorkBottleList.get(i).getProductCount())
+								isExist = false;
+							else {
+								iCnt = workBottleList.get(i).getProductCount() - oldWorkBottleList.get(i).getProductCount();
+							}
+						}
+					}
+					if(isExist) {
+						if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
+								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) {
+							
+							carInventory.setFullCnt( iCnt * -1);
+							carInventory.setInventoryDt(param.getSearchStatDt());
+						}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
+								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
+								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
+							carInventory.setEmptyCnt(iCnt);
+							carInventory.setInventoryDt(param.getSearchStatDt());
+						}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) ){
+							carInventory.setFullCnt(iCnt * -1);
+							carInventory.setInventoryDt(param.getSearchDt());
+						}
+						inventoryList.add(carInventory);
+					}
+				}
+			}
+			if(inventoryList.size() > 0)
+				result = inventoryService.modifyCarInventoriesInCar(inventoryList);
+			else  result = 1;
+		}else result = 1;
+		
+		return result;
+	}
+	
 }
