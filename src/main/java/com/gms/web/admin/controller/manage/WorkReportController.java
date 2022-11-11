@@ -1,6 +1,8 @@
 package com.gms.web.admin.controller.manage;
 
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -237,41 +239,6 @@ public class WorkReportController {
 		
 	}
 	
-	@RequestMapping(value = "/gms/report/register0310.do", method = RequestMethod.POST)
-	public ModelAndView registerWorkReport0310(HttpServletRequest request
-			, HttpServletResponse response
-			, OrderBottlesVO params) {
-		
-		
-		RequestUtils.initUserPrgmInfo(request, params);
-		ModelAndView mav = new ModelAndView();	
-
-		//검색조건 셋팅
-		int result =0;
-		try {	
-			
-			WorkReportVO work = new WorkReportVO();
-			
-			work.setOrderId(params.getOrderId());
-			work.setBottlesIds(params.getBottleIds());
-			work.setBottleWorkCd(params.getBottleWorkCd());
-			work.setUserId(params.getCreateId());
-			work.setCreateId(params.getCreateId());
-			
-			result = workService.registerWorkReport0310(work);					
-		
-		} catch (Exception e) {
-			logger.error(" registerWorkReport0310 Exception==="+e.toString());
-			e.printStackTrace();
-		}
-		if(result > 0){
-			String alertMessage = "처리되었습니다.";
-			RequestUtils.responseWriteException(response, alertMessage,
-					"/gms/mypage/assign.do");
-		}
-		return null;
-		//return "redirect:/gms/mypage/assign.do";		
-	}
 		
 	@RequestMapping(value = "/gms/report/print.do")
 	public ModelAndView getWorkReportListPrint(
@@ -291,34 +258,24 @@ public class WorkReportController {
 			params.setSearchUserId(params.getCreateId());
 		}
 		
-//		logger.debug("WorkReportController getWorkReportList User_id= "+ params.getUserId());		
-		
-		//List<WorkReportViewVO> workList = workService.getWorkReportList1(params);
-//		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
-//		
-//		mav.addObject("workList", workList);	
-//		mav.addObject("searchDt", params.getSearchDt());			 
-//		
-//		if(workList.size() > 0 ) {
-//			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
-//			mav.addObject("receivedAmountToday", new Double(workList.get(0).getReceivedAmountToday()));
-//		}
+		LocalDate localDate = LocalDate.parse(params.getSearchDt(),DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 		
 		Map<String, Object> resultMap = workService.getWorkReportListAllEwha(params);		
 
 		mav.addObject("searchDt", params.getSearchDt());	
+		mav.addObject("disiplaySearchDt", localDate);	
+		mav.addObject("carNm", resultMap.get("carNm"));	
+		mav.addObject("searchUserId", params.getSearchUserId());			
 		mav.addObject("productList", resultMap.get("productList"));	
 		
 		mav.addObject("productNmList", resultMap.get("productNmList"));	
+		mav.addObject("addedCnt", resultMap.get("addedCnt"));
+		
 		mav.addObject("reportList", resultMap.get("reportList"));
 		mav.addObject("totalCountList", resultMap.get("totalCountList"));	
 		mav.addObject("totalChargeCountList", resultMap.get("totalChargeCountList"));	
 		mav.addObject("totalYesterStockCountList", resultMap.get("totalYesterStockCountList"));	
 		mav.addObject("totalStockCountTodayList", resultMap.get("totalStockCountTodayList"));	
-		mav.addObject("addedCnt", resultMap.get("addedCnt"));
-		
-		mav.addObject("searchDt", params.getSearchDt());	
-		mav.addObject("searchUserId", params.getSearchUserId());			
 		
 		mav.setViewName("gms/report/print");
 		
@@ -466,7 +423,7 @@ public class WorkReportController {
 	}
 	
 	@RequestMapping(value = "/gms/report/modify.do")
-	public ModelAndView getWorkReportModify(HttpServletRequest request
+	public ModelAndView modifyWorkReport(HttpServletRequest request
 			, HttpServletResponse response
 			, WorkReportVO param) {
 

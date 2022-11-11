@@ -19,6 +19,9 @@ public class CarInventoryVO extends AbstractVO implements Serializable {
 	/** Customer_ID        	*/
 	private Integer customerId;
 	
+	/** Customer_Nm        	*/
+	private String customerNm;
+	
 	/** Inventory_Dt        */
 	private String inventoryDt;
 	

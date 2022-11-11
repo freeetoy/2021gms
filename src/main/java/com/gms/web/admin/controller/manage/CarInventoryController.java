@@ -48,6 +48,8 @@ public class CarInventoryController {
 			LocalDate localDate = LocalDate.parse(param.getSearchDt(),DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 			param.setSearchStatDt(localDate.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
 			dayFlag = "N";
+		}else {
+			param.setSearchStatDt(param.getSearchDt());
 		}
 			
 //		WorkReportVO workReport = workService.getWorkReport(param.getWorkReportSeq());

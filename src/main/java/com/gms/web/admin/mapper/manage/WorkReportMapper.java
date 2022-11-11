@@ -65,6 +65,8 @@ public interface WorkReportMapper {
 	
 	public int updateWorkBottlePrice(WorkBottleVO param);
 	
+	public int updateWorkBottlePriceAll(List<WorkBottleVO> param);
+	
 	public List<WorkBottleVO> selectWorkBottleListOfProduct(WorkBottleVO params);	
 	
 	public int deleteWorkBottleProduct(WorkBottleVO params);

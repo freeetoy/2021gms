@@ -37,8 +37,6 @@ public interface OrderService {
 	
 	public List<OrderProductVO> getOrderProductListNew(Integer orderId);
 
-	public int getOrderCount(Map<String, Object> map);	
-
 	public int getOrderId();
 	
 	public int getNewOrderId(OrderVO param);

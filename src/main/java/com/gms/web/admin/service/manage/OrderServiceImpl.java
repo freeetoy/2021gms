@@ -204,12 +204,6 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Override
-	public int getOrderCount(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	@Transactional
 	public int registerOrder(HttpServletRequest request,OrderVO params) {
 		// 정보 등록
@@ -938,7 +932,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public int deleteOrder(OrderVO param) {
-		
+		logger.debug(" OderServiceImp deleteOrder start");
 		List<OrderProductVO> orderProductList = getOrderProductList(param.getOrderId());
 		
 		boolean alreadySales = false;
@@ -1272,6 +1266,8 @@ public class OrderServiceImpl implements OrderService {
 		
 			List<OrderProductVO> orderProductList = null;
 			List<WorkBottleVO> workBottleList = null;
+			
+			List<WorkBottleVO> updateWorkBottleList = new ArrayList<WorkBottleVO>();
 			if(order !=null) {
 				orderProductList = getOrderProductList(order.getOrderId());
 			
@@ -1308,12 +1304,17 @@ public class OrderServiceImpl implements OrderService {
 							else
 								workBottleList.get(i).setProductPrice(customerProduct.getProductBottlePrice());
 							
-							result = workService.modifyWorkBottlePrice(workBottleList.get(i));
+							//2022-11-10 업데이트
+							updateWorkBottleList.add(workBottleList.get(i));
+//							result = workService.modifyWorkBottlePrice(workBottleList.get(i));
 						}
 					}
 				}
 			}
 			
+			if(updateWorkBottleList.size() >0 ) {
+				result = workService.modifyWorkBottlePriceAll(updateWorkBottleList);
+			}
 			double orderTotalAmount = 0;
 			for(int i=0;i<orderProductList.size() ; i++) {
 				orderTotalAmount += orderProductList.get(i).getOrderAmount();

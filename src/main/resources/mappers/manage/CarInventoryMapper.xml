@@ -119,7 +119,7 @@
 	</update>
 	
 	<select id="selectCarInventoryList" resultType="com.gms.web.admin.domain.manage.CarInventoryVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
-		SELECT TC.Customer_ID,Inventory_Dt, TC.Product_ID  , TP.Product_Nm, TC.Product_Price_Seq ,TPP.Product_Capa , FULL_CNT,EMPTY_CNT
+		SELECT TC.Customer_ID,TS.Customer_Nm,Inventory_Dt, TC.Product_ID  , TP.Product_Nm, TC.Product_Price_Seq ,TPP.Product_Capa , FULL_CNT,EMPTY_CNT
 		FROM 
 			TB_Car_Inventory TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP
 		WHERE
@@ -135,7 +135,7 @@
 	</select>
 	
 	<select id="selectCarInventoryDayList" resultType="com.gms.web.admin.domain.manage.CarInventoryVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
-		SELECT TC.Customer_ID,Inventory_Dt, TC.Product_ID  , TP.Product_Nm, TC.Product_Price_Seq ,TPP.Product_Capa , FULL_CNT,EMPTY_CNT
+		SELECT TC.Customer_ID,TS.Customer_Nm,Inventory_Dt, TC.Product_ID  , TP.Product_Nm, TC.Product_Price_Seq ,TPP.Product_Capa , FULL_CNT,EMPTY_CNT
 		FROM 
 			TB_Car_Inventory TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP
 		WHERE

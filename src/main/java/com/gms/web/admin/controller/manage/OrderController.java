@@ -288,24 +288,23 @@ public class OrderController {
 	
 	@RequestMapping(value = "/gms/order/delete.do", method = RequestMethod.POST)
 	public ModelAndView deleteOrder(HttpServletRequest request
-			, HttpServletResponse response
-			, OrderVO params) {
+			, HttpServletResponse response, OrderVO param) {
 		
 		logger.debug(" deleteOrder");
 		
-		RequestUtils.initUserPrgmInfo(request, params);
+		RequestUtils.initUserPrgmInfo(request, param);
 		
 		//검색조건 셋팅		
-		int  result = orderService.deleteOrder(params);
+		int  result = orderService.deleteOrder(param);
 		
 		if(result > 0){
 			String alertMessage = "삭제하였습니다.";
 			RequestUtils.responseWriteException(response, alertMessage,
-					"/gms/order/list.do?currentPage="+params.getCurrentPage()+"&searchCustomerNm="+params.getSearchCustomerNm()+"&searchOrderDt="+params.getSearchOrderDt()+"&searchOrderProcessCd="+params.getSearchOrderProcessCd());
+					"/gms/order/list.do?currentPage="+param.getCurrentPage()+"&searchCustomerNm="+param.getSearchCustomerNm()+"&searchOrderDt="+param.getSearchOrderDt()+"&searchOrderProcessCd="+param.getSearchOrderProcessCd());
 		}else if(result < 0) {
 			String alertMessage = "이미 납품 진행된 주문입니다..";
 			RequestUtils.responseWriteException(response, alertMessage,
-					"/gms/order/list.do?currentPage="+params.getCurrentPage()+"&searchCustomerNm="+params.getSearchCustomerNm()+"&searchOrderDt="+params.getSearchOrderDt()+"&searchOrderProcessCd="+params.getSearchOrderProcessCd());
+					"/gms/order/list.do?currentPage="+param.getCurrentPage()+"&searchCustomerNm="+param.getSearchCustomerNm()+"&searchOrderDt="+param.getSearchOrderDt()+"&searchOrderProcessCd="+param.getSearchOrderProcessCd());
 		}
 		return null;		
 	}

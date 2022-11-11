@@ -682,21 +682,22 @@ public class BottleServiceImpl implements BottleService {
 	public int changeWorkCdsAndHistory(BottleVO param, List<BottleVO> params) {
 		int result = 0;
 		
-		if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.vacuum")) 
-				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.hole")) 
-				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.chargeDt")) 
-				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.charge")) ) {
-		
-			for(int i = 0 ; i < params.size() ; i++) {
-				//params.get(i).setChBottleId(params.get(i).getBottleId());
-				params.get(i).setChBottleBarCd(params.get(i).getBottleBarCd());
-				params.get(i).setCarCustomerId(param.getCustomerId().toString());
-				params.get(i).setBottleWorkCd(param.getBottleWorkCd());
-				result =  bottleMapper.updateBottleWorkCd(params.get(i));
-			}
-		}else {
+		//2022-11-11 업데이트
+//		if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.vacuum")) 
+//				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.hole")) 
+//				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.chargeDt")) 
+//				|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.charge")) ) {
+//		
+//			for(int i = 0 ; i < params.size() ; i++) {
+//				//params.get(i).setChBottleId(params.get(i).getBottleId());
+//				params.get(i).setChBottleBarCd(params.get(i).getBottleBarCd());
+//				params.get(i).setCarCustomerId(param.getCustomerId().toString());
+//				params.get(i).setBottleWorkCd(param.getBottleWorkCd());
+//				result =  bottleMapper.updateBottleWorkCd(params.get(i));
+//			}
+//		}else {
 			result =  bottleMapper.updateBottlesWorkCd(param);
-		}
+//		}
 		
 		if(result > 0 ) result = bottleMapper.insertBottleHistorys(params);
 		
