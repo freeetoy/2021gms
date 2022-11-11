@@ -448,7 +448,6 @@
 		AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')  =   #{searchDt}
 		</if>
 		AND TW.Customer_ID = TC.Customer_ID
-		AND worK_CD in ('0307','0308','0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317','0318','0320','0330')
 		ORDER BY Work_Report_Seq DESC 		
 	</select>
 	

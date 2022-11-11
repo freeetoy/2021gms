@@ -323,10 +323,12 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerMapper.deleteCustomerPrices(param);
 	}
 	
-	@Override
-	public int modifyCustomerBottleCount(CustomerVO param) {
-		return customerMapper.updateCustomerBottleCount(param);
-	}
+//	@Override
+//	public int modifyCustomerBottleCount(CustomerVO param) {
+//		logger.debug("modifyCustomerBottleCount");
+////		return customerMapper.updateCustomerBottleCount(param);
+//		return 1;
+//	}
 	
 	@Override
 	public int modifyCustomerBottleRentCount(CustomerVO param) {

@@ -245,7 +245,6 @@ public class WorkReportController {
 			HttpServletRequest request
 			, HttpServletResponse response
 			, WorkReportVO params) {
-
 		
 		RequestUtils.initUserPrgmInfo(request, params);		
 		
