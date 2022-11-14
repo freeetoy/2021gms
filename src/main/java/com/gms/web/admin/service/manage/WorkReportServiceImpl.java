@@ -303,8 +303,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 		List<String> totalYesterStockCountList = new ArrayList<String>();	// 전일재고
 		List<String> totalStockCountTodayList = new ArrayList<String>(); // 차량재고
 		
-		logger.debug("WorkReportServiceImpl getWorkReportListAllEwha productList.size= "+ productList.size());
-		logger.debug("WorkReportServiceImpl getWorkReportListAllEwha productNmList.size= "+ productNmList.size());
+//		logger.debug("WorkReportServiceImpl getWorkReportListAllEwha productList.size= "+ productList.size());
+//		logger.debug("WorkReportServiceImpl getWorkReportListAllEwha productNmList.size= "+ productNmList.size());
 		int chargeWorkSeq = 0;
 		for(int i=0; i < reportList.size() ; i++) {
 			boolean onlyInCar = false;
@@ -2180,7 +2180,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				// order 정보 등록 (Tb_Order, Tb_Order_Product)
 				orderTemp = new OrderVO();
 								
-				orderTemp.setMemberCompSeq(Integer.parseInt(PropertyFactory.getProperty("common.Member.Comp.Daehan")) );
+				orderTemp.setMemberCompSeq(Integer.parseInt(PropertyFactory.getProperty("common.Member.Comp.num")) );
 				orderTemp.setCustomerId(param.getCustomerId());
 				orderTemp.setOrderTypeCd(PropertyFactory.getProperty("common.code.order.type.order"));	//상품주문
 				orderTemp.setProductCount(param.getProductCount());
@@ -2433,7 +2433,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			List<OrderProductVO> orderProductList = orderService.getOrderProductList(param.getOrderId());
 			
-			List<WorkBottleVO> afterWorkBottleList = new ArrayList<WorkBottleVO>();			
+			List<WorkBottleVO> afterWorkBottleList = new ArrayList<WorkBottleVO>();
+						
 			//주문상품/주문상품용기 업데이트
 			List<OrderProductVO> newOrderProductList = new ArrayList<OrderProductVO>();
 			List<OrderBottleVO> newOrderBottletList = new ArrayList<OrderBottleVO>();			
@@ -2453,7 +2454,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setAgencyYn(customer.getAgencyYn());
 				workBottle.setManualYn("Y");
 				boolean rightYn = true;
-//				logger.debug("modifyWorkBottleManual workBottle.setSearchDt==" + workBottle.getSearchDt() ); 
+
 				if(request.getParameter("bottleWorkCd_"+i) !=null) {
 					String strBottleWorkCd = request.getParameter("bottleWorkCd_"+i);
 					
@@ -5382,8 +5383,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			for(int i = 0 ; i < workBottleList.size() ; i++ ) {
 				boolean isExist = true;
+				boolean checkInventory = false;
 				int iCnt = 0 ;
-				if(workBottleList.get(i).getBottleWorkCd() !=null && workBottleList.get(i).getBottleWorkCd().length() > 0) {
+//				logger.debug("*********** WorkReportServiceImpl doCarInventoryManual workBottleList.get(i).getBottleType()" +workBottleList.get(i).getBottleType());
+				if(workBottleList.get(i).getBottleWorkCd() !=null && workBottleList.get(i).getBottleWorkCd().length() > 0 && workBottleList.get(i).getBottleType() != null  ) {
 					
 					CarInventoryVO carInventory = new CarInventoryVO(param.getCarCustomerId(),workBottleList.get(i).getProductId(), workBottleList.get(i).getProductPriceSeq(),0,0);
 					carInventory.setCreateId(param.getCreateId());
@@ -5405,19 +5408,21 @@ public class WorkReportServiceImpl implements WorkReportService {
 					if(isExist) {
 						if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) 
 								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))  ) {
-							
 							carInventory.setFullCnt( iCnt * -1);
 							carInventory.setInventoryDt(param.getSearchStatDt());
+							checkInventory = true;
 						}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))  
 								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesBack")) 
 								|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyBack"))) {
 							carInventory.setEmptyCnt(iCnt);
 							carInventory.setInventoryDt(param.getSearchStatDt());
+							checkInventory = true;
 						}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) ){
 							carInventory.setFullCnt(iCnt * 1);
 							carInventory.setInventoryDt(param.getSearchDt());
+							checkInventory = true;
 						}
-						inventoryList.add(carInventory);
+						if(checkInventory) inventoryList.add(carInventory);
 					}
 				}
 			}

@@ -330,7 +330,7 @@ public class ExcelDownloadController {
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);
-			        cell.setCellValue(PropertyFactory.getProperty("common.Member.Comp.Daehan.businessNum"));
+			        cell.setCellValue(PropertyFactory.getProperty("common.Member.Comp.businessNum"));
 			        
 			        //GMP여부
 			        cell = row.createCell(k++);
@@ -937,7 +937,7 @@ public class ExcelDownloadController {
 		        
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(PropertyFactory.getProperty("common.Member.Comp.Daehan.businessNum"));
+		        cell.setCellValue(PropertyFactory.getProperty("common.Member.Comp.businessNum"));
 		        
 		        //GMP여부
 		        cell = row.createCell(k++);

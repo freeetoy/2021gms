@@ -373,7 +373,7 @@
 			WB.Product_ID = PP.Product_ID
 		AND
 			WB.Product_Price_Seq = PP.Product_Price_Seq
-		Order by Work_Report_Seq desc
+		Order by WB.Product_ID, WB.Product_Price_Seq
 	</select>
 	
 	<select id="selectWorkBottleListOfWorkBottleCd" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="com.gms.web.admin.domain.manage.WorkBottleVO">		

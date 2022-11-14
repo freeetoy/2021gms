@@ -229,7 +229,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                bottle.setBottleWorkId(bottle.getCreateId());
 	                
 	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
-	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
 	                //logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getBottleid "+ bottle.getBottleId());
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	
@@ -427,7 +427,7 @@ public class ExcelServiceImpl implements ExcelService {
     	                bottle.setBottleWorkId(bottle.getCreateId());
     	                
     	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
-    	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+    	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
     	              
     	                for(int k=0 ; k < bottlelist.size() ; k++) {
     	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
@@ -620,7 +620,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                bottle.setBottleWorkId(bottle.getCreateId());
 	                
 	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
-	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
 	              
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
@@ -751,7 +751,7 @@ public class ExcelServiceImpl implements ExcelService {
                 }
                 RequestUtils.initUserPrgmInfo(request, customer);
                 
-                customer.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+                customer.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
               
                 for(int k=0;k<customerList.size();k++) {
                 	if(customer.getBusinessRegId().equals(customerList.get(k).getBusinessRegId())) {
@@ -843,7 +843,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                }
 	                RequestUtils.initUserPrgmInfo(request, customer);
 	                
-	                customer.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+	                customer.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
 	              
 	                for(int k=0;k<customerList.size();k++) {
 	                	if(customer.getCustomerNm().equals(customerList.get(k).getCustomerNm())) {

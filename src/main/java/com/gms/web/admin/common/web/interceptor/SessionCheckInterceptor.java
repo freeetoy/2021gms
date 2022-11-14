@@ -52,7 +52,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
             userId 		= StringUtils.defaultString(sessionInfo.getUserId());
             systemRole 	= StringUtils.defaultString(sessionInfo.getUserAuthority());
             
-            session.setAttribute("compNm", PropertyFactory.getProperty("common.Member.Comp.Daehan.name"));		
+            session.setAttribute("compNm", PropertyFactory.getProperty("common.Member.Comp.name"));		
             
             // Session에 있는 ID가 존재하는지 확인하여 없으면, 강제 로그아웃 처리
             if ("".equals(userId) || "".equals(systemRole)) {
@@ -87,7 +87,7 @@ public class SessionCheckInterceptor implements HandlerInterceptor {
             		session.setAttribute("LoginUser", loginUser);		
     				
     				session.setAttribute("userId", loginUser.getUserId());		
-    				session.setAttribute("compNm", PropertyFactory.getProperty("common.Member.Comp.Daehan.name"));	
+    				session.setAttribute("compNm", PropertyFactory.getProperty("common.Member.Comp.name"));	
     				return true;
             	}else {
             		response.sendRedirect(request.getContextPath() + "/login");
