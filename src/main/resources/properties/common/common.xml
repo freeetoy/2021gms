@@ -147,7 +147,7 @@
 	<entry key="excel.bottle.charge.title">순번,바코드번호,용기번호,가스종류,품명,충전용량,충전압력,충전기한확인,진공배기,누출확인,용기타입,충전기한,작업자,삭제요청</entry>
 	<entry key="excel.order.title">순번,거래처명,상품명,용량,주문액,접수자,상태,요청일자,접수일</entry>
 	<entry key="excel.customer.title">거래처명,거래처주소,거래처사업자등록번호,거래처전화,대표자,업태,종목,이메일</entry>
-	<entry key="excel.ecount.title">일자,순번,거래처코드,거래처명,담당자,출하창고,거래유형,통화,환율,수금내역,비고,품목코드,품목명,규격,수량,단가,외화금액,공급가액,부가세,적요,단가(VAT포함),생산전표생성,Ecount</entry>
+	<entry key="excel.ecount.title">순번,거래일,구분,코드,거래처명,유형,적요,결제장부,거래금액,품목코드,품목명,규격,단위,수량,단가,공급가,부가세,합계금액,창고코드,창고명,비고,프로젝트,은행코드,카드코드</entry>
 	<entry key="excel.customer.bottle.title">용기,바코드/RFID,품명,가스용량,구분,타입,날짜</entry>
 	<entry key="excel.customer.sales.title">상품명,용량,구분,수량,단가,합계</entry>
 	

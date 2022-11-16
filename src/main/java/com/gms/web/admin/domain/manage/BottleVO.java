@@ -125,6 +125,9 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** Dummy_Yn	*/
 	private String dummyYn = "N";
 	
+	/** Bottle_Etc	*/
+	private String bottleEtc ;
+	
 	/** 복수 삭제용 Ids*/
 	private String bottleIds;
 	

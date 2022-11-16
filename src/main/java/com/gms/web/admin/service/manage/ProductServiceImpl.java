@@ -210,7 +210,6 @@ public class ProductServiceImpl implements ProductService {
 //		else if(productNm.indexOf("특수가스") >=0) productNm1.replace("특수가스","SP");
 //		else if(productNm.indexOf("특수가스") >=0) productNm1.replace("특수가스","SP");
 		
-		
 		int result = 0;
 		
 		if (param.getProductId() == null) {
@@ -222,8 +221,19 @@ public class ProductServiceImpl implements ProductService {
 			
 			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
 			String productNm1 = "";
-			if(gas != null && gas.getGasId() > 0)  productNm1 = gas.getGasCd();
+			if(param.getProductNm().matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
+				// 한글이 포함된 문자열
+				productNm1 = "KR";
+			} else {
+			// 한글이 포함되지 않은 문자열
+				productNm1 = param.getProductNm();
+				productNm1= param.getProductNm().replace("(", "").replace(")", "");
+			}
+//			logger.debug("**registerProduct. indexOfproductNm1  *****===*"+productNm1+"=="+productNm1.indexOf(gas.getGasCd()));
+			if(gas != null && gas.getGasId() > 0 && productNm1.indexOf(gas.getGasCd()) < 0 )  
+				productNm1 = productNm1+gas.getGasCd();
 			if(productNm.indexOf("고순도") >=0) productNm1 = "H"+productNm1;
+			
 			result = productMapper.insertProduct(param);
 			
 			if (result > 0) {

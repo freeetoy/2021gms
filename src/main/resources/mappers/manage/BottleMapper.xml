@@ -28,6 +28,7 @@
 		<result property="orderId"			column="Order_ID"			/>	
 		<result property="orderProductSeq"	column="Order_Product_Seq"	/>
 		<result property="bottleType"		column="Bottle_Type"		/>
+		<result property="bottlEtc"			column="Bottle_Etc"		/>
 		<result property="createId"			column="CREATE_ID"			/>
 		<result property="createDt"			column="CREATE_DT"			/>
 		<result property="updateId"			column="UPDATE_ID"			/>		
@@ -93,6 +94,7 @@
 		, Delete_YN
 		, Bottle_Work_DT
 		, Dummy_YN
+		, Bottle_Etc
 		, CREATE_ID
 		, CREATE_DT
 		, UPDATE_ID
@@ -124,6 +126,7 @@
 		, Bottle_Type
 		, Bottle_Work_DT
 		, Dummy_YN
+		, Bottle_Etc
 		, TB.CREATE_ID
 		, TB.CREATE_DT
 		, TB.UPDATE_ID
@@ -191,6 +194,7 @@
 			, 'N'
 			, NOW()
 			, #{dummyYn}
+			, #{bottleEtc}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -228,6 +232,7 @@
 			, 'N'
 			, NOW()
 			, #{item.dummyYn}
+			, #{item.bottleEtc}
 			, #{item.createId}			
 			, NOW()
 			, NULL
@@ -268,15 +273,15 @@
 	</insert>
 	-->
 	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
-		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt)
-		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt
+		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN,Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc,Create_ID, Create_Dt, Update_ID, Update_Dt
 		FROM TB_Bottle 
 		WHERE Bottle_BarCd =#{bottleBarCd}			
 	</insert>
 	
 	<insert id="insertBottleHistorys" parameterType="java.util.List">
-		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt)
-		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Create_ID, Create_Dt, Update_ID, Update_Dt
+		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt
 		FROM TB_Bottle 		
 		WHERE Bottle_BarCd in (
 		<foreach collection="list" item="item" separator=" , ">
@@ -303,10 +308,38 @@
 			, Own_Customer_ID	= #{ownCustomerId}
 			, Delete_YN			= 'N'
 			, Dummy_YN			= #{dummyYn}
+			, Bottle_Etc		= #{bottleEtc}
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
 			Bottle_BarCd = #{bottleBarCd}
+	</update>	
+	
+	<update id="updateBottleList" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=" , ">
+		UPDATE TB_Bottle
+		SET
+			Bottle_ID		= #{item.bottleId}
+			, Product_ID		= #{item.productId}
+			, Product_Price_Seq	= #{item.productPriceSeq}
+			, Gas_ID			= #{item.gasId}
+			, Gas_CD			= #{item.gasCd}			
+			, Bottle_Capa		= #{item.chargeCapa}
+			, Charge_Capa		= #{item.chargeCapa}
+			, Bottle_Create_Dt	= #{item.bottleCreateDt}
+			, Bottle_Charge_Dt	= #{item.bottleChargeDt}
+			, Bottle_Volumn		= #{item.bottleVolumn}
+			, Bottle_Charge_Prss= #{item.bottleChargePrss}
+			, Bottle_Own_YN		= #{item.bottleOwnYn}
+			, Own_Customer_ID	= #{item.ownCustomerId}
+			, Delete_YN			= 'N'
+			, Dummy_YN			= #{item.dummyYn}
+			, Bottle_Etc		= #{item.bottleEtc}
+			, UPDATE_ID 		= #{item.updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Bottle_BarCd = #{item.bottleBarCd}
+		</foreach>
 	</update>	
 
 	<update id="updateBottleWorkCd" parameterType="com.gms.web.admin.domain.manage.BottleVO">

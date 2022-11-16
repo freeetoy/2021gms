@@ -299,7 +299,7 @@
 		UPDATE TB_Work_Report
 		SET
 			Received_Amount		= Received_Amount + #{receivedAmount}
-			, Income_Way 			= #{incomeWay}		
+			, Income_Way 		= #{incomeWay}		
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE

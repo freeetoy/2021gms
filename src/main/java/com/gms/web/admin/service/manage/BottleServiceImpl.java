@@ -393,6 +393,16 @@ public class BottleServiceImpl implements BottleService {
 	}
 	
 	@Override
+	public int modifyBottleList(List<BottleVO> param) {
+				
+		int result = 0;
+		
+		result =  bottleMapper.updateBottleList(param);
+		
+		return result;
+	}
+	
+	@Override
 	@Transactional
 	public int changeBottleWorkCd(BottleVO param) {
 		// 정보 등록

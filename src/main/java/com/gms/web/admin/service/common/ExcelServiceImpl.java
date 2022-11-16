@@ -492,6 +492,8 @@ public class ExcelServiceImpl implements ExcelService {
 		
         List<BottleVO> list = new ArrayList<BottleVO>();
         
+        List<BottleVO> updateList = new ArrayList<BottleVO>();
+        
         List<BottleVO> bottlelist = bottleService.getBottleListAll();
         
         List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
@@ -524,8 +526,8 @@ public class ExcelServiceImpl implements ExcelService {
                     continue;
                 }                
                 
-              //용기번호	바코드번호	가스종류	충전용량	제조월	충전기한	용기체적	사업자등록번호	GMP여부(Y/N)	품명	충전압력	용기소유(자사-self,타사-other)
-                //0		1			2	3		4		5		6		7			8			9		10		11	
+              //용기번호	바코드번호	가스종류	충전용량	제조월	충전기한	용기체적	사업자등록번호	GMP여부(Y/N)	품명	충전압력	용기소유(자사-self,타사-other), 비고
+                //0		1			2	3		4		5		6		7			8			9		10		11					12
 
                 String colValue="";
                
@@ -600,6 +602,9 @@ public class ExcelServiceImpl implements ExcelService {
                 		if(colValue.equals("self")) bottle.setBottleOwnYn("Y");
                 		else bottle.setBottleOwnYn("N");
                 	}
+                	else if(j == 12)  { 
+                		bottle.setBottleEtc(colValue);
+                	}
                 }
                 
                 ProductTotalVO productTotal = null;
@@ -625,8 +630,9 @@ public class ExcelServiceImpl implements ExcelService {
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
 	                		isRegisteFlag = false;
-	                		result = bottleService.modifyBottle(bottle);
-	                		
+	                		//20221115 List 로 업데이트 처리
+//	                		result = bottleService.modifyBottle(bottle);		
+	                		updateList.add(bottle);
 	                		updateCount++;
 	                		logger.debug("ExcelSerive uploadBottleExcelFileGMS Count=="+ updateCount);
 	                	}	                		
@@ -639,10 +645,11 @@ public class ExcelServiceImpl implements ExcelService {
                 }else {
                 	sb.append(bottle.getBottleBarCd());
                 	sb.append(";");
-                	
                 }
             }
             logger.error("$$$$$$$$$$$$$$ ExcelService uploadBottleExcelFileGMS sb "+ sb.toString());
+            if(updateList.size() > 0 )
+            	result = bottleService.modifyBottleList(updateList);
             if(list.size() > 0)
             	result = bottleService.registerBottles(list);
             
@@ -747,7 +754,6 @@ public class ExcelServiceImpl implements ExcelService {
                 	else if(j == 5) customer.setCustomerBusiType(colValue);
                 	else if(j == 6) customer.setCustomerItem(colValue);
                 	else if(j == 7) customer.setCustomerEmail(colValue);
-                	
                 }
                 RequestUtils.initUserPrgmInfo(request, customer);
                 
