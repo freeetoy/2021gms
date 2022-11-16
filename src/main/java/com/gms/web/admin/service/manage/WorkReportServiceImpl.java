@@ -3675,7 +3675,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			}			
 			
 			if(orderProductList!=null) {
-				for(int i = 0 ; i < remainOrderProductList.size() ; i++) {
+				for(int i = 0 ; i < orderProductList.size() ; i++) {
 					if( i==0) addOrderProductSeq = orderProductList.get(i).getOrderProductSeq();
 					
 					if(addOrderProductSeq < orderProductList.get(i).getOrderProductSeq())
