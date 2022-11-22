@@ -1,7 +1,5 @@
 package com.gms.web.admin.controller.common;
 
-import java.util.Calendar;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.service.common.SchedulerService;
 import com.gms.web.admin.service.manage.OrderService;
@@ -36,7 +33,7 @@ public class SchedulerController {
 		//statOrderService.
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
-		int result = scheduleService.registerDailyStatistics();				
+//		int result = scheduleService.registerDailyStatistics();				
 		logger.info("******************* ScheduleController scheduleDaily End*************** ");		
 	}
 	
@@ -44,7 +41,8 @@ public class SchedulerController {
 	@Scheduled(cron="0 30 01 1 * *")
 	private void scheduleMonthly() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
-		int result = scheduleService.registerMonthlyStatistics();	
+		
+//		int result = scheduleService.registerMonthlyStatistics();	
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
@@ -53,7 +51,8 @@ public class SchedulerController {
 	@Scheduled(cron="0 50 23 * * *")
 	private void modifyOrderProcessCd0250() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
-		int result = orderService.modifyOrderProcessCd0250();	
+		
+//		int result = orderService.modifyOrderProcessCd0250();	
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
