@@ -71,6 +71,9 @@ public class ECountVO {
 	
 	private String bottleWorkCd;	
 	
+	/** Gas_ID */
+	private Integer gasId ;
+	
 	/** Gas_CD */
 	private String gasCd ;
 	
@@ -81,4 +84,10 @@ public class ECountVO {
 	
 	/**Charge_Volumn */
 	private int chargeVolumn = 0;
+	
+	/** Tax_Type    */
+	private String taxType;
+	
+	/** Pay_Type    */
+	private String payType;
 }

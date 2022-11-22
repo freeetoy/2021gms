@@ -212,9 +212,17 @@ $(function() {
                       <th class="card-footer">사업자등록번호</th>
                       <th><input type="text" class="form-control" id="businessRegId" name="businessRegId" th:value="${customer.businessRegId}"></th>
                     </tr>
+                     <tr>                                   
+                      <th class="card-footer">거래유형</th>
+                      <th><input type="text" class="form-control" id="saleType" name="saleType" th:value="${customer.saleType}"></th>
+                    </tr>
                     <tr>
                       <th class="card-footer">거래처 대표</th>
                       <th><input type="text" class="form-control" id="customerRepNm" name="customerRepNm" th:value="${customer.customerRepNm}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">상호명</th>
+                      <th><input type="text" class="form-control" id=""businessNm"" name="businessNm" th:value="${customer.businessNm}"> </th>   
                     </tr>
                     <tr>
                       <th class="card-footer">거래처 업태</th>
@@ -229,12 +237,55 @@ $(function() {
                       <th><input type="text" class="form-control" id="customerAddr" name="customerAddr" th:value="${customer.customerAddr}"> </th>   
                     </tr>
                     <tr>
+                      <th class="card-footer">거래처 상세주소</th>
+                      <th><input type="text" class="form-control" id="customerDtlAddr" name="customerDtlAddr" th:value="${customer.customerDtlAddr}"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">우편번호</th>
+                      <th><input type="text" class="form-control" id="customerPost" name="customerPost" th:value="${customer.customerPost}"> </th>   
+                    </tr>
+                    <tr>
                       <th class="card-footer">거래처 연락처</th>
                       <th><input type="text" class="form-control" id="customerPhone" name="customerPhone" th:value="${customer.customerPhone}"></th>
+                    </tr>
+                    <tr>
+                      <th class="card-footer">거래처 휴대폰</th>
+                      <th><input type="text" class="form-control" id="customerMobile" name="customerMobile" th:value="${customer.customerMobile}"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">거래처 이메일</th>
                       <th><input type="text" class="form-control" id="customerEmail" name="customerEmail" th:value="${customer.customerEmail}"></th>
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">거래처 팩스</th>
+                      <th><input type="text" class="form-control" id="customerFax" name="customerFax" th:value="${customer.customerFax}"></th>
+                    </tr>
+                     <tr>                                   
+                      <th class="card-footer">과세유형</th>
+                      <th>
+                        <input type="radio" name="taxType" id="taxType" value="1" th:if="${customer.taxType =='1'}" checked="">     
+		      			<input type="radio" name="taxType" id="taxType" value="1" th:unless="${customer.taxType =='1'}">과세 &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="taxType" id="taxType" value="2" th:if="${customer.taxType =='2'}" checked="">     
+		      			<input type="radio" name="taxType" id="taxType" value="2" th:unless="${customer.taxType =='2'}"> 면세  &nbsp;&nbsp;&nbsp;&nbsp;              
+                      	<input type="radio" name="taxType" id="taxType" value="3" th:if="${customer.taxType =='3'}" checked="">		
+                      	<input type="radio" name="taxType" id="taxType" value="3" th:unless="${customer.taxType =='3'}"> 영세	
+	      		
+		      		 </th>   
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">결제유형</th>
+                      <th>
+		      			<input type="radio" name="payType" id="payType" value="1" th:if="${customer.payType =='1'}"  checked=""> 
+		      			<input type="radio" name="payType" id="payType" value="1" th:unless="${customer.payType =='1'}" > 현금   &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="payType" id="payType" value="2" th:if="${customer.payType =='2'}"  checked="">
+		      			<input type="radio" name="payType" id="payType" value="2" th:unless="${customer.payType =='2'}"> 예금   &nbsp;&nbsp;&nbsp;&nbsp;
+                      	<input type="radio" name="payType" id="payType" value="3" th:if="${customer.payType =='3'}"  checked=""> 	 
+                      	<input type="radio" name="payType" id="payType" value="3" th:unless="${customer.payType =='3'}"> 카드	 &nbsp;&nbsp;&nbsp;&nbsp;	   
+                      	<input type="radio" name="payType" id="payType" value="4" th:if="${customer.payType =='4'}"  checked=""> 
+                      	<input type="radio" name="payType" id="payType" value="4" th:unless="${customer.payType =='4'}"> 외상   &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="payType" id="payType" value="5" th:if="${customer.payType =='5'}"  checked=""> 
+		      			<input type="radio" name="payType" id="payType" value="5" th:unless="${customer.payType =='5'}"> 어음   &nbsp;&nbsp;&nbsp;&nbsp;
+		      		 </th>   
                     </tr>
                     <tr>
                       <th class="card-footer">차량여부</th>

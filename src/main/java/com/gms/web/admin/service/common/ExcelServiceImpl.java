@@ -215,8 +215,11 @@ public class ExcelServiceImpl implements ExcelService {
                
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
+                	   
                 	if(productTemp.getProductNm().toLowerCase().equals(productNm.toLowerCase()) && productTemp.getProductCapa().toLowerCase().equals(productCapa.toLowerCase())) {
+                	
                 		productTotal = productTemp;
+                		break;
                 	}                	
                 }
                 
@@ -230,7 +233,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                
 	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
 	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
-	                //logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getBottleid "+ bottle.getBottleId());
+//	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getBottleid "+ bottle.getBottleId());
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
@@ -257,7 +260,8 @@ public class ExcelServiceImpl implements ExcelService {
                 	}
                 }
             }
-            logger.error("$$$$$$$$$$$$$$ ExcelService sb "+ sb.toString());
+            logger.debug("$$$$$$$$$$$$$$ ExcelService list.size "+ list.size());
+            logger.debug("$$$$$$$$$$$$$$ ExcelService sb "+ sb.toString());
             if(list.size() > 0)
             	result = bottleService.registerBottles(list);
             

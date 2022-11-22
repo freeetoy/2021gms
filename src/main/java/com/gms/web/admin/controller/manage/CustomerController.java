@@ -159,7 +159,8 @@ public class CustomerController {
 			if (customer == null) {
 				return "redirect:/gms/customer/list.do";
 			}
-			
+			logger.debug(" openCustomerUpdate customer==="+customer.getTaxType());
+			logger.debug(" openCustomerUpdate customer getSaleType==="+customer.getSaleType());
 			model.addAttribute("customer", customer);
 			
 			UserVO param = new UserVO();

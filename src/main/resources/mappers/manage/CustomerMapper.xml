@@ -67,6 +67,14 @@
 		, Bottle_Rent_Count
 		, Summary
 		, Taxinvoice_Type
+		, Sale_Type
+		, Business_Nm
+		, Customer_Dtl_Addr
+		, Customer_Post
+		, Customer_Mobile
+		, Customer_Fax
+		, Tax_Type
+		, Pay_Type
 		, CREATE_ID	
 		, CREATE_DT	
 		, UPDATE_ID	
@@ -94,6 +102,14 @@
 		, Bottle_Rent_Count
 		, Summary
 		, Taxinvoice_Type
+		, Sale_Type
+		, Business_Nm
+		, Customer_Dtl_Addr
+		, Customer_Post
+		, Customer_Mobile
+		, Customer_Fax
+		, Tax_Type
+		, Pay_Type
 		, A.CREATE_ID	
 		, A.CREATE_DT	
 		, A.UPDATE_ID	
@@ -161,6 +177,14 @@
 			, #{bottleRentCount}
 			, #{summary}
 			, #{taxinvoiceType}
+			, #{saleType}
+			, #{businessNm}
+			, #{customerDtlAddr}
+			, #{customerPost}
+			, #{customerMobile}
+			, #{customerFax}
+			, #{taxType}
+			, #{payType}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -193,7 +217,15 @@
 			, #{item.bottleRentCount}
 			, #{item.summary}
 			, #{item.taxinvoiceType}
-			, #{item.createId}			
+			, #{item.saleType}
+			, #{item.businessNm}
+			, #{item.customerDtlAddr}
+			, #{item.customerPost}
+			, #{item.customerMobile}
+			, #{item.customerFax}
+			, #{item.taxType}
+			, #{item.payType}
+			, #{item.item.createId}			
 			, NOW()
 			, NULL
 			, NOW()

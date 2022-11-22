@@ -82,6 +82,7 @@ public class ECountController {
 		    ECountVO prevEcount = null;
 		    String productNm = "";
 	        String productCapa = "";
+	        String productSpec = "";
 	        int orderCount = 0;
 	        double supplyPrice = 0;	
 	        double vat = 0;
@@ -93,6 +94,52 @@ public class ECountController {
 		    	int k=0;
 		        row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		      //  순번,거래일,구분,코드,거래처명,유형,적요,결제장부,거래금액,품목코드,품목명,규격,단위,수량,단가,공급가,부가세,합계금액,창고코드,창고명,비고,프로젝트,은행코드,카드코드
+		        
+		        supplyPrice = Math.round(vo.getSupplyPrice());
+		        vat = Math.round(vo.getVat());
+		        
+		        if(StringUtils.isTankProduct(vo.getProductId()) ) {
+		        	supplyPrice = Math.round(vo.getProductPrice()*vo.getChargeVolumn());
+		        	vat = Math.round(supplyPrice * 0.1);
+		        }
+		       
+		        if(vo.getAgencyYn().equals("Y")) {
+		        	for(int i= 0 ; i < eMList.size() ; i++) {
+		        		ECountVO mVo = eMList.get(i);
+		        		
+		        		if(mVo.getCustomerId().equals(vo.getCustomerId()) && mVo.getProductId().equals(vo.getProductId()) 
+		        				&& mVo.getProductPriceSeq().equals(vo.getProductPriceSeq()) ) {
+		        			orderCount = orderCount - mVo.getOrderCount();		        
+		        			supplyPrice = Math.round(orderCount * vo.getProductPrice());
+		        			vat = Math.round(supplyPrice * 0.1);
+		        		}
+		        	}
+		        }
+		        
+		      //품목명	
+		        productNm = vo.getProductNm();
+		        productCapa = vo.getProductCapa();	
+//		        productCapa = vo.getECountSpec();
+		        orderCount = vo.getOrderCount();
+		        //20211123 TB_Work_Bottle에 Charge_Volumn 컬럼 추가
+		        if(StringUtils.isTankProduct(vo.getProductId()) )
+		        	orderCount = vo.getChargeVolumn();
+		       
+		        if(vo.getGasId() > 0) productSpec = "B/T";
+		        
+		        if(vo.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) ) {
+		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
+		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";
+		        		productCapa = "병";
+		        	}
+		        	else {
+		        		productNm = vo.getProductNm();
+		        		productCapa = "L";
+		        		orderCount = Integer.parseInt(vo.getProductCapa())*vo.getOrderCount();
+		        	}
+		        }
+		        if(productCapa.toLowerCase().indexOf("kg") < 0) productCapa +="L";
+		        
 		        //순번			        
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
@@ -121,7 +168,7 @@ public class ECountController {
 		        //유형,
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getSalesNm());
+		        cell.setCellValue(vo.getTaxType());
 		        
 		        //적요
 		        cell = row.createCell(k++);
@@ -131,12 +178,12 @@ public class ECountController {
 		        //결제장부
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getDealType());
+		        cell.setCellValue(vo.getPayType());
 		        
 		        //거래금액	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getCurrency());
+		        cell.setCellValue(supplyPrice+vat);
 		        
 		        //품목코드	
 		        cell = row.createCell(k++);
@@ -146,47 +193,7 @@ public class ECountController {
 		        	else cell.setCellValue(vo.getECountCdS());
 		        }else
 		        	cell.setCellValue(vo.getECountCd());
-		       
-		        //품목명	
-		        productNm = vo.getProductNm();
-		        //productCapa = vo.getProductCapa();	
-		        productCapa = vo.getECountSpec();
-		        orderCount = vo.getOrderCount();
-		        //20211123 TB_Work_Bottle에 Charge_Volumn 컬럼 추가
-		        if(StringUtils.isTankProduct(vo.getProductId()) )
-		        	orderCount = vo.getChargeVolumn();
-		  
-		        supplyPrice = Math.round(vo.getSupplyPrice());
-		        vat = Math.round(vo.getVat());
 		        
-		        if(StringUtils.isTankProduct(vo.getProductId()) ) {
-		        	supplyPrice = Math.round(vo.getProductPrice()*vo.getChargeVolumn());
-		        	vat = Math.round(supplyPrice * 0.1);
-		        }
-		       
-		        if(vo.getAgencyYn().equals("Y")) {
-		        	for(int i= 0 ; i < eMList.size() ; i++) {
-		        		ECountVO mVo = eMList.get(i);
-		        		
-		        		if(mVo.getCustomerId().equals(vo.getCustomerId()) && mVo.getProductId().equals(vo.getProductId()) 
-		        				&& mVo.getProductPriceSeq().equals(vo.getProductPriceSeq()) ) {
-		        			orderCount = orderCount - mVo.getOrderCount();		        
-		        			supplyPrice = Math.round(orderCount * vo.getProductPrice());
-		        			vat = Math.round(supplyPrice * 0.1);
-		        		}
-		        	}
-		        }
-		        if(vo.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId"))) ) {
-		        	if(vo.getProductCapa().indexOf("_") >= 0 ) {		        		
-		        		productNm = vo.getProductNm()+"("+ vo.getProductCapa().substring(2)+"L)";
-		        		productCapa = "병";
-		        	}
-		        	else {
-		        		productNm = vo.getProductNm();
-		        		productCapa = "L";
-		        		orderCount = Integer.parseInt(vo.getProductCapa())*vo.getOrderCount();
-		        	}
-		        }
 		        //품목명
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
@@ -204,7 +211,7 @@ public class ECountController {
 		        //단위	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(productCapa);
+		        cell.setCellValue(productSpec);
 		        //cell.setCellValue(vo.getProductCapa());
 		   
 		        //수량	
@@ -239,7 +246,7 @@ public class ECountController {
 		        //합계금액
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(supplyPrice);
+		        cell.setCellValue(supplyPrice+vat);
 		        
 		        //창고코드	
 		        cell = row.createCell(k++);
@@ -473,8 +480,8 @@ public class ECountController {
 	 				}
 	 			}
 		    }
-		    String fileName = "Ecount_"+curDate+".xls";
-		    if(workReport.getSearchUserId()!=null && workReport.getSearchUserId().length() > 0) fileName = "Ecount_"+workReport.getSearchUserId()+"_"+curDate+".xls";
+		    String fileName = "ERP_"+curDate+".xls";
+		    if(workReport.getSearchUserId()!=null && workReport.getSearchUserId().length() > 0) fileName = "ERP_"+workReport.getSearchUserId()+"_"+curDate+".xls";
 		    // 컨텐츠 타입과 파일명 지정
 		    response.setContentType("ms-vnd/excel");
 		    response.setHeader("Content-Disposition", "attachment;filename="+fileName);	

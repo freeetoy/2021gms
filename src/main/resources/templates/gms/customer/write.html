@@ -151,19 +151,27 @@ $(document).ready(function(){
                       <th class="card-footer">거래처명</th>
                       <th><input type="text" class="form-control" id="customerNm" name="customerNm" placeholder="거래처명"></th>
                     </tr>
-                     <tr>                                   
+                    <tr>                                   
                       <th class="card-footer">사업자등록번호</th>
                       <th><input type="text" class="form-control" id="businessRegId" name="businessRegId" placeholder="사업자등록번호"></th>
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">거래유형</th>
+                      <th><input type="text" class="form-control" id="saleType" name="saleType" placeholder="거래유형"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">거래처 대표</th>
                       <th><input type="text" class="form-control" id="customerRepNm" name="customerRepNm" placeholder="거래처대표"> </th>   
                     </tr>
                     <tr>
+                      <th class="card-footer">상호명</th>
+                      <th><input type="text" class="form-control" id=""businessNm"" name="businessNm" placeholder="상호명"> </th>   
+                    </tr>
+                    <tr>
                       <th class="card-footer">거래처 업태</th>
                       <th><input type="text" class="form-control" id="customerBusiType" name="customerBusiType" placeholder="거래처 업태"></th>
                     </tr>
-                     <tr>                                   
+                    <tr>                                   
                       <th class="card-footer">거래처 종목</th>
                       <th><input type="text" class="form-control" id="customerItem" name="customerItem" placeholder="거래처 종목"></th>
                     </tr>
@@ -172,19 +180,53 @@ $(document).ready(function(){
                       <th><input type="text" class="form-control" id="customerAddr" name="customerAddr" placeholder="거래처 주소"> </th>   
                     </tr>
                     <tr>
+                      <th class="card-footer">거래처 상세주소</th>
+                      <th><input type="text" class="form-control" id="customerDtlAddr" name="customerDtlAddr" placeholder="거래처 상세주소"> </th>   
+                    </tr>
+                    <tr>
+                      <th class="card-footer">우편번호</th>
+                      <th><input type="text" class="form-control" id="customerPost" name="customerPost" placeholder="우편번호"> </th>   
+                    </tr>
+                    <tr>
                       <th class="card-footer">거래처 연락처</th>
                       <th><input type="text" class="form-control" id="customerPhone" name="customerPhone" placeholder="거래처 연락처"></th>
                     </tr>
-                     <tr>                                   
+                    <tr>
+                      <th class="card-footer">거래처 휴대폰</th>
+                      <th><input type="text" class="form-control" id="customerMobile" name="customerMobile" placeholder="거래처 휴대폰"></th>
+                    </tr>
+                    <tr>                                   
                       <th class="card-footer">거래처 이메일</th>
                       <th><input type="text" class="form-control" id="customerEmail" name="customerEmail" placeholder="거래처 이메일"></th>
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">거래처 팩스</th>
+                      <th><input type="text" class="form-control" id="customerFax" name="customerFax" placeholder="거래처 팩스"></th>
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">과세유형</th>
+                      <th>
+		      			<input type="radio" name="taxType" id="taxType" value="1" checked> 과세   &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="taxType" id="taxType" value="2" > 명세   &nbsp;&nbsp;&nbsp;&nbsp;
+                      	<input type="radio" name="taxType" id="taxType" value="3" > 영세	 &nbsp;&nbsp;&nbsp;&nbsp;	      		
+		      		 </th>   
+                    </tr>
+                    <tr>                                   
+                      <th class="card-footer">결제유형</th>
+                      <th>
+		      			<input type="radio" name="payType" id="payType" value="1" checked> 현금   &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="payType" id="payType" value="2" > 예금   &nbsp;&nbsp;&nbsp;&nbsp;
+                      	<input type="radio" name="payType" id="payType" value="3" > 카드	 &nbsp;&nbsp;&nbsp;&nbsp;	   
+                      	<input type="radio" name="payType" id="payType" value="4" > 외상   &nbsp;&nbsp;&nbsp;&nbsp;
+		      			<input type="radio" name="payType" id="payType" value="5" > 어음   &nbsp;&nbsp;&nbsp;&nbsp;
+		      		 </th>   
                     </tr>
                     <tr>
                       <th class="card-footer">차량여부</th>
                       <th>
 		      			<input type="radio" name="carYn" id="carYn" value="Y" > 차량   &nbsp;&nbsp;&nbsp;&nbsp;
 		      			<input type="radio" name="carYn" id="carYn" value="G" > 가스   &nbsp;&nbsp;&nbsp;&nbsp;
-                      	<input type="radio" name="carYn" id="carYn" value="N" checked=""> 고객		      		
+                      	<input type="radio" name="carYn" id="carYn" value="N" checked> 고객		      		
 		      		 </th>   
                     </tr>
                     <tr>

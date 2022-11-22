@@ -79,4 +79,30 @@ public class CustomerVO extends AbstractSearchVO implements Serializable {
 
 	/**Taxinvoice_Type */
 	private String taxinvoiceType;
+	
+	//20221122 Ewha 컬럼 추가
+	/**Sale_Type */
+	private String saleType;
+	
+	/** Business_Nm   */
+	private String businessNm;
+	
+	/** Customer_Dtl_Addr     */
+	private String customerDtlAddr;
+	
+	/** Customer_Post     */
+	private String customerPost;
+	
+	/** Customer_Mobile    */
+	private String customerMobile;
+	
+	/** Customer_Fax    */
+	private String customerFax;
+	
+	/** Tax_Type    */
+	private String taxType;
+	
+	/** Pay_Type    */
+	private String payType;
+	
 }
