@@ -343,6 +343,10 @@ $(document).ready(function(){
 					
 					cols += '	<select class="form-control" id="bottleWorkCd_' + counter +  '" name="bottleWorkCd_' + counter + '" style="width:120px" readonly>'; 
 					//cols += '	<option value="' + data[i].bottleWorkCd +'" selected>' + data[i].bottleWorkCd + '</option>';
+					if(data[i].bottleWorkCd =='0303')
+						cols += '	<option value="0303" selected>누출확인</option>';	
+					if(data[i].bottleWorkCd =='0304')
+						cols += '	<option value="0304 selected>충전기한확인</option>';
 					if(data[i].bottleWorkCd =='0308')
 						cols += '	<option value="0308" selected>판매</option>';					
 					if(data[i].bottleWorkCd =='0309')					
