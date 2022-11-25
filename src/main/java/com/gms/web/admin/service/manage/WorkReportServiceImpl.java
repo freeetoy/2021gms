@@ -3651,10 +3651,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 					if(addOrderProductSeq < orderProductList.get(i).getOrderProductSeq())
 						addOrderProductSeq = orderProductList.get(i).getOrderProductSeq();
+					
+					logger.debug(" registerWorkReportMassForOrder addOrderProductSeq11 ="+addOrderProductSeq);
 				}
 				addOrderProductSeq++;
 			}
-			addOrderProductSeq = orderProductList.size()+1;
+//			logger.debug(" registerWorkReportMassForOrder addOrderProductSeq ="+addOrderProductSeq);
+//			addOrderProductSeq = orderProductList.size()+1;
 			for(int i = 0 ; i < remainOrderProductList.size() ; i++) {
 				boolean regiFlag = true;
 				OrderProductVO remainOrderProduct = remainOrderProductList.get(i);

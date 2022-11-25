@@ -730,7 +730,7 @@
 		AND A.Product_ID = B.Product_ID
 		AND A.Product_ID = C.Product_ID
 		AND A.Product_Price_Seq = C.Product_Price_Seq								
-		ORDER BY A.Create_Dt DESC 
+		ORDER BY A.Order_Product_Seq DESC 
 	</select>
 	
 	<select id="selectOrderProductSimpleList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
