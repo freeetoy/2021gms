@@ -72,12 +72,14 @@ public class ExcelServiceImpl implements ExcelService {
 	@Autowired
 	private OrderService orderService;
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	@Transactional
 	public Map<String,Object> uploadBottleExcelFile(MultipartHttpServletRequest request,
 			MultipartFile excelFile) {
 		
         List<BottleVO> list = new ArrayList<BottleVO>();
+        List<BottleVO> updateList = new ArrayList<BottleVO>();
         
         List<BottleVO> bottlelist = bottleService.getBottleListAll();
         
@@ -86,7 +88,7 @@ public class ExcelServiceImpl implements ExcelService {
         List<ProductTotalVO> productList = productService.getProductTotalDetailList();
         
         int result = 0;
-        int COLUMN_COUNT  = 12;
+        int COLUMN_COUNT  = 13;
         int updateCount = 0;
         int insertCount = 0;
         Map<String, Object> map = new HashMap<String, Object>();	
@@ -95,7 +97,7 @@ public class ExcelServiceImpl implements ExcelService {
         	
     		FileInputStream excelFIS = (FileInputStream)(excelFile.getInputStream());    		
     		
-    		logger.debug("$$$$$$$$$$$$$$ ExcelService XSSFSheet start ");
+    		logger.debug("$$$$$$$$$$$$$$ ExcelService uploadBottleExcelFile XSSFSheet start ");
             OPCPackage opcPackage = OPCPackage.open(excelFile.getInputStream());
             XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
             
@@ -129,44 +131,42 @@ public class ExcelServiceImpl implements ExcelService {
             	if(row.getCell(0) != null && row.getCell(0).toString() !=null && row.getCell(0).toString().length() > 0) {
 	                for(int j=0; j< COLUMN_COUNT; j++) {
 	                	XSSFCell cell = row.getCell(j);
-	                	
-	                	switch (cell.getCellType()) {
-		                    case Cell.CELL_TYPE_STRING:
-		                        colValue = cell.getRichStringCellValue().getString();
-		                        
-		                        break;
-		                    case Cell.CELL_TYPE_NUMERIC:
-		                        if (DateUtil.isCellDateFormatted(cell)) {
-		                            //colValue = cell.getDateCellValue().toString();
-		                            Date date = cell.getDateCellValue();
-		                            colValue = new SimpleDateFormat("yyyy-MM-dd").format(date);
-		                            
-		                            if(j==6) bottle.setBottleChargeDt(cell.getDateCellValue());
-		                            else if(j==8) bottle.setBottleCreateDt(cell.getDateCellValue());
-		                        } else {
-		                            Long roundVal = Math.round(cell.getNumericCellValue());
-		                            Double doubleVal = cell.getNumericCellValue();
-		                            if (doubleVal.equals(roundVal.doubleValue())) {
-		                                colValue = String.valueOf(roundVal);
-		                            } else {
-		                                colValue = String.valueOf(doubleVal);
-		                            }
-		                        }
-		                        break;
-		                    case Cell.CELL_TYPE_BOOLEAN:
-		                        colValue = String.valueOf(cell.getBooleanCellValue());
-		                        break;
-		                    case Cell.CELL_TYPE_FORMULA:
-		                        colValue = cell.getCellFormula();
-		                        break;
-		         
-		                    default:
-		                        colValue = "";
-	                    }
-	                	
-	                	//if(i==0 && colValue.equals("end")) break;
-	//                	logger.debug("ExcelSerive uploadExcelFile j =="+j+"=="+ colValue);
-	                	
+	                	if(cell != null) {
+		                	switch (cell.getCellType()) {
+			                    case Cell.CELL_TYPE_STRING:
+			                        colValue = cell.getRichStringCellValue().getString();
+			                        
+			                        break;
+			                    case Cell.CELL_TYPE_NUMERIC:
+			                        if (DateUtil.isCellDateFormatted(cell)) {
+			                            //colValue = cell.getDateCellValue().toString();
+			                            Date date = cell.getDateCellValue();
+			                            colValue = new SimpleDateFormat("yyyy-MM-dd").format(date);
+			                            
+			                            if(j==6) bottle.setBottleChargeDt(cell.getDateCellValue());
+			                            else if(j==8) bottle.setBottleCreateDt(cell.getDateCellValue());
+			                        } else {
+			                            Long roundVal = Math.round(cell.getNumericCellValue());
+			                            Double doubleVal = cell.getNumericCellValue();
+			                            if (doubleVal.equals(roundVal.doubleValue())) {
+			                                colValue = String.valueOf(roundVal);
+			                            } else {
+			                                colValue = String.valueOf(doubleVal);
+			                            }
+			                        }
+			                        break;
+			                    case Cell.CELL_TYPE_BOOLEAN:
+			                        colValue = String.valueOf(cell.getBooleanCellValue());
+			                        break;
+			                    case Cell.CELL_TYPE_FORMULA:
+			                        colValue = cell.getCellFormula();
+			                        break;
+			         
+			                    default:
+			                        colValue = "";
+		                    }
+	                	}
+               	
 	                	//용기	바코드/RFID	가스	품명	용기체적	가스용량	충전용량	충전기한	충전압력	제조일	거래처	작업	소유	
 	                    //0		1			2	3	4		5		6		7		8		9		10		11	12
 	
@@ -203,7 +203,9 @@ public class ExcelServiceImpl implements ExcelService {
 	                		else
 	                			bottle.setBottleOwnYn("N");
 	                	}
-	                	
+	                	else if(j == 12)  { 
+	                		bottle.setBottleEtc(colValue);
+	                	}
 	                	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
 	                }
             	}
@@ -235,10 +237,14 @@ public class ExcelServiceImpl implements ExcelService {
 	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
 //	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getBottleid "+ bottle.getBottleId());
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
-	                	
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
 	                		isRegisteFlag = false;
-	                		result = bottleService.modifyBottle(bottle);
+	                		updateList.add(bottle);
+	                		if(updateList.size() == 500) {
+	                			result = bottleService.modifyBottleList(updateList);
+	                			updateList.clear();
+	                		}
+//	                		result = bottleService.modifyBottle(bottle);
 	                		updateCount++;
 	                	}	                		
 	                }
@@ -250,7 +256,6 @@ public class ExcelServiceImpl implements ExcelService {
 	                	if(!isBeen) {
 	                		list.add(bottle);	                	
 	                		insertCount++;
-	                		
 	                	}
 	                }
                 }else {
@@ -260,10 +265,12 @@ public class ExcelServiceImpl implements ExcelService {
                 	}
                 }
             }
-            logger.debug("$$$$$$$$$$$$$$ ExcelService list.size "+ list.size());
+//            logger.debug("$$$$$$$$$$$$$$ ExcelService updateList.size "+ updateList.size());
             logger.debug("$$$$$$$$$$$$$$ ExcelService sb "+ sb.toString());
             if(list.size() > 0)
             	result = bottleService.registerBottles(list);
+            if(updateList.size() > 0)
+            	result = bottleService.modifyBottleList(updateList);
             
             map.put("insertCount", insertCount);
             map.put("updateCount", updateCount);
@@ -271,7 +278,6 @@ public class ExcelServiceImpl implements ExcelService {
             map.put("result", result);
             
             workbook.close();
-    		
     
             logger.info("$$$$$$$$$$$$$$ ExcelService result "+ result+"==updateCount ="+updateCount+" insertCount=="+insertCount);
             
@@ -282,17 +288,11 @@ public class ExcelServiceImpl implements ExcelService {
         		
         		FileInputStream excelFIS = (FileInputStream)(excelFile.getInputStream());
         		
-        		//HSSFWorkbook excelWB = new HSSFWorkbook(excelFIS);
-        		
         		XSSFWorkbook workbook = new XSSFWorkbook(excelFIS);
 
                 // Get first/desired sheet from the workbook
                 XSSFSheet sheet =  workbook.getSheetAt(0);
         		
-                // 첫번째 시트 불러오기
-                //XSSFSheet sheet = workbook.getSheetAt(0);
-                //HSSFSheet sheet = excelWB.getSheetAt(0);
-                
                 boolean isRegisteFlag = false;
                 StringBuffer sb = new StringBuffer();
                 
@@ -397,7 +397,9 @@ public class ExcelServiceImpl implements ExcelService {
     	                		else
     	                			bottle.setBottleOwnYn("N");
     	                	}
-    	                	
+    	                	else if(j == 12)  { 
+    	                		bottle.setBottleEtc(colValue);
+    	                	}
     	                	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
     	                	
                     	}
@@ -414,13 +416,6 @@ public class ExcelServiceImpl implements ExcelService {
                     		productTotal = productTemp;
                     	}                	
                     }
-                    /*
-                    ProductTotalVO productTotal = new ProductTotalVO();
-                    productTotal.setProductNm(productNm);
-                    productTotal.setProductCapa(productCapa);
-                                    
-                    productTotal = productService.getProductTotalDetails(productTotal);
-                    */            
                     
                     if(productTotal != null && productTotal.getProductId() > 0 ) {
     	                
@@ -436,8 +431,8 @@ public class ExcelServiceImpl implements ExcelService {
     	                for(int k=0 ; k < bottlelist.size() ; k++) {
     	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
     	                		isRegisteFlag = false;
-    	                		result = bottleService.modifyBottle(bottle);
-    	                		
+//    	                		result = bottleService.modifyBottle(bottle);
+    	                		updateList.add(bottle);
     	                		updateCount++;
     	                		logger.debug("ExcelSerive uploadExcelFileupdateCount=="+ updateCount);
     	                	}	                		
@@ -461,6 +456,8 @@ public class ExcelServiceImpl implements ExcelService {
                 logger.error("$$$$$$$$$$$$$$ ExcelService sb "+ sb.toString());
                 if(list.size() > 0)
                 	result = bottleService.registerBottles(list);
+                if(updateList.size() > 0)
+                	result = bottleService.modifyBottleList(updateList);
                 
                 map.put("insertCount", insertCount);
                 map.put("updateCount", updateCount);

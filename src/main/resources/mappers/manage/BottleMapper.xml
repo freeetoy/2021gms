@@ -316,10 +316,10 @@
 	</update>	
 	
 	<update id="updateBottleList" parameterType="java.util.List">
-		<foreach collection="list" item="item" separator=" , ">
+		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
 		UPDATE TB_Bottle
 		SET
-			Bottle_ID		= #{item.bottleId}
+			Bottle_ID			= #{item.bottleId}
 			, Product_ID		= #{item.productId}
 			, Product_Price_Seq	= #{item.productPriceSeq}
 			, Gas_ID			= #{item.gasId}
@@ -338,7 +338,7 @@
 			, UPDATE_ID 		= #{item.updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
-			Bottle_BarCd = #{item.bottleBarCd}
+			Bottle_BarCd 		= #{item.bottleBarCd}
 		</foreach>
 	</update>	
 

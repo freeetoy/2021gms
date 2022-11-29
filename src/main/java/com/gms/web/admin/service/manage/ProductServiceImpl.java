@@ -221,24 +221,24 @@ public class ProductServiceImpl implements ProductService {
 //			logger.debug("**registerProduct. indexOfproductNm1  *****===*"+param.getProductNm());			
 			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
 			
-			String productNm1 = param.getProductNm().replace("의료용", "M").replace("(","").replace(")", "").replace("일반","G").replace(" ","") .replace("-","") ;
-			
-			if(productNm1.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
-				// 한글이 포함된 문자열
-				productNm1 = "KR";
-			} else {
-			// 한글이 포함되지 않은 문자열
-//				productNm1 = param.getProductNm();
-//				productNm1 = param.getProductNm().replace("(", "").replace(")", "");
-			}
-			productNm1 = productNm1.replace(" ", "").replace("/","").replace("%", "").replace(".","");
-			if(productNm1.length() > 10)  productNm1 = productNm1.substring(0,7);
-					
-			if(gas != null && gas.getGasId() > 0 && productNm1.indexOf(gas.getGasCd()) < 0 && productNm1.length() <= 7 )  
-				productNm1 = productNm1+gas.getGasCd();
-			if(productNm.indexOf("고순도") >=0) productNm1 = "H"+productNm1.replace(" ", "");
-			productNm1 = productNm1.replace(" ", "");
-			
+//			String productNm1 = param.getProductNm().replace("의료용", "M").replace("(","").replace(")", "").replace("고순도","H").replace("일반","G").replace(" ","") .replace("-","") ;
+//			
+//			if(productNm1.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
+//				// 한글이 포함된 문자열
+//				productNm1 = "KR";
+//			} else {
+//			// 한글이 포함되지 않은 문자열
+////				productNm1 = param.getProductNm();
+////				productNm1 = param.getProductNm().replace("(", "").replace(")", "");
+//			}
+//			productNm1 = productNm1.replace(" ", "").replace("/","").replace("%", "").replace(".","");
+//			if(productNm1.length() > 10)  productNm1 = productNm1.substring(0,7);
+//					
+//			if(gas != null && gas.getGasId() > 0 && productNm1.indexOf(gas.getGasCd()) < 0 && productNm1.length() <= 7 && gas.getGasId() < 15)  
+//				productNm1 = productNm1+gas.getGasCd();
+//			if(productNm.indexOf("고순도") >=0) productNm1 = "H"+productNm1.replace(" ", "");
+//			productNm1 = productNm1.replace(" ", "");
+			String productNm1 = param.getProductId()+gas.getGasCd();
 			result = productMapper.insertProduct(param);
 			
 			if (result > 0) {
@@ -263,24 +263,14 @@ public class ProductServiceImpl implements ProductService {
 							BottleVO bottle = new BottleVO();
 							
 							if(j==0) {
-								if(productNm1.length() < 10) {
-									bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa);
-									bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa);
-								}else{
-									bottle.setBottleBarCd(productNm1  +productCapa);
-									bottle.setBottleId(productNm1 + productCapa);
-								}
+								bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa);
+								bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa);
 								
 //								if(bottle.getBottleBarCd().length() <= 6) bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1+productCapa+"_0");
 								bottle.setDummyYn("Y");
 							}else {
-								if(productNm1.length() < 10) {
-									bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa+"_"+(j));
-									bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa+"_"+(j));
-								}else{
-									bottle.setBottleBarCd(productNm1  +productCapa+"_"+(j));
-									bottle.setBottleId(productNm1 + productCapa+"_"+(j));
-								}
+								bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa+"_"+(j));
+								bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa+"_"+(j));
 								bottle.setDummyYn("X");
 							}
 							bottle.setMemberCompSeq(1);
@@ -343,23 +333,23 @@ public class ProductServiceImpl implements ProductService {
 			
 			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
 			
-			String productNm1 = param.getProductNm().replace("의료용", "M").replace("(","").replace(")", "").replace("일반","G").replace(" ","") .replace("-","") ;
-			
-			if(productNm1.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
-				// 한글이 포함된 문자열
-				productNm1 = "KR";
-			} else {
-			// 한글이 포함되지 않은 문자열
-//				productNm1 = param.getProductNm();
-//				productNm1 = param.getProductNm().replace("(", "").replace(")", "");
-			}
-			productNm1 = productNm1.replace(" ", "").replace("/","").replace("%", "").replace(".","");
-			if(productNm1.length() > 10)  productNm1 = productNm1.substring(0,7);
-					
-			if(gas != null && gas.getGasId() > 0 && productNm1.indexOf(gas.getGasCd()) < 0 && productNm1.length() <= 7 )  
-				productNm1 = productNm1+gas.getGasCd();
-			if(productNm.indexOf("고순도") >=0) productNm1 = "H"+productNm1.replace(" ", "");
-			productNm1 = productNm1.replace(" ", "");
+//			String productNm1 = param.getProductNm().replace("의료용", "M").replace("(","").replace(")", "").replace("고순도","H").replace("일반","G").replace(" ","") .replace("-","") ;
+//			
+//			if(productNm1.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*")) {
+//				// 한글이 포함된 문자열
+//				productNm1 = "KR";
+//			} else {
+//			// 한글이 포함되지 않은 문자열
+////				productNm1 = param.getProductNm();
+////				productNm1 = param.getProductNm().replace("(", "").replace(")", "");
+//			}
+//			productNm1 = productNm1.replace(" ", "").replace("/","").replace("%", "").replace(".","");
+//			if(productNm1.length() > 10)  productNm1 = productNm1.substring(0,7);
+			String productNm1 = param.getProductId()+gas.getGasCd();
+//			if(gas != null && gas.getGasId() > 0 && productNm1.indexOf(gas.getGasCd()) < 0 && productNm1.length() <= 7 && gas.getGasId() < 15)  
+//				productNm1 = productNm1+gas.getGasCd();
+//			if(productNm.indexOf("고순도") >=0) productNm1 = "H"+productNm1.replace(" ", "");
+//			productNm1 = productNm1.replace(" ", "");
 			
 			if (result > 0) {
 				
@@ -386,24 +376,15 @@ public class ProductServiceImpl implements ProductService {
 								BottleVO bottle = new BottleVO();
 								
 								if(j==0) {
-									if(productNm1.length() < 10) {
-										bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa);
-										bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa);
-									}else{
-										bottle.setBottleBarCd(productNm1  +productCapa);
-										bottle.setBottleId(productNm1 + productCapa);
-									}
+									bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa);
+									bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa);
+								
 									
 //									if(bottle.getBottleBarCd().length() <= 6) bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1+productCapa+"_0");
 									bottle.setDummyYn("Y");
 								}else {
-									if(productNm1.length() < 10) {
-										bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa+"_"+(j));
-										bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa+"_"+(j));
-									}else{
-										bottle.setBottleBarCd(productNm1  +productCapa+"_"+(j));
-										bottle.setBottleId(productNm1 + productCapa+"_"+(j));
-									}
+									bottle.setBottleBarCd(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1  +productCapa+"_"+(j));
+									bottle.setBottleId(PropertyFactory.getProperty("common.Barcode.Prefix")+productNm1 + productCapa+"_"+(j));
 									bottle.setDummyYn("X");
 								}
 								bottle.setMemberCompSeq(1);

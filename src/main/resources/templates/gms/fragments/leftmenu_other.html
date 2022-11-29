@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a href="/gms/start" class="brand-link">
       <img src="/dist/img/Logo_ewha.png"
-           alt="AdminLTE Logo"
+           th:alt="${session.compNm}"
            class="brand-image img-circle elevation-3">
       <span class="brand-text font-weight-light" th:text="${session.compNm}">GMS</span>
     </a>

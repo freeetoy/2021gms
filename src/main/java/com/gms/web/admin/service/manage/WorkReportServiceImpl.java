@@ -287,22 +287,27 @@ public class WorkReportServiceImpl implements WorkReportService {
 						if(k == productList.size() -1) {
 							ReportProductPriceSimpleVO productPriceSimple1 = new ReportProductPriceSimpleVO(productList.get(k).getProductId(),productList.get(k).getProductNm(),iCnt);
 							productNmList.add(productPriceSimple1);
+							if(iCnt > 1) addedCnt += (iCnt-1);
 						}
 					}
 					else {
+						
 						ReportProductPriceSimpleVO productPriceSimple = new ReportProductPriceSimpleVO(productList.get(k-1).getProductId(),productList.get(k-1).getProductNm(),iCnt);
 						productNmList.add(productPriceSimple);
-						addedCnt += iCnt;
-						addedCnt --;
+						if(iCnt > 1) addedCnt += (iCnt-1);
+//						addedCnt += iCnt;
+//						addedCnt --;
 						iCnt = 1;
 						if(k == productList.size() -1) {
 							ReportProductPriceSimpleVO productPriceSimple1 = new ReportProductPriceSimpleVO(productList.get(k).getProductId(),productList.get(k).getProductNm(),iCnt);
 							productNmList.add(productPriceSimple1);
+							if(iCnt > 1) addedCnt += (iCnt-1);
 						}
 					}
 				}
 			}
 		}
+//		logger.debug("WorkReportServiceImpl getWorkReportListAll333 addedCn1= "+ addedCnt);
 //		logger.debug("WorkReportServiceImpl getWorkReportListAll productNmList= "+ productNmList.size());
 //		for(int k =0 ; k < productNmList.size() ; k++) {
 //			logger.debug("WorkReportServiceImpl getWorkReportListAll productNmList= "+ productNmList.get(k).getProductNm()+"=productNmList.get(k).getSameNmCnt()="+productNmList.get(k).getSameNmCnt());
@@ -4151,7 +4156,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 				addOrderProductSeq++;
 			}
-			addOrderProductSeq = orderProductList.size()+1;
+//			addOrderProductSeq = orderProductList.size()+1;
 //			logger.debug("WorkReportServiceImpl remainOrderProductList.siz=" +remainOrderProductList.size());
 			for(int i = 0 ; i < remainOrderProductList.size() ; i++) {
 				boolean regiFlag = true;

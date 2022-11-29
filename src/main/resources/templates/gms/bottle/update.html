@@ -302,7 +302,7 @@ var goList = function(){
                       <th th:text="${bottle.ownCustomerId}" class="card-footer">용기 소유</th>
                       <th>
 						<select id="ownCustomerId" name="ownCustomerId" class="form-control">
-                          <option value="0">소유대리점</option>				    
+                          	<option value="0">소유대리점</option>				    
 					        <option th:each="row : ${agencyList}"
 					                th:text="${row.customerNm}"
 					                th:value="${row.customerId}"
@@ -317,7 +317,11 @@ var goList = function(){
                       	<!-- <input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="N" checked=""> 자사                                   
                       	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
 					  </th>   
-                    </tr>                   
+                    </tr>  
+                     <tr>                                   
+                      <th class="card-footer">비고</th>
+                      <th><input type="text" class="form-control" id="bottleEtc" name="bottleEtc" th:value="${bottle.bottleEtc}"></th>
+                    </tr>                 
                     <tr>
                       <th class="card-footer">더미여부</th>
                       <th>      

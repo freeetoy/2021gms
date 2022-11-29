@@ -82,7 +82,7 @@ public class ApiServiceImpl implements ApiService {
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
 			param.setCarCustomerId(user.getCarCustomerId());
-			
+			param.setMemberCompSeq(user.getMemberCompSeq());
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
 		
@@ -92,6 +92,7 @@ public class ApiServiceImpl implements ApiService {
 				param.setCustomerId(customer.getCustomerId());
 				param.setAgencyYn(customer.getAgencyYn());				//20201220		
 				param.setWorkCd(param.getBottleWorkCd());
+				
 	
 				result = workService.registerWorkReportNoOrder(param);			
 				
@@ -115,6 +116,8 @@ public class ApiServiceImpl implements ApiService {
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
 			param.setCarCustomerId(user.getCarCustomerId());
+			param.setMemberCompSeq(user.getMemberCompSeq());
+			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
 			
@@ -172,6 +175,7 @@ public class ApiServiceImpl implements ApiService {
 			//사용자 최종접속일 정보 업데이트
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
+			
 			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
@@ -244,6 +248,7 @@ public class ApiServiceImpl implements ApiService {
 				workReport.setCustomerId(customer.getCustomerId());
 				workReport.setUserId(param.getCreateId());
 				workReport.setCreateId(param.getCreateId());
+				workReport.setMemberCompSeq(user.getMemberCompSeq());
 				int workReportSeq = workService.getWorkReportSeqForCustomerToday(workReport);
 				
 				if(workReportSeq <= 0) {
@@ -310,6 +315,8 @@ public class ApiServiceImpl implements ApiService {
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
 			param.setCarCustomerId(user.getCarCustomerId());
+			param.setMemberCompSeq(user.getMemberCompSeq());
+			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
 			
@@ -341,6 +348,7 @@ public class ApiServiceImpl implements ApiService {
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
 			param.setCarCustomerId(user.getCarCustomerId());
+			param.setMemberCompSeq(user.getMemberCompSeq());
 			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);
@@ -454,6 +462,7 @@ public class ApiServiceImpl implements ApiService {
 			//사용자 최종접속일 정보 업데이트
 			LoginUserVO loginUser = new LoginUserVO();
 			loginUser.setUserId(user.getUserId());
+			param.setMemberCompSeq(user.getMemberCompSeq());
 			
 			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
 				result = loginService.modifyLastConnect(loginUser);

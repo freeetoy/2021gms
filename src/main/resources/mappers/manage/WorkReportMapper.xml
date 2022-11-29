@@ -3,6 +3,7 @@
 <mapper namespace="com.gms.web.admin.mapper.manage.WorkReportMapper">
 	<resultMap id="WorkReportMap" type="com.gms.web.admin.domain.manage.WorkReportVO" >
 		<result property="workReportSeq"		column="Work_Report_Seq"		/>
+		<result property="memberCompSeq"		column="Member_Comp_Seq"		/>		
 		<result property="userId"				column="User_ID"				/>
 		<result property="customerId"			column="Customer_ID"			/>
 		<result property="customerNm"			column="Customer_NM"			/>

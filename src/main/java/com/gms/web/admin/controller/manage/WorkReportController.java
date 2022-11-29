@@ -96,8 +96,6 @@ public class WorkReportController {
 		return mav;
 	}
 	
-	
-	
 	@RequestMapping(value = "/gms/report/listAll.do")
 	public ModelAndView getWorkReportListAll(
 			HttpServletRequest request
@@ -133,7 +131,7 @@ public class WorkReportController {
 		
 		mav.addObject("searchDt", params.getSearchDt());	
 		mav.addObject("searchUserId", params.getSearchUserId());			
-				
+		
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.diary"));	 	
 		
 		mav.setViewName("gms/report/listAll");

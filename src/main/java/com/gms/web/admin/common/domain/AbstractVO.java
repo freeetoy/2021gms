@@ -13,6 +13,8 @@ public class AbstractVO implements Serializable {
 
 	// 멤버변수 설명 (brief 설명)
     private static final long serialVersionUID = -1704822960909123260L;
+    
+    
 	/**
 	 * 생성자 ID
 	 */

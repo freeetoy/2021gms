@@ -19,6 +19,9 @@ public class WorkReportVO extends AbstractVO implements Serializable {
 	/**Work_Report_Seq      */
 	private Integer workReportSeq;
 	
+	/** Member_Comp_Seq   */
+	private Integer memberCompSeq;
+	
 	/**User_ID              */
 	private String userId;
 	
