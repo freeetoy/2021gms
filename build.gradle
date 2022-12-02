@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
+	id 'war'
 }
 
 group = 'com.gms.web.admin'
@@ -64,6 +65,10 @@ bootJar {
     archiveBaseName = 'gms'
     archiveFileName = 'gmsBootEwha.jar'
     archiveVersion = "0.0.0"
+}
+
+bootWar {
+       archiveName("gmsBootEwha.war")
 }
 
 test {

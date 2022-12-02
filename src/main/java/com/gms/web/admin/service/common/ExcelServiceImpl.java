@@ -175,6 +175,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                	else if(j == 2) bottle.setGasCd(colValue);	                	
 	                	else if(j == 3) {
 	                		bottle.setBottleCapa(colValue);
+	                		if(colValue.indexOf("L") >= 0) colValue = colValue.replace("L", "");
 	                		productCapa = colValue;
 	                		bottle.setChargeCapa(colValue);
 	                	}
