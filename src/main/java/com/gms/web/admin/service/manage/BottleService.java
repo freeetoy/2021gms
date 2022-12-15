@@ -46,6 +46,8 @@ public interface BottleService {
 
 	public int modifyBottle(BottleVO param);
 	
+	public int modifyBottleList(List<BottleVO> param);
+	
 	public int modifyBottleOrder(BottleVO param);
 	
 	public int modifyBottleOrderV2(BottleVO param);

@@ -23,10 +23,8 @@ public class GasServiceImpl implements GasService {
 	@Transactional
 	public boolean registerGas(GasVO param) {
 		boolean successFlag = false;
-
 		// 가스정보 등록
 		int result = 0;
-		logger.info("****** registerGasparam.getGasId()()) *****===*"+param.getGasId());
 		if (param.getGasId() == null) {
 			result = gasMapper.insertGas(param);
 			if (result > 0) {
@@ -76,7 +74,6 @@ public class GasServiceImpl implements GasService {
 	@Override
 	public List<GasVO> getGasList() {
 		
-		logger.info("****** getGasList *****===*");
 		return gasMapper.selectGasList();
 	}
 
@@ -84,7 +81,5 @@ public class GasServiceImpl implements GasService {
 	public GasVO getGasDetailsByCd(String gasCd) {
 		return gasMapper.selectGasDetailByCd(gasCd);	
 	}
-
-	
 
 }

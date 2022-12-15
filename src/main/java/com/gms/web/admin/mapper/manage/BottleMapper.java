@@ -45,6 +45,8 @@ public interface BottleMapper {
 
 	public int updateBottle(BottleVO param);
 	
+	public int updateBottleList(List<BottleVO> param);
+	
 	public int updateBottleWorkCd(BottleVO param);
 	
 	public int updateBottlesWorkCd(BottleVO param);
