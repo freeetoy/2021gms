@@ -3080,11 +3080,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if (amPm == 1 ) order.setDeliveryReqAmpm(PropertyFactory.getProperty("Order.Request.PM"));
 			else  order.setDeliveryReqAmpm(PropertyFactory.getProperty("Order.Request.AM"));
 			
-			order.setOrderEtc("현장주문-대량판매");
+			order.setOrderEtc("대량판매(현)");
 			if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come"))) {
-				order.setOrderEtc("현장주문-대량입고");
+				order.setOrderEtc("대량입고(현)");
 			}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {	
-				order.setOrderEtc("현장주문-대량출고");
+				order.setOrderEtc("대량출고(현)");
 			}
 			order.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.delivery"));
 			if(param.getUserId() != null && param.getUserId().length() > 0)
