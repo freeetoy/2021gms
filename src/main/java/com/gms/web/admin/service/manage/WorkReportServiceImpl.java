@@ -1354,7 +1354,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 			logger.error("registerWorkReportNoOrder DataAccessException==="+e.toString());
 		} catch (Exception e) {			
 			e.printStackTrace();
-			
 			logger.error("registerWorkReportNoOrder Exception==="+e.toString());
 		}
 		return result;
@@ -3523,11 +3522,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if (amPm == 1 ) order.setDeliveryReqAmpm(PropertyFactory.getProperty("Order.Request.PM"));
 			else  order.setDeliveryReqAmpm(PropertyFactory.getProperty("Order.Request.AM"));
 			
-			order.setOrderEtc("현장주문-대량판매");
+			order.setOrderEtc("대량판매(현장)");
 			if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come"))) {
-				order.setOrderEtc("현장주문-대량입고");
+				order.setOrderEtc("대량입고(현장)");
 			}else if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {	
-				order.setOrderEtc("현장주문-대량출고");
+				order.setOrderEtc("대량출고(현장)");
 			}
 			order.setOrderProcessCd(PropertyFactory.getProperty("common.code.order.process.delivery"));
 			if(param.getUserId() != null && param.getUserId().length() > 0)
@@ -3587,8 +3586,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				params.get(i).setOrderProductSeq(orderProduct.getOrderProductSeq());
 				
 				for(int j=0;j<bottles.size() ; j++) {
-//					logger.debug(" registerOrderInfo bottle.getBottleId()="+bottle.getBottleId() );
-//					logger.debug(" registerOrderInfo bottles.get(j)="+bottles.get(j) );
+
 					if(bottle.getBottleId().equals(bottles.get(j)) ) {
 						orderProduct.setOrderCount(Integer.parseInt(productCounts.get(j))) ;
 						break;
@@ -3598,19 +3596,16 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
 					double tempOrderAmount = 0;
-						
+					orderProduct.setBottleChangeYn("N");
+					orderProduct.setBottleSaleYn("Y");
+					
 					if(param.getAgencyYn().equals("N")) {
-						orderProduct.setBottleChangeYn("N");
-						orderProduct.setBottleSaleYn("Y");
 						
 						if(productTotal.getCustomerProductPrice() > 0) 
 							tempOrderAmount+= (productTotal.getCustomerProductPrice() + productTotal.getCustomerBottlePrice() ) * orderProduct.getOrderCount();							
 						else 
 							tempOrderAmount+= (productTotal.getProductPrice() + productTotal.getProductBottlePrice() ) * orderProduct.getOrderCount();			
 					}else {
-						orderProduct.setBottleChangeYn("Y");
-						orderProduct.setBottleSaleYn("N");
-						
 						if(productTotal.getCustomerProductPrice() > 0) {
 							tempOrderAmount+= productTotal.getCustomerProductPrice() * orderProduct.getOrderCount();
 						}else {
@@ -3677,31 +3672,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 					if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {	
 						workBottle.setBottleSaleYn("Y");
-						/*
-						// 가스판매 추가 20210710
-						WorkBottleVO workBottleAdditional = makeWorkBottle(bottle);
-						workBottleAdditional.setWorkReportSeq(param.getWorkReportSeq());
-						workBottleAdditional.setWorkSeq(workSeq++);
-//						workBottleAdditional.setBottleSaleYn(orderProduct.getBottleSaleYn());
-						workBottleAdditional.setAgencyYn(param.getAgencyYn());
-					
-						workBottleAdditional.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));
 						
-						if(productTotal.getCustomerBottlePrice() > 0) {
-							workBottle.setProductPrice(productTotal.getCustomerBottlePrice());
-						}else {
-							workBottle.setProductPrice( productTotal.getProductBottlePrice());	
-						}
-						
-						if(productTotal.getCustomerProductPrice() > 0) {
-							workBottleAdditional.setProductPrice(productTotal.getCustomerProductPrice());
-						}else {
-							workBottleAdditional.setProductPrice(productTotal.getProductPrice());
-						}
-						
-						workBottleList.add(workBottleAdditional); 
-						orderTotalAmount += workBottleAdditional.getProductPrice();
-						*/
 						if(param.getAgencyYn().equals("N")) {
 							if(productTotal.getCustomerProductPrice() > 0) {
 								workBottle.setProductPrice(workBottle.getProductPrice() + productTotal.getCustomerProductPrice());

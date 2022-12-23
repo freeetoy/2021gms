@@ -257,6 +257,17 @@ public class ApiController {
 	}
 	
 	
+	@RequestMapping(value = "/api/customerBottleList.do")
+	@ResponseBody
+	public List<CustomerProductVO> getCustomerBottleList(String customerNm)	{	
+		
+		
+		List<CustomerProductVO> bottleList = apiService.getCustomerBottleList(customerNm);
+		//model.addAttribute("productList", productList);
+		
+		return bottleList;
+	}
+	
 	@RequestMapping(value = "/api/controlGasAndBottle.do")
 	@ResponseBody
 	public String manageGasAndBottle(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd )	{	
@@ -426,16 +437,7 @@ public class ApiController {
 	}
 	
 		
-	@RequestMapping(value = "/api/customerBottleList.do")
-	@ResponseBody
-	public List<CustomerProductVO> getCustomerBottleList(String customerNm)	{	
-		
-		
-		List<CustomerProductVO> bottleList = apiService.getCustomerBottleList(customerNm);
-		//model.addAttribute("productList", productList);
-		
-		return bottleList;
-	}
+	
 	
 	@RequestMapping(value = "/api/deleteWorkBottle.do")
 	@ResponseBody
