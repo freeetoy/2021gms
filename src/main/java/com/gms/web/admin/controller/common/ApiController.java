@@ -542,4 +542,17 @@ public class ApiController {
 		else
 			return "fail";
 	}
+	
+	@RequestMapping(value = "/api/ln2CustomerList.do")
+	@ResponseBody
+	public List<WorkBottleVO> getDeliveredLn2CustomerList(String createId)	{	
+		
+		List<WorkBottleVO> customerList = null;
+		if(PropertyFactory.getProperty("ln2.alarm.UseYN").equals("Y"))
+				customerList = apiService.deliveredLn2CustomerList(createId);
+		
+		//model.addAttribute("productList", productList);
+		
+		return customerList;
+	}
 }
