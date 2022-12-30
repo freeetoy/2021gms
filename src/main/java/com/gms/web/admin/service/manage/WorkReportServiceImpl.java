@@ -3560,6 +3560,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				bottle.setCustomerId(param.getCustomerId());
 				bottle.setBottleType(param.getBottleType());
 				bottle.setUpdateId(param.getUserId());
+				bottle.setBottleWorkId(param.getCreateId());
 				
 				//대리점의 경우 판매->가스판매로 변경
 				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) && param.getAgencyYn().equals("Y"))  bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));
