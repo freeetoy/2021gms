@@ -51,4 +51,6 @@ public interface ApiService {
 	public List<OrderProductVO> getOrderProductList(OrderVO param);
 	
 	public int deleteOrder(OrderVO param);
+	
+	public List<WorkBottleVO> deliveredLn2CustomerList(String createId);
 }

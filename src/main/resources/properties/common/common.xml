@@ -177,4 +177,6 @@
 	
 	<entry key="ecount.dealtype.tax.include">11</entry> 	<!--부가세율 적용  -->
 	<entry key="ecount.dealtype.tax.notinclude">12</entry>	<!--부가세율 미적용  -->
+	
+	<entry key="ln2.alarm.UseYN">Y</entry>	<!--LN2 알람 사용여부  -->
 </properties>

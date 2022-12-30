@@ -24,6 +24,7 @@
 		<result property="bottleRentCount"		column="Bottle_Rent_Count"	/>	
 		<result property="summary"				column="Summary"			/>
 		<result property="taxinvoiceType"		column="Taxinvoice_Type"	/>
+		<result property="ln2Period"			column="Ln2_Period"			/>
 		<result property="createId"				column="CREATE_ID"		/>
 		<result property="createDt"				column="CREATED_DT"		/>
 		<result property="updateId"				column="UPDATE_ID"		/>		
@@ -94,6 +95,7 @@
 		, Bottle_Rent_Count
 		, Summary
 		, Taxinvoice_Type
+		, Ln2_Period
 		, A.CREATE_ID	
 		, A.CREATE_DT	
 		, A.UPDATE_ID	
@@ -161,6 +163,7 @@
 			, #{bottleRentCount}
 			, #{summary}
 			, #{taxinvoiceType}
+			, #{ln2Period}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -193,6 +196,7 @@
 			, #{item.bottleRentCount}
 			, #{item.summary}
 			, #{item.taxinvoiceType}
+			, #{item.ln2Period}
 			, #{item.createId}			
 			, NOW()
 			, NULL
@@ -330,6 +334,7 @@
 			, ECount_CD				= #{eCountCd}
 			, Summary				= #{summary}
 			, Taxinvoice_Type		= #{taxinvoiceType}
+			, Ln2_Period			= #{ln2Period}
 			, UPDATE_ID				= #{updateId}
 			, UPDATE_DT				= NOW()
 		WHERE

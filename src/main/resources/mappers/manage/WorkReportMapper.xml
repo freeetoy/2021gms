@@ -1048,4 +1048,18 @@
 		AND worK_CD in  ('0308','0309', '0314', '0316','0318','0330')
 		ORDER BY Work_Report_Seq DESC 		
 	</select>
+	<select id="selectDelieveredLn2CustomerList" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
+		SELECT twr.Customer_ID ,tc.Customer_Nm ,twb.Product_ID ,tp.Product_Nm ,twb.Product_Price_Seq ,tpp.Product_Capa 
+		FROM tb_work_bottle twb ,tb_work_report twr , tb_product tp ,tb_product_price tpp ,tb_customer tc 
+		WHERE twb.Work_Report_Seq = twr.Work_Report_Seq 
+		AND twr.Delete_YN = 'N'
+		AND twb.Bottle_Work_Cd ='0308'
+		AND twb.Product_ID = 60
+		AND twb.Product_ID = tp.Product_ID 
+		AND twb.Product_ID = tpp.Product_ID 
+		AND twb.Product_Price_Seq = tpp.Product_Price_Seq 
+		AND twr.Customer_ID = tc.Customer_ID 
+		AND DATE_FORMAT(twb.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval tc.Ln2_Period day),'%Y/%m/%d')
+		AND twb.Create_ID =  #{createId} 
+	</select>
 </mapper>

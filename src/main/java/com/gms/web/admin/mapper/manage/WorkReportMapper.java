@@ -91,4 +91,6 @@ public interface WorkReportMapper {
 	public List<WorkBottleVO> selectCustomerWorkBottleListAll(CustomerSalesVO param);	
 	
 	public List<WorkReportVO> selectCustomerWorkReportOnlyListAll(CustomerSalesVO param);	
+	
+	public List<WorkBottleVO> selectDelieveredLn2CustomerList(WorkReportVO param);	
 }

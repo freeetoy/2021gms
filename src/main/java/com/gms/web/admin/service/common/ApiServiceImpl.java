@@ -522,5 +522,13 @@ public class ApiServiceImpl implements ApiService {
 		return orderService.getOrderProductList(param.getOrderId());
 	}
 
+	@Override
+	public List<WorkBottleVO> deliveredLn2CustomerList(String createId) {
+		WorkReportVO report = new WorkReportVO();
+		report.setCreateId(createId);
+		
+		return workService.deliveredLn2CustomerList(report);
+	}
+
 
 }
