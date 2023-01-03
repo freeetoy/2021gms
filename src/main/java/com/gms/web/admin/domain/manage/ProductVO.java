@@ -30,4 +30,7 @@ public class ProductVO extends AbstractVO  implements Serializable {
 	
 	/**Sale_CType */
 	private String saleCtype;	
+	
+	/**OWN_YN */
+	private String ownYn;	
 }

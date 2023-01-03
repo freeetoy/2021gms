@@ -49,6 +49,31 @@ public class ProductController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/gms/product/listOwn.do")
+	public String getProductOwnList(Model model) {
+
+		ProductVO param = new ProductVO();
+		param.setOwnYn("Y");
+		List<ProductTotalVO> productList = productService.getOwnProductTotalList(param);
+		model.addAttribute("productList", productList);
+		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));
+
+		return null;
+	}
+	
+	@RequestMapping(value = "/gms/product/listBuy.do")
+	public String getProductBuyList(Model model) {
+
+		ProductVO param = new ProductVO();
+		param.setOwnYn("N");
+		List<ProductTotalVO> productList = productService.getOwnProductTotalList(param);
+		model.addAttribute("productList", productList);
+		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));
+
+		return null;
+	}
+	
+	
 	@RequestMapping(value = "/gms/product/write.do")
 	public String openProductWrite(@RequestParam(value = "productId", required = false) Integer productId, Model model) {
 

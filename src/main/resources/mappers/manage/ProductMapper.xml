@@ -29,6 +29,7 @@
 		,Product_Status
 		,Member_Comp_Seq
 		,Sale_CType
+		,OWN_YN
 		,Create_ID 
 		,Create_Dt 
 		,Update_ID 
@@ -73,6 +74,7 @@
 			, IFNULL(#{productStatus}, '2')
 			, #{memberCompSeq}
 			, #{saleCtype}
+			, #{ownYn}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -559,5 +561,34 @@
 			TPP.Product_Status  = '2'
 		AND 
 			TP.Product_ID = TPP.Product_ID
+	</select>
+	
+	<select id="selectOwnProductTotalList" resultType="com.gms.web.admin.domain.manage.ProductTotalVO" parameterType="com.gms.web.admin.domain.manage.ProductVO">
+		SELECT
+			p.Product_ID, Product_Nm, Gas_ID, pp.Product_Status, Member_Comp_Seq,Product_Price_Seq, Product_Price, Product_Bottle_Price, Product_Capa, ECount_CD,ECount_CDS,C.productPriceCount,
+			(
+				SELECT COUNT(o.Product_Price_Seq) 
+				FROM TB_Order_Product o 
+				WHERE o.product_id= p.Product_ID 
+				AND o.Product_Price_Seq = pp.Product_Price_Seq) productOrderCount,
+			p.Create_ID, p.Create_Dt, p.Update_ID, p.Update_Dt
+		FROM
+			TB_Product p, TB_Product_Price pp,
+			(
+				SELECT b.Product_ID, count(b.Product_ID) productPriceCount
+				FROM TB_Product a, TB_Product_Price b
+				WHERE a.Product_ID =b.Product_ID
+				AND b.Product_Status != '0'
+				Group By b.Product_ID ) C
+		WHERE
+			p.product_Id =pp.product_Id
+		AND 
+			p.product_Id =c.product_Id
+		AND 
+			p.Product_Status != '0'
+		AND 
+			pp.Product_Status != '0'
+		AND 
+			p.Own_Yn = #{ownYn}
 	</select>
 </mapper>

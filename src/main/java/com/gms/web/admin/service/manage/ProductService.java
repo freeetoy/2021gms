@@ -76,4 +76,6 @@ public interface ProductService {
 	public ProductPriceSimpleVO getProductPriceSimple(ProductPriceSimpleVO param);
 	
 	public List<ProductPriceSimpleVO> getAllProductSimpleList();
+	
+	public List<ProductTotalVO> getOwnProductTotalList(ProductVO param);
 }

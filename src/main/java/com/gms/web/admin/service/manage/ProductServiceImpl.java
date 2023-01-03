@@ -518,5 +518,10 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductPriceSimpleVO> getAllProductSimpleList() {
 		return productMapper.selectAllProductPriceSimpleList();
 	}
+
+	@Override
+	public List<ProductTotalVO> getOwnProductTotalList(ProductVO param ) {
+		return productMapper.selectOwnProductTotalList(param);
+	}
 	
 }
