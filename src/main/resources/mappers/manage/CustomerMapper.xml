@@ -68,6 +68,7 @@
 		, Bottle_Rent_Count
 		, Summary
 		, Taxinvoice_Type
+		, Ln2_Period
 		, CREATE_ID	
 		, CREATE_DT	
 		, UPDATE_ID	

@@ -65,7 +65,7 @@ public class BottleController {
 	@RequestMapping(value = "/gms/bottle/list.do")
 	public String getBottleList(BottleVO params, Model model) {
 
-		logger.debug("getBottleList");
+//		logger.debug("getBottleList");
 		
 		String searchChargeDt = params.getSearchChargeDt();	
 		
@@ -156,7 +156,7 @@ public class BottleController {
 	@RequestMapping(value = "/gms/bottle/charge.do")
 	public String getBottleTestList(BottleVO params, Model model) {
 
-		logger.debug(" getBottleList");
+//		logger.debug(" getBottleList");
 		
 		String searchChargeDt = params.getSearchChargeDt();	
 		
@@ -236,7 +236,7 @@ public class BottleController {
 	@RequestMapping(value = "/gms/bottle/sales.do")
 	public String getBottleSalesList(BottleVO params, Model model) {
 
-		logger.debug(" getBottleList");
+//		logger.debug(" getBottleList");
 		
 		String searchChargeDt = params.getSearchChargeDt();	
 		
@@ -380,7 +380,7 @@ public class BottleController {
 	public ModelAndView registerBottle(HttpServletRequest request
 			, HttpServletResponse response
 			, BottleVO params) {
-		logger.info(" registerBottle");
+//		logger.info(" registerBottle");
 		
 		ModelAndView mav = new ModelAndView();
 		RequestUtils.initUserPrgmInfo(request, params);
@@ -461,7 +461,7 @@ public class BottleController {
 			, HttpServletResponse response
 			, Model model
 			, BottleVO params) {
-		logger.info(" modifyBottle ");
+//		logger.info(" modifyBottle ");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		
@@ -526,7 +526,7 @@ public class BottleController {
 	public ModelAndView modifyBottleWorkCd(HttpServletRequest request
 			, HttpServletResponse response
 			, BottleVO params) {
-		logger.debug(" modifyBottleWorkCd");
+//		logger.debug(" modifyBottleWorkCd");
 		
 		ModelAndView mav = new ModelAndView();
 		RequestUtils.initUserPrgmInfo(request, params);
@@ -597,7 +597,7 @@ public class BottleController {
 	public ModelAndView modifyBottlesWorkCd(HttpServletRequest request
 			, HttpServletResponse response
 			, BottleVO params) {
-		logger.info(" modifyBottleWorkCd");
+//		logger.info(" modifyBottleWorkCd");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		
@@ -636,7 +636,7 @@ public class BottleController {
 			model.addAttribute("currentPage", params.getCurrentPage());
 			*/
 			if (result < 0) {				
-				logger.debug(" modifyBottlesWorkCd error");
+				logger.error(" modifyBottlesWorkCd error");
 			}
 		} catch (DataAccessException e) {
 			logger.error(" modifyBottlesWorkCd Exception==="+e.toString());
@@ -657,7 +657,7 @@ public class BottleController {
 	public ModelAndView deleteBottle(HttpServletRequest request
 			, HttpServletResponse response
 			, BottleVO params) {
-		logger.info(" deleteBottle");		
+//		logger.info(" deleteBottle");		
 		
 		ModelAndView mav = new ModelAndView();
 		
@@ -721,7 +721,7 @@ public class BottleController {
 			, HttpServletResponse response
 			, BottleVO params) {
 		
-		logger.info(" deleteBottles");
+//		logger.info(" deleteBottles");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		ModelAndView mav = new ModelAndView();

@@ -127,6 +127,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		// 정보 등록
 		int result = 0;
+//		logger.debug("registerCustomer","param "+param.getLn2Period());
 		
 		result = customerMapper.insertCustomer(param);
 		if (result > 0) {

@@ -115,7 +115,7 @@ public class CustomerController {
 		RequestUtils.initUserPrgmInfo(request, params);
 		
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));
-		
+//		logger.debug("controller registerCustomer","params "+params.getLn2Period());
 		try {
 			//임시
 			params.setMemberCompSeq(1);

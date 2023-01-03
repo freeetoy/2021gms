@@ -1061,5 +1061,6 @@
 		AND twr.Customer_ID = tc.Customer_ID 
 		AND DATE_FORMAT(twb.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval tc.Ln2_Period day),'%Y/%m/%d')
 		AND twb.Create_ID =  #{createId} 
+		AND tc.Ln2_Period > 0
 	</select>
 </mapper>

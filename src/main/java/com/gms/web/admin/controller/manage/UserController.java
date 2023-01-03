@@ -66,7 +66,7 @@ public class UserController {
 			, HttpServletResponse response
 			, Model model
 			, UserVO params) {
-		logger.info("registerUser");
+//		logger.info("registerUser");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		
@@ -118,7 +118,7 @@ public class UserController {
 			, HttpServletResponse response
 			, Model model
 			, UserVO params) {
-		logger.info(" modifyUser");
+//		logger.info(" modifyUser");
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.user"));
@@ -144,7 +144,7 @@ public class UserController {
 	@RequestMapping(value = "/gms/user/delete.do")
 	public String deleteUser(UserVO params, Model model) {
 
-		logger.info("******deleteUser params.getUserId()()) *****===*"+params.getUserId());		
+//		logger.info("******deleteUser params.getUserId()()) *****===*"+params.getUserId());		
 		
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.user"));
 		

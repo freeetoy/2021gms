@@ -33,7 +33,7 @@ public class SchedulerController {
 		//statOrderService.
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
-//		int result = scheduleService.registerDailyStatistics();				
+		int result = scheduleService.registerDailyStatistics();				
 		logger.info("******************* ScheduleController scheduleDaily End*************** ");		
 	}
 	
@@ -42,7 +42,7 @@ public class SchedulerController {
 	private void scheduleMonthly() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
 		
-//		int result = scheduleService.registerMonthlyStatistics();	
+		int result = scheduleService.registerMonthlyStatistics();	
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
@@ -52,7 +52,7 @@ public class SchedulerController {
 	private void modifyOrderProcessCd0250() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
 		
-//		int result = orderService.modifyOrderProcessCd0250();	
+		int result = orderService.modifyOrderProcessCd0250();	
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}

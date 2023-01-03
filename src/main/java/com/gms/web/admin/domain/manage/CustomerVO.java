@@ -80,6 +80,6 @@ public class CustomerVO extends AbstractSearchVO implements Serializable {
 	/**Taxinvoice_Type */
 	private String taxinvoiceType;
 	
-	/**Taxinvoice_Type */
+	/**Ln2_Period */
 	private int ln2Period;
 }
