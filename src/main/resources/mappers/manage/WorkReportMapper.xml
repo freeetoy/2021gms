@@ -279,7 +279,6 @@
 		UPDATE TB_Work_Report
 		SET
 			Work_CD			= #{workCd}
-			, Work_Dt			= NOW()	
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
