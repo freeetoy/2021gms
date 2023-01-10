@@ -47,13 +47,21 @@ public class SchedulerController {
 		
 	}
 	
-	
 	@Scheduled(cron="0 50 23 * * *")
 	private void modifyOrderProcessCd0250() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
 		
 		int result = orderService.modifyOrderProcessCd0250();	
 		logger.info("************* ScheduleController scheduleMonthly end *************");
+		
+	}
+	
+	@Scheduled(cron="0 50 01 1 * *")
+	private void registerWorkBottleHist() { 
+		logger.info("************* ScheduleController registerWorkBottleHist Start *************");
+		
+		int result = scheduleService.registerWorkBottleHist();	
+		logger.info("************* ScheduleController registerWorkBottleHist end *************");
 		
 	}
 	

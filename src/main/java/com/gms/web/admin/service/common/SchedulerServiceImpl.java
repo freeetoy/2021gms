@@ -1,5 +1,9 @@
 package com.gms.web.admin.service.common;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +11,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gms.web.admin.domain.manage.WorkReportVO;
+import com.gms.web.admin.service.manage.WorkReportService;
 import com.gms.web.admin.service.statistics.StatisticsAgencyService;
 import com.gms.web.admin.service.statistics.StatisticsBottleService;
 import com.gms.web.admin.service.statistics.StatisticsCustomerService;
@@ -37,6 +43,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 
 	@Autowired
 	private StatisticsAgencyService statAgencyService;
+	
+	@Autowired
+	private WorkReportService workReportService;
 
 	@Override
 	@Transactional
@@ -104,6 +113,20 @@ public class SchedulerServiceImpl implements SchedulerService {
 		}
 	
 		return result ;
+	}
+
+	@Override
+	public int registerWorkBottleHist() {
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -6);
+		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+		String searchDt = df.format(cal.getTime());
+     
+		WorkReportVO report = new WorkReportVO();
+		report.setSearchDt(searchDt);
+		
+		return workReportService.registerWorkReportHist(report);
 	}
 
 }

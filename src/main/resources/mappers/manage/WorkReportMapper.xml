@@ -1062,4 +1062,16 @@
 		AND twb.Create_ID =  #{createId} 
 		AND tc.Ln2_Period > 0
 	</select>
+	
+	<insert id="insertWorkBottleHist" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
+		INSERT INTO TB_Work_Bottle_HIST
+		SELECT * FROM TB_Work_Bottle
+		WHERE DATE_FORMAT(Create_Dt,'%Y/%m/%d') &lt; #{searchDt}	 
+		Order By Create_Dt
+	</insert>
+	
+	<insert id="deleteWorkBottleOld" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
+		DELETE FROM TB_Work_Bottle
+		WHERE DATE_FORMAT(Create_Dt,'%Y/%m/%d') &lt; #{searchDt}	 
+	</insert>
 </mapper>

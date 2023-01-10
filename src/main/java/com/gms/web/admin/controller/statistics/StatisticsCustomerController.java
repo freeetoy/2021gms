@@ -1,7 +1,9 @@
 package com.gms.web.admin.controller.statistics;
 
-import java.awt.Font;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
@@ -38,11 +39,9 @@ import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CustomerVO;
-import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.UserVO;
 import com.gms.web.admin.domain.manage.WorkBottleRegisterVO;
-import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
@@ -310,11 +309,16 @@ public class StatisticsCustomerController {
 
 		ModelAndView mav = new ModelAndView();
 				
-		String searchStatDt = param.getSearchStatDt();	
+//		Calendar cal = Calendar.getInstance();
+//		cal.add(Calendar.MONTH, -6);
+//		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+//		String minusDate = df.format(cal.getTime());
+//        logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle minusDate ="+minusDate);
+        
+        String searchStatDt = param.getSearchStatDt();	
 		
 		String searchStatDtFrom = null;
 		String searchStatDtEnd = null;
-//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle= "+param.getSearchUserId());
 		
 		String searchUserId = null;
 		if(param.getSearchUserId() !=null && param.getSearchUserId().length() > 0 && param.getSearchUserId().lastIndexOf(",") > 0) {
@@ -322,9 +326,8 @@ public class StatisticsCustomerController {
 			searchUserId = param.getSearchUserId().substring(param.getSearchUserId().lastIndexOf(",")+1,param.getSearchUserId().length());
 			param.setSearchUserId(searchUserId);
 		}	
-//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle searchUserId= "+searchUserId);
+
 		if(searchStatDt != null && searchStatDt.length() > 20) {		
-//			logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle= "+searchStatDt.length());
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, 23) ;
 			
@@ -344,7 +347,7 @@ public class StatisticsCustomerController {
 			
 			param.setSearchStatDt(searchStatDt);
 		}		
-//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle searchStatDt= "+searchStatDt);
+
 		if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
 			param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
 		}else {

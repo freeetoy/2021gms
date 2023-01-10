@@ -1,5 +1,7 @@
 package com.gms.web.admin.service.manage;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -4718,8 +4720,19 @@ public class WorkReportServiceImpl implements WorkReportService {
 
 	@Override
 	public List<WorkBottleVO> deliveredLn2CustomerList(WorkReportVO param) {
-		// TODO Auto-generated method stub
 		return workMapper.selectDelieveredLn2CustomerList(param);
+	}
+
+	@Override
+	@Transactional
+	public int registerWorkReportHist(WorkReportVO param) {
+		int result = 0;
+		
+		result = workMapper.insertWorkBottleHist(param);
+		
+//		result = workMapper.deleteWorkBottleOld(param);
+				
+		return result;
 	}
 	
 }
