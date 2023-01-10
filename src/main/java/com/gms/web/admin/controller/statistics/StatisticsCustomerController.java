@@ -313,12 +313,23 @@ public class StatisticsCustomerController {
 		String searchStatDtFrom = null;
 		String searchStatDtEnd = null;
 				
-		if(searchStatDt != null && searchStatDt.length() > 20) {						
+		String searchUserId = null;
+		
+		if(param.getSearchUserId() !=null && param.getSearchUserId().length() > 0 && param.getSearchUserId().lastIndexOf(",") > 0) {
+			//bottleIds= request.getParameter("bottleIds");
+			searchUserId = param.getSearchUserId().substring(param.getSearchUserId().lastIndexOf(",")+1,param.getSearchUserId().length());
+			param.setSearchUserId(searchUserId);
+		}
+		
+		if(searchStatDt != null && searchStatDt.length() > 20) {		
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
-			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			searchStatDtEnd = searchStatDt.substring(13, 23) ;
 			
 			param.setSearchStatDtFrom(searchStatDtFrom);
-			param.setSearchStatDtEnd(searchStatDtEnd);			
+			param.setSearchStatDtEnd(searchStatDtEnd);		
+			
+			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+			param.setSearchStatDt(searchStatDt);
 		}else {			
 			searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
 			searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
@@ -330,6 +341,7 @@ public class StatisticsCustomerController {
 			
 			param.setSearchStatDt(searchStatDt);
 		}		
+		
 		if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
 			param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
 		}else {
