@@ -29,6 +29,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
@@ -301,10 +303,10 @@ public class StatisticsCustomerController {
 	
 							 
 	@RequestMapping(value = "/gms/statistics/customer/bottle.do")
-	public ModelAndView getStatisticsCustomerBottle(StatisticsCustomerBottleVO param) {
+	public ModelAndView  getStatisticsCustomerBottle(StatisticsCustomerBottleVO param, final RedirectAttributes redirectAttributes) {
 
 //		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle");
-		
+//		RequestUtils.initUserPrgmInfo(request, param);	
 
 		ModelAndView mav = new ModelAndView();
 				
@@ -312,13 +314,25 @@ public class StatisticsCustomerController {
 		
 		String searchStatDtFrom = null;
 		String searchStatDtEnd = null;
-				
-		if(searchStatDt != null && searchStatDt.length() > 20) {						
+//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle= "+param.getSearchUserId());
+		
+		String searchUserId = null;
+		if(param.getSearchUserId() !=null && param.getSearchUserId().length() > 0 && param.getSearchUserId().lastIndexOf(",") > 0) {
+			//bottleIds= request.getParameter("bottleIds");
+			searchUserId = param.getSearchUserId().substring(param.getSearchUserId().lastIndexOf(",")+1,param.getSearchUserId().length());
+			param.setSearchUserId(searchUserId);
+		}	
+//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle searchUserId= "+searchUserId);
+		if(searchStatDt != null && searchStatDt.length() > 20) {		
+//			logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle= "+searchStatDt.length());
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
-			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			searchStatDtEnd = searchStatDt.substring(13, 23) ;
 			
 			param.setSearchStatDtFrom(searchStatDtFrom);
-			param.setSearchStatDtEnd(searchStatDtEnd);			
+			param.setSearchStatDtEnd(searchStatDtEnd);		
+			
+			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+			param.setSearchStatDt(searchStatDt);
 		}else {			
 			searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
 			searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
@@ -330,6 +344,7 @@ public class StatisticsCustomerController {
 			
 			param.setSearchStatDt(searchStatDt);
 		}		
+//		logger.info("StatisticsCustomerContoller getStatisticsCustomerBottle searchStatDt= "+searchStatDt);
 		if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
 			param.setParamCustomerId(Integer.parseInt(param.getSearchCustomerId()));
 		}else {

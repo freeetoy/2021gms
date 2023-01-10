@@ -101,7 +101,8 @@ var fn_deleteBottle = function(bottleId){
 	  $('input[name="searchChargeDt"]').daterangepicker({
 	      autoUpdateInput: false,
 	      locale: {
-	          cancelLabel: 'Clear'
+	    	  cancelLabel: 'Clear',
+	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
 	      }
 	  });
 	
