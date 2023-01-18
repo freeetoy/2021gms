@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.gms.web.admin.GmsApplication;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.service.common.SchedulerService;
 import com.gms.web.admin.service.manage.OrderService;
@@ -33,16 +34,19 @@ public class SchedulerController {
 		//statOrderService.
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
-		int result = scheduleService.registerDailyStatistics();				
+		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {
+			int result = scheduleService.registerDailyStatistics();				
+		}
 		logger.info("******************* ScheduleController scheduleDaily End*************** ");		
 	}
 	
 	 
 	@Scheduled(cron="0 30 01 1 * *")
 	private void scheduleMonthly() { 
-		logger.info("************* ScheduleController scheduleMonthly Start *************");
-		
-		int result = scheduleService.registerMonthlyStatistics();	
+		logger.info("************* ScheduleController scheduleMonthly Start *************"+GmsApplication.schedulerParam);
+		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {
+			int result = scheduleService.registerMonthlyStatistics();	
+		}
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
@@ -51,7 +55,9 @@ public class SchedulerController {
 	private void modifyOrderProcessCd0250() { 
 		logger.info("************* ScheduleController scheduleMonthly Start *************");
 		
-		int result = orderService.modifyOrderProcessCd0250();	
+		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {
+			int result = orderService.modifyOrderProcessCd0250();	
+		}
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
@@ -59,8 +65,9 @@ public class SchedulerController {
 	@Scheduled(cron="0 50 01 1 * *")
 	private void registerWorkBottleHist() { 
 		logger.info("************* ScheduleController registerWorkBottleHist Start *************");
-		
-		int result = scheduleService.registerWorkBottleHist();	
+		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {
+			int result = scheduleService.registerWorkBottleHist();	
+		}
 		logger.info("************* ScheduleController registerWorkBottleHist end *************");
 		
 	}

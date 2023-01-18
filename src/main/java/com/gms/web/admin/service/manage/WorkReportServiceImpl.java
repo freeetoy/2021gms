@@ -1053,7 +1053,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		boolean insertFlag = false;
 		try {			
 			
-//			logger.debug(" registerWorkReportByBottle bottleIds =" + param.getBottlesIds());			
+			logger.debug(" registerWorkReportByBottle getCreateId =" + param.getCreateId());			
 			
 			int workReportSeq = 0;
 			int workSeq = 1;
