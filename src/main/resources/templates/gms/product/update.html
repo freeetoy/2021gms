@@ -222,8 +222,8 @@ $(document).ready(function(){
             <!-- /.card -->
             
             <div class="card-footer">
-                 <a href="/gms/product/list.do" class="btn btn-secondary float-left">취소</a>
-		          <input type="submit" value="저장"  class="btn btn-success float-right">
+                 <a href="/gms/product/list.do" class="btn btn-secondary float-left">목록</a>
+		          <input th:if="${session.LoginUser.userAuthority=='99'}" type="submit" value="저장"  class="btn btn-success float-right">
                 </div>		     		
             </form>   
           	
