@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.web.utils.RequestUtils;
+import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.GasVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
@@ -41,7 +43,9 @@ public class ProductController {
 	
 	@RequestMapping(value = "/gms/product/list.do")
 	public String openProductList(Model model) {
-
+		
+//		LoginUserVO user = (LoginUserVO) session.getAttribute("LoginUser");
+//
 		List<ProductTotalVO> productList = productService.getProductTotalList();
 		model.addAttribute("productList", productList);
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));

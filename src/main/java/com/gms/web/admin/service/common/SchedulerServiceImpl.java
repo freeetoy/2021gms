@@ -122,8 +122,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 		cal.add(Calendar.MONTH, -6);
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		String searchDt = df.format(cal.getTime());
-     
-		WorkReportVO report = new WorkReportVO();
+	     logger.debug("registerWorkBottleHist searchDt="+searchDt);
+	
+	     WorkReportVO report = new WorkReportVO();
 		report.setSearchDt(searchDt);
 		
 		return workReportService.registerWorkReportHist(report);

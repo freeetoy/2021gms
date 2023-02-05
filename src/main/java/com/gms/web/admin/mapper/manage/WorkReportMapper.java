@@ -28,6 +28,8 @@ public interface WorkReportMapper {
 	
 	public List<WorkBottleVO> selectWorkReportListAll(WorkReportVO param);	
 	
+	public List<WorkBottleVO> selectWorkReportListAllHist(WorkReportVO param);	
+	
 	public List<WorkBottleVO> selectWorkBottleList(Integer workReportSeq);	
 	
 	public List<WorkBottleVO> selectWorkBottleListOfOrder(Integer orderId);	

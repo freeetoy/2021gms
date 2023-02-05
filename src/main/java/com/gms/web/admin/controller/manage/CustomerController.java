@@ -66,7 +66,7 @@ public class CustomerController {
 	private WorkReportService workService;
 	
 	
-	@RequestMapping(value = "/gms/customer/list.do")
+	@RequestMapping(value = "/gms/customer/list.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String openCustomerList(CustomerVO params, Model model) {
 		
 		Map<String, Object> map = customerService.getCustomerList(params);
@@ -85,7 +85,7 @@ public class CustomerController {
 	}
 
 	
-	@RequestMapping(value = "/gms/customer/write.do")
+	@RequestMapping(value = "/gms/customer/write.do", method = {RequestMethod.GET})
 	public String openCustomerWrite(@RequestParam(value = "customerId", required = false) String customerId, Model model) {
 		
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));
@@ -136,7 +136,7 @@ public class CustomerController {
 		return "redirect:/gms/customer/list.do";
 	}
 
-	@RequestMapping(value = "/gms/customer/update.do")
+	@RequestMapping(value = "/gms/customer/update.do", method = {RequestMethod.GET})
 	public String openCustomerUpdate(@RequestParam(value = "customerId", required = false) Integer customerId, 
 			HttpServletRequest request , HttpServletResponse response,Model model) {
 
@@ -329,7 +329,7 @@ public class CustomerController {
 		//return "/gms/customer/list.do?currentPage="+params.getCurrentPage()+"&searchCustomerNm="+searchCustomerNm;
 	}
 	
-	@RequestMapping(value = "/gms/customer/detail.do")
+	@RequestMapping(value = "/gms/customer/detail.do", method = {RequestMethod.GET})
 	@ResponseBody
 	public CustomerVO getCustomerDetails(@RequestParam(value = "customerId", required = false) Integer customerId, Model model)	{
 		

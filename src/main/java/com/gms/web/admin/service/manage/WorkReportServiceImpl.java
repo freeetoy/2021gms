@@ -88,8 +88,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 		if(param.getSearchDt() == null || param.getSearchDt().length() == 0) {			
 			param.setSearchDt(DateUtils.getDate("yyyy/MM/dd"));
 		}		
+		//날짜 비교
+		List<WorkBottleVO> workBottleList = null;
 		
-		List<WorkBottleVO> workBottleList = workMapper.selectWorkReportListAll(param);
+		workBottleList = workMapper.selectWorkReportListAll(param);
 		
 		List<WorkReportVO> reportList = workMapper.selectWorkReportOnlyListAll(param);
 		double orderAmountToday = 0.0;

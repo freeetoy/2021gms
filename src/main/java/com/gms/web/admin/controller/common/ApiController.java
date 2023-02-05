@@ -551,6 +551,7 @@ public class ApiController {
 		if(PropertyFactory.getProperty("ln2.alarm.UseYN").equals("Y"))
 				customerList = apiService.deliveredLn2CustomerList(createId);
 		
+		logger.info("getDeliveredLn2CustomerList createId="+createId+"===customerList ="+customerList.size());
 		//model.addAttribute("productList", productList);
 		
 		return customerList;

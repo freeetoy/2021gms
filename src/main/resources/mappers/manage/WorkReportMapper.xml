@@ -495,6 +495,40 @@
 		ORDER BY Work_Report_Seq desc, AA.Product_ID, AA.Product_Price_Seq
 	</select>
 	
+	<select id="selectWorkReportListAllHist" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
+		SELECT Product_Count,Work_Report_Seq, AA.Customer_ID,Customer_nm  
+			, AA.Product_ID  ,Product_NM , AA.Product_Price_Seq ,Product_Capa    
+			, Bottle_work_Cd, CD_NM Bottle_work_Cd_NM,GAS_ID
+			, AA.Order_Id, Order_Total_Amount,AA.Product_Price, AA.Bottle_Sale_YN,
+			CASE
+				WHEN AA.Bottle_Type = 'F'
+				THEN '실병'
+				WHEN AA.Bottle_Type = 'E'
+				THEN '공병'		
+				ELSE ''
+			END AS Bottle_Type, Charge_Volumn
+		FROM 
+			TB_CODE TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP, 
+			(
+				SELECT Count(TB.Product_Price_Seq) Product_Count, TB.Work_Report_Seq, TB.Customer_ID, TB.Product_ID, TB.Product_Price_Seq, 
+					Bottle_work_Cd,	Product_Price, Order_Id, Bottle_Sale_YN,TB.Bottle_Type, Charge_Volumn
+				FROM TB_Work_Bottle_HIST TB, TB_Work_Report TW
+				WHERE TB.Work_Report_Seq  = TW.Work_Report_Seq
+				AND User_id = #{searchUserId}
+				AND Bottle_WorK_CD in ('0301','0306','0308','0309', '0310', '0311', '0312', '0313', '0314', '0315', '0316', '0317','0318','0320','0330')
+				AND TW.Delete_YN = 'N'
+				<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+				AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')  =   #{searchDt}
+				</if>
+				Group By TB.Work_Report_Seq, TB.Customer_ID  , TB.Product_ID   , TB.Product_Price_Seq   ,Bottle_work_Cd ,Multi_YN
+			) AA Left Join TB_Order TR on AA.Order_Id = TR.Order_Id
+		WHERE AA.Bottle_Work_Cd = TC.CD_ID
+		AND AA.Customer_ID 		= TS.Customer_ID
+		AND AA.Product_ID 		= TP.Product_ID
+		AND AA.Product_ID 		= TPP.Product_ID
+		AND AA.Product_Price_Seq = Tpp.Product_Price_Seq		
+		ORDER BY Work_Report_Seq desc, AA.Product_ID, AA.Product_Price_Seq
+	</select>
 	<select id="selectWorkReportSeq" resultType="int">
 		SELECT IFNULL(A.Work_Report_Seq, 0)+1
 		FROM 
@@ -1059,7 +1093,7 @@
 		AND twb.Product_Price_Seq = tpp.Product_Price_Seq 
 		AND twr.Customer_ID = tc.Customer_ID 
 		AND DATE_FORMAT(twb.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval tc.Ln2_Period day),'%Y/%m/%d')
-		AND twb.Create_ID =  #{createId} 
+		AND tc.Sales_ID =  #{createId} 
 		AND tc.Ln2_Period > 0
 	</select>
 	

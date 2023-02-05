@@ -77,7 +77,8 @@ public class SchedulerController {
 		
 		logger.info("************* ScheduleController scheduleDailyManual Start *************");
 
-		int result = scheduleService.registerDailyStatistics();				
+		int result = scheduleService.registerDailyStatistics();			
+		
 		logger.info("******************* ScheduleController scheduleDailyManual End*************** ");		
 		if(result > 0){
 			String alertMessage = "통계를 등록하였습니다.";
