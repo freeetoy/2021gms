@@ -195,5 +195,5 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** searchDtEnd	*/
 	private String  searchDtEnd;
 	
-	
+	int printCount =1;
 }

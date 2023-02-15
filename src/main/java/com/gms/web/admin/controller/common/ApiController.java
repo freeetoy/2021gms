@@ -143,7 +143,10 @@ public class ApiController {
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.agencyBack"))) {			//대여회수
 				
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.agencyBack"));			
-				result = apiService.registerWorkReportForChangeCd(workReport);				
+				result = apiService.registerWorkReportForChangeCd(workReport);
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.nottest"))) {			//무상교체
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.nottest"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
 			}
 		} catch (Exception e) {		
 			logger.error("controlAction ", e.toString());

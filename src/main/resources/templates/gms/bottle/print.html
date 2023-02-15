@@ -1,0 +1,40 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/blank}">
+
+<th:block layout:fragment="content"> 
+  <!-- jQuery -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<style>
+.horizontal {
+  writing-mode: horizontal-tb;
+}
+
+.vertical {
+  writing-mode: vertical-rl;
+}
+</style> 
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="94" style="border-collapse:collapse;width:71pt;" th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" >
+
+ <colgroup><col width="70" style="width:53pt;">
+ <col width="24" style="width:18pt;">
+ </colgroup><tbody>
+ <tr height="20" style="height:20.4pt;">
+  <td height="20" width="70" style="color:#212529;font-size:8.0pt;font-weight:700;font-family:'Source Sans Pro', sans-serif;text-align:center;height:11.4pt;width:53pt;">이화산업가스</td>
+  <td width="24" style="text-align:center;width:18pt;"><br></td>
+ </tr>
+ <tr height="80" style="height:62.4pt;">
+  <td height="71" style="height:55.4pt;"><img class="inline " th:src=" @{http://api.qrserver.com/v1/create-qr-code/(data=${row.bottleBarCd},size=100x100)}" /></td>
+  <td  class="vertical" style="text-align:bottom;color:#212529;font-size:8.0pt;font-weight:700;font-family:'Source Sans Pro', sans-serif;text-align:left;"><span style="font-variant-ligatures:normal;font-variant-caps:normal;orphans:2;widows:2;-webkit-text-stroke-width:0px;background-color:rgba(0, 0, 0, 0.075);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial;" th:text="${row.bottleBarCd}">HN1O22.8</span></td>
+ </tr>
+ <tr height="20" style="height:20.4pt;">
+  <td height="20" style="color:#212529;font-size:8.0pt;font-weight:700;font-family:'Source Sans Pro', sans-serif;text-align:center;height:11.4pt;"><span style="font-variant-ligatures:normal;font-variant-caps:normal;orphans:2;widows:2;-webkit-text-stroke-width:0px;background-color:rgba(0, 0, 0, 0.075);text-decoration-thickness:initial;text-decoration-style:initial;text-decoration-color:initial;" th:text="${row.bottleId}">HN1O22.81</span></td>
+  <td style="text-align:center;"></td>
+ </tr>
+ <tr height="25" style="height:20.4pt;">
+  <td height="25"></td>
+  <td style="text-align:center;"><br></td>
+ </tr>
+</tbody></table>
+
+</body>
+</th:block>

@@ -208,9 +208,10 @@ $(document).ready(function(){
 	                       <td> 
 	                         <input type="text" class="form-control" th:id="'eCountCdS_'+${productPriceList.indexOf(row)}" th:name="'eCountCdS_'+${productPriceList.indexOf(row)}" th:value="${row.eCountCdS}">
 	                       </td>   
-	                       <td>
+	                       <td th:if="${session.LoginUser.userAuthority=='99'}">
 	                       <input type="button" class="btn btn-default btn-success" id="addrow" th:if="${productPriceList.indexOf(row)==0}" selected value="추가" />
 	                       <input type="button" class="ibtnDel btn btn-md btn-danger" id="addrow" th:unless="${productPriceList.indexOf(row)==0}" selected value="삭제" /> 
+	                       <td th:unless="${session.LoginUser.userAuthority=='99'}">
 	                       </td>
                        </tr>
                      </table>

@@ -152,7 +152,46 @@ public class BottleController {
 		return "gms/bottle/list";
 	}
 	
-	
+	@RequestMapping(value = "/gms/bottle/print.do")
+	public String getBottleBarCdList(BottleVO param, Model model) {
+		
+		String searchChargeDt = param.getSearchChargeDt();	
+		
+		String searchChargeDtFrom = null;
+		String searchChargeDtEnd = null;
+				
+		if(searchChargeDt != null && searchChargeDt.length() > 20) {
+			searchChargeDtFrom = searchChargeDt.substring(0, 10) ;			
+			searchChargeDtEnd = searchChargeDt.substring(13, searchChargeDt.length()) ;
+			
+			param.setSearchChargeDtFrom(searchChargeDtFrom);
+			param.setSearchChargeDtEnd(searchChargeDtEnd);			
+		}
+		
+		String searchDt = param.getSearchDt();	
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {
+			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			param.setSearchDtFrom(searchDtFrom);
+			param.setSearchDtEnd(searchDtEnd);			
+		}
+		
+		//params.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+		
+//		Map<String, Object> map = bottleService.getBottleList(param);
+		param.setStartRow(0);
+		List<BottleVO> bottleList = bottleService.getBottleListToExcel(param);
+		
+		model.addAttribute("bottleList", bottleList);
+		
+		
+		return "gms/bottle/print";
+	}
 	@RequestMapping(value = "/gms/bottle/charge.do")
 	public String getBottleTestList(BottleVO params, Model model) {
 

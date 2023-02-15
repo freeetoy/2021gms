@@ -2762,9 +2762,28 @@ public class WorkReportServiceImpl implements WorkReportService {
 			workSeq = workMapper.selectWorkBottleSeq(param.getWorkReportSeq());
 		
 			for(int i=0; i < param.getProductCount() ; i++) {
-				WorkBottleVO workBottle = param;
+//				WorkBottleVO workBottle = param;
+				WorkBottleVO workBottle = new WorkBottleVO();
 				
-				workBottle.setWorkSeq(workSeq++);		
+				workBottle.setWorkReportSeq(param.getWorkReportSeq());
+				workBottle.setWorkSeq(workSeq++);
+//				workBottle.setBottleId(bottle.getBottleId());
+//				workBottle.setBottleBarCd(bottle.getBottleBarCd());
+				workBottle.setCustomerId(param.getCustomerId());
+				workBottle.setBottleWorkCd(param.getBottleWorkCd());
+				workBottle.setGasId(param.getGasId());
+				workBottle.setGasCd(param.getGasCd());
+				workBottle.setProductId(param.getProductId());
+				workBottle.setProductPriceSeq(param.getProductPriceSeq());
+//				workBottle.setProductPrice(param.getProductPrice());
+				workBottle.setBottleType(param.getBottleType());
+				workBottle.setCreateId(param.getCreateId());
+				workBottle.setBottleSaleYn(param.getBottleSaleYn());
+				workBottle.setManualYn(param.getManualYn());
+				workBottle.setSearchDt(param.getSearchDt());
+				workBottle.setMultiYn(param.getMultiYn());
+				
+//				workBottle.setWorkSeq(workSeq++);		
 				
 				if(param.getProductPrice() > 0)
 					workBottle.setProductPrice(param.getProductPrice()/param.getProductCount());
