@@ -101,5 +101,7 @@ public interface CustomerMapper {
 	
 	public CustomerPriceVO selectCustomerLn2Capa(WorkBottleVO param);
 	
-	public List<CustomerSalesVO> selectCustomerSalesList(Map<String, Object> map);	
+	public List<CustomerSalesVO> selectCustomerSalesList(Map<String, Object> map);
+	
+	public CustomerVO selectCarBySalesId(String salesId ) ;
 }

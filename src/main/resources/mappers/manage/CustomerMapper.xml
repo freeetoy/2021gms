@@ -759,4 +759,17 @@
 		Group By Customer_ID,wb.Product_ID, wb.Product_Price_Seq,wb.Product_Price,Bottle_Work_Cd
 	</select>
 	
+	<select id="selectCarBySalesId" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="String">
+		SELECT
+			A.*
+		FROM
+			TB_CUSTOMER A  
+		WHERE
+			Customer_Status != '0'		
+		AND 
+			Car_YN = 'Y'
+		AND
+			Sales_Id = #{salesId}	
+	</select>
+	
 </mapper>

@@ -20,8 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CarInventoryVO;
+import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.service.manage.CarInventoryService;
+import com.gms.web.admin.service.manage.CustomerService;
 
 import groovyjarjarpicocli.CommandLine.Model;
 
@@ -33,6 +35,9 @@ public class CarInventoryController {
 	@Autowired
 	private CarInventoryService inventoryService;
 
+	@Autowired
+	private CustomerService customerService;
+	
 	@RequestMapping(value = "/gms/report/update1.do")
 	public ModelAndView getCarInventoryUpdate(
 			HttpServletRequest request
@@ -52,10 +57,12 @@ public class CarInventoryController {
 			param.setSearchStatDt(param.getSearchDt());
 		}
 			
+		CustomerVO customer = customerService.getCarBySalesId(param.getSearchUserId());
 //		WorkReportVO workReport = workService.getWorkReport(param.getWorkReportSeq());
 		logger.debug("CarInventoryController getCarInventoryUpdate param getSearchStatDt= "+param.getSearchStatDt());	
 		
-		mav.addObject("workReport", param);	 	
+		mav.addObject("workReport", param);
+		mav.addObject("customerId", customer.getCustomerId());
 		mav.addObject("searchUserId", param.getUserId());
 		mav.addObject("dayFlag", dayFlag);	 	
 		if(request.getParameter("action") != null) mav.addObject("action", request.getParameter("action"));

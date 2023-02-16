@@ -458,4 +458,10 @@ public class CustomerServiceImpl implements CustomerService {
 				
 		return statList;
 	}
+
+	@Override
+	public CustomerVO getCarBySalesId(String salesId) {
+		
+		return customerMapper.selectCarBySalesId(salesId);
+	}
 }

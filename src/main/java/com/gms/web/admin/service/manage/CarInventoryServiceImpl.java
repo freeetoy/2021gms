@@ -140,7 +140,7 @@ private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public int modifyCarInventoriesManual(HttpServletRequest request, WorkReportVO param) {
-		logger.debug("*********** CarInventoryServiceImpl modifyCarInventoriesManual start =" );
+		logger.debug("*********** CarInventoryServiceImpl modifyCarInventoriesManual start =");
 		int result = 0;
 		
 		try {
@@ -151,7 +151,7 @@ private final Logger logger = LoggerFactory.getLogger(getClass());
 			List<CarInventoryVO> updateList = new ArrayList<CarInventoryVO>();
 			
 			List<CarInventoryVO> paramList = new ArrayList<CarInventoryVO>();
-			
+//			logger.debug("*********** CarInventoryServiceImpl modifyCarInventoriesManual start ="+productCount);
 			for(int i = 0 ; i < productCount ; i++) {
 				CarInventoryVO carInventory = new CarInventoryVO();
 				RequestUtils.initUserPrgmInfo(request, carInventory);

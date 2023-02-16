@@ -96,4 +96,6 @@ public interface CustomerService {
 	public CustomerPriceVO  getCustomerLn2Capa(WorkBottleVO param);
 	
 	public List<CustomerSalesVO> getCustomerSalesList(CustomerSalesVO param);	
+	
+	public CustomerVO  getCarBySalesId(String salesId);
 }
