@@ -385,6 +385,206 @@ public class ExcelDownloadController {
 		}
 	}
       
+   @RequestMapping(value = "/gms/bottle/barcodeDownload.do")
+   public void excelDownloadBottleBarcode(HttpServletResponse response, BottleVO param){
+	
+	   try {
+		   
+		   // 용기 정보 불러오기
+		    param.setStartRow(0);
+			List<BottleVO> bottleList = bottleService.getBottleListToExcel(param);
+		    // 워크북 생성
+			XSSFWorkbook wb = new XSSFWorkbook();
+		    //orkbook wb = new HSSFWorkbook();
+		    //Sheet sheet = (Sheet) wb.createSheet("용기");
+			XSSFSheet sheet =  wb.createSheet("용기");
+		    Row row = null;
+		    Cell cell = null;
+	
+		    int rowNo = 0;
+		    
+		    // 테이블 헤더용 스타일
+		    CellStyle headStyle = wb.createCellStyle();
+	
+		    headStyle= ExcelStyle.getHeadStyle(headStyle);
+
+		    // 데이터용 경계 스타일 테두리만 지정
+		    CellStyle bodyStyle = wb.createCellStyle();
+		    
+		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);
+		    
+		    // 헤더 생성
+		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		    
+		    List<String> list = null;		    
+		    
+	    	list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.bottle.barcode"), ","); 		
+		    
+		    for(int i =0;i<list.size();i++) {
+		    
+			    cell = row.createCell(i);
+			    cell.setCellStyle(headStyle);
+			    cell.setCellValue(list.get(i));		   
+			    sheet.autoSizeColumn(i);
+		    }
+
+		    for(BottleVO vo : bottleList) {
+		    	
+		    	for(int i=0 ; i < param.getPrintCount() ; i++ ) {
+		    		int k=0;
+			    	row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+			        
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleBarCd());
+			        
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleId());			        
+			       
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleBarCd());
+		    	}
+		    }
+
+		    // width 자동조절
+			for (int x = 0; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
+				sheet.autoSizeColumn(x);
+				int width = sheet.getColumnWidth(x);
+				int minWidth = list.get(x).getBytes().length * 450;
+				int maxWidth = 18000;
+				if (minWidth > width) {
+					sheet.setColumnWidth(x, minWidth);
+				} else if (width > maxWidth) {
+					sheet.setColumnWidth(x, maxWidth);
+				} else {
+					sheet.setColumnWidth(x, width + 2000);
+				}
+			}
+	
+		    // 컨텐츠 타입과 파일명 지정
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); 		
+			
+		    //response.setContentType("ms-vnd/excel");
+		    response.setHeader("Content-Disposition", "attachment;filename=Barcode__"+DateUtils.getDate()+".xlsx");	
+	
+		    // 엑셀 출력
+		    wb.write(response.getOutputStream());
+		    wb.close();
+		    
+	   } catch (DataAccessException e) {
+			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		}
+	}
+ 
+   @RequestMapping(value = "/gms/bottle/barcodeDownloadChecked.do")
+   public void excelDownloadBottleBarcodeChecked(HttpServletResponse response, BottleVO param){
+	
+	   try {
+		   String bottleIds = null;	
+		   // 용기 정보 불러오기
+			logger.debug("******params.getBottleId()()) *****===*"+param.getBottleIds());			
+			if(param.getBottleIds() !=null && param.getBottleIds().length() > 0) {
+				bottleIds= param.getBottleIds();
+				List<String> list = StringUtils.makeForeach(bottleIds, ","); 		
+				param.setBottList(list);
+			}	
+			
+		    param.setStartRow(0);
+			List<BottleVO> bottleList = bottleService.getBottleDetails(param);
+		    // 워크북 생성
+			XSSFWorkbook wb = new XSSFWorkbook();
+		    //orkbook wb = new HSSFWorkbook();
+		    //Sheet sheet = (Sheet) wb.createSheet("용기");
+			XSSFSheet sheet =  wb.createSheet("용기");
+		    Row row = null;
+		    Cell cell = null;
+	
+		    int rowNo = 0;
+		    
+		    // 테이블 헤더용 스타일
+		    CellStyle headStyle = wb.createCellStyle();
+	
+		    headStyle= ExcelStyle.getHeadStyle(headStyle);
+
+		    // 데이터용 경계 스타일 테두리만 지정
+		    CellStyle bodyStyle = wb.createCellStyle();
+		    
+		    bodyStyle= ExcelStyle.getBodyStyle(bodyStyle);
+		    
+		    // 헤더 생성
+		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+		    
+		    List<String> list = null;		    
+		    
+	    	list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.bottle.barcode"), ","); 		
+		    
+		    for(int i =0;i<list.size();i++) {
+		    
+			    cell = row.createCell(i);
+			    cell.setCellStyle(headStyle);
+			    cell.setCellValue(list.get(i));		   
+			    sheet.autoSizeColumn(i);
+		    }
+
+		    for(BottleVO vo : bottleList) {
+		    	
+		    	for(int i=0 ; i < param.getPrintCount() ; i++ ) {
+		    		int k=0;
+			    	row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
+			        
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleBarCd());
+			        
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleId());			        
+			       
+			        cell = row.createCell(k++);
+			        cell.setCellStyle(bodyStyle);
+			        cell.setCellValue(vo.getBottleBarCd());
+		    	}
+		    }
+
+		    // width 자동조절
+			for (int x = 0; x < sheet.getRow(1).getPhysicalNumberOfCells(); x++) {
+				sheet.autoSizeColumn(x);
+				int width = sheet.getColumnWidth(x);
+				int minWidth = list.get(x).getBytes().length * 450;
+				int maxWidth = 18000;
+				if (minWidth > width) {
+					sheet.setColumnWidth(x, minWidth);
+				} else if (width > maxWidth) {
+					sheet.setColumnWidth(x, maxWidth);
+				} else {
+					sheet.setColumnWidth(x, width + 2000);
+				}
+			}
+	
+		    // 컨텐츠 타입과 파일명 지정
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); 		
+			
+		    //response.setContentType("ms-vnd/excel");
+		    response.setHeader("Content-Disposition", "attachment;filename=Barcode_"+DateUtils.getDate()+".xlsx");	
+	
+		    // 엑셀 출력
+		    wb.write(response.getOutputStream());
+		    wb.close();
+		    
+	   } catch (DataAccessException e) {
+			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		}
+	}
    @RequestMapping(value = "/gms/order/excelDownload.do")
    public void excelDownloadOrder(HttpServletResponse response, OrderVO param){
 	// 게시판 목록조회
