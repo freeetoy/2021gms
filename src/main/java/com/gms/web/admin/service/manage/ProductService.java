@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
@@ -76,4 +77,7 @@ public interface ProductService {
 	public ProductPriceSimpleVO getProductPriceSimple(ProductPriceSimpleVO param);
 	
 	public List<ProductPriceSimpleVO> getAllProductSimpleList();
+	
+	public List<ProductNewVO> getGasProductListNew();
+	
 }

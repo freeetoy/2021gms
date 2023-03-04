@@ -954,4 +954,15 @@
 		AND
 			Dummy_YN != 'N'
 	</update>
+	
+	<select id="selectMaxBarcode" resultType="int" >		
+		SELECT BarCode			
+		FROM
+			TB_Barcode TB
+	</select>
+
+	<update id="updateMaxBarcode" parameterType="int">
+		UPDATE TB_Barcode
+		Set Barcode = #{barcode}
+	</update>	
 </mapper>

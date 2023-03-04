@@ -38,6 +38,7 @@ $(document).ready(function(){
 	
 	var counter = 0;
 	var totalCount = 1;
+    var pdata ;
 	
 	init_add(0);
 	$("#addrow").on("click", function () {
@@ -70,8 +71,10 @@ $(document).ready(function(){
 		newRow.append(cols);
 		$("table.doc-list").append(newRow);
 		$("#priceCount").val(counter+1);
-		init_add(counter);
-
+		if(pdata ===undefined || pdata.lengh <=0)
+			init_add(counter);
+		else
+			init_add1(counter);
 		init_add_storage(counter);
 
 	});
@@ -114,7 +117,11 @@ $(document).ready(function(){
         $("table.doc-list").append(newRow);
 
         $("#priceCount").val(mod_counter);
-        init_add(mod_counter);
+//        init_add(mod_counter);
+		if(pdata ===undefined || pdata.lengh <=0)
+			init_add(mod_counter);
+		else
+			init_add1(mod_counter);
 
         init_mod_storage(mod_counter);
 
@@ -149,16 +156,17 @@ $(document).ready(function(){
 		});
       }
     
+
     function init_add(pid){
 
         $.ajax({
   	  	url: '/gms/product/nlist.do',
   	  	type: 'POST',  	  	
   	  	dataType: 'json',
-
        })
   	 .done(function(data){
-  		  
+  		pdata  = data;
+
   		var i=0;
   		$('#productId_' + pid).append('<option value=0>상품</option>');
 		for(i=0; i< data.length;i++) {
@@ -173,6 +181,15 @@ $(document).ready(function(){
 
     } 
     
+
+    function init_add1(pid){
+  		var i=0;
+  		$('#productId_' + pid).append('<option value=0>상품</option>');
+		for(i=0; i< pdata.length;i++) {
+			$('#productId_' + pid).append('<option value='+pdata[i].productId+'>'+pdata[i].productNm+'</option>')			
+		}
+  	 
+    } 
     
     function init_add_storage(counter) {
     	// body...

@@ -789,6 +789,20 @@ public class BottleServiceImpl implements BottleService {
 	public int deleteProductDummyBottle(ProductVO param) {
 		return bottleMapper.deleteProductDummyBottle(param);
 	}
+
+
+
+	@Override
+	public int getMaxBarcode() {
+		return bottleMapper.selectMaxBarcode();
+	}
+
+
+
+	@Override
+	public int updateMaxBarcode(int barcode) {
+		return bottleMapper.updateMaxBarcode(barcode);
+	}
 	
 
 }

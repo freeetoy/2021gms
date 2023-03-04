@@ -560,4 +560,18 @@
 		AND 
 			TP.Product_ID = TPP.Product_ID
 	</select>
+	
+		<select id="selectNewGasProductList"  resultType="com.gms.web.admin.domain.manage.ProductNewVO">
+		SELECT
+			Product_ID, Product_Nm, A.Gas_ID, B.GAS_CD, Product_Status, A.Member_Comp_Seq
+		FROM
+			TB_Product A, TB_GAS B
+		WHERE
+			Product_Status  != '0'
+		AND 
+			A.Gas_ID = B.Gas_ID
+		AND
+			DELETE_YN='N'
+	</select>
+	
 </mapper>

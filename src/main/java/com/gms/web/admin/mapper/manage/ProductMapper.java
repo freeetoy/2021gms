@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
@@ -81,4 +82,6 @@ public interface ProductMapper {
 	public ProductPriceSimpleVO selectProductPriceSimple(ProductPriceSimpleVO param);
 	
 	public List<ProductPriceSimpleVO> selectAllProductPriceSimpleList();
+	
+	public List<ProductNewVO> selectNewGasProductList();
 }

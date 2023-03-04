@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.manage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.common.CodeVO;
@@ -30,6 +32,7 @@ import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CustomerSimpleVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.GasVO;
+import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.service.common.CodeService;
@@ -794,5 +797,97 @@ public class BottleController {
 		//return null;
 	}
 	
+	@RequestMapping(value = "/gms/bottle/swrite.do")
+	public String openBottleSimpleWrite(Model model) {
+		
+		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.bottle"));
+	
+		// 상품 정보 불러오기
+		List<ProductVO> productList = productService.getGasProductList();
+		model.addAttribute("productList", productList);		
+		
+
+		return "gms/bottle/swrite";
+	}
+	
+	@RequestMapping(value = "/gms/bottle/sregister.do", method = RequestMethod.POST)
+	public String registerSimpleBottle(HttpServletRequest req) {		
+		
+		try {
+	
+			int bottleCount  = Integer.parseInt(req.getParameter("bottleCount"));
+			List<ProductNewVO> productList = productService.getGasProductListNew();
+			
+			int result = 0;
+			
+			List<BottleVO> list = new ArrayList<BottleVO>();
+
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			
+			int maxBarcode = bottleService.getMaxBarcode();
+//		    logger.debug("maxBarcode -="+maxBarcode);
+		    
+			for(int i =0 ; i < bottleCount ; i++ ) {
+				BottleVO bottle = new BottleVO();			
+				
+				RequestUtils.initUserPrgmInfo(req, bottle);
+				
+				bottle.setMemberCompSeq(Integer.parseInt(PropertyFactory.getProperty("common.Member.Comp.Daehan")));
+				bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
+				bottle.setBottleOwnYn("Y");
+				bottle.setBottleWorkId(bottle.getCreateId());
+				
+				bottle.setBottleBarCd("DH"+maxBarcode++);
+				
+				if(req.getParameter("bottleId_"+i)!=null && req.getParameter("bottleId_"+i).length() > 0)
+					bottle.setBottleId(req.getParameter("bottleId_"+i));	
+
+				bottle.setProductId(Integer.parseInt(req.getParameter("productId_"+i)));
+				bottle.setProductPriceSeq(Integer.parseInt(req.getParameter("productPriceSeq_"+i)));
+
+				if(req.getParameter("bottleVolumn_"+i)!=null && req.getParameter("bottleVolumn_"+i).length() > 0)
+					bottle.setBottleVolumn(req.getParameter("bottleVolumn_"+i));	
+				
+				if(req.getParameter("chargeCapa_"+i)!=null && req.getParameter("chargeCapa_"+i).length() > 0) {
+					bottle.setChargeCapa(req.getParameter("chargeCapa_"+i));
+					bottle.setBottleCapa(bottle.getChargeCapa());
+				}
+				String nowString = req.getParameter("bottleChargeDt_"+i);
+
+			    Date nowDate = format.parse(nowString);
+			    bottle.setBottleChargeDt(nowDate);
+				
+			    for(int j = 0; j < productList.size() ; j++) {
+			    	if(bottle.getProductId().equals(productList.get(j).getProductId()) ){
+			    		bottle.setGasId(productList.get(j).getGasId());
+			    		bottle.setGasCd(productList.get(j).getGasCd());
+			    		break;
+			    	}
+			    }
+			    
+//			    logger.debug("bottle.getBottleId -="+bottle.getBottleId());
+//			    logger.debug("bottle.getBottleChargeDt -="+bottle.getBottleChargeDt());
+//			    logger.debug("bottle.getProductId -="+bottle.getProductId());
+//			    logger.debug("bottle.getProductPriceSeq -="+bottle.getProductPriceSeq());
+//			    logger.debug("bottle.getBottleVolumn -="+bottle.getBottleVolumn());
+//			    logger.debug("bottle.getGasCd -="+bottle.getGasCd());
+//			    logger.debug("bottle.getGasId -="+bottle.getGasId());
+				list.add(bottle);
+			}
+			
+			result = bottleService.registerBottles(list);
+
+			result = bottleService.updateMaxBarcode(maxBarcode-1);
+			
+		} catch (DataAccessException e) {
+			logger.error(" registerSimpleBottle Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(" registerSimpleBottle Exception==="+e.toString());
+			e.printStackTrace();
+		}
+			
+		return "redirect:/gms/bottle/list.do";
+	}
 	
 }

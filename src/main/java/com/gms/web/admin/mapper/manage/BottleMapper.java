@@ -92,4 +92,9 @@ public interface BottleMapper {
 	public int updateBottleAfterDelete(OrderBottleVO param);
 	
 	public int deleteProductDummyBottle(ProductVO param);
+	
+	public int selectMaxBarcode();	
+	
+	public int updateMaxBarcode(int barcode);
+	
 }
