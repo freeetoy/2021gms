@@ -72,19 +72,25 @@ $(document).ready(function(){
     
 	$("#save").on("click", function () {
 
-		for(i=0 ; i < totalCount ; i++){ 
-	    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
-	    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
-	    		alert('상품을 선택 하세요');     
-	    		return false;
-	    	}
+		var cuid = $("#customerId").val()
+		if($("#customerId").val() != undefined && $("#customerId").val() != null  && cuid.lengh > 0){
+			for(i=0 ; i < totalCount ; i++){ 
+		    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
+		    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );
+		    		alert('상품을 선택 하세요');     
+		    		return false;
+		    	}
+			}
+	    	var checkedValue = ""; 
+			var chki=0;
+	    	var form = $("#writeForm");	
+	    	document.getElementById("productCount").value = totalCount;    	
+	    	
+	    	form.submit();
+		}else{
+			alert("차량을 지정하세요");
+			return false;
 		}
-    	var checkedValue = ""; 
-		var chki=0;
-    	var form = $("#writeForm");	
-    	document.getElementById("productCount").value = totalCount;    	
-    	
-    	form.submit();
     });
 	
 	$("#goBack").on("click", function () {

@@ -194,6 +194,7 @@
 			  Product_Nm = #{productNm}
 			, Gas_ID = #{gasId}
 			, Sale_Ctype = #{saleCtype}
+			, OWN_YN = #{ownYn}
 			, UPDATE_ID = #{updateId}
 			, UPDATE_DT = NOW()
 		WHERE

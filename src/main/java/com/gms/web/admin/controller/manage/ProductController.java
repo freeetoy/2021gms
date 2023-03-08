@@ -211,6 +211,7 @@ public class ProductController {
 			params.setProductId(Integer.parseInt(req.getParameter("productId")));	
 			params.setProductNm(req.getParameter("productNm"));			
 			params.setSaleCtype(req.getParameter("saleCtype"));
+			params.setOwnYn(req.getParameter("ownYn"));
 			if(req.getParameter("gasId").equals("0")) params.setGasId(0);
 			else params.setGasId(Integer.parseInt(req.getParameter("gasId")));
 			params.setMemberCompSeq(1);
