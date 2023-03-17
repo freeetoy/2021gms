@@ -3026,6 +3026,14 @@ public class WorkReportServiceImpl implements WorkReportService {
 //			logger.debug(" registerWorkReportMassNoOrder workReportSeq =" + p);
 			List<BottleVO> bottleList = getBottleList(param);
 						
+			for(int i=0; i < bottleList.size() ; i++) {
+				bottleList.get(i).setBottleWorkCd(param.getBottleWorkCd());
+				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {	
+					if(param.getAgencyYn().equals("Y")) {
+						bottleList.get(i).setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));
+					}
+				}
+			}
 			//Work_Report_Seq 가져오기
 			boolean registerFlag = false;
 			int workSeq=1;

@@ -19,15 +19,32 @@ function validationOfForm(form) {
 
 	 var bottleCount = document.getElementById('bottleCount').value;
 	 
-	 console.log("bottleCount="+bottleCount);
+	 //console.log("bottleCount="+bottleCount);
 	 
 	 for(var i=0; i < bottleCount ; i++){
-		 console.log("bottleId="+$("#bottleId_"+i).val());
-		 console.log("bottleChargeDt_="+$("#bottleChargeDt_"+i).val());
+		 if($("#bottleId_"+i).val() === undefined || $("#bottleId_"+i).val() =='') {
+			 alert("용기코드를 입력하세요");
+			 return false;
+		 }
+		 
+		 if($("#productId_"+i).val()  <= 0) {
+			 alert("상품을 입력하세요");
+			 return false;
+		 }
+		 if($("#bottleChargeDt_"+i).val() === undefined || $("#bottleChargeDt_"+i).val() =='') {
+			 alert("충전기한를 입력하세요");
+			 return false;
+		 }
+		 
+		 if($("#bottleVolumn_"+i).val() === undefined || $("#bottleVolumn_"+i).val() =='') {
+			 alert("용기체적을 입력하세요");
+			 return false;
+		 }
+		 //console.log("bottleId="+$("#bottleId_"+i).val());
+		 //console.log("bottleChargeDt_="+$("#bottleChargeDt_"+i).val());
 		
 		 var name = $('select[name=productPriceSeq_'+i+'] option:selected').text();
 		 $("#chargeCapa_"+i).val(name);
-		 console.log("name="+name);
 	 }
 	 
 	 //return false;
@@ -55,10 +72,8 @@ $(document).ready(function(){
         counter++;
         
         if (counter > 50){
-
           alert('더 이상 추가 할수 없습니다.');
           return false;
-
         }
      
         var newRow = $("<tr  style='font-size:14px;''>");
@@ -165,7 +180,6 @@ $(document).ready(function(){
 
 });
 
-
 </script>
 
    <div class="content-wrapper">
@@ -185,7 +199,6 @@ $(document).ready(function(){
         <div class="row">
           <div class="col-10">
             <div class="card">
-             
               
              <!-- general form elements -->                        
               <!-- /.card-header -->
@@ -194,7 +207,9 @@ $(document).ready(function(){
               <input type="hidden" id="bottleCount" name="bottleCount" value="1">
                      
                 <div class="form-group">
-                   <label class="control-label col-10">용기정보</label>
+                   <label class="control-label col-10">용기정보</label> 
+                   <div align='right' class="col-md-12 col-sm-10 col-xs-12"> * 50개까지 등록이 가능합니다.
+                   </div>
                    <div class="col-md-12 col-sm-10 col-xs-12">
                        <table id="myTable" class="table doc-list">
                        <tr style="font-size:14px;">
