@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
@@ -53,4 +54,6 @@ public interface ApiService {
 	public int deleteOrder(OrderVO param);
 	
 	public List<WorkBottleVO> deliveredLn2CustomerList(String createId);
+	
+	public List<CustomerLn2AlarmVO> deliveredLn2CustomerListNew(String salesId);
 }

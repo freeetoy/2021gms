@@ -1,5 +1,10 @@
 package com.gms.web.admin.controller.common;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,6 +20,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
@@ -553,6 +559,164 @@ public class ApiController {
 		
 //		logger.info("getDeliveredLn2CustomerList createId="+createId+"===customerList ="+customerList.size());
 		//model.addAttribute("productList", productList);
+		
+		return customerList;
+	}
+	
+	@RequestMapping(value = "/api/ln2CustomerListNew.do")
+	@ResponseBody
+	public List<CustomerLn2AlarmVO> getDeliveredLn2CustomerListNew(String salesId)	{	
+		
+		List<CustomerLn2AlarmVO> customerList = null;
+		if(PropertyFactory.getProperty("ln2.alarm.UseYN").equals("Y"))
+				customerList = apiService.deliveredLn2CustomerListNew(salesId);
+		
+//		for(int i =0 ; i < customerList.size() ; i++) {
+//			CustomerLn2AlarmVO customerAlarm = customerList.get(i);
+//			logger.debug("###customerAlarm.getPeriodCd=######"+customerAlarm.getPeriodCd());
+//			logger.debug("###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+//			logger.debug("###customerAlarm.getDayOfWeek=######"+customerAlarm.getDayOfWeek());
+//			Calendar cal = Calendar.getInstance();
+//
+//			cal.setTime(customerAlarm.getWorkDt());	
+//			
+//			int dayOfWeek = customerAlarm.getDayOfWeek();
+//			
+//			if(customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1week"))) {
+//				
+//				cal.add(Calendar.DATE, 7);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=1week)"+customerAlarm.getWorkDt());
+//
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.2week"))) {
+//				cal.add(Calendar.DATE, 14);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=2week)"+customerAlarm.getWorkDt());
+//				
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.3week"))) {
+//				cal.add(Calendar.DATE, 21);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=3week)"+customerAlarm.getWorkDt());
+//				
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1month"))) {
+//				LocalDate localDate = new java.sql.Date(customerAlarm.getWorkDt().getTime()).toLocalDate();
+//				
+//				localDate= localDate.plusMonths(1);
+//				customerAlarm.setWorkDt(java.sql.Date.valueOf(localDate));
+//				
+////				logger.debug("customerAlarm.getWorkDt=1month)"+customerAlarm.getWorkDt());
+//				
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m1w"))) {
+//				cal.add(Calendar.MONTH,1);
+//				cal.set(Calendar.DAY_OF_MONTH, 1);
+//								
+//				int year = cal.get(Calendar.YEAR);
+//				int month = cal.get(Calendar.MONTH)+1;
+//
+//				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)));
+//				int day = 0;
+//				if(dayOfWeek == 2) day = firstMonday;	//월요일
+//				else if(dayOfWeek == 3) day = firstMonday+1;		//화요일
+//				else if(dayOfWeek == 4) day = firstMonday+2;		//수요일
+//				else if(dayOfWeek == 5) day = firstMonday+3;		//목요일
+//				else if(dayOfWeek == 6) day = firstMonday+4;		//금요일
+//				else if(dayOfWeek == 7) day = firstMonday+5;		//토요일
+//				
+//				cal.set(Calendar.DAY_OF_MONTH, day);
+//				
+//				customerAlarm.setWorkDt(cal.getTime());
+////				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+//				
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m2w"))) {
+//				
+//				cal.add(Calendar.MONTH,1);
+//				cal.set(Calendar.DAY_OF_MONTH, 1);
+//				
+//				int year = cal.get(Calendar.YEAR);
+//				int month = cal.get(Calendar.MONTH)+1;
+//			
+//				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)))+7;
+//				int day = 0;
+//				if(dayOfWeek == 2) day = firstMonday;	//월요일
+//				else if(dayOfWeek == 3) day = firstMonday+1;		//화요일
+//				else if(dayOfWeek == 4) day = firstMonday+2;		//수요일
+//				else if(dayOfWeek == 5) day = firstMonday+3;		//목요일
+//				else if(dayOfWeek == 6) day = firstMonday+4;		//금요일
+//				else if(dayOfWeek == 7) day = firstMonday+5;		//토요일
+//				
+//				cal.set(Calendar.DAY_OF_MONTH, day);
+//				
+//				customerAlarm.setWorkDt(cal.getTime());
+////				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+//				
+////				logger.debug("##DateUtils.getWeekInMonths"+com.gms.web.admin.common.utils.DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)));
+//								
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m3w"))) {
+//				cal.add(Calendar.MONTH,1);
+//				cal.set(Calendar.DAY_OF_MONTH, 1);
+//				
+//				int year = cal.get(Calendar.YEAR);
+//				int month = cal.get(Calendar.MONTH)+1;
+//			
+//				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)))+14;
+//				int day = 0;
+//				if(dayOfWeek == 2) day = firstMonday;	//월요일
+//				else if(dayOfWeek == 3) day = firstMonday+1;		//화요일
+//				else if(dayOfWeek == 4) day = firstMonday+2;		//수요일
+//				else if(dayOfWeek == 5) day = firstMonday+3;		//목요일
+//				else if(dayOfWeek == 6) day = firstMonday+4;		//금요일
+//				else if(dayOfWeek == 7) day = firstMonday+5;		//토요일
+//				
+//				cal.set(Calendar.DAY_OF_MONTH, day);
+//				
+//				customerAlarm.setWorkDt(cal.getTime());
+////				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.2month"))) {
+//				LocalDate localDate = new java.sql.Date(customerAlarm.getWorkDt().getTime()).toLocalDate();
+//				
+//				localDate= localDate.plusMonths(2);
+//				
+//				customerAlarm.setWorkDt(java.sql.Date.valueOf(localDate));
+//				
+////				logger.debug("customerAlarm.getWorkDt=2month)"+customerAlarm.getWorkDt());
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.5week"))) {
+//				cal.add(Calendar.DATE, 35);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=5week)"+customerAlarm.getWorkDt());
+//
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.6week"))) {
+//				cal.add(Calendar.DATE, 42);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=6week)"+customerAlarm.getWorkDt());
+//
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.7week"))) {
+//				cal.add(Calendar.DATE, 49);
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+////				logger.debug("customerAlarm.getWorkDt=7week)"+customerAlarm.getWorkDt());
+//
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.10day"))) {
+//				int day = cal.get(Calendar.DAY_OF_MONTH);
+//				if(day==5 || day==10) cal.add(Calendar.DATE, 5);
+//				else if(day==15) {
+//					cal.add(Calendar.MONTH,1);
+//					cal.set(Calendar.DAY_OF_MONTH,5);
+//				}
+//				customerAlarm.setWorkDt(cal.getTime());
+//
+//				logger.debug("######customerAlarm.getWorkDt=10day)"+customerAlarm.getWorkDt());
+//				
+//			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.40day"))) {
+//				cal.add(Calendar.DATE, 40);
+//				customerAlarm.setWorkDt(cal.getTime());
+//				
+//			}
+//		}
 		
 		return customerList;
 	}

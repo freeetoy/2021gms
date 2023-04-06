@@ -733,4 +733,30 @@
 		Group By Customer_ID,wb.Product_ID, wb.Product_Price_Seq,wb.Product_Price,Bottle_Work_Cd
 	</select>
 	
+	<select id="selectLn2CustomerList" resultType="com.gms.web.admin.domain.manage.CustomerLn2AlarmVO" parameterType="String">		
+		SELECT tc.Customer_Nm,tc.Customer_ID, tcl.Work_Dt ,Period_Cd, Day_Period
+		FROM TB_Customer tc, TB_Customer_Ln2 tcl 
+		WHERE tc.Customer_ID = tcl.customer_id 
+		AND tcl.Work_Dt = date_sub(curdate(), interval -1 day) 
+		AND tcl.Ln2_Sales_Id =  #{ln2SalesId}
+	</select>
+	
+	<select id="selectCustomerLn2" resultType="com.gms.web.admin.domain.manage.CustomerLn2AlarmVO" parameterType="Integer">		
+		SELECT Customer_ID, Period_Cd, Day_Period, Work_Dt, Ln2_Sales_Id
+		FROM TB_Customer_Ln2 tcl 
+		WHERE Customer_ID = #{customerId}
+	</select>
+	
+	<update id="updateCustomerLn2WorkDt" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		UPDATE TB_Customer_Ln2
+		SET WORK_DT			= #{workDt}
+		WHERE CUSTOMER_ID 	= #{customerId}		
+	</update>
+	<update id="updateCustomerLn2" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
+		UPDATE TB_Customer_Ln2
+		SET Period_Cd		= #{periodCd}
+		, Day_Period		= #{dayPeriod}
+		, Work_Dt			= #{workDt}
+		WHERE CUSTOMER_ID 	= #{customerId}		
+	</update>
 </mapper>

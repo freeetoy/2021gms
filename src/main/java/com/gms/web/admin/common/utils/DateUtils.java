@@ -189,4 +189,51 @@ public class DateUtils {
 		
 		return true;
 	}
+	
+	  /**
+     * 주어진 타입에 따라 현재의 년, 월, 일을 리턴한다.
+     * @param calendarType
+     * @return
+     */
+	public static String getCurrentDate(int calendarType) {
+		Calendar cal = Calendar.getInstance();
+        if (calendarType == Calendar.YEAR) {
+            return String.valueOf(cal.get(cal.YEAR));
+        } else if(calendarType == Calendar.MONTH) {
+            return String.valueOf(cal.get(cal.MONTH)+1);
+        } else if (calendarType == Calendar.DAY_OF_MONTH) {
+            return String.valueOf(cal.get(cal.DAY_OF_MONTH));
+        }
+        return "";
+    }
+	
+	/**
+     * 특정 년/월 의 첫번째 월요일 일자를 구한다.
+     * @param year
+     * @param month
+     * @return
+     */
+    public static String getWeekInMonths(String year, String month) {
+        Calendar cal = Calendar.getInstance();
+        int intYear=Integer.parseInt(year);
+        int intMonth=Integer.parseInt(month);
+
+        cal.set(Calendar.YEAR, intYear);
+        cal.set(Calendar.MONTH, intMonth);
+//        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        String findOfFirstMondayOfMonth = "1";
+        for (int week = 1; week < cal.getMaximum(Calendar.WEEK_OF_MONTH); week++) {
+            cal.set(Calendar.WEEK_OF_MONTH, week);
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONTH);
+            int startDay = cal.get(Calendar.DAY_OF_MONTH);
+            int dayNum = cal.get(Calendar.DAY_OF_WEEK);
+;
+            if (dayNum == 2 && startDay < 8) {
+                findOfFirstMondayOfMonth = String.valueOf(startDay);
+                break;
+            }
+        }
+        return findOfFirstMondayOfMonth;
+    }
 }

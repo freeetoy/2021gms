@@ -137,6 +137,20 @@
 	<entry key="common.code.order.process.09">0290</entry>		<!-- 거래완료 -->
 	<entry key="common.code.order.process.99">0299</entry>		<!-- 삭제 -->
 	
+	<entry key="common.code.period.cd">0600</entry>
+	<entry key="common.code.period.1week">0601</entry>
+	<entry key="common.code.period.2week">0602</entry>
+	<entry key="common.code.period.3week">0603</entry>
+	<entry key="common.code.period.1month">0604</entry>
+	<entry key="common.code.period.1m1w">0605</entry>
+	<entry key="common.code.period.1m2w">0606</entry>
+	<entry key="common.code.period.1m3w">0607</entry>
+	<entry key="common.code.period.2month">0608</entry>
+	<entry key="common.code.period.5week">0609</entry>
+	<entry key="common.code.period.6week">0610</entry>
+	<entry key="common.code.period.7week">0611</entry>
+	<entry key="common.code.period.10day">0612</entry>
+	<entry key="common.code.period.40day">0613</entry>
 	
 	<!-- <entry key="excel.bottle.title">용기,바코드/RFID,가스,품명,용기체적,가스용량,충전용량,충전기한,충전압력	,제조일,거래처,작업,소유</entry> -->
 	<!-- <entry key="excel.bottle.title">용기번호,바코드번호,가스종류,충전용량,제조월,	충전기한,용기체적,사업자등록번호,GMP여부(Y/N),품명,충전압력,용기소유</entry> -->

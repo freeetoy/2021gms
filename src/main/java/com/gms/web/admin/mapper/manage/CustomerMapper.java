@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gms.web.admin.domain.manage.CustomerBottleVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
@@ -102,4 +103,12 @@ public interface CustomerMapper {
 	public CustomerPriceVO selectCustomerLn2Capa(WorkBottleVO param);
 	
 	public List<CustomerSalesVO> selectCustomerSalesList(Map<String, Object> map);	
+	
+	public List<CustomerLn2AlarmVO> selectLn2CustomerList(String salesId);
+	
+	public int updateCustomerLn2WorkDt(CustomerLn2AlarmVO param);
+	
+	public int updateCustomerLn2(CustomerLn2AlarmVO param);
+	
+	public CustomerLn2AlarmVO selectCustomerLn2(Integer customerId);
 }

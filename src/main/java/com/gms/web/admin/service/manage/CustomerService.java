@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.gms.web.admin.domain.manage.CustomerBottleVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
@@ -96,4 +97,12 @@ public interface CustomerService {
 	public CustomerPriceVO  getCustomerLn2Capa(WorkBottleVO param);
 	
 	public List<CustomerSalesVO> getCustomerSalesList(CustomerSalesVO param);	
+	
+	public List<CustomerLn2AlarmVO> getLn2CustomerList(String salesId);
+	
+	public int modifyCustomerLn2WorkDt(CustomerLn2AlarmVO param);
+	
+	public int modifyCustomerLn2(CustomerLn2AlarmVO param);
+	
+	public CustomerLn2AlarmVO getCustomerLn2(Integer customerId);
 }

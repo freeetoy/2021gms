@@ -23,6 +23,7 @@ import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerSalesVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
@@ -1779,9 +1780,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				for(int j=0; j < allOrderProductList.size() ; j++) {
 					OrderProductVO paramOrderProduct = allOrderProductList.get(j);
-//					logger.debug("!!!!!!!!!!***paramOrderProduct.getOrderAmount() ="+paramOrderProduct.getOrderAmount());
-//					logger.debug("!!!!!!!!!!***paramOrderProduct.getOrderCount() ="+paramOrderProduct.getOrderCount());
-//					logger.debug("!!!!!!!!!!***paramOrderProduct.getSalesCount() ="+paramOrderProduct.getSalesCount());
+
 					if(paramOrderProduct.getSalesCount() == paramOrderProduct.getOrderCount()) deleteOrderProducts.add(paramOrderProduct);
 					else if(paramOrderProduct.getSalesCount() > 0 && paramOrderProduct.getOrderCount() > paramOrderProduct.getSalesCount()) {
 						paramOrderProduct.setOrderAmount(paramOrderProduct.getOrderAmount() / paramOrderProduct.getOrderCount());
@@ -1995,6 +1994,18 @@ public class WorkReportServiceImpl implements WorkReportService {
 				}
 			}			
 		}
+		
+		//Customer_Ln2 변경
+		if(param.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) )) {
+			//Customer_Ln2 변경
+			logger.debug("--registerWorkNoBottle  workBottleList.size=product.LN2.divide.new.productId" );
+			CustomerLn2AlarmVO ln2Alarm = new CustomerLn2AlarmVO();
+			ln2Alarm.setCustomerId(param.getCustomerId());
+			
+			result = customerService.modifyCustomerLn2WorkDt(ln2Alarm);	
+		}		
+				
+		
 		double cashTotal = 0;
 		for(int i=0; i < workBottleList.size() ; i++) {
 			cashTotal+=workBottleList.get(i).getProductPrice();
@@ -2008,6 +2019,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			cashFlow.setCreateId(param.getCreateId());
 		cashFlow.setSearchCreateDt(param.getSearchDt());
 		result = cashService.registerCashFlow(cashFlow);
+		
 		return result;
 	}
 

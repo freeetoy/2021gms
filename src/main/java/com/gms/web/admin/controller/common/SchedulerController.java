@@ -30,8 +30,9 @@ public class SchedulerController {
 	@Scheduled(cron="0 00 01 * * *")
 	private void scheduleDaily() { 
 		
-		//Daiyl 통계 데이타 등록@Scheduled(cron="0 00 21 * * *")
-		//statOrderService.
+		//Daiyl 통계 데이타 등록@Scheduled(cron="0 00 01 * * *")	매일 1시 정각
+		//statOrderService. 초 (0-59) 분 (0-59) 시 (0-23) 일 (1-31) 월 (1-12 또는 JAN-DEC) 요일 (0-7 또는 SUN-SAT, 0과 7은 SUN과 같음)
+
 		logger.info("************* ScheduleController scheduleDaily Start *************");
 		
 		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {

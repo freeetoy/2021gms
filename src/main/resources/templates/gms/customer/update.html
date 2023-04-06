@@ -138,6 +138,30 @@ var getBottle = function(){
 	form.submit();
 }
 
+$(document).ready(function(){ 
+    $('#periodCd').change( function(){
+
+    	$('#dayPeriod').find('option').remove();
+    	
+    	var selPeriodCd = $('#periodCd').val();
+    	
+    	if(selPeriodCd =='0601' || selPeriodCd =='0602' || selPeriodCd =='0603' || selPeriodCd =='0605' 
+    			|| selPeriodCd =='0606' || selPeriodCd =='0607' || selPeriodCd =='0609' || selPeriodCd =='0610' || selPeriodCd =='0611' ) {
+    		$('#dayPeriod').append('<option value="1">일</option>');
+    		$('#dayPeriod').append('<option value="2">월</option>');
+    		$('#dayPeriod').append('<option value="3">화</option>');
+    		$('#dayPeriod').append('<option value="4">수</option>');
+    		$('#dayPeriod').append('<option value="5">목</option>');
+    		$('#dayPeriod').append('<option value="6">금</option>');
+    		$('#dayPeriod').append('<option value="7">토</option>');
+    	}else{
+    		for(i=1; i< 32;i++) {
+    			$('#dayPeriod').append('<option value='+i+'>'+i+'</option>');
+    		}
+		}
+		
+	});
+});
 
 $(function() {
 
@@ -158,6 +182,24 @@ $(function() {
 	      $(this).val('');
 	  });
 
+	  
+	  $('input[name="workDt"]').daterangepicker({
+		    singleDatePicker: true,
+		    showDropdowns: true,
+		    autoUpdateInput: false,
+		    startDate: new Date(),
+		      locale: {
+		          cancelLabel: 'Clear'
+		      }
+		  });
+		
+		  $('input[name="workDt"]').on('apply.daterangepicker', function(ev, picker) {
+		      $(this).val(picker.startDate.format('YYYY-MM-DD'));
+		  });
+		
+		  $('input[name="workDt"]').on('cancel.daterangepicker', function(ev, picker) {
+		      $(this).val('');
+		  });
 	});	
 </script>
 
@@ -312,6 +354,76 @@ $(function() {
                       <th class="card-footer">액체질소주기</th>
                       <th><input type="text" class="form-control" id="ln2Period" name="ln2Period" th:value="${customer.ln2Period}"></th>
                     </tr>
+                   
+                    <tr>
+                      <th class="card-footer">new액체질소주기1</th>
+                      <th>
+                       <select id="periodCd" name="periodCd" class="form-control">
+                        <option value="">주기</option>
+                      	<option th:each="row : ${codeList}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}"
+					               th:if="${customerLn2 !=null && customerLn2.periodCd ==row.cdId}" selected>
+					     </option>	
+					     <option th:each="row : ${codeList}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}"
+					               th:unless="${customerLn2 !=null && customerLn2.periodCd ==row.cdId}">
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>    
+                    
+                    <tr>
+                      <th class="card-footer">new액체질소주기2</th>
+                      <th th:if="${customerLn2 ==null }">
+                      <select id="dayPeriod" name="dayPeriod" class="form-control">
+                       <option th:each="num : ${#numbers.sequence(1,31)}"
+					                th:text="${num}"
+					                th:value="${num}"
+					               >
+					     </option>	
+                      </th>
+                      <th th:if="${customerLn2 !=null && (customerLn2.periodCd =='0601' || customerLn2.periodCd =='0602' || customerLn2.periodCd =='0603' || customerLn2.periodCd =='0605' || customerLn2.periodCd =='0606' || customerLn2.periodCd =='0607' || customerLn2.periodCd =='0609' || customerLn2.periodCd =='0610' || customerLn2.periodCd =='0611' )}">
+                       <select id="dayPeriod" name="dayPeriod" class="form-control">
+                        <option value="1" th:if="${customerLn2.dayPeriod ==1}" selected>일</option>
+                        <option value="1" th:unless="${customerLn2.dayPeriod ==1}">일</option>
+                        <option value="2" th:if="${customerLn2.dayPeriod ==2}" selected>월</option>
+                        <option value="2" th:unless="${customerLn2.dayPeriod ==2}">월</option>
+                        <option value="3" th:if="${customerLn2.dayPeriod ==3}" selected>화</option>
+                        <option value="3" th:unless="${customerLn2.dayPeriod ==3}">화</option>
+                        <option value="4" th:if="${customerLn2.dayPeriod ==4}" selected>수</option>
+                        <option value="4" th:unless="${customerLn2.dayPeriod ==4}">수</option>
+                        <option value="5" th:if="${customerLn2.dayPeriod ==5}" selected>목</option>
+                        <option value="5" th:unless="${customerLn2.dayPeriod ==5}">목</option>
+                        <option value="6" th:if="${customerLn2.dayPeriod ==6}" selected>금</option>
+                        <option value="6" th:unless="${customerLn2.dayPeriod ==6}">금</option>
+                        <option value="7" th:if="${customerLn2.dayPeriod ==7}" selected>토</option>
+                        <option value="7" th:unless="${customerLn2.dayPeriod ==7}">토</option>
+					    </select>	                      
+						</th>
+						<th th:if="${customerLn2 !=null && (customerLn2.periodCd =='0604' || customerLn2.periodCd =='0608' || customerLn2.periodCd =='0612' || customerLn2.periodCd =='0613')}">
+                       <select id="dayPeriod" name="dayPeriod" class="form-control">
+                       <option th:each="num : ${#numbers.sequence(1,31)}"
+					                th:text="${num}"
+					                th:value="${num}"
+					               th:if="${customerLn2.dayPeriod ==num}" selected>
+					     </option>	
+					     <option th:each="row : ${#numbers.sequence(1,31)}"
+					                th:text="${num}"
+					                th:value="${num}"
+					               th:unless="${customerLn2.dayPeriod ==num}">
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr>    
+                    
+                    <tr>                                   
+                      <th class="card-footer">Ln2납품예정일</th>
+                      <th  th:if="${customerLn2 !=null}"><input type="text" class="form-control" id="workDt" name="workDt" th:value="${#dates.format(customerLn2.workDt, 'yyyy-MM-dd')}"></th>
+                      <th  th:unless="${customerLn2 !=null}"><input type="text" class="form-control" id="workDt" name="workDt" ></th>
+                    </tr>
+                    
                     <tr>                                   
                       <th class="card-footer">소유용기</th>
                       <td>

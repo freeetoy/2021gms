@@ -1,9 +1,12 @@
 package com.gms.web.admin.service.manage;
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.domain.manage.CustomerBottleVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
@@ -22,6 +27,7 @@ import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.mapper.manage.CustomerMapper;
+import com.gms.web.admin.common.utils.DateUtils;
 
 import net.sf.ehcache.CacheManager;
 
@@ -456,5 +462,173 @@ public class CustomerServiceImpl implements CustomerService {
 		List<CustomerSalesVO> statList = customerMapper.selectCustomerSalesList(map);	
 				
 		return statList;
+	}
+
+	@Override
+	public List<CustomerLn2AlarmVO> getLn2CustomerList(String salesId) {
+		return customerMapper.selectLn2CustomerList(salesId);
+	}
+
+	@Override
+	public int modifyCustomerLn2WorkDt(CustomerLn2AlarmVO param) {
+		
+		int result= 0;
+		CustomerLn2AlarmVO customerAlarm = customerMapper.selectCustomerLn2(param.getCustomerId());
+		
+		if(customerAlarm != null) {
+			
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(customerAlarm.getWorkDt());	
+			
+			int dayPeriod = customerAlarm.getDayPeriod();
+			
+			if(customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1week"))) {
+				
+				cal.add(Calendar.DATE, 7);
+				customerAlarm.setWorkDt(cal.getTime());
+
+				logger.debug("customerAlarm.getWorkDt=1week)"+customerAlarm.getWorkDt());
+
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.2week"))) {
+				cal.add(Calendar.DATE, 14);
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=2week)"+customerAlarm.getWorkDt());
+				
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.3week"))) {
+				cal.add(Calendar.DATE, 21);
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=3week)"+customerAlarm.getWorkDt());
+				
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1month"))) {
+				LocalDate localDate = new java.sql.Date(customerAlarm.getWorkDt().getTime()).toLocalDate();
+				
+				localDate= localDate.plusMonths(1);
+				customerAlarm.setWorkDt(java.sql.Date.valueOf(localDate));
+				
+//				logger.debug("customerAlarm.getWorkDt=1month)"+customerAlarm.getWorkDt());
+				
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m1w"))) {
+				cal.add(Calendar.MONTH,1);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+								
+				int year = cal.get(Calendar.YEAR);
+				int month = cal.get(Calendar.MONTH)+1;
+
+				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)));
+				int day = 0;
+				if(dayPeriod == 2) day = firstMonday;	//월요일
+				else if(dayPeriod == 3) day = firstMonday+1;		//화요일
+				else if(dayPeriod == 4) day = firstMonday+2;		//수요일
+				else if(dayPeriod == 5) day = firstMonday+3;		//목요일
+				else if(dayPeriod == 6) day = firstMonday+4;		//금요일
+				else if(dayPeriod == 7) day = firstMonday+5;		//토요일
+				
+				cal.set(Calendar.DAY_OF_MONTH, day);
+				
+				customerAlarm.setWorkDt(cal.getTime());
+//				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+				
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m2w"))) {
+				
+				cal.add(Calendar.MONTH,1);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				
+				int year = cal.get(Calendar.YEAR);
+				int month = cal.get(Calendar.MONTH)+1;
+			
+				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)))+7;
+				int day = 0;
+				if(dayPeriod == 2) day = firstMonday;	//월요일
+				else if(dayPeriod == 3) day = firstMonday+1;		//화요일
+				else if(dayPeriod == 4) day = firstMonday+2;		//수요일
+				else if(dayPeriod == 5) day = firstMonday+3;		//목요일
+				else if(dayPeriod == 6) day = firstMonday+4;		//금요일
+				else if(dayPeriod == 7) day = firstMonday+5;		//토요일
+				
+				cal.set(Calendar.DAY_OF_MONTH, day);
+				
+				customerAlarm.setWorkDt(cal.getTime());
+//				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+				
+//				logger.debug("##DateUtils.getWeekInMonths"+com.gms.web.admin.common.utils.DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)));
+								
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.1m3w"))) {
+				cal.add(Calendar.MONTH,1);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				
+				int year = cal.get(Calendar.YEAR);
+				int month = cal.get(Calendar.MONTH)+1;
+			
+				int firstMonday = Integer.parseInt(DateUtils.getWeekInMonths(Integer.toString(year),Integer.toString(month)))+14;
+				int day = 0;
+				if(dayPeriod == 2) day = firstMonday;	//월요일
+				else if(dayPeriod == 3) day = firstMonday+1;		//화요일
+				else if(dayPeriod == 4) day = firstMonday+2;		//수요일
+				else if(dayPeriod == 5) day = firstMonday+3;		//목요일
+				else if(dayPeriod == 6) day = firstMonday+4;		//금요일
+				else if(dayPeriod == 7) day = firstMonday+5;		//토요일
+				
+				cal.set(Calendar.DAY_OF_MONTH, day);
+				
+				customerAlarm.setWorkDt(cal.getTime());
+//				logger.debug("after ###customerAlarm.getWorkDt=######"+customerAlarm.getWorkDt());
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.2month"))) {
+				LocalDate localDate = new java.sql.Date(customerAlarm.getWorkDt().getTime()).toLocalDate();
+				
+				localDate= localDate.plusMonths(2);
+				
+				customerAlarm.setWorkDt(java.sql.Date.valueOf(localDate));
+				
+//				logger.debug("customerAlarm.getWorkDt=2month)"+customerAlarm.getWorkDt());
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.5week"))) {
+				cal.add(Calendar.DATE, 35);
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=5week)"+customerAlarm.getWorkDt());
+
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.6week"))) {
+				cal.add(Calendar.DATE, 42);
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=6week)"+customerAlarm.getWorkDt());
+
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.7week"))) {
+				cal.add(Calendar.DATE, 49);
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=7week)"+customerAlarm.getWorkDt());
+
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.10day"))) {
+				int day = cal.get(Calendar.DAY_OF_MONTH);
+				if(day==5 || day==10) cal.add(Calendar.DATE, 5);
+				else if(day==15) {
+					cal.add(Calendar.MONTH,1);
+					cal.set(Calendar.DAY_OF_MONTH,5);
+				}
+				customerAlarm.setWorkDt(cal.getTime());
+
+//				logger.debug("customerAlarm.getWorkDt=10day)"+customerAlarm.getWorkDt());
+				
+			}else if (customerAlarm.getPeriodCd().equals(PropertyFactory.getProperty("common.code.period.40day"))) {
+				cal.add(Calendar.DATE, 40);
+				customerAlarm.setWorkDt(cal.getTime());
+			}
+			result = customerMapper.updateCustomerLn2WorkDt(customerAlarm);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public CustomerLn2AlarmVO getCustomerLn2(Integer customerId) {
+		return customerMapper.selectCustomerLn2(customerId);
+	}
+
+	@Override
+	public int modifyCustomerLn2(CustomerLn2AlarmVO param) {
+		return customerMapper.updateCustomerLn2(param);
 	}
 }

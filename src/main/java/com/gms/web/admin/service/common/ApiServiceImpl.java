@@ -15,6 +15,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
 import com.gms.web.admin.domain.manage.CustomerVO;
@@ -528,6 +529,12 @@ public class ApiServiceImpl implements ApiService {
 		report.setCreateId(createId);
 		
 		return workService.deliveredLn2CustomerList(report);
+	}
+
+	@Override
+	public List<CustomerLn2AlarmVO> deliveredLn2CustomerListNew(String salesId) {
+			
+		return customerService.getLn2CustomerList(salesId);
 	}
 
 

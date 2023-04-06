@@ -22,8 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
+import com.gms.web.admin.domain.common.CodeVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CustomerBottleVO;
+import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerPriceExtVO;
 import com.gms.web.admin.domain.manage.CustomerPriceVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
@@ -36,6 +38,7 @@ import com.gms.web.admin.domain.manage.WorkBottleViewVO;
 import com.gms.web.admin.domain.manage.WorkReportVO;
 import com.gms.web.admin.domain.manage.WorkReportViewVO;
 import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
+import com.gms.web.admin.service.common.CodeService;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
 import com.gms.web.admin.service.manage.OrderService;
@@ -64,6 +67,9 @@ public class CustomerController {
 	
 	@Autowired
 	private WorkReportService workService;
+	
+	@Autowired
+	private CodeService codeService;
 	
 	
 	@RequestMapping(value = "/gms/customer/list.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -136,7 +142,7 @@ public class CustomerController {
 		return "redirect:/gms/customer/list.do";
 	}
 
-	@RequestMapping(value = "/gms/customer/update.do", method = {RequestMethod.GET})
+	@RequestMapping(value = "/gms/customer/update.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String openCustomerUpdate(@RequestParam(value = "customerId", required = false) Integer customerId, 
 			HttpServletRequest request , HttpServletResponse response,Model model) {
 
@@ -161,6 +167,12 @@ public class CustomerController {
 			}
 			
 			model.addAttribute("customer", customer);
+			
+			CustomerLn2AlarmVO customerLn2 = customerService.getCustomerLn2(customerId);
+			model.addAttribute("customerLn2", customerLn2);
+			
+			List<CodeVO> codeList = codeService.getCodeList(PropertyFactory.getProperty("common.code.period.cd"));
+			model.addAttribute("codeList", codeList);
 			
 			UserVO param = new UserVO();
 			param.setUserPartCd(PropertyFactory.getProperty("common.user.SALES"));
@@ -248,7 +260,7 @@ public class CustomerController {
 	@RequestMapping(value = "/gms/customer/modify.do", method = RequestMethod.POST)
 	public ModelAndView modifyCustomer(HttpServletRequest request
 			, HttpServletResponse response
-			, CustomerVO params) {
+			, CustomerVO params, CustomerLn2AlarmVO customerLn2Alarm) {
 		
 		ModelAndView mav = new ModelAndView();	
 		
@@ -258,11 +270,15 @@ public class CustomerController {
 		
 		String searchCustomerNm = params.getSearchCustomerNm();
 		boolean result = false;
+		int result1 = 0;
 		try {			
-			//logger.debug("******params.getCustomerId()()) *****===*"+params.getCustomerId());
+//			logger.debug("******params.getCustomerId()()) *****===*"+customerLn2Alarm.getCustomerId());
 			mav.addObject("currentPage", params.getCurrentPage());
 			mav.addObject("searchCustomerNm", params.getSearchCustomerNm());
 			result = customerService.modifyCustomer(params);
+			
+			if(customerLn2Alarm.getPeriodCd() != null &&  !customerLn2Alarm.getPeriodCd().equals(""))
+				result1 = customerService.modifyCustomerLn2(customerLn2Alarm);
 			
 			if (result == false) {
 				// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
