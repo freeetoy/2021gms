@@ -14,6 +14,8 @@ public interface BottleService {
 
 	public Map<String,Object> getBottleList(BottleVO params);	
 	
+	public Map<String,Object> getBottleHistList(BottleVO params);	
+	
 	public List<BottleVO> getBottleListAll();
 	
 	public List<BottleVO> getBottleListToExcel(BottleVO params);

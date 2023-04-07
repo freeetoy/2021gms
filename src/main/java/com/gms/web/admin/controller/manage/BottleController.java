@@ -78,6 +78,10 @@ public class BottleController {
 			
 			params.setSearchChargeDtFrom(searchChargeDtFrom);
 			params.setSearchChargeDtEnd(searchChargeDtEnd);			
+		}else {
+//			logger.debug("getBottleList="+params.getSearchChargeDt().length());
+			searchChargeDt="";
+			params.setSearchChargeDt(searchChargeDtEnd);
 		}
 		
 		String searchDt = params.getSearchDt();	
@@ -150,6 +154,78 @@ public class BottleController {
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.bottle"));	 
 		
 		return "gms/bottle/list";
+	}
+	
+	@RequestMapping(value = "/gms/bottle/hlist.do")
+	public String getBottleHistList(BottleVO params, Model model) {
+
+		logger.debug("getBottleHistList");
+		
+		String searchDt = params.getSearchDt();	
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {
+			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			params.setSearchDtFrom(searchDtFrom);
+			params.setSearchDtEnd(searchDtEnd);			
+		}
+		
+		//params.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+		
+		Map<String, Object> map = bottleService.getBottleHistList(params);
+		
+		model.addAttribute("bottleList", map.get("list"));
+		
+		String searchProductId = "";
+		if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
+			searchProductId = params.getSearchProductId();
+			model.addAttribute("searchProductId", Integer.parseInt(searchProductId));
+			model.addAttribute("searchProductId1", Integer.parseInt(searchProductId));			
+		}
+		
+		String ownCustomerId = "";
+		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) ownCustomerId = params.getOwnCustomerId();
+		
+		List<CustomerSimpleVO> customerList = null;
+		if(params.getSearchCustomerNm1()!=null && params.getSearchCustomerNm1().length() > 0)
+			customerList = customerService.searchCustomerSimpleList(params.getSearchCustomerNm1());
+		
+		model.addAttribute("customerList", customerList);	
+		model.addAttribute("searchCustomerNm1", params.getSearchCustomerNm1());
+		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) 
+			model.addAttribute("ownCustomerId", Integer.parseInt(params.getOwnCustomerId()) );
+		
+		// 상품 정보 불러오기
+		List<ProductVO> productList = productService.getGasProductList();
+		model.addAttribute("productList", productList);		
+		
+		//BOTTLE_WORK_CD 코드정보 불러오기 
+		List<CodeVO> codeList = codeService.getCodeList(PropertyFactory.getProperty("common.bottle.status"));
+		model.addAttribute("codeList", codeList);
+		
+		List<CustomerVO> carList = customerService.searchCustomerListCar();
+		model.addAttribute("carList", carList);		
+		
+		//검색어 셋팅
+		model.addAttribute("searchBottleId", params.getSearchBottleId());
+		model.addAttribute("searchBottleBarCd", params.getSearchBottleBarCd());
+		model.addAttribute("searchChargeDt", params.getSearchChargeDt());	
+		model.addAttribute("searchDt", params.getSearchDt());	
+		model.addAttribute("searchWorkCd", params.getSearchWorkCd() );		
+		
+		model.addAttribute("currentPage", map.get("currentPage"));
+		model.addAttribute("lastPage", map.get("lastPage"));
+		model.addAttribute("startPageNum", map.get("startPageNum"));
+		model.addAttribute("lastPageNum", map.get("lastPageNum"));
+		model.addAttribute("totalCount", map.get("totalCount"));
+		
+		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.boottle.hist"));	 
+		
+		return "gms/bottle/hlist";
 	}
 	
 	@RequestMapping(value = "/gms/bottle/print.do")
@@ -576,6 +652,8 @@ public class BottleController {
 		
 		String searchChargeDtFrom = null;
 		String searchChargeDtEnd = null;
+		String searchDtFrom = null;
+		String searchDtEnd = null;
 		String searchProductId = "";
 		
 		int  result = 0;
@@ -592,7 +670,26 @@ public class BottleController {
 				
 				params.setSearchChargeDtFrom(searchChargeDtFrom);
 				params.setSearchChargeDtEnd(searchChargeDtEnd);				
-			}			
+			}else {
+				logger.debug(" here");
+				searchChargetDt ="";
+			}
+			
+			String searchDt = params.getSearchDt();	
+			
+			if(searchDt != null && searchDt.length() > 20) {				
+				//logger.debug("BottleContoller searchChargeDt "+ searchChargetDt.length());
+				searchDtFrom = searchDt.substring(0, 10) ;				
+				searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+				
+				params.setSearchDtFrom(searchDtFrom);
+				params.setSearchDtEnd(searchDtEnd);				
+			}else {
+				logger.debug(" here");
+				searchDt ="";
+				params.setSearchDt(searchDt);
+			}
+			
 			
 			if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
 				searchProductId = params.getSearchProductId();
@@ -605,7 +702,8 @@ public class BottleController {
 			result = bottleService.changeBottleWorkCd(params); 
 			
 			mav.addObject("searchBottleId", params.getSearchBottleId());	
-			mav.addObject("searchChargeDt", params.getSearchChargeDt());	
+			mav.addObject("searchChargeDt", params.getSearchChargeDt());
+			mav.addObject("searchDt", params.getSearchDt());
 			mav.addObject("currentPage", params.getCurrentPage());	
 			
 			if (result < 0) {
@@ -613,7 +711,7 @@ public class BottleController {
 				logger.debug(" modifyBottleWorkCd error");
 				
 				String alertMessage = "처리중 에러가 발생하였습니다.";
-				RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId());
+				RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchDt="+searchDt+"&searchProductId="+params.getSearchProductId());
 			}
 		} catch (DataAccessException e) {
 			logger.error(" modifyBottleWorkCd Exception==="+e.toString());
@@ -625,7 +723,7 @@ public class BottleController {
 		
 		if(result > 0){
 			String alertMessage = "용기를 작업하였습니다.";
-			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId());
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchDt="+params.getSearchDt()+"&searchProductId="+params.getSearchProductId());
 		}
 		return null;
 		

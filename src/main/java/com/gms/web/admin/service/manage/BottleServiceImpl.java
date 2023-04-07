@@ -120,10 +120,10 @@ public class BottleServiceImpl implements BottleService {
 	
 		int bottleCount = 0;
 //		logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchWorkCd());
-		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
-			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
-		}else
-			bottleCount = bottleMapper.selectBottleCount(map);
+//		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
+//			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
+//		}else
+		bottleCount = bottleMapper.selectBottleCount(map);
 		
 		//int lastPage = (int)(Math.ceil(bottleCount/ROW_PER_PAGE));
 		int lastPage = (int)((double)bottleCount/ROW_PER_PAGE+0.95);		
@@ -150,10 +150,10 @@ public class BottleServiceImpl implements BottleService {
 		Map<String, Object> resutlMap = new HashMap<String, Object>();
 		
 		List<BottleVO> bottleList = null;
-		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0 )
-			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
-		else
-			bottleList = bottleMapper.selectBottleList(map);
+//		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0 )
+//			bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
+//		else
+		bottleList = bottleMapper.selectBottleList(map);
 		
 		resutlMap.put("list",  bottleList);
 		
@@ -166,7 +166,123 @@ public class BottleServiceImpl implements BottleService {
 		return resutlMap;
 	}
 	
+	@Override
+	public Map<String,Object> getBottleHistList(BottleVO param) {
+		
+		int currentPage = param.getCurrentPage();
+		int ROW_PER_PAGE = param.getRowPerPage();
+		
+		int startPageNum =1;
+		
+		int lastPageNum = ROW_PER_PAGE;
+		
+		if(currentPage > (ROW_PER_PAGE/2)) {
+			lastPageNum += (startPageNum-1);
+		}
+		
+		int startRow = (currentPage-1) * ROW_PER_PAGE;
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		map.put("startRow", startRow);
+		map.put("rowPerPage", ROW_PER_PAGE);	
+		map.put("searchBottleId", param.getSearchBottleId());	
+		map.put("searchBottleBarCd", param.getSearchBottleBarCd());	
+		
+		if(param.getSearchGasId() != null) {
+			map.put("searchGasId", param.getSearchGasId());
+		}		
+
+		if(param.getSearchProductId() != null  ) {			
+			map.put("searchProductId", param.getSearchProductId());
+		}
+		if(param.getSearchWorkCd() != null  ) {			
+			map.put("searchWorkCd", param.getSearchWorkCd());
+		}
+		
+		if(param.getSearchChargeDt() != null) {
+			map.put("searchChargeDt", param.getSearchChargeDt());
+			//logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchChargeDt());
+		}		
+		
+		if(param.getSearchChargeDtFrom() != null) {
+			map.put("searchChargeDtFrom", param.getSearchChargeDtFrom());
+			//logger.debug("****** getBottleList *****getSearchChargeDtFrom===*"+param.getSearchChargeDtFrom());
+		}
+		
+		if(param.getSearchChargeDtEnd() != null) {
+			map.put("searchChargeDtEnd", param.getSearchChargeDtEnd());
+			//logger.debug("****** getBottleList *****getSearchChargeDtEnd===*"+param.getSearchChargeDtEnd());
+		}
+		
+		if(param.getSearchDt() != null) {
+			map.put("searchDt", param.getSearchDt());
+			//logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchChargeDt());
+		}		
+		
+		if(param.getSearchDtFrom() != null) {
+			map.put("searchDtFrom", param.getSearchDtFrom());
+			//logger.debug("****** getBottleList *****getSearchChargeDtFrom===*"+param.getSearchChargeDtFrom());
+		}
+		
+		if(param.getSearchDtEnd() != null) {
+			map.put("searchDtEnd", param.getSearchDtEnd());
+			//logger.debug("****** getBottleList *****getSearchChargeDtEnd===*"+param.getSearchChargeDtEnd());
+		}
+		
+		if(param.getSearchSalesYn() != null) {
+			map.put("searchSalesYn", param.getSearchSalesYn());
+			map.put("bottleWorkCd", param.getBottleWorkCd());
+			//logger.debug("****** getBottleList *****getSearchSalesYn===*"+param.getSearchSalesYn());
+		}		
+		
+		String ownCustomerId = "";
+		if(param.getOwnCustomerId() !=null && param.getOwnCustomerId().length() > 0 ) {
+			ownCustomerId = param.getOwnCustomerId();
+			map.put("ownCustomerId", ownCustomerId);
+			map.put("ownCustomerIdYn", "Y");
+		}
 	
+		int bottleCount = 0;
+		bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
+		
+		//int lastPage = (int)(Math.ceil(bottleCount/ROW_PER_PAGE));
+		int lastPage = (int)((double)bottleCount/ROW_PER_PAGE+0.95);		
+		
+		if(currentPage >= (lastPage-4)) {
+			lastPageNum = lastPage;
+		}
+		
+		if(lastPageNum ==0) lastPageNum=1;		
+		
+		//수정 Start
+		int pages = (bottleCount == 0) ? 1 : (int) ((bottleCount - 1) / ROW_PER_PAGE) + 1; // * 정수형이기때문에 소숫점은 표시안됨		
+        
+        int block;        
+        block = (int) Math.ceil(1.0 * currentPage / ROW_PER_PAGE); // *소숫점 반올림
+        startPageNum = (block - 1) * ROW_PER_PAGE + 1;
+        lastPageNum = block * ROW_PER_PAGE;        
+        
+        if (lastPageNum > pages){
+        	lastPageNum = pages;
+        }
+		//수정 end
+		
+		Map<String, Object> resutlMap = new HashMap<String, Object>();
+		
+		List<BottleVO> bottleList = null;
+		bottleList = bottleMapper.selectBottleHisListOfCustomer(map);
+		
+		resutlMap.put("list",  bottleList);
+		
+		resutlMap.put("currentPage", currentPage);
+		resutlMap.put("lastPage", lastPage);
+		resutlMap.put("startPageNum", startPageNum);
+		resutlMap.put("lastPageNum", lastPageNum);
+		resutlMap.put("totalCount", bottleCount);
+		
+		return resutlMap;
+	}
 
 	@Override
 	public List<BottleVO> getBottleListAll() {
@@ -433,7 +549,7 @@ public class BottleServiceImpl implements BottleService {
 		workReport.setBottlesIds(param.getBottleIds());		
 		workReport.setCustomerId(param.getCustomerId());
 		
-		result = workService.registerWorkReportByBottle(workReport, bottleList);
+//		result = workService.registerWorkReportByBottle(workReport, bottleList);
 		if(result <= 0) return result;
 		
 		return result;

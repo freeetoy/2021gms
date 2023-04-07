@@ -26,6 +26,7 @@
 	<entry key="common.menu.order">order</entry>
 	<entry key="common.menu.trasnaction">transact</entry>
 	<entry key="common.menu.bottle">bottle</entry>
+	<entry key="common.menu.boottle.hist">bottleh</entry>
 	<entry key="common.menu.boottle.test">bottlet</entry>
 	<entry key="common.menu.boottle.sales">bottles</entry>
 	<entry key="common.menu.boottle.rental">rental</entry>
