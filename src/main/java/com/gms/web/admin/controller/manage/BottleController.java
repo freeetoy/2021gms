@@ -566,6 +566,7 @@ public class BottleController {
 			model.addAttribute("searchProductId", params.getSearchProductId());
 			model.addAttribute("searchBottleId", params.getSearchBottleId());
 			model.addAttribute("searchChargeDt", params.getSearchChargeDt());
+			model.addAttribute("searchDt", params.getSearchDt());
 		}
 		
 		return "gms/bottle/update";
@@ -594,6 +595,22 @@ public class BottleController {
 			params.setSearchChargeDtEnd(searchChargeDtEnd);			
 		}
 		
+		String searchDt = params.getSearchDt();	
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {			
+			//logger.debug("BottleContoller searchChargeDt "+ searchChargetDt.length());
+			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			params.setSearchDtFrom(searchDtFrom);
+			params.setSearchDtEnd(searchDtEnd);			
+		}else {
+			params.setSearchDt("");
+		}
+		
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.bottle"));
 		
 		String searchProductId = "";
@@ -605,7 +622,7 @@ public class BottleController {
 			
 			model.addAttribute("searchBottleId", params.getSearchBottleId());
 			model.addAttribute("searchProductId", searchProductId);
-			
+			model.addAttribute("searchDt", params.getSearchDt());	
 			model.addAttribute("searchChargeDt", params.getSearchChargeDt());			
 			model.addAttribute("currentPage", params.getCurrentPage());
 			
@@ -620,7 +637,7 @@ public class BottleController {
 			e.printStackTrace();
 		}
 	
-		return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId();
+		return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchDt="+params.getSearchDt()+"&searchProductId="+params.getSearchProductId();
 	}
 	
 	
@@ -690,7 +707,6 @@ public class BottleController {
 				params.setSearchDt(searchDt);
 			}
 			
-			
 			if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
 				searchProductId = params.getSearchProductId();
 				//model.addAttribute("searchGasId", Integer.parseInt(searchGasId));
@@ -758,6 +774,22 @@ public class BottleController {
 				params.setSearchChargeDtEnd(searchChargeDtEnd);				
 			}			
 			
+			String searchDt = params.getSearchDt();	
+			
+			String searchDtFrom = null;
+			String searchDtEnd = null;
+					
+			if(searchDt != null && searchDt.length() > 20) {			
+				//logger.debug("BottleContoller searchChargeDt "+ searchChargetDt.length());
+				searchDtFrom = searchDt.substring(0, 10) ;			
+				searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+				
+				params.setSearchDtFrom(searchDtFrom);
+				params.setSearchDtEnd(searchDtEnd);			
+			}else {
+				params.setSearchDt("");
+			}
+			
 			if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
 				searchProductId = params.getSearchProductId();
 				//model.addAttribute("searchGasId", Integer.parseInt(searchGasId));
@@ -784,7 +816,7 @@ public class BottleController {
 		}
 		if(result > 0){
 			String alertMessage = "용기를 작업하였습니다.";
-			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchPrdouctId="+params.getSearchProductId());
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchDt="+params.getSearchDt()+"&searchPrdouctId="+params.getSearchProductId());
 		}
 		return null;
 		//return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchGasId="+params.getSearchGasId();

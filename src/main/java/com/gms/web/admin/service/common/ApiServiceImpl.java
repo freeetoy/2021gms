@@ -404,6 +404,16 @@ public class ApiServiceImpl implements ApiService {
 	}
 
 	@Override
+	public List<CustomerProductVO> getEwahBottleList() {
+		
+		List<CustomerProductVO> bottleList= null;
+		
+		bottleList = customerService.getCustomerProductList(Integer.parseInt(PropertyFactory.getProperty("common.Member.Comp.customerId")));		
+		
+		return bottleList;
+	}
+	
+	@Override
 	public int deleteWorkBottle(WorkBottleVO param) {
 		// TODO Auto-generated method stub
 		WorkReportVO report = workService.getWorkReport(param.getWorkReportSeq());

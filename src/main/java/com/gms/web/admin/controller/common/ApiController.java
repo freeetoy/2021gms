@@ -271,6 +271,18 @@ public class ApiController {
 		return bottleList;
 	}
 	
+	@RequestMapping(value = "/api/ewhaBottleList.do")
+	@ResponseBody
+	public List<CustomerProductVO> getEwhaBottleList()	{	
+		
+		
+		List<CustomerProductVO> bottleList = apiService.getEwahBottleList();
+		//model.addAttribute("productList", productList);
+		
+		return bottleList;
+	}
+	
+	
 	@RequestMapping(value = "/api/controlGasAndBottle.do")
 	@ResponseBody
 	public String manageGasAndBottle(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd )	{	

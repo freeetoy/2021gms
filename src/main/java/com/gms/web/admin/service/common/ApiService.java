@@ -41,6 +41,8 @@ public interface ApiService {
 	
 	public List<CustomerProductVO> getCustomerBottleList(String customerNm);
 	
+	public List<CustomerProductVO> getEwahBottleList();
+	
 	public int deleteWorkBottle(WorkBottleVO param);
 	
 	public int registerWorkReportTank(WorkBottleVO param);
