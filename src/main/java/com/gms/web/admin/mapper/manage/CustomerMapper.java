@@ -111,4 +111,9 @@ public interface CustomerMapper {
 	public int updateCustomerLn2(CustomerLn2AlarmVO param);
 	
 	public CustomerLn2AlarmVO selectCustomerLn2(Integer customerId);
+	
+	public int updateCustomerLnsWorkDts(List<CustomerLn2AlarmVO> param);
+	
+	public List<CustomerLn2AlarmVO> selectCustomerLn2ListToday();
+	
 }

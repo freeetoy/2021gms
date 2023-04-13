@@ -105,4 +105,9 @@ public interface CustomerService {
 	public int modifyCustomerLn2(CustomerLn2AlarmVO param);
 	
 	public CustomerLn2AlarmVO getCustomerLn2(Integer customerId);
+	
+	public int modifyCustomerLn2WorkDtSecheuler();
+	
+	public List<CustomerLn2AlarmVO> getLn2CustomerListToday();
+	
 }

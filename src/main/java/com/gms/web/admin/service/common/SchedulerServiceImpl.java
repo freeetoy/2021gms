@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gms.web.admin.domain.manage.WorkReportVO;
+import com.gms.web.admin.service.manage.CustomerService;
 import com.gms.web.admin.service.manage.WorkReportService;
 import com.gms.web.admin.service.statistics.StatisticsAgencyService;
 import com.gms.web.admin.service.statistics.StatisticsBottleService;
@@ -46,6 +47,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 	
 	@Autowired
 	private WorkReportService workReportService;
+	
+	@Autowired
+	private CustomerService customerService;
 
 	@Override
 	@Transactional
@@ -128,6 +132,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 		report.setSearchDt(searchDt);
 		
 		return workReportService.registerWorkReportHist(report);
+	}
+
+	@Override
+	public int modifyCustomerLn2AlramWorkDt() {
+		return customerService.modifyCustomerLn2WorkDtSecheuler();
 	}
 
 }

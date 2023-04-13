@@ -62,6 +62,16 @@ public class SchedulerController {
 		logger.info("************* ScheduleController scheduleMonthly end *************");
 		
 	}
+	// 23시 30분
+	@Scheduled(cron="0 30 23 * * *")
+	private void modifyCustomerLn2AlramWorkDt() { 
+		logger.info("************* ScheduleController modifyCustomerLn2AlramWorkDt Start *************");
+		if(GmsApplication.schedulerParam != null & GmsApplication.schedulerParam.equals("yes")) {
+			int result = scheduleService.modifyCustomerLn2AlramWorkDt();	
+		}
+		logger.info("************* ScheduleController modifyCustomerLn2AlramWorkDt end *************");
+		
+	}
 	
 	@Scheduled(cron="0 50 01 1 * *")
 	private void registerWorkBottleHist() { 

@@ -309,7 +309,7 @@
 			Bottle_BarCd = #{bottleBarCd}
 	</update>	
 
-<update id="updateBottleList" parameterType="java.util.List">
+	<update id="updateBottleList" parameterType="java.util.List">
 		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
 		UPDATE TB_Bottle
 		SET

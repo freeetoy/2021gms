@@ -737,7 +737,7 @@
 		SELECT tc.Customer_Nm,tc.Customer_ID, tcl.Work_Dt ,Period_Cd, Day_Period
 		FROM TB_Customer tc, TB_Customer_Ln2 tcl 
 		WHERE tc.Customer_ID = tcl.customer_id 
-		AND tcl.Work_Dt = date_sub(curdate(), interval -1 day) 
+		AND tcl.Work_Dt = curdate() 
 		AND tcl.Ln2_Sales_Id =  #{ln2SalesId}
 	</select>
 	
@@ -759,4 +759,19 @@
 		, Work_Dt			= #{workDt}
 		WHERE CUSTOMER_ID 	= #{customerId}		
 	</update>
+	<update id="updateCustomerLnsWorkDts" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="" close=";">
+		UPDATE TB_Customer_Ln2
+		SET
+			Work_Dt			= #{item.workDt}
+		WHERE
+			CUSTOMER_ID 	= #{item.customerId}
+		</foreach>
+	</update>
+	
+	<select id="selectCustomerLn2ListToday" resultType="com.gms.web.admin.domain.manage.CustomerLn2AlarmVO" >		
+		SELECT Customer_ID, Period_Cd, Day_Period, Work_Dt, Ln2_Sales_Id
+		FROM TB_Customer_Ln2 tcl 
+		WHERE Work_Dt = curDate()
+	</select>
 </mapper>

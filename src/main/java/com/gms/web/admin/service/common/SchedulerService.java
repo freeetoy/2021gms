@@ -7,5 +7,7 @@ public interface SchedulerService {
 
 	public int registerMonthlyStatistics();
 	
+	public int modifyCustomerLn2AlramWorkDt();
+	
 	public int registerWorkBottleHist();
 }

@@ -1998,7 +1998,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		//Customer_Ln2 변경
 		if(param.getProductId().equals(Integer.parseInt(PropertyFactory.getProperty("product.LN2.divide.new.productId")) )) {
 			//Customer_Ln2 변경
-			logger.debug("--registerWorkNoBottle  workBottleList.size=product.LN2.divide.new.productId" );
+//			logger.debug("--registerWorkNoBottle  workBottleList.size=product.LN2.divide.new.productId" );
 			CustomerLn2AlarmVO ln2Alarm = new CustomerLn2AlarmVO();
 			ln2Alarm.setCustomerId(param.getCustomerId());
 			
