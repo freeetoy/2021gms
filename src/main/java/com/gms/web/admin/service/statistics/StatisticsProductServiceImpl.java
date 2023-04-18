@@ -81,7 +81,8 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 	public int registerDailyStatisticsProduct() {
 		int result = 0;
 		result = statMapper.inserDailyStatisticsProduct();
-		return statMapper.deleteDailyStatProduct();
+//		return statMapper.deleteDailyStatProduct();
+		return result;
 	}
 
 	@Override
