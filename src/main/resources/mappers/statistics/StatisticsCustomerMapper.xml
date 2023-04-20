@@ -81,6 +81,7 @@
 			WHERE DATE_FORMAT(B.Create_Dt,'%Y/%m/%d') = DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
 			GROUP BY B.customer_Id
 		) BB on BB.Customer_id = AA.Customer_id
+		WHERE ( Order_Count &gt;  0 OR Income_Amount &gt; 0 OR Receivable_Amount &gt; 0) 
 	</insert>
 	
 	<insert id="inserMonthlyStatisticsCustomer">

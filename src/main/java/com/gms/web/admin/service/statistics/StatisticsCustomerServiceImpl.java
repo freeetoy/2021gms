@@ -78,7 +78,7 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 		int result=0;
 		try {
 			result = statMapper.inserDailyStatisticsCustomer();
-			if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();	
+//			if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();	
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error(e.toString());

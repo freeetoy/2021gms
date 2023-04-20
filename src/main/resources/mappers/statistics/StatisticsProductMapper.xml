@@ -175,8 +175,8 @@
 		) B 
 		WHERE A.Product_ID= B.Product_ID		
 		AND A.Product_Price_Seq = B.Product_Price_Seq
-		AND Sale_Count &gt; 0
-		AND Rent_Count &gt; 0
+		AND (Sale_Count &gt; 0
+		OR Rent_Count &gt; 0 ) 
 	</insert>
 	
 	<insert id="inserMonthlyStatisticsProduct">
