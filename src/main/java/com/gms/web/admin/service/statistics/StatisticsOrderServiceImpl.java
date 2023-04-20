@@ -68,9 +68,16 @@ public class StatisticsOrderServiceImpl implements StatisticsOrderService {
 	@Override
 	public int registerDailyStatisticsOrder() {		
 		
-		StatisticsOrderVO statOrder = statMapper.selectDailylOrderInfo();
-		return statMapper.inserDailyStatisticsOrderInfo(statOrder);
+		int result = 0;
+		try {
+			StatisticsOrderVO statOrder = statMapper.selectDailylOrderInfo();
+			result = statMapper.inserDailyStatisticsOrderInfo(statOrder);	
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
 		
+		return result;
 		//return statMapper.inserDailyStatisticsOrder();
 	}
 
@@ -125,7 +132,14 @@ public class StatisticsOrderServiceImpl implements StatisticsOrderService {
 
 	@Override
 	public int registerDailyStatisticsSales() {
-		return statMapper.insertDailyStatisticsSales();
+		int result = 0;
+		try {
+			result = statMapper.insertDailyStatisticsSales();
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return result;
 	}
 
 	@Override

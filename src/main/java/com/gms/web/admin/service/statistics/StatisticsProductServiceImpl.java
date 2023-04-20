@@ -80,7 +80,13 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 	@Override
 	public int registerDailyStatisticsProduct() {
 		int result = 0;
-		result = statMapper.inserDailyStatisticsProduct();
+		try {
+			result = statMapper.inserDailyStatisticsProduct();	
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		
 //		return statMapper.deleteDailyStatProduct();
 		return result;
 	}

@@ -74,8 +74,14 @@ public class StatisticsBottleServiceImpl implements StatisticsBottleService {
 
 	@Override
 	public int registerDailyStatisticsBottle() {
-		// TODO Auto-generated method stub
-		return statMapper.inserDailyStatisticsBottle();
+		int result = 0;
+		try {
+			result = statMapper.inserDailyStatisticsBottle();	
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return result;
 	}
 
 	@Override

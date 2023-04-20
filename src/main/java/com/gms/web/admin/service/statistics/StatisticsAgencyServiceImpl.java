@@ -210,8 +210,15 @@ public class StatisticsAgencyServiceImpl implements StatisticsAgencyService {
 
 	@Override
 	public int registerDailyStatisticsAgency() {
-		
-		return statMapper.insertDailyStatisticsAgency();
+		int result =0;
+		try {
+			result = statMapper.insertDailyStatisticsAgency();	
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		 
+		 return result;
 	}
 
 	@Override

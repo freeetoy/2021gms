@@ -32,7 +32,14 @@ public class StatisticsUserServiceImpl implements StatisticsUserService {
 
 	@Override
 	public int registerDailyStatisticsUser() {
-		return statMapper.inserDailyStatisticsUser();
+		int result = 0;
+		try {
+			 result = statMapper.inserDailyStatisticsUser();
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return result;
 	}
 
 	@Override
