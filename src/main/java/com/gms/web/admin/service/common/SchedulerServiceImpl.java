@@ -59,10 +59,10 @@ public class SchedulerServiceImpl implements SchedulerService {
 		try {
 			
 			//TB_Daily_Statistics_Sales
-			result = statOrderService.registerDailyStatisticsSales();
+//			result = statOrderService.registerDailyStatisticsSales();
 			
 			// TB_Daily_Statistics_Customer
-			result = statCustomerService.registerDailyStatisticsCustomer();
+//			result = statCustomerService.registerDailyStatisticsCustomer();
 			
 			result  = statBottleService.registerDailyStatisticsBottle();
 			
