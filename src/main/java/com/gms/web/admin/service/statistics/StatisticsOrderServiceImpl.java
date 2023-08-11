@@ -134,7 +134,8 @@ public class StatisticsOrderServiceImpl implements StatisticsOrderService {
 	public int registerDailyStatisticsSales() {
 		int result = 0;
 		try {
-			result = statMapper.insertDailyStatisticsSales();
+			StatisticsSalesVO sales = statMapper.selectDailySalesForInsert();
+			result = statMapper.insertDailyStatisticsSalesOrigin(sales);
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error(e.toString());

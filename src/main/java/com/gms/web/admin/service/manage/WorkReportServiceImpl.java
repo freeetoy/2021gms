@@ -2451,9 +2451,16 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 		List<Integer> workSeqList = new ArrayList<Integer>();		
 		//param.getProductCount()
+//		logger.debug("WorkReportServiceImpl minusWorkBottle -"+workBottleList.size() );
+//		logger.debug("cmdWorkReportServiceImpl minusWorkBottle param.getProductCount() -"+param.getProductCount() );
 		int getI = workBottleList.size()-1;
 		
-		for(int i=0; i < param.getProductCount() ; i++) {
+		int productCount = param.getProductCount();
+		
+		// T 경우 수량 조정
+		if(param.getProductId() >=65 &&  param.getProductId() <= 71 ) productCount = 1;
+		
+		for(int i=0; i < productCount; i++) {
 			workSeqList.add(workBottleList.get(getI--).getWorkSeq());
 		}		
 	

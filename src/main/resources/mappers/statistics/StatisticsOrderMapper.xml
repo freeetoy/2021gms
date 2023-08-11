@@ -162,8 +162,6 @@
 		ORDER BY Create_Dt DESC 
 	</select>
 	
-	
-	
 	<insert id="insertDailyStatisticsSales">
 		INSERT INTO TB_Daily_Stat_Sales(
 			<include refid="StatisticsSalesColumns" />
@@ -196,6 +194,52 @@
 			WHERE DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')		
 			AND Delete_YN = 'N'	 
 		) C
+	</insert>	
+
+	<select id="selectDailySalesForInsert" resultType="com.gms.web.admin.domain.statistics.StatisticsSalesVO">		
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, A.Sales_Count+AA.Sales_Count Sales_Count,IFNULL(A.Sales_Amount,0)+IFNULL(AA.Sales_Amount,0) Sales_Amount, Rental_Count, IFNULL(Rental_Amount,0) Rental_Amount, IFNULL(Income_Amount,0) Income_Amount, 'admin',now()
+		FROM 
+		(
+			SELECT Count(Work_Seq) Sales_Count, Sum(Product_Price) Sales_Amount
+			FROM TB_Work_Bottle
+			WHERE Bottle_Work_Cd in ( '0308' , '0314')
+			AND Product_ID NOT IN (65,66,67,68,69,70,71)
+			AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		) A,
+		(
+			SELECT  sum(Charge_Volumn) Sales_Count, sum( Charge_Volumn * Product_Price) Sales_Amount
+			FROM TB_Work_Bottle
+			WHERE Bottle_Work_Cd IN ( '0308' , '0314')
+			AND Product_ID IN (65,66,67,68,69,70,71)
+			AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		) AA,
+		(
+			SELECT Count(Work_Seq) Rental_Count, Sum(Product_Price) Rental_Amount
+			FROM TB_Work_Bottle
+			WHERE Bottle_Work_Cd in ( '0309' ,'0316' )
+			AND DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')			 
+		) B,
+		(
+			SELECT Sum(Received_Amount) Income_Amount
+			FROM TB_Work_Report
+			WHERE DATE_FORMAT(Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')		
+			AND Delete_YN = 'N'	 
+		) C	
+	</select>
+
+	<insert id="insertDailyStatisticsSalesOrigin" parameterType="com.gms.web.admin.domain.statistics.StatisticsSalesVO">
+		INSERT INTO TB_Daily_Stat_Sales(
+			<include refid="StatisticsSalesColumns" />
+		) VALUES (
+			  #{statDt}
+			, #{salesCount}
+			, #{salesAmount}
+			, #{rentalCount}
+			, #{rentalAmount}
+			, #{incomeAmount}
+			, 'admin'		
+			, NOW()			
+		)
 	</insert>	
 	
 	<insert id="insertMonthlyStatisticsSales">

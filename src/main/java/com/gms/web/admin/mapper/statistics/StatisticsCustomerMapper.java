@@ -17,6 +17,10 @@ public interface StatisticsCustomerMapper {
 	
 	public int inserDailyStatisticsCustomer();
 	
+	public int inserDailyStatisticsCustomerOrigin(List<StatisticsCustomerBottleVO> param);
+	
+	public List<StatisticsCustomerBottleVO> selectDailyCustomerForInsert();
+	
 	public int deleteDailyStatisticsCustomer();
 
 	public int inserMonthlyStatisticsCustomer();

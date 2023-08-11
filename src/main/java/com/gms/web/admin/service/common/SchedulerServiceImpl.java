@@ -89,6 +89,30 @@ public class SchedulerServiceImpl implements SchedulerService {
 
 	@Override
 	@Transactional
+	public int registerDailyStatistics1() {
+
+		int result = 0;
+		try {
+			
+			//TB_Daily_Statistics_Sales
+			result = statOrderService.registerDailyStatisticsSales();
+			
+			result = statCustomerService.registerDailyStatisticsCustomer();
+			
+		} catch (DataAccessException e) {
+			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO => 알 수 없는 문제가 발생하였다는 메시지를 전달
+			e.printStackTrace();
+		}
+	
+		return result ;
+	}
+
+	
+	@Override
+	@Transactional
 	public int registerMonthlyStatistics() {
 		int result = 0;
 		try {

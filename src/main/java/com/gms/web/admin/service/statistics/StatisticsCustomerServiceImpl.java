@@ -77,7 +77,13 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 	public int registerDailyStatisticsCustomer() {
 		int result=0;
 		try {
-			result = statMapper.inserDailyStatisticsCustomer();
+//			result = statMapper.inserDailyStatisticsCustomer();
+			
+			List<StatisticsCustomerBottleVO> list = statMapper.selectDailyCustomerForInsert();
+			
+			result = statMapper.inserDailyStatisticsCustomerOrigin(list);
+			
+			
 //			if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();	
 		}catch(Exception e) {
 			e.printStackTrace();

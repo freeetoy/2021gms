@@ -29,5 +29,9 @@ public interface StatisticsOrderMapper {
 	
 	public int insertDailyStatisticsSales();
 	
+	public StatisticsSalesVO selectDailySalesForInsert();
+	
+	public int insertDailyStatisticsSalesOrigin (StatisticsSalesVO param);
+	
 	public int insertMonthlyStatisticsSales();
 }
