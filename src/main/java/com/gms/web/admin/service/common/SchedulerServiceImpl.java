@@ -95,7 +95,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 		try {
 			
 			//TB_Daily_Statistics_Sales
-			result = statOrderService.registerDailyStatisticsSales();
+//			result = statOrderService.registerDailyStatisticsSales();
 			
 			result = statCustomerService.registerDailyStatisticsCustomer();
 			

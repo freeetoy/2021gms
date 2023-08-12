@@ -103,8 +103,8 @@
 		</foreach>
 	</insert>
 	
-	<select id="selectDailyCustomerForInsert" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" >
-		SELECT BB.Customer_id,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, IFNULL(Order_Count,0),IFNULL(Order_Amount,0),IFNULL(Income_Amount,0),IFNULL(Receivable_Amount,0),'admin' ,now()
+	<select id="selectDailyCustomerForInsertNew" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" >
+		SELECT BB.Customer_id,DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, IFNULL(Order_Count,0) Order_Count, IFNULL(Order_Amount,0) Order_Amount, IFNULL(Income_Amount,0) Income_Amount, IFNULL(Receivable_Amount,0) Receivable_Amount
 		from 
 		( 
 			SELECT a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
@@ -206,6 +206,40 @@
 		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id,Sale_Dt
 		Order By wb.Work_Report_Seq desc
 	</select>
+	
+	<select id="selectStatCustomerBottleHistList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO">		
+		SELECT
+			wb.Work_Report_Seq, wb.Create_Id, User_Nm Sales_Nm,wb.Customer_Id,Customer_Nm,wb.Product_ID,wb.Product_Price_Seq,Product_Nm, 
+			case  when wb.Gas_ID &gt; 0 and instr(pp.Product_Capa,'Kg')  &lt;=0 then concat(pp.Product_Capa,'L') else pp.Product_Capa end Product_Capa,Work_Etc,DATE_FORMAT(wb.Create_Dt,'%Y/%m/%d') Sale_Dt,
+			count(case when (Bottle_Work_Cd in ('0309','0314','0316')) OR (Bottle_Work_Cd='0308' and multi_yn='Y' and agency_yn='Y') then 1 end) as Rent_Count,
+			count(case when Bottle_Work_Cd in ('0310','0312','0315','0317') then 1 end) as Back_Count,
+			count(case when (Bottle_Work_Cd='0308' and agency_yn='N' )  OR (Bottle_Work_Cd='0308' and agency_yn='Y' and multi_yn='N' ) then 1 end) as Sale_Count,
+			count(case when Bottle_Work_Cd in ('0311','0313') then 1 end) as As_Count,
+			sum(case when Bottle_Work_Cd = '0318' then Charge_Volumn end) as Charge_Count,
+			sum(case when Bottle_Work_Cd = '0308' then Charge_Volumn end) as Charge_Volumn,
+			count(case when Bottle_Work_Cd = '0306' then 1 end) as Out_Count,
+			count(case when Bottle_Work_Cd = '0301' then 1 end) as In_Count
+		FROM
+			TB_Work_Bottle_Hist wb, TB_Customer tc ,TB_Product tp, TB_Product_Price pp , TB_User tu , TB_Work_Report wr
+		WHERE
+			DATE_FORMAT(wb.Create_Dt,'%Y/%m/%d') between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		AND Bottle_Work_Cd in ('0309','0314','0316','0310','0315','0317','0308','0311','0312','0313','0318' ,'0301','0306'  )
+		AND wb.Customer_ID = tc.Customer_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerId)">
+		AND wb.Customer_ID = #{paramCustomerId} 
+		</if>
+		AND wb.Product_ID = tp.Product_ID
+		AND wb.Product_ID = pp.Product_ID
+		AND wb.Product_Price_Seq = pp. Product_Price_Seq
+		AND wb.Create_ID = tu.User_ID
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND wb.Create_ID = #{searchUserId} 
+		</if>
+		AND wb.Work_Report_Seq = wr.Work_Report_Seq
+		GROUP By wb.Customer_Id,wb.Product_ID,wb.Product_Price_Seq,wb.Create_Id,Sale_Dt
+		Order By wb.Work_Report_Seq desc
+	</select>
+	
 	
 	<select id="selectStatSalesCustomerBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsCustomerBottleVO">		
 		SELECT

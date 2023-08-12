@@ -99,4 +99,8 @@ public interface WorkReportMapper {
 	public int insertWorkBottleHist(WorkReportVO param);
 	
 	public int deleteWorkBottleOld(WorkReportVO param);
+	
+	public int selectWorBottleHistCountTotal(Map<String, Object> map);
+	
+	public List<BottleVO> selectWorBottleHistListTotal(Map<String, Object> map);
 }

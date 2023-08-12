@@ -83,4 +83,6 @@ public interface WorkReportService {
 	public List<WorkBottleVO> deliveredLn2CustomerList(WorkReportVO param);	
 	
 	public int registerWorkReportHist(WorkReportVO param);
+	
+	public Map<String,Object> getWorkBottleHistListTotal(BottleVO param);
 }

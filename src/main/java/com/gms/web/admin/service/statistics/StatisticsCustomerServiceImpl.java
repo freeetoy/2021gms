@@ -75,13 +75,13 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 
 	@Override
 	public int registerDailyStatisticsCustomer() {
-		int result=0;
+		int result = 0;
 		try {
 //			result = statMapper.inserDailyStatisticsCustomer();
 			
-			List<StatisticsCustomerBottleVO> list = statMapper.selectDailyCustomerForInsert();
+			List<StatisticsCustomerVO> StatList = statMapper.selectDailyCustomerForInsertNew();
 			
-			result = statMapper.inserDailyStatisticsCustomerOrigin(list);
+			result = statMapper.inserDailyStatisticsCustomerOrigin(StatList);
 			
 			
 //			if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();	

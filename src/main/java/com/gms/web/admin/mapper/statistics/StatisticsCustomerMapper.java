@@ -17,15 +17,17 @@ public interface StatisticsCustomerMapper {
 	
 	public int inserDailyStatisticsCustomer();
 	
-	public int inserDailyStatisticsCustomerOrigin(List<StatisticsCustomerBottleVO> param);
+	public int inserDailyStatisticsCustomerOrigin(List<StatisticsCustomerVO> param);
 	
-	public List<StatisticsCustomerBottleVO> selectDailyCustomerForInsert();
+	public List<StatisticsCustomerVO> selectDailyCustomerForInsertNew();
 	
 	public int deleteDailyStatisticsCustomer();
 
 	public int inserMonthlyStatisticsCustomer();
 	
 	public List<StatisticsCustomerBottleVO> selectStatCustomerBottleList(StatisticsCustomerBottleVO param);	
+	
+	public List<StatisticsCustomerBottleVO> selectStatCustomerBottleHistList(StatisticsCustomerBottleVO param);
 	
 	public List<StatisticsCustomerBottleVO> selectStatSalesCustomerBottleList(StatisticsCustomerBottleVO param);
 	

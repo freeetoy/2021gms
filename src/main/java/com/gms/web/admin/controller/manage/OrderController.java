@@ -141,6 +141,35 @@ public class OrderController {
 		mav.setViewName("gms/order/monitor");
 		return mav;
 	}
+
+	@RequestMapping(value = "/gms/order/monitorOld.do")
+	public ModelAndView getWorkBottleHistListToday(BottleVO params) {
+
+//		logger.debug(" getWorkBottleListToday");
+
+		ModelAndView mav = new ModelAndView();		
+		
+		Map<String, Object> map =  workService.getWorkBottleHistListTotal(params);
+		
+		mav.addObject("bottleList", map.get("list"));			
+				
+		//검색어 셋팅
+		mav.addObject("searchChargeDt", params.getSearchChargeDt());	
+		mav.addObject("searchCustomerNm", params.getSearchCustomerNm());	
+		
+		mav.addObject("currentPage", map.get("currentPage"));
+		mav.addObject("lastPage", map.get("lastPage"));
+		mav.addObject("startPageNum", map.get("startPageNum"));
+		mav.addObject("lastPageNum", map.get("lastPageNum"));
+		mav.addObject("totalCount", map.get("totalCount"));
+		mav.addObject("rowPerPage", params.getRowPerPage());		
+				
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.trasnaction"));		
+		
+		mav.setViewName("gms/order/monitorOld");
+		return mav;
+	}
+
 	
 	@RequestMapping(value = "/gms/order/write.do")
 	public ModelAndView openOrderWrite(Model model) {

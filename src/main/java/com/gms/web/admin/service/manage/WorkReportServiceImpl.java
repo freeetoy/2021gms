@@ -4749,4 +4749,81 @@ public class WorkReportServiceImpl implements WorkReportService {
 		return result;
 	}
 	
+	@Override
+	public Map<String,Object> getWorkBottleHistListTotal(BottleVO param) {
+							  
+		logger.debug("****** getWorkBottleHistListTotal *****start===*");	
+				
+		int currentPage = param.getCurrentPage();
+		int ROW_PER_PAGE = param.getRowPerPage();
+		
+		int startPageNum =1;
+		
+		int lastPageNum = ROW_PER_PAGE;
+		
+		if(currentPage > (ROW_PER_PAGE/2)) {
+			lastPageNum += (startPageNum-1);
+		}
+		
+		int startRow = (currentPage-1) * ROW_PER_PAGE;
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		map.put("startRow", startRow);
+		map.put("rowPerPage", ROW_PER_PAGE);	
+		map.put("searchCustomerNm", param.getSearchCustomerNm());	
+		
+		String searchChargeDtFrom = null;
+		String searchChargeDtEnd = null;
+		String searchChargeDt = param.getSearchChargeDt();	
+		
+		if(searchChargeDt != null && searchChargeDt.length() > 20) {
+			map.put("searchChargeDt", searchChargeDt);
+			
+			searchChargeDtFrom = searchChargeDt.substring(0, 10) ;			
+			map.put("searchChargeDtFrom", searchChargeDtFrom);
+			
+			searchChargeDtEnd = searchChargeDt.substring(13, searchChargeDt.length()) ;			
+			map.put("searchChargeDtEnd", searchChargeDtEnd);
+		}						
+		
+		int bottleCount = workMapper.selectWorBottleHistCountTotal(map);		
+		
+		//int lastPage = (int)(Math.ceil(bottleCount/ROW_PER_PAGE));
+		int lastPage = (int)((double)bottleCount/ROW_PER_PAGE+0.95);
+		
+		if(currentPage >= (lastPage-4)) {
+			lastPageNum = lastPage;
+		}
+		
+		if(lastPageNum ==0) lastPageNum=1;
+		
+		//수정 Start
+		int pages = (bottleCount == 0) ? 1 : (int) ((bottleCount - 1) / ROW_PER_PAGE) + 1; // * 정수형이기때문에 소숫점은 표시안됨		
+        //int blocks;
+        int block;
+        //blocks = (int) Math.ceil(1.0 * pages / ROW_PER_PAGE); // *소숫점 반올림
+        block = (int) Math.ceil(1.0 * currentPage / ROW_PER_PAGE); // *소숫점 반올림
+        startPageNum = (block - 1) * ROW_PER_PAGE + 1;
+        lastPageNum = block * ROW_PER_PAGE;        
+        
+        if (lastPageNum > pages){
+        	lastPageNum = pages;
+        }
+		//수정 end
+		
+		Map<String, Object> resutlMap = new HashMap<String, Object>();
+		
+		List<BottleVO> bottleList = workMapper.selectWorBottleHistListTotal(map);
+		
+		resutlMap.put("list",  bottleList);				
+		resutlMap.put("currentPage", currentPage);
+		resutlMap.put("lastPage", lastPage);
+		resutlMap.put("startPageNum", startPageNum);
+		resutlMap.put("lastPageNum", lastPageNum);
+		resutlMap.put("totalCount", bottleCount);		
+		
+		return  resutlMap;
+	}
+
 }

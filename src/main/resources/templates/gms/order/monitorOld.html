@@ -22,7 +22,7 @@ var goUpdate = function(bottleBarCd){
 		
 		var form = document.mainForm;	
 		$("#currentPage").val(1);  
-		mainForm.action="/gms/order/monitor.do";
+		mainForm.action="/gms/order/monitorOld.do";
 		form.submit();
 	};
 
@@ -33,7 +33,7 @@ var goUpdate = function(bottleBarCd){
 		var form =  document.mainForm;			
 		
 		$("#currentPage").val(pageNo);  
-		 mainForm.action="/gms/order/monitor.do";
+		 mainForm.action="/gms/order/monitorOld.do";
         //validate checkt시 confirm 중복되는 부분 처리 
        
     	mainForm.submit();
@@ -67,7 +67,7 @@ $(document).ready(function(){
     {
 		var form = document.mainForm;	
 		$("#currentPage").val(1);  
-		mainForm.action="/gms/order/monitor.do";
+		mainForm.action="/gms/order/monitorOld.do";
 		mainForm.submit();
       
     });
@@ -81,7 +81,7 @@ $(document).ready(function(){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>거래 현황</h1>
+            <h1>거래 현황(지난 목록)</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -126,7 +126,7 @@ $(document).ready(function(){
                        
               <div class="col-2">
               <!-- 
-               <a class="btn_select_process5 btn btn-primary btn-sm"  href="/gms/order/monitorOld.do"><i class="fas fa-upload"></i>과거목록</a>&nbsp;		
+               <a class="btn_select_process5 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal5" href="#"><i class="fas fa-upload"></i>과거목록</a>&nbsp;		
                -->
               </div>
               <!-- 
