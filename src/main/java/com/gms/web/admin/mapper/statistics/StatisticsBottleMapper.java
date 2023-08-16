@@ -15,6 +15,10 @@ public interface StatisticsBottleMapper {
 	public List<StatisticsBottleVO> selectMontlylStatisticsBottleList(Map<String, Object> map);	
 	
 	public int inserDailyStatisticsBottle();
+	
+	public int insertDailyBottleOrigin(StatisticsBottleVO param);
 
+	public StatisticsBottleVO selectDailyBottleForInsert();
+	
 	public int inserMonthlyStatisticsBottle();
 }

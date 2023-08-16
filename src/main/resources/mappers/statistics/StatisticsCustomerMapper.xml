@@ -86,8 +86,7 @@
 	
 	<insert id="inserDailyStatisticsCustomerOrigin" parameterType="java.util.List">
 		INSERT INTO TB_Daily_Stat_Customer(
-			<include refid="StatisticsCustomerColumns" />
-			
+			<include refid="StatisticsCustomerColumns" />			
 		) VALUES
 		<foreach collection="list" item="item" separator=" , ">
 		(

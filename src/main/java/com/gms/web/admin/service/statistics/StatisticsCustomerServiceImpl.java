@@ -79,9 +79,12 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 		try {
 //			result = statMapper.inserDailyStatisticsCustomer();
 			
-			List<StatisticsCustomerVO> StatList = statMapper.selectDailyCustomerForInsertNew();
+			List<StatisticsCustomerVO> statList = statMapper.selectDailyCustomerForInsertNew();
 			
-			result = statMapper.inserDailyStatisticsCustomerOrigin(StatList);
+			if(statList.size() > 0)
+				result = statMapper.inserDailyStatisticsCustomerOrigin(statList);
+			else
+				result = 1;
 			
 			
 //			if(result > 0) result = statMapper.deleteDailyStatisticsCustomer();	

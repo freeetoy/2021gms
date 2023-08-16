@@ -76,7 +76,12 @@ public class StatisticsBottleServiceImpl implements StatisticsBottleService {
 	public int registerDailyStatisticsBottle() {
 		int result = 0;
 		try {
-			result = statMapper.inserDailyStatisticsBottle();	
+//			result = statMapper.inserDailyStatisticsBottle();	
+			
+			StatisticsBottleVO sBottle = statMapper.selectDailyBottleForInsert();
+			
+			result = statMapper.insertDailyBottleOrigin(sBottle);
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error(e.toString());

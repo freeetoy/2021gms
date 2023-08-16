@@ -64,7 +64,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 			// TB_Daily_Statistics_Customer
 //			result = statCustomerService.registerDailyStatisticsCustomer();
 			
-			result  = statBottleService.registerDailyStatisticsBottle();
+//			result  = statBottleService.registerDailyStatisticsBottle();
 			
 			result  = statUserService.registerDailyStatisticsUser();
 			
@@ -95,9 +95,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 		try {
 			
 			//TB_Daily_Statistics_Sales
-//			result = statOrderService.registerDailyStatisticsSales();
+			result = statOrderService.registerDailyStatisticsSales();
 			
 			result = statCustomerService.registerDailyStatisticsCustomer();
+			
+			result  = statBottleService.registerDailyStatisticsBottle();
 			
 		} catch (DataAccessException e) {
 			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달

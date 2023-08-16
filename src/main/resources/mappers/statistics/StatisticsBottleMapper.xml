@@ -50,6 +50,48 @@
 			FROM TB_Bottle 
 			WHERE delete_yn='N' AND bottle_work_cd ='0399' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) f
 	</insert>
+
+	<insert id="insertDailyBottleOrigin" parameterType="com.gms.web.admin.domain.statistics.StatisticsBottleVO">
+		INSERT INTO TB_Daily_Stat_Bottle(
+			<include refid="StatisticsBottleColumns" />
+		) VALUES
+		(
+			#{statDt}
+			, #{bottleInputCount}
+			, #{bottleChargeCount}
+			, #{bottleSalesCount}
+			, #{bottleRentalCount}
+			, #{bottleBackCount}
+			, #{bottleDiscardCount}
+			, 'admin'		
+			, NOW()			
+		)  
+	</insert>
+ 
+	<select id="selectDailyBottleForInsert" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" >
+		SELECT 	DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt, IFNULL(input_count,0) Bottle_Input_Count,
+			IFNULL(charge_count,0) Bottle_Charge_Count, IFNULL(sales_count,0) Bottle_Sales_Count, 
+			IFNULL(rental_count,0) Bottle_Rental_Count, IFNULL(back_count,0) Bottle_Back_Count,IFNULL(discard_count,0) Bottle_Discard_Count
+		FROM 
+		(	SELECT count(Bottle_BarCd) input_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0388' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) a,
+		(	SELECT count(Bottle_BarCd) charge_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0305' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) b,
+		(	SELECT count(Bottle_BarCd) sales_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0308' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')) c,
+		(	SELECT count(Bottle_BarCd) rental_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd in ('0309', '0316') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) d,
+		(	SELECT count(Bottle_BarCd) back_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd in ('0310', '0311','0312','0315','0317') AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) e,
+		(	SELECT count(Bottle_BarCd) discard_count 
+			FROM TB_Bottle 
+			WHERE delete_yn='N' AND bottle_work_cd ='0399' AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')= DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') ) f
+	</select>
 	
 	<insert id="inserMonthlyStatisticsBottle">
 		INSERT INTO TB_Monthly_Stat_Bottle(
