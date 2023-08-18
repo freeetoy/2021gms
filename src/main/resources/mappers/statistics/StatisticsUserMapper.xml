@@ -60,6 +60,58 @@
 		WHERE A.User_ID= B.User_ID	
 	</insert>
 	
+	<select id="selectDailyStatisticsUserNew" resultType="com.gms.web.admin.domain.statistics.StatisticsUserVO" >
+		SELECT A.user_id, A.Stat_Dt, Sale_Count, Sale_Amount, Rent_Count, Rent_Amount
+		FROM 
+		(			
+			SELECT tb.user_id, DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Sale_Count, IFNULL(Order_Amount,0) Sale_Amount,'admin', NOW()
+			FROM  tb_user tb left join 
+			(
+				SELECT TWR.User_ID,
+					Case When Product_Id &gt;=65 and `Product_ID` &lt;=71 then sum(Charge_Volumn) else Count(Work_Seq) end Order_Count, 
+					Case When Product_Id &gt;=65 and Product_ID &lt;=71 then sum( Charge_Volumn * Product_Price) else  Sum(Product_Price) end Order_Amount
+				FROM TB_Work_Bottle TWB, tb_work_report TWR 
+				WHERE Bottle_Work_Cd in ('0308','0314')
+				AND TWB.Work_Report_Seq = TWR.Work_Report_Seq
+				AND DATE_FORMAT(TWB.Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
+				Group by User_ID
+			) tc on tb.User_ID = tc.User_ID
+			WHERE User_Part_CD='01'  and tb.Delete_YN= 'N' 
+		)A,
+		( 
+			SELECT tb.User_ID, DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d') Stat_Dt,IFNULL(Order_Count,0) Rent_Count, IFNULL(Order_Amount,0) Rent_Amount,'admin', NOW()
+			FROM  tb_user tb left join 
+			(
+				SELECT TWR.User_ID, Count(Work_Seq) Order_Count, Sum(Product_Price) Order_Amount
+				FROM TB_Work_Bottle TWB, tb_work_report TWR
+				WHERE Bottle_Work_Cd in ('0309','0316')
+				AND TWB.Work_Report_Seq = TWR.Work_Report_Seq
+				AND DATE_FORMAT(TWB.Create_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')	
+				Group by User_ID
+			) tc on tb.User_ID = tc.User_ID
+			WHERE User_Part_CD='01'  and tb.Delete_YN= 'N' 
+		) B
+		WHERE A.User_ID= B.User_ID 
+	</select>
+	
+	<insert id="inserDailyStatisticsUserOrigin" parameterType="java.util.List">
+		INSERT INTO TB_Daily_Stat_User(
+			<include refid="StatisticsUserColumns" />
+		) 
+		<foreach collection="list" item="item" separator=" , ">
+		(
+			#{item.userId}
+			, #{item.statDt}
+			, #{item.saleCount}
+			, #{item.saleAmount}
+			, #{item.rentCount}
+			, #{item.rentAmount}
+			, 'admin'		
+			, NOW()			
+		)  
+		</foreach>	
+	</insert>
+	
 	<insert id="inserMonthlyStatisticsUser">
 		INSERT INTO TB_Monthly_Stat_User(
 			<include refid="StatisticsUserColumns" />

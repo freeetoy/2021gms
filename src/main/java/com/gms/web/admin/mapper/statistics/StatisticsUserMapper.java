@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gms.web.admin.domain.statistics.StatisticsCustomerVO;
 import com.gms.web.admin.domain.statistics.StatisticsUserVO;
 
 @Mapper
@@ -15,6 +16,10 @@ public interface StatisticsUserMapper {
 	public List<StatisticsUserVO> selectMontlylStatisticsUserList(Map<String, Object> map);	
 	
 	public int inserDailyStatisticsUser();
+	
+	public int inserDailyStatisticsUserOrigin(List<StatisticsUserVO> param);
+	
+	public List<StatisticsUserVO> inserDailyStatisticsUserOrigin();
 
 	public int inserMonthlyStatisticsUser();
 }

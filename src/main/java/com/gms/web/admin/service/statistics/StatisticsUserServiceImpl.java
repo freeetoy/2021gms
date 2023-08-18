@@ -34,7 +34,12 @@ public class StatisticsUserServiceImpl implements StatisticsUserService {
 	public int registerDailyStatisticsUser() {
 		int result = 0;
 		try {
-			 result = statMapper.inserDailyStatisticsUser();
+			 //result = statMapper.inserDailyStatisticsUser();
+			
+			List<StatisticsUserVO> userList = statMapper.inserDailyStatisticsUserOrigin();
+			
+			result  = statMapper.inserDailyStatisticsUserOrigin(userList);
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error(e.toString());
