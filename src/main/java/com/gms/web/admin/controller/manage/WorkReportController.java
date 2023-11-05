@@ -568,4 +568,18 @@ public class WorkReportController {
 		
 		return result;
 	}
+	
+	@RequestMapping(value = "/gms/report/saveBottleEtc.do")
+	@ResponseBody
+	public int saveWorkBottleEtc(HttpServletRequest request
+			, HttpServletResponse response
+			,WorkBottleVO param)	{			
+		RequestUtils.initUserPrgmInfo(request, param);
+		logger.info("saveWorkReportEtc==="+param.getWorkEtc()+ " workReportSeq="+param.getWorkReportSeq()+"=="+param.getUpdateId());
+		
+		int result = 0;		
+		result = workService.modifyWorkBottleEtc(param);
+		
+		return result;
+	}
 }

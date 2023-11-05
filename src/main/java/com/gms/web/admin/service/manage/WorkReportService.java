@@ -78,6 +78,8 @@ public interface WorkReportService {
 	
 	public int modifyWorkReportEtc(WorkBottleVO param);
 	
+	public int modifyWorkBottleEtc(WorkBottleVO param);
+	
 	public Map<String,Object> getCustomerWorkReportList(CustomerSalesVO param);	
 	
 	public List<WorkBottleVO> deliveredLn2CustomerList(WorkReportVO param);	

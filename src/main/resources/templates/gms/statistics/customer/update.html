@@ -9,11 +9,12 @@ function writeWorkEtc(productId,productPriceSeq,counter) {
    	var workReportSeq = document.getElementById("workReportSeq").value; 
    	
    	var workEtc = document.getElementById("workEtc_"+counter).value;
-   	console.log(workEtc);
+   	var bottleWorkCd = document.getElementById("bottleWorkCd_"+counter).value; 
+   	console.log(bottleWorkCd);
    $.ajax({
-		url: '/gms/report/saveEtc.do',
+		url: '/gms/report/saveBottleEtc.do',
 		type: 'POST',
-		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ encodeURI(workEtc) ,
+		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&bottleWorkCd='+bottleWorkCd+'&workEtc='+ encodeURI(workEtc) ,
 		dataType: 'json',
 	 })
 	.done(function(data){	    

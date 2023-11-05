@@ -1005,6 +1005,22 @@
 			Product_Price_Seq = #{productPriceSeq}
 	</update>
 	
+	<update id="modifyWorkBottleEtc" parameterType="com.gms.web.admin.domain.manage.WorkBottleVO">
+		UPDATE TB_Work_Bottle
+		SET
+			Work_Etc			= #{workEtc}
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Work_Report_Seq = #{workReportSeq}
+		AND
+			Product_Id = #{productId}
+		AND
+			Product_Price_Seq = #{productPriceSeq}
+		AND
+			Bottle_Work_Cd 	= #{bottleWorkCd}
+	</update>
+	
 	<select id="selectWorkBottleSeqTcharge" resultType="int" parameterType="int">
 		SELECT IFNULL(A.Work_Seq, 0)
 		FROM 

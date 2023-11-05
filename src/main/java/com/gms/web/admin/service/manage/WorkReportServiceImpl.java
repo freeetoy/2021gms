@@ -2085,11 +2085,6 @@ public class WorkReportServiceImpl implements WorkReportService {
 		int result = 0;
 		try {
 			int productCount = 0;
-//			Enumeration params = request.getParameterNames();
-//			while(params.hasMoreElements()) {
-//			  String name = (String) params.nextElement();
-//			  logger.debug("modifyWorkBottleManual ==="+name + " : " + request.getParameter(name) + "     "); 
-//			}
 			CustomerVO customer = customerService.getCustomerDetails(param.getCustomerId());
 					
 			if(request.getParameter("productCount") !=null) productCount = Integer.parseInt(request.getParameter("productCount"));
@@ -2158,10 +2153,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				workBottle.setNewYn("Y");
 				workBottle.setNewProductYn("Y");
-				
+				logger.debug("modifyWorkBottleManual workBottle.getWorkEtc==" + workBottle.getWorkEtc() );
 				if(rightYn) afterWorkBottleList.add(workBottle);
 			}
-			
+//			logger.debug("modifyWorkBottleManual afterWorkBottleList.size=" + afterWorkBottleList.size() ); 
 			//이전 WorkBottle 과 비교
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -2188,8 +2183,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 					if(beforeWorkBottle.getBottleWorkCd().equals(afterWorkBottle.getBottleWorkCd() )
 							&& beforeWorkBottle.getProductId() == afterWorkBottle.getProductId() 
 							&& beforeWorkBottle.getProductPriceSeq() == afterWorkBottle.getProductPriceSeq()){		
-//						logger.debug("modifyWorkBottleManual beforeWorkBottle.getProductPrice==" + beforeWorkBottle.getProductPrice() ); 
- 
+					
+						beforeWorkBottle.setWorkEtc(afterWorkBottle.getWorkEtc());
 						double fPrice = 0;
 						if(beforeWorkBottle.getProductCount() > 0) fPrice = beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount();
 						else fPrice = beforeWorkBottle.getProductPrice();
@@ -2242,24 +2237,19 @@ public class WorkReportServiceImpl implements WorkReportService {
 								if(PropertyFactory.getProperty("common.bottle.status.tcharge").equals(request.getParameter("bottleWorkCd_"+i))) {
 									beforeWorkBottle.setChargeVolumn(afterWorkBottle.getChargeVolumn());
 								}
-//								logger.debug("WorkReportServiceImpl -11-beforeWorkBottle.getCH="+beforeWorkBottle.getChargeVolumn() );
 								result = addWorkBottleNoGas(beforeWorkBottle);	
 							}
 						}else if(remainCount < 0 ){
 							if(!afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) )
 								result = modifyCustomerProduct(beforeWorkBottle);
 							
-//							logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  beforeWorkBottle.getWorkSeq=" + beforeWorkBottle.getWorkSeq() );		
 							result = minusWorkBottle(beforeWorkBottle);		
-							
 						}
 						// orderProduct처리 -orderBottle도 처리
 					}					
 				}
 				//if(afterWorkBottle.getProductCount() > 0 && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {
-//				logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  afterWorkBottle.getProductCount=" + afterWorkBottle.getProductCount() );
 				if(afterWorkBottle.getProductCount() > 0 ) {
-//					logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  afterWorkBottle.getProductId=" + afterWorkBottle.getProductId() );
 
 					ProductTotalVO productTotal = null;
 					OrderProductVO orderProduct = new OrderProductVO();
@@ -2312,10 +2302,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						newOrderProductList.add(orderProduct);
 					}					
 				}
-						
-				
 			}			
-//			logger.debug("WorkReportServiceImpl --modifyWorkBottleManual  addNewWorkBottle="  );
 			result = addNewWorkBottle(getNewWorkBottle(afterWorkBottleList,1));			
 			
 			//20210220 수정
@@ -4591,6 +4578,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 	@Override
 	public int modifyWorkReportEtc(WorkBottleVO param) {
 		return workMapper.modifyWorkReportEtc(param);
+	}
+	
+	@Override
+	public int modifyWorkBottleEtc(WorkBottleVO param) {
+		return workMapper.modifyWorkBottleEtc(param);
 	}
 	
 	public int checkOrder(WorkReportVO param, List<BottleVO> bottleList) {
