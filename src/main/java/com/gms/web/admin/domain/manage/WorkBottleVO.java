@@ -110,6 +110,6 @@ public class WorkBottleVO extends AbstractVO implements Serializable {
 	private String  searchDt;
 	
 	/**Work_Etc */
-	private String workEtc ;
+	private String workEtc="" ;
 	
 }

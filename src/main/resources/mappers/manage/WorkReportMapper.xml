@@ -135,6 +135,7 @@
 		 , Gas_CD
 		 , Multi_YN
 		 , Charge_Volumn
+		 , Work_Etc
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -191,6 +192,7 @@
 			, #{gasCd}
 			, #{multiYn}
 			, #{chargeVolumn}
+			, #{workEtc}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 			, #{searchDt}	
@@ -225,6 +227,7 @@
 			, #{item.gasCd}
 			, #{item.multiYn}
 			, #{item.chargeVolumn}
+			, #{item.workEtc}
 			, #{item.createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(item.searchDt)">
 			, #{item.searchDt}	

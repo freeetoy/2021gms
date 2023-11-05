@@ -716,6 +716,7 @@ public class StatisticsCustomerController {
 		    row = ((org.apache.poi.ss.usermodel.Sheet) sheet).createRow(rowNo++);
 		    
 		    List<String> list = null;		    
+		    // excel.stat.customer.report.title 231105 대여,대여회수 추가
 		    list = StringUtils.makeForeach(PropertyFactory.getProperty("excel.stat.customer.report.title"), ","); 		
 		    
 		    for(int i =0;i<list.size();i++) {
@@ -802,6 +803,16 @@ public class StatisticsCustomerController {
 		        cell.setCellStyle(styleRight);
 		        cell.setCellValue(vo.getChargeCount());
 		        
+		        //대여 231105
+		        cell = row.createCell(i++);
+		        cell.setCellStyle(styleRight);
+		        cell.setCellValue("");
+
+		        //대여회수231105
+		        cell = row.createCell(i++);
+		        cell.setCellStyle(styleRight);
+		        cell.setCellValue("");
+
 		        cell = row.createCell(i++);
 		        cell.setCellStyle(bodyStyle);
 		        cell.setCellValue(vo.getWorkEtc());

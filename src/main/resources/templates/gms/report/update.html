@@ -4,7 +4,55 @@
 
 <th:block layout:fragment="content"> 
 <script type="text/javascript">
+function writeWorkEtc(productId,productPriceSeq,counter) {
+   	var workReportSeq = document.getElementById("workReportSeq").value; 
+   	
+   	var workEtc = document.getElementById("workEtc_"+counter).value;
+   	console.log(workEtc);
+   $.ajax({
+		url: '/gms/report/saveEtc.do',
+		type: 'POST',
+		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ encodeURI(workEtc) ,
+		dataType: 'json',
+	 })
+	.done(function(data){	    
+		var result = data;
+		if(result > 0){
+			alert("비고를 저장하였습니다");
+		}else{
+			alert("저장하지 못했습니다. 재시도 해주세요");
+		}
+	})
+	.fail(function(){
+		console.log("fail");
+	 })
+ }
 
+function writeWorkEtc1(counter) {
+   	var workReportSeq = document.getElementById("workReportSeq").value; 
+   	
+   	var workEtc = document.getElementById("workEtc_"+counter).value;
+   	var productId = document.getElementById("productId_"+counter).value;
+   	var productPriceSeq = document.getElementById("productPriceSeq_"+counter).value;
+   	console.log(workEtc);
+   $.ajax({
+		url: '/gms/report/saveEtc.do',
+		type: 'POST',
+		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ encodeURI(workEtc) ,
+		dataType: 'json',
+	 })
+	.done(function(data){	    
+		var result = data;
+		if(result > 0){
+			alert("비고를 저장하였습니다");
+		}else{
+			alert("저장하지 못했습니다. 재시도 해주세요");
+		}
+	})
+	.fail(function(){
+		console.log("fail");
+	 })
+ }
 
 $(document).ready(function(){ 
 	
@@ -77,6 +125,14 @@ $(document).ready(function(){
 		cols += '</td><td>';
 		cols += ' <input type="number" class="form-control" id="productCount_' + mod_counter + '" name="productCount_' + mod_counter + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999" value="1">';
 		cols += '</td><td>'; 
+		//cols += '	<input type="text" class="form-control" id="workEtc_' + mod_counter + '" name="workEtc_' + mod_counter + '" value="" style="width:80px;height:35px;" >';
+		cols += '</td><td>'; 
+		//cols += ' <input type="button" class="btn btn-md btn-info" onclick="writeWorkEtc1('+counter+');" name="mod_addEtc" value="비고저장" />';
+		cols += '</td><td>';	
+					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:120px;height:35px;" >';
+					cols += '</td><td>'; 
+					cols += ' <input type="button" class="btn btn-success" onclick="writeWorkEtc('+data[i].productId+','+data[i].productPriceSeq+','+counter+');" name="mod_addEtc" value="비고저장" />';
+					cols += '</td><td>';
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
         cols +='</tr>';
@@ -264,6 +320,7 @@ $(document).ready(function(){
 				cols += '<td>용량</td>';
 				cols += '<td>용기</td>';	
 				cols += '<td>수량</td>';				
+				cols += '<td>비고</td>';
 				cols += '<td></td></tr>';
 
 		        newRow.append(cols);
@@ -324,6 +381,7 @@ $(document).ready(function(){
 				cols += '<td>용량</td>';
 				cols += '<td>용기</td>';	
 				cols += '<td>수량</td>';
+				cols += '<td>비고</td>';
 				cols += '<td></td></tr>';
 
 				newRow.append(cols);
@@ -392,6 +450,10 @@ $(document).ready(function(){
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].chargeVolumn + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 					else
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '</td><td>';	
+					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:120px;height:35px;" >';
+					cols += '</td><td>'; 
+					cols += ' <input type="button" class="btn btn-success" onclick="writeWorkEtc('+data[i].productId+','+data[i].productPriceSeq+','+counter+');" name="mod_addEtc" value="비고저장" />';
 					cols += '</td><td>'; 
 	
 					if (counter < 1){	
@@ -473,7 +535,7 @@ $(document).ready(function(){
 	        </div>
         </div>
         <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-12">
             <div class="card">          
               
              <!-- general form elements -->
@@ -558,7 +620,9 @@ $(document).ready(function(){
         <div class="row">	
 		        <div class="col-10">	        	
 		        <table class="table table-hover">	
-		        <tr><td  style='color: red'>(이미 등록된 납품 상품은 수량을 0으로 등록하면 삭제가 됩니다)</td></tr>
+		        <tr><td  style='color: red'>(이미 등록된 납품 상품은 수량을 0으로 등록하면 삭제가 됩니다)<br>
+		        (싱품별 비고 입력후 비고저장을 클릭하면 비고가 저장이 됩니다.)
+		        </td></tr>
 		         </table>
 		        </div>
 	        </div>

@@ -557,8 +557,11 @@ public class WorkReportController {
 	
 	@RequestMapping(value = "/gms/report/saveEtc.do")
 	@ResponseBody
-	public int saveWorkReportEtc(WorkBottleVO param)	{			
-		logger.info("saveWorkReportEtc==="+param.getWorkEtc()+ " workReportSeq="+param.getWorkReportSeq());
+	public int saveWorkReportEtc(HttpServletRequest request
+			, HttpServletResponse response
+			,WorkBottleVO param)	{			
+		RequestUtils.initUserPrgmInfo(request, param);
+		logger.info("saveWorkReportEtc==="+param.getWorkEtc()+ " workReportSeq="+param.getWorkReportSeq()+"=="+param.getUpdateId());
 		
 		int result = 0;		
 		result = workService.modifyWorkReportEtc(param);
