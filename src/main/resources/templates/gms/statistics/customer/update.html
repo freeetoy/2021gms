@@ -10,7 +10,7 @@ function writeWorkEtc(productId,productPriceSeq,counter) {
    	
    	var workEtc = document.getElementById("workEtc_"+counter).value;
    	var bottleWorkCd = document.getElementById("bottleWorkCd_"+counter).value; 
-   	console.log(bottleWorkCd);
+  // 	console.log(bottleWorkCd);
    $.ajax({
 		url: '/gms/report/saveBottleEtc.do',
 		type: 'POST',
@@ -504,7 +504,7 @@ $(document).ready(function(){
 					else
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 					cols += '</td><td>';	
-					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:120px;height:35px;" >';
+					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:150px;height:35px;" >';
 					cols += '</td><td>'; 
 					cols += ' <input type="button" class="btn btn-success" onclick="writeWorkEtc('+data[i].productId+','+data[i].productPriceSeq+','+counter+');" name="mod_addEtc" value="비고저장" />';
 					cols += '</td><td>';

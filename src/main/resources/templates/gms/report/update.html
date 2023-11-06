@@ -8,11 +8,12 @@ function writeWorkEtc(productId,productPriceSeq,counter) {
    	var workReportSeq = document.getElementById("workReportSeq").value; 
    	
    	var workEtc = document.getElementById("workEtc_"+counter).value;
-   	console.log(workEtc);
+   	var bottleWorkCd = document.getElementById("bottleWorkCd_"+counter).value; 
+  // 	console.log(bottleWorkCd);
    $.ajax({
-		url: '/gms/report/saveEtc.do',
+		url: '/gms/report/saveBottleEtc.do',
 		type: 'POST',
-		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&workEtc='+ encodeURI(workEtc) ,
+		data: 'workReportSeq='+ workReportSeq +'&productId='+productId+'&productPriceSeq='+productPriceSeq+'&bottleWorkCd='+bottleWorkCd+'&workEtc='+ encodeURI(workEtc) ,
 		dataType: 'json',
 	 })
 	.done(function(data){	    
@@ -27,6 +28,7 @@ function writeWorkEtc(productId,productPriceSeq,counter) {
 		console.log("fail");
 	 })
  }
+
 
 function writeWorkEtc1(counter) {
    	var workReportSeq = document.getElementById("workReportSeq").value; 
@@ -129,10 +131,10 @@ $(document).ready(function(){
 		cols += '</td><td>'; 
 		//cols += ' <input type="button" class="btn btn-md btn-info" onclick="writeWorkEtc1('+counter+');" name="mod_addEtc" value="비고저장" />';
 		cols += '</td><td>';	
-					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:120px;height:35px;" >';
-					cols += '</td><td>'; 
-					cols += ' <input type="button" class="btn btn-success" onclick="writeWorkEtc('+data[i].productId+','+data[i].productPriceSeq+','+counter+');" name="mod_addEtc" value="비고저장" />';
-					cols += '</td><td>';
+		//cols += '	<input type="text" class="form-control" id="workEtc_' + mod_counter + '" name="workEtc_' + mod_counter + '" value="" style="width:80px;height:35px;" >';
+		cols += '</td><td>'; 
+		//cols += ' <input type="button" class="btn btn-md btn-info" onclick="writeWorkEtc1('+counter+');" name="mod_addEtc" value="비고저장" />';
+		cols += '</td><td>';
         cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
         cols += '</td>';
         cols +='</tr>';
@@ -359,6 +361,10 @@ $(document).ready(function(){
 				cols += '</td><td>';
 				cols += ' <input type="number" class="form-control" id="productCount_0" name="productCount_0" style="width:60px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 				cols += '</td><td>';  
+				//cols += ' <input type="text" class="form-control" id="workEtc_0" name="workEtc_0" style="width:80px;height:35px;">';
+				cols += '</td><td>';
+				//cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';
+				cols += '</td><td>';  
 				cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-danger" id="mod_addrow" value="삭제" />';
 				cols += '</td>';
 				cols +='</tr>';
@@ -449,13 +455,12 @@ $(document).ready(function(){
 					if(data[i].productId >=65 && data[i].productId <=71)
 						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].chargeVolumn + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 					else
-						cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
+					cols += '	<input type="number" class="form-control" id="productCount_' + counter + '" name="productCount_' + counter + '" value="' + data[i].productCount + '" style="width:80px;height:35px;" onkeypress="return event.charCode >= 48" min="0" max="99999">';
 					cols += '</td><td>';	
-					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:120px;height:35px;" >';
+					cols += '	<input type="text" class="form-control" id="workEtc_' + counter + '" name="workEtc_' + counter + '" value="' + data[i].workEtc + '" style="width:150px;height:35px;" >';
 					cols += '</td><td>'; 
 					cols += ' <input type="button" class="btn btn-success" onclick="writeWorkEtc('+data[i].productId+','+data[i].productPriceSeq+','+counter+');" name="mod_addEtc" value="비고저장" />';
-					cols += '</td><td>'; 
-	
+					cols += '</td><td>';
 					if (counter < 1){	
 						cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	
 					}else{	
