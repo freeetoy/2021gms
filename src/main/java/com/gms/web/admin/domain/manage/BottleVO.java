@@ -128,6 +128,12 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** Bottle_Etc	*/
 	private String bottleEtc ;
 	
+	/** Owner_Customer_ID	*/
+	private Integer ownerCustomerId ;
+	
+	/** Owner_Customer_Nm	*/
+	private String ownerCustomerNm ;
+	
 	/** 복수 삭제용 Ids*/
 	private String bottleIds;
 	
@@ -154,6 +160,9 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	
 	/** searchCustomerNm	*/
 	private String  searchCustomerNm1;
+	
+	/** searchOwnerCustomerNm	*/
+	private String  searchOwnerCustomerNm;
 	
 	/** searchChargeDtFrom	*/
 	private String  searchChargeDtFrom;

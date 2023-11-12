@@ -1335,8 +1335,9 @@ $(document).ready(function(){
                       <td>
                       <input class="IdCheckbox"  name="check_id" type="checkbox" th:value="${row.bottleBarCd}"></td>
                       <th th:text="${row.bottleId}"></th>
-                      <th>
-                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
+                      <th th:if="${row.deleteYn=='N' }">
+                      <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>
+                      <th th:unless="${row.deleteYn=='N' }">
                       </th>
                       <td th:text="${row.productNm}"></td>
                       <td th:text="${row.chargeCapa}"></td>

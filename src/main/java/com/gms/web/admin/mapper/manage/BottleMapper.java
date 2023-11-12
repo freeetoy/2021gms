@@ -53,11 +53,15 @@ public interface BottleMapper {
 	
 	public int updateBottlesWorkCdOnly(BottleVO param);
 	
+	public int updateOnlyBottlesWorkCd(BottleVO param);
+	
 	public int updateBottleOrderId(BottleVO param);
 	
 	public int updateBottlesOrderId(List<BottleVO> params);
 
 	public int deleteBottle(BottleVO param);
+	
+	public int deleteAllBottles();
 	
 	public int deleteBottles(BottleVO param);
 	
@@ -76,6 +80,10 @@ public interface BottleMapper {
 	public int insertBottleHistory(BottleVO param);
 	
 	public int insertBottleHistorys(List<BottleVO> param);
+	
+	public int insertBottleHistorys1(BottleVO param);
+	
+	public int insertDeeleteAllBottleHistory();
 	
 	public BottleVO selectDummyBottle(BottleVO param);	
 	

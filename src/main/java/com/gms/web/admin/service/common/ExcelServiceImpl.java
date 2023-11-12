@@ -83,7 +83,7 @@ public class ExcelServiceImpl implements ExcelService {
         
         List<BottleVO> bottlelist = bottleService.getBottleListAll();
         
-        //List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
+        List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
         
         List<ProductTotalVO> productList = productService.getProductTotalDetailList();
         
@@ -166,7 +166,7 @@ public class ExcelServiceImpl implements ExcelService {
 			                        colValue = "";
 		                    }
 	                	}
-               	
+//	                	logger.debug("$$$$$$$$$$$$$$ ExcelService j="+ j +" colValue="+ colValue);
 	                	//용기	바코드/RFID	가스	품명	용기체적	가스용량	충전용량	충전기한	충전압력	제조일	거래처	작업	소유	
 	                    //0		1			2	3	4		5		6		7		8		9		10		11	12
 	
@@ -198,14 +198,41 @@ public class ExcelServiceImpl implements ExcelService {
 	                	else if(j == 6) bottle.setBottleVolumn(colValue);//  productNm = colValue;
 	                	else if(j == 9) productNm = colValue;
 	                	else if(j == 10) bottle.setBottleChargePrss(colValue);	                	
-	                	else if(j == 11) {
-	                		if(colValue.equals("self"))
-	                			bottle.setBottleOwnYn("Y");
-	                		else
-	                			bottle.setBottleOwnYn("N");
-	                	}
-	                	else if(j == 12)  { 
+//	                	else if(j == 11) {
+//	                		if(colValue.equals("self"))
+//	                			bottle.setBottleOwnYn("Y");
+//	                		else
+//	                			bottle.setBottleOwnYn("N");
+//	                	}
+	                	else if(j == 11)  {
+	                		if(colValue != null && colValue.length() > 0) {
+//	                			logger.debug("$$$$$$$$$$$$$$ ExcelService customer_Nnm "+ colValue);
+		                		for(int k=0;k<customerList.size();k++) {
+//		                			if(customerList.get(k).getCustomerNm().equals("(대)유진가스상사"))logger.debug("$$$$$$$$$$$$$$ ExcelService cuustomerList.get(k).getCustomerNm() "+ customerList.get(k).getCustomerNm());
+		                			if(colValue.equals(customerList.get(k).getCustomerNm()) ){
+		                				
+		                				bottle.setCustomerId(customerList.get(k).getCustomerId());
+		                				break;
+		                			}
+		                		}
+	                		}
 	                		bottle.setBottleEtc(colValue);
+	                	}
+	                	else if(j == 12)  {	// 용기소유주(2023-10-07
+	                		if(colValue != null && colValue.length() > 0) {
+//	                			logger.debug("$$$$$$$$$$$$$$ ExcelService owner_customer_Nnm "+ colValue);
+//	                			logger.debug("$$$$$$$$$$$$$$ ExcelService owner_customer_Nnm "+ colValue.length());
+		                		for(int k=0;k<customerList.size();k++) {
+//		                			if(customerList.get(k).getCustomerNm().equals("(대)유진가스상사"))logger.debug("$$$$$$$$$$$$$$ ExcelService cuustomerList.get(k).getCustomerNm() "+ customerList.get(k).getCustomerNm());
+		                			if(colValue.equals(customerList.get(k).getCustomerNm()) ){
+		                				bottle.setOwnerCustomerId(customerList.get(k).getCustomerId());
+		                				bottle.setOwnerCustomerNm(colValue);
+//		                				logger.debug("$$$$$$$$$$$$$$ ExcelService owner_customer_id "+ bottle.getOwnerCustomerId());
+		                				break;
+		                			}
+		                		}
+	                		}
+	                		bottle.setBottleEtc(colValue);	
 	                	}
 	                	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
 	                }
@@ -236,17 +263,53 @@ public class ExcelServiceImpl implements ExcelService {
 	                
 	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
 	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
-//	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getBottleid "+ bottle.getBottleId());
+	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getUpdateId "+ bottle.getUpdateId());
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
-	                		isRegisteFlag = false;
-	                		updateList.add(bottle);
-	                		if(updateList.size() == 500) {
-	                			result = bottleService.modifyBottleList(updateList);
-	                			updateList.clear();
+	                		
+	                		boolean updateFlag = false;
+	                		if(!bottle.getGasCd().equals(bottlelist.get(k).getGasCd()) ) {
+	                			updateFlag = true;
 	                		}
-//	                		result = bottleService.modifyBottle(bottle);
-	                		updateCount++;
+
+	                		if( !bottle.getBottleCapa().equals(bottlelist.get(k).getBottleCapa()) ) updateFlag = true;
+	                		
+	                		if(bottle.getBottleChargeDt()!=null && bottlelist.get(k).getBottleChargeDt() !=null && !bottle.getBottleChargeDt().equals(bottlelist.get(k).getBottleChargeDt()) ) updateFlag = true;
+	                		
+	                		if(bottle.getBottleCreateDt()!=null && bottlelist.get(k).getBottleCreateDt() !=null && !bottle.getBottleCreateDt().equals(bottlelist.get(k).getBottleCreateDt()) ) updateFlag = true;
+	                		
+	                		if((bottle.getBottleCreateDt() != null && bottlelist.get(k).getBottleCreateDt() == null) || (bottle.getBottleCreateDt() == null && bottlelist.get(k).getBottleCreateDt() != null) ) updateFlag = true;
+	                		
+	                		if( !bottle.getBottleVolumn().equals(bottlelist.get(k).getBottleVolumn() ) ) updateFlag = true;
+	                		
+	                		if( !bottle.getProductId().equals(bottlelist.get(k).getProductId()) ) updateFlag = true;
+	                			
+	                		if( !bottle.getProductPriceSeq().equals(bottlelist.get(k).getProductPriceSeq()) ) updateFlag = true;
+	                		
+	                		if( !bottle.getBottleChargePrss().equals(bottlelist.get(k).getBottleChargePrss()) )  updateFlag = true;
+	                		
+	                		if(bottle.getOwnerCustomerId() != null && bottlelist.get(k).getOwnerCustomerId() != null && !bottle.getOwnerCustomerId().equals(bottlelist.get(k).getOwnerCustomerId() ) ) updateFlag = true;
+
+	                		if( bottle.getOwnerCustomerId() == null && bottlelist.get(k).getOwnerCustomerId() != null ) updateFlag = true;
+	                		
+	                		if(bottle.getOwnerCustomerId() != null && bottlelist.get(k).getOwnerCustomerId() == null)  updateFlag = true;
+
+	                		if(bottle.getCustomerId() != null && bottlelist.get(k).getCustomerId() != null && (  !bottle.getCustomerId().equals(bottlelist.get(k).getCustomerId()) ) )  updateFlag = true;
+	                		
+	                		if( bottle.getCustomerId() == null && bottlelist.get(k).getCustomerId() != null ) updateFlag = true;
+	                		
+	                		if(bottle.getCustomerId() != null && bottlelist.get(k).getCustomerId() == null)  updateFlag = true;
+	                		
+	                		if(updateFlag) {
+		                		updateList.add(bottle);
+		                		if(updateList.size() == 500) {
+		                			result = bottleService.modifyBottleList(updateList);
+		                			updateList.clear();
+		                		}
+	//	                		result = bottleService.modifyBottle(bottle);
+		                		updateCount++;
+	                		}
+	                		isRegisteFlag = false;
 	                	}	                		
 	                }
 	                if(isRegisteFlag) {

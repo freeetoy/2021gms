@@ -6,6 +6,7 @@
 		<result property="customerId"			column="Customer_ID"		/>
 		<result property="memberCompSeq"		column="Member_Comp_Seq"	/>		
 		<result property="customerNm"			column="Customer_Nm"		/>
+		<result property="customerNickNm"		column="Customer_NickNm"	/>
 		<result property="businessRegId"		column="Business_Reg_ID"	/>
 		<result property="customerRepNm"		column="Customer_Rep_Nm"	/>
 		<result property="customerBusiType"		column="Customer_Busi_Type"	/>
@@ -69,6 +70,7 @@
 		, Taxinvoice_Type
 		, Sale_Type
 		, Business_Nm
+		, Customer_NickNm
 		, Customer_Dtl_Addr
 		, Customer_Post
 		, Customer_Mobile
@@ -104,6 +106,7 @@
 		, Taxinvoice_Type
 		, Sale_Type
 		, Business_Nm
+		, Customer_NickNm
 		, Customer_Dtl_Addr
 		, Customer_Post
 		, Customer_Mobile
@@ -179,6 +182,7 @@
 			, #{taxinvoiceType}
 			, #{saleType}
 			, #{businessNm}
+			, #{CustomerNickNm}
 			, #{customerDtlAddr}
 			, #{customerPost}
 			, #{customerMobile}
@@ -219,6 +223,7 @@
 			, #{item.taxinvoiceType}
 			, #{item.saleType}
 			, #{item.businessNm}
+			, #{item.CustomerNickNm}
 			, #{item.customerDtlAddr}
 			, #{item.customerPost}
 			, #{item.customerMobile}
@@ -348,6 +353,7 @@
 		UPDATE TB_CUSTOMER
 		SET
 			  Customer_NM			= #{customerNm}
+			, Customer_NIckNM		= #{customerNickNm}
 			, Business_Reg_ID		= #{businessRegId}
 			, Customer_Rep_Nm		= #{customerRepNm}
 			, Customer_Busi_Type	= #{customerBusiType}

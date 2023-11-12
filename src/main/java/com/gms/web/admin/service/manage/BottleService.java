@@ -60,11 +60,15 @@ public interface BottleService {
 	
 	public int changeBottlesWorkCd(BottleVO param);
 	
+	public int changeOnlyBottlesWorkCd(BottleVO param);
+	
 	public int changeWorkCdsAndHistory(BottleVO param,List<BottleVO> params);
 	
 	public int changeBottlesWorkCdOnly(BottleVO param);
 
 	public int deleteBottle(BottleVO param);
+
+	public int deleteAllBottles();
 	
 	public int deleteBottles(BottleVO param);
 	

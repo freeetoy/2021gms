@@ -118,14 +118,26 @@ public class BottleController {
 		String ownCustomerId = "";
 		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) ownCustomerId = params.getOwnCustomerId();
 		
+		Integer ownerCustomerId = null;
+		if(params.getOwnerCustomerId() !=null ) ownerCustomerId = params.getOwnerCustomerId();
+		
 		List<CustomerSimpleVO> customerList = null;
 		if(params.getSearchCustomerNm1()!=null && params.getSearchCustomerNm1().length() > 0)
 			customerList = customerService.searchCustomerSimpleList(params.getSearchCustomerNm1());
 		
+		List<CustomerSimpleVO> ownerCustomerList = null;
+		if(params.getSearchOwnerCustomerNm() != null && params.getSearchOwnerCustomerNm().length() > 0)
+			ownerCustomerList = customerService.searchCustomerSimpleList(params.getSearchOwnerCustomerNm());
+		
 		model.addAttribute("customerList", customerList);	
+		model.addAttribute("ownerCustomerList", ownerCustomerList);	
 		model.addAttribute("searchCustomerNm1", params.getSearchCustomerNm1());
+		model.addAttribute("searchOwnerCustomerNm", params.getSearchOwnerCustomerNm());
 		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) 
 			model.addAttribute("ownCustomerId", Integer.parseInt(params.getOwnCustomerId()) );
+		
+		if(params.getOwnerCustomerId() !=null && params.getOwnerCustomerId() > 0 ) 
+			model.addAttribute("ownerCustomerId", params.getOwnerCustomerId() );
 		
 		// 상품 정보 불러오기
 		List<ProductVO> productList = productService.getGasProductList();
@@ -883,7 +895,69 @@ public class BottleController {
 		return null;
 		//return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId();
 	}
-	
+
+	@RequestMapping(value = "/gms/bottle/changeChecked.do", method = RequestMethod.POST)
+	public ModelAndView changeChecked(HttpServletRequest request, HttpServletResponse response, BottleVO params) {
+		
+		logger.debug(" changeChecked");
+		
+		RequestUtils.initUserPrgmInfo(request, params);
+		ModelAndView mav = new ModelAndView();
+		
+		//검색조건 셋팅
+		String bottleIds = null;	
+		
+		String searchChargetDt = params.getSearchChargeDt();	
+		
+		String searchChargeDtFrom = null;
+		String searchChargeDtEnd = null;			
+		String searchProductId = "";	
+		int  result = 0;
+		try {
+			if(searchChargetDt != null && searchChargetDt.length() > 20) {
+				searchChargeDtFrom = searchChargetDt.substring(0, 10) ;				
+				searchChargeDtEnd = searchChargetDt.substring(13, searchChargetDt.length()) ;
+				
+				params.setSearchChargeDtFrom(searchChargeDtFrom);
+				params.setSearchChargeDtEnd(searchChargeDtEnd);				
+			}			
+			
+			if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
+				searchProductId = params.getSearchGasId();
+				//model.addAttribute("searchProductId", Integer.parseInt(searchProductId));
+				mav.addObject("searchProductId", searchProductId);
+			}			
+
+			if(request.getParameter("bottleIds") != null && request.getParameter("bottleIds").length() > 0) {
+				bottleIds= request.getParameter("bottleIds");
+				List<String> list = StringUtils.makeForeach(bottleIds, ","); 		
+				params.setBottList(list);
+			}					
+			params.setBottleWorkId(params.getUpdateId());
+			result = bottleService.changeOnlyBottlesWorkCd(params);
+			
+			mav.addObject("searchBottleId", params.getSearchBottleId());
+			mav.addObject("searchChargeDt", params.getSearchChargeDt());
+			mav.addObject("currentPage", params.getCurrentPage());
+			
+			if (result < 0) {
+				logger.debug(" changeChecked error");
+			}
+		} catch (DataAccessException e) {
+			logger.error(" deleteBottles Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(" deleteBottles Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		if(result > 0){
+			String alertMessage = "용기의 상태가 변경 되었습니다.";
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId());
+		}
+		return null;
+		//return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId();
+	}
+
 	
 	@RequestMapping(value = "/gms/bottle/deleteChecked.do", method = RequestMethod.POST)
 	public ModelAndView deleteBottles(HttpServletRequest request
@@ -951,6 +1025,62 @@ public class BottleController {
 		//return "redirect:/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId();
 	}
 	
+	@RequestMapping(value = "/gms/bottle/deleteAll.do", method = RequestMethod.POST)
+	public ModelAndView deleteAll(HttpServletRequest request
+			, HttpServletResponse response
+			, BottleVO params) {
+		
+		RequestUtils.initUserPrgmInfo(request, params);
+		ModelAndView mav = new ModelAndView();
+		
+		//검색조건 셋팅
+		String bottleIds = null;	
+		
+		String searchChargetDt = params.getSearchChargeDt();	
+		
+		String searchChargeDtFrom = null;
+		String searchChargeDtEnd = null;			
+		String searchProductId = "";	
+		int  result = 0;
+		try {
+			
+			if(searchChargetDt != null && searchChargetDt.length() > 20) {
+				searchChargeDtFrom = searchChargetDt.substring(0, 10) ;				
+				searchChargeDtEnd = searchChargetDt.substring(13, searchChargetDt.length()) ;
+				
+				params.setSearchChargeDtFrom(searchChargeDtFrom);
+				params.setSearchChargeDtEnd(searchChargeDtEnd);				
+			}			
+			
+			if(params.getSearchProductId() != null && params.getSearchProductId().length() > 0 ) {
+				searchProductId = params.getSearchGasId();
+				//model.addAttribute("searchProductId", Integer.parseInt(searchProductId));
+				mav.addObject("searchProductId", searchProductId);
+			}			
+						
+			result = bottleService.deleteAllBottles();
+			
+			mav.addObject("searchBottleId", params.getSearchBottleId());
+			mav.addObject("searchChargeDt", params.getSearchChargeDt());
+			mav.addObject("currentPage", params.getCurrentPage());
+			
+			if (result < 0) {
+				logger.debug(" deleteAllBottles error");
+			}
+		} catch (DataAccessException e) {
+			logger.error(" deleteBottles Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(" deleteBottles Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		if(result > 0){
+			String alertMessage = "용기가 삭제 되었습니다.";
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchChargeDt="+params.getSearchChargeDt()+"&searchProductId="+params.getSearchProductId());
+		}
+		return null;
+	}
+
 	
 	@RequestMapping(value = "/gms/bottle/customerBottles.do")
 	@ResponseBody

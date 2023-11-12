@@ -117,9 +117,15 @@ public class BottleServiceImpl implements BottleService {
 			map.put("ownCustomerId", ownCustomerId);
 			map.put("ownCustomerIdYn", "Y");
 		}
-	
+		
+		Integer ownerCustomerId = null;
+		if(param.getOwnerCustomerId() !=null) {
+			ownerCustomerId = param.getOwnerCustomerId();
+			map.put("ownerCustomerId", ownerCustomerId);
+			logger.debug("****** getBottleList *****getOwnerCustomerId===*"+param.getOwnerCustomerId());
+		}
 		int bottleCount = 0;
-//		logger.debug("****** getBottleList *****getSearchChargeDt===*"+param.getSearchWorkCd());
+
 //		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
 //			bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
 //		}else
@@ -394,6 +400,11 @@ public class BottleServiceImpl implements BottleService {
 			map.put("ownCustomerId", Integer.parseInt(param.getOwnCustomerId()) );
 			map.put("ownCustomerIdYn", "Y");
 		}
+		
+		if(param.getOwnerCustomerId() != null && param.getOwnerCustomerId() > 0) {
+			map.put("ownerCustomerId", param.getOwnerCustomerId() );
+		}
+		
 		List<BottleVO> bottleList = null;
 		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
 			//bottleList = bottleMapper.selectBottleListToExcel(map);
@@ -654,6 +665,16 @@ public class BottleServiceImpl implements BottleService {
 
 	@Override
 	@Transactional
+	public int deleteAllBottles() {
+		int result = 0;
+		result = bottleMapper.insertDeeleteAllBottleHistory();
+		result = bottleMapper.deleteAllBottles();
+		return result;
+	}
+
+	
+	@Override
+	@Transactional
 	public int deleteBottles(BottleVO param) {
 		return bottleMapper.deleteBottles(param);
 	}
@@ -737,8 +758,6 @@ public class BottleServiceImpl implements BottleService {
 				
 	}
 
-
-
 	@Override
 	@Transactional
 	public int changeBottlesWorkCdOnly(BottleVO param) {
@@ -787,6 +806,61 @@ public class BottleServiceImpl implements BottleService {
 			e.printStackTrace();
 		} catch (Exception e) {
 			logger.error("changeBottlesWorkCdOnly Exception==="+e.toString());
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+
+	@Override
+	@Transactional
+	public int changeOnlyBottlesWorkCd(BottleVO param) {
+
+		int result = 0;
+		
+		try {		
+			List<String> list = null;
+			
+			if(param.getBottleIds()!=null && param.getBottleIds().length() > 0) {
+				//bottleIds= request.getParameter("bottleIds");
+				list = StringUtils.makeForeach(param.getBottleIds(), ","); 		
+				param.setBottList(list);
+			}				
+			
+			if(param.getBottleType() == null) {
+				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.charge")) 
+						|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out"))
+						|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.incar")) 
+						|| param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) )
+					param.setBottleType(PropertyFactory.getProperty("Bottle.Type.Full"));
+				else
+					param.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
+			}
+			
+//			List<BottleVO> bottleList = getBottleDetails(param);
+			
+//			String tempBottleIds = "";
+//			param.getBottList().clear();
+//			
+//			for(int i = 0; i< bottleList.size() ; i++) {
+//				tempBottleIds += bottleList.get(i).getBottleId()+",";
+//				param.setBottList(list);
+//			}
+//			
+//			param.setBottleIds(tempBottleIds);
+//			
+//			if(bottleList.size() > 0 ) param.setCustomerId(bottleList.get(0).getCustomerId());			
+			
+			result =  bottleMapper.updateOnlyBottlesWorkCd(param);
+			
+			if(result > 0 ) result = bottleMapper.insertBottleHistorys1(param);
+		
+		} catch (DataAccessException de) {
+			logger.error("changeOnlyBottlesWorkCd Exception==="+de.toString());
+			de.printStackTrace();
+		} catch (Exception e) {
+			logger.error("changeOnlyBottlesWorkCd Exception==="+e.toString());
 			e.printStackTrace();
 		}
 		

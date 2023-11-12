@@ -95,6 +95,7 @@
 		, Bottle_Work_DT
 		, Dummy_YN
 		, Bottle_Etc
+		, Owner_Customer_ID
 		, CREATE_ID
 		, CREATE_DT
 		, UPDATE_ID
@@ -126,7 +127,45 @@
 		, Bottle_Type
 		, Bottle_Work_DT
 		, Dummy_YN
+		, TB.Delete_YN
 		, Bottle_Etc
+		, Owner_Customer_ID
+		, TB.CREATE_ID
+		, TB.CREATE_DT
+		, TB.UPDATE_ID
+		, TB.UPDATE_DT
+		, CD_NM Bottle_Work_CD_NM
+	</sql>
+	
+	<sql id="BottleSelectColumnsNew">
+		  Bottle_ID
+		, Bottle_BarCd
+		, TB.Product_ID
+		, TB.Product_Price_Seq
+		, TB.Gas_ID	
+		, Gas_CD
+		, Product_Nm
+		, Bottle_Capa
+		, Charge_Capa
+		, Bottle_Create_Dt	
+		, Bottle_Charge_Dt	
+		, Bottle_Volumn
+		, Bottle_Charge_Prss	
+		, Bottle_Own_YN	
+		, Own_Customer_ID	
+		, Bottle_Work_CD
+		, Bottle_Work_ID
+		, TB.Customer_ID
+		, TB.Member_Comp_Seq	
+		, Order_ID
+		, Order_Product_Seq	
+		, Bottle_Type
+		, Bottle_Work_DT
+		, Dummy_YN
+		, TB.Delete_YN
+		, Bottle_Etc
+		, Owner_Customer_ID
+		, TOC.Customer_Nm Owner_Customer_NM
 		, TB.CREATE_ID
 		, TB.CREATE_DT
 		, TB.UPDATE_ID
@@ -195,6 +234,7 @@
 			, NOW()
 			, #{dummyYn}
 			, #{bottleEtc}
+			, #{ownerCustomerId}
 			, #{createId}			
 			, NOW()
 			, NULL
@@ -233,6 +273,7 @@
 			, NOW()
 			, #{item.dummyYn}
 			, #{item.bottleEtc}
+			, #{item.ownerCustomerId}
 			, #{item.createId}			
 			, NOW()
 			, NULL
@@ -241,47 +282,16 @@
 		</foreach>
 	</insert>
 	
-	
-	<!-- 
 	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
-		INSERT INTO TB_Bottle_Hist
-		SELECT b.history_seq,a.*
-			FROM TB_Bottle a,
-			(
-				SELECT c.Bottle_BarCd, IFNULL(max(d.Bottle_Hist_Seq)+1,1) history_seq 
-				FROM TB_Bottle c Left Join  TB_Bottle_Hist d ON c.Bottle_BarCd=d.Bottle_BarCd
-				WHERE c.Bottle_BarCd =#{bottleBarCd}
-			) b 
-		WHERE a.Bottle_BarCd = b.Bottle_BarCd 		
-	</insert>
-	
-	<insert id="insertBottleHistorys" parameterType="java.util.List">
-		INSERT INTO TB_Bottle_Hist
-		SELECT b.history_seq,a.*
-		FROM TB_Bottle a,
-		(
-			SELECT c.Bottle_BarCd, IFNULL(max(d.Bottle_Hist_Seq)+1,1) history_seq 
-			FROM TB_Bottle c Left Join  TB_Bottle_Hist d ON c.Bottle_BarCd=d.Bottle_BarCd
-			WHERE c.Bottle_BarCd in (
-			<foreach collection="list" item="item" separator=" , ">
-			#{item.bottleBarCd} 
-			</foreach>
-			)
-			GROUP BY C.Bottle_BarCd
-		) b 
-		WHERE a. Bottle_BarCd = b.Bottle_BarCd 			
-	</insert>
-	-->
-	<insert id="insertBottleHistory" parameterType="com.gms.web.admin.domain.manage.BottleVO">
-		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN,Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt)
-		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc,Create_ID, Create_Dt, Update_ID, Update_Dt
+		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN,Bottle_Etc, Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc,Owner_Customer_ID,Create_ID, Create_Dt, Update_ID, Update_Dt
 		FROM TB_Bottle 
 		WHERE Bottle_BarCd =#{bottleBarCd}			
 	</insert>
 	
 	<insert id="insertBottleHistorys" parameterType="java.util.List">
-		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt)
-		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Create_ID, Create_Dt, Update_ID, Update_Dt
+		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc,Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt
 		FROM TB_Bottle 		
 		WHERE Bottle_BarCd in (
 		<foreach collection="list" item="item" separator=" , ">
@@ -289,7 +299,24 @@
 		</foreach>
 		)		
 	</insert>
+
+	<insert id="insertBottleHistorys1" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		INSERT INTO TB_Bottle_Hist(Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN, Bottle_Etc, Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt
+		FROM TB_Bottle 		
+		WHERE Bottle_BarCd in 
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+	</insert>
 	
+	<insert id="insertDeeleteAllBottleHistory" >
+		INSERT INTO TB_Bottle_Hist (Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, Delete_YN, Dummy_YN,Bottle_Etc, Owner_Customer_ID, Create_ID, Create_Dt, Update_ID, Update_Dt)
+		SELECT Bottle_BarCd, Bottle_ID, Member_Comp_Seq, Order_ID, Order_Product_Seq, Gas_ID, gas_cd, Product_ID, Product_Price_Seq, Bottle_Capa, Charge_Capa, Bottle_Create_Dt, Bottle_Charge_Dt, Bottle_Volumn, Bottle_Charge_Prss, Bottle_Own_YN, Own_Customer_ID, Bottle_Work_CD, Bottle_Work_ID, Bottle_Work_Dt, Customer_ID, Bottle_Type, 'Y', Dummy_YN, Bottle_Etc,Owner_Customer_ID,Create_ID, Create_Dt, Update_ID, Update_Dt
+		FROM TB_Bottle 
+		WHERE Dummy_YN='N'			
+	</insert>
+		
 	<update id="updateBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
 		UPDATE TB_Bottle
 		SET
@@ -309,6 +336,7 @@
 			, Delete_YN			= 'N'
 			, Dummy_YN			= #{dummyYn}
 			, Bottle_Etc		= #{bottleEtc}
+			, Owner_Customer_ID	= #{ownerCustomerId}
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -332,9 +360,12 @@
 			, Bottle_Charge_Prss= #{item.bottleChargePrss}
 			, Bottle_Own_YN		= #{item.bottleOwnYn}
 			, Own_Customer_ID	= #{item.ownCustomerId}
+			, Customer_ID		= #{item.customerId}
 			, Delete_YN			= 'N'
 			, Dummy_YN			= #{item.dummyYn}
 			, Bottle_Etc		= #{item.bottleEtc}
+			, Owner_Customer_ID	= #{item.ownerCustomerId}
+			, Bottle_Work_Dt	= NOW()
 			, UPDATE_ID 		= #{item.updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -397,6 +428,21 @@
 			</foreach>
 	</update>	
 	
+	<update id="updateOnlyBottlesWorkCd" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_Bottle
+		SET
+			  Bottle_Work_CD 	= #{bottleWorkCd}
+			, Bottle_Work_ID	= #{bottleWorkId}
+			, Bottle_Work_DT	= NOW()
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
+		WHERE
+			Bottle_BarCd in
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+	</update>	
+	
 	<update id="updateBottleOrderId" parameterType="com.gms.web.admin.domain.manage.BottleVO">
 		UPDATE TB_Bottle
 		SET
@@ -439,6 +485,16 @@
 			, UPDATE_DT = NOW()
 		WHERE
 			Bottle_BarCD = #{bottleBarCd}
+	</update>
+	
+	<update id="deleteAllBottles" >
+		UPDATE TB_Bottle
+		SET
+			Delete_YN = 'Y'
+			, UPDATE_ID = #{updateId}
+			, UPDATE_DT = NOW()
+		WHERE
+			Dummy_YN = 'N'
 	</update>
 	
 	<update id="deleteBottles" parameterType="com.gms.web.admin.domain.manage.BottleVO">
@@ -574,13 +630,16 @@
 		SELECT A.*, B.Customer_Nm
 		FROM (
 			SELECT
-				<include refid="BottleSelectColumns" />
+				<include refid="BottleSelectColumnsNew" />
 			FROM
-				TB_Bottle TB, TB_CODE TC, TB_Product TG
+				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer TOC
 			WHERE
 				TB.Delete_YN = 'N'
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
-			AND	Customer_Id = #{ownCustomerId}
+			AND	TB.Customer_Id = #{ownCustomerId}
+			</if>
+			<if test ="ownerCustomerId !=null and  !ownerCustomerId.equals('')">
+			AND	TB.Owner_Customer_Id = #{ownerCustomerId}
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
@@ -602,6 +661,7 @@
 			</if>			
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
+			AND TB.Owner_Customer_ID = TOC.Customer_ID
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC
 		Limit #{startRow}, #{rowPerPage}
@@ -632,6 +692,9 @@
 				TB.Delete_YN = 'N'
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 			AND Customer_Id = #{ownCustomerId}
+			</if>
+			<if test ="ownerCustomerId !=null and  !ownerCustomerId.equals('')">
+				AND	TB.Owner_Customer_Id = #{ownerCustomerId}
 			</if>	
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
@@ -664,6 +727,9 @@
 			Delete_YN = 'N'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
 		AND	Customer_Id = #{ownCustomerId}
+		</if>
+		<if test ="ownerCustomerId !=null and  !ownerCustomerId.equals('')">
+			AND	Owner_Customer_Id = #{ownerCustomerId}
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 		AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
@@ -916,6 +982,9 @@
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 			AND Customer_Id = #{ownCustomerId}
 			</if>			
+			<if test ="ownerCustomerId !=null and  !ownerCustomerId.equals('')">
+				AND	tb.Owner_Customer_Id = #{ownerCustomerId}
+			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 			AND Bottle_ID	 LIKE CONCAT('%', CONCAT(#{searchBottleId}, '%'))
 			</if>

@@ -20,6 +20,9 @@ public class CustomerVO extends AbstractSearchVO implements Serializable {
 	/** Customer_Nm       */
 	private String customerNm;
 	
+	/** Customer_NickNm       */
+	private String customerNickNm;
+	
 	/** Business_Reg_ID   */
 	private String businessRegId;
 		

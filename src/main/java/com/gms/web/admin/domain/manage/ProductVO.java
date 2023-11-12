@@ -19,6 +19,9 @@ public class ProductVO extends AbstractVO  implements Serializable {
 	/**Product_Nm */
 	private String productNm;	
 	
+	/**Product_NickNm */
+	private String productNickNm;
+	
 	/**Gas_ID */
 	private Integer gasId;	
 		

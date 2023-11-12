@@ -113,6 +113,7 @@ public class ProductController {
 			boolean result=true;
 			
 			params.setProductNm(req.getParameter("productNm"));			
+			params.setProductNickNm(req.getParameter("productNickNm"));
 			params.setSaleCtype(req.getParameter("saleCtype"));
 			if(req.getParameter("gasId").equals("0")) params.setGasId(0);
 			else params.setGasId(Integer.parseInt(req.getParameter("gasId")));
@@ -209,7 +210,8 @@ public class ProductController {
 			boolean result=true;		
 			
 			params.setProductId(Integer.parseInt(req.getParameter("productId")));	
-			params.setProductNm(req.getParameter("productNm"));			
+			params.setProductNm(req.getParameter("productNm"));
+			params.setProductNickNm(req.getParameter("productNickNm"));
 			params.setSaleCtype(req.getParameter("saleCtype"));
 			params.setOwnYn(req.getParameter("ownYn"));
 			if(req.getParameter("gasId").equals("0")) params.setGasId(0);

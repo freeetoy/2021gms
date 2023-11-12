@@ -142,6 +142,10 @@ $(document).ready(function(){
                       <th><input type="text" class="form-control" id="productNm" name="productNm" th:value="${product.productNm}"></th>
                     </tr>
                     <tr>
+                      <th class="card-footer">상품별칭</th>
+                      <th><input type="text" class="form-control" id="productNickNm" name="productNickNm" th:value="${product.productNickNm}"></th>
+                    </tr>
+                    <tr>
                       <th class="card-footer">거래타입</th>
                       <th>
                       	<input type="radio" name="saleCtype" id="saleCtype" value="A" th:if="${product.saleCtype =='A'}" checked="">                                   

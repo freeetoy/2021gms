@@ -25,6 +25,7 @@
 	<sql id="ProductColumns">
 		Product_ID
 		,Product_Nm
+		,Product_NickNm
 		,Gas_ID
 		,Product_Status
 		,Member_Comp_Seq
@@ -52,6 +53,7 @@
 	
 	<sql id="ProductColumns1">
 		Product_Nm
+		,Product_NickNm
 		,Product_Price 
 		,Gas_ID
 		,Product_Status
@@ -70,6 +72,7 @@
 		) VALUES (
 			#{productId}
 			, #{productNm}
+			, #{productNickNm}
 			, #{gasId}
 			, IFNULL(#{productStatus}, '2')
 			, #{memberCompSeq}
@@ -106,6 +109,7 @@
 		 SELECT
 			p.Product_ID, 
 			Product_Nm, 
+			Product_NickNm, 
 			Gas_ID, 
 			pp.Product_Status, 
 			Member_Comp_Seq,
@@ -131,7 +135,8 @@
 	<select id="selectProductTotalDetailList"  resultType="com.gms.web.admin.domain.manage.ProductTotalVO">
 		SELECT
 			p.Product_ID, 
-			Product_Nm, 
+			Product_Nm,
+			Product_NickNm, 
 			Gas_ID, 
 			pp.Product_Status, 
 			Member_Comp_Seq,
@@ -191,14 +196,15 @@
 	<update id="updateProduct" parameterType="com.gms.web.admin.domain.manage.ProductVO">
 		UPDATE TB_Product
 		SET
-			  Product_Nm = #{productNm}
-			, Gas_ID = #{gasId}
-			, Sale_Ctype = #{saleCtype}
-			, OWN_YN = #{ownYn}
-			, UPDATE_ID = #{updateId}
-			, UPDATE_DT = NOW()
+			  Product_Nm 		= #{productNm}
+			, Product_NickNm 	= #{productNickNm}
+			, Gas_ID 			= #{gasId}
+			, Sale_Ctype 		= #{saleCtype}
+			, OWN_YN 			= #{ownYn}
+			, UPDATE_ID 		= #{updateId}
+			, UPDATE_DT 		= NOW()
 		WHERE
-			Product_ID = #{productId}
+			Product_ID 			= #{productId}
 	</update>
 	
 	<update id="updateProductPrice" parameterType="com.gms.web.admin.domain.manage.ProductPriceVO">

@@ -319,6 +319,26 @@ var goList = function(){
                       	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
 					  </th>   
                     </tr>  
+                    <tr>
+                      <th th:text="${bottle.ownCustomerId}" class="card-footer">용기 소유자</th>
+                      <th>
+						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control">
+                          	<option value="0">소유자</option>				    
+					        <option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					                th:if="${#strings.equals(bottle.ownerCustomerId,row.customerId)}" selected>	
+					        </option>	
+					        <option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}"
+					                th:unless="${#strings.equals(bottle.ownerCustomerId,row.customerId)}">						               
+					        </option>					
+                        </select>      
+                      	<!-- <input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="N" checked=""> 자사                                   
+                      	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
+					  </th>   
+                    </tr>  
                      <tr>                                   
                       <th class="card-footer">비고</th>
                       <th><input type="text" class="form-control" id="bottleEtc" name="bottleEtc" th:value="${bottle.bottleEtc}"></th>
