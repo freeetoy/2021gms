@@ -670,7 +670,7 @@ public class BottleController {
 	public ModelAndView modifyBottleWorkCd(HttpServletRequest request
 			, HttpServletResponse response
 			, BottleVO params) {
-		logger.debug(" modifyBottleWorkCd");
+		logger.debug("################  modifyBottleWorkCd");
 		
 		ModelAndView mav = new ModelAndView();
 		RequestUtils.initUserPrgmInfo(request, params);
@@ -688,7 +688,7 @@ public class BottleController {
 		int  result = 0;
 		
 		try {		
-			//logger.debug("******params.getBottleId()()) *****===*"+params.getChBottleId());
+			logger.debug("******params.getBottleId()()) *****===*"+params.getChBottleId());
 			
 			String searchChargetDt = params.getSearchChargeDt();	
 					
@@ -700,7 +700,7 @@ public class BottleController {
 				params.setSearchChargeDtFrom(searchChargeDtFrom);
 				params.setSearchChargeDtEnd(searchChargeDtEnd);				
 			}else {
-				logger.debug(" here");
+//				logger.debug(" here");
 				searchChargetDt ="";
 			}
 			
@@ -714,7 +714,7 @@ public class BottleController {
 				params.setSearchDtFrom(searchDtFrom);
 				params.setSearchDtEnd(searchDtEnd);				
 			}else {
-				logger.debug(" here");
+//				logger.debug(" here");
 				searchDt ="";
 				params.setSearchDt(searchDt);
 			}
@@ -727,7 +727,8 @@ public class BottleController {
 			
 			params.setBottleWorkId(params.getUpdateId());
 			
-			result = bottleService.changeBottleWorkCd(params); 
+			if(params.getChBottleBarCd() !=null && params.getChBottleBarCd().length() > 0) 
+				result = bottleService.changeBottleWorkCd(params); 
 			
 			mav.addObject("searchBottleId", params.getSearchBottleId());	
 			mav.addObject("searchChargeDt", params.getSearchChargeDt());
@@ -735,9 +736,7 @@ public class BottleController {
 			mav.addObject("currentPage", params.getCurrentPage());	
 			
 			if (result < 0) {
-				
 				logger.debug(" modifyBottleWorkCd error");
-				
 				String alertMessage = "처리중 에러가 발생하였습니다.";
 				RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/list.do?currentPage="+params.getCurrentPage()+"&searchBottleId="+params.getSearchBottleId()+"&searchDt="+searchDt+"&searchProductId="+params.getSearchProductId());
 			}

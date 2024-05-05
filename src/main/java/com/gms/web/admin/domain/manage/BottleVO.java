@@ -33,6 +33,9 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** Product Nm */
 	private String productNm ;
 		
+	/** Product NIckNm */
+	private String productNickNm ;
+	
 	/** Product_Price_Seq */
 	private Integer productPriceSeq;
 	

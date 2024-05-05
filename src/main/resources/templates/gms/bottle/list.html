@@ -24,20 +24,18 @@ function validationOfForm(form) {
 
 
 function fn_modifyBottleWorkCd(){				
-		console.log("fn_modifyBottleWorkCd");
 		var form = $("#chForm");	
 		
 		var carCustomerId = $('#carCustomerId').val();	
 		var bottleWorkCd = $('#bottleWorkCd').val();			
-		
 		//chForm.carCustomer.val(carCustomerId);
 		
 		if(bottleWorkCd=='0301' || bottleWorkCd == '0306' || bottleWorkCd == '0307'){
 			$("#carCustomerId").val(carCustomerId);
 		}
-				
+			
     	chForm.action="/gms/bottle/changeWorkCd.do?currentPage=1&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchDt=[[ ${searchDt} ]]";
-    	chForm.submit();
+   		chForm.submit();
 	}
 	
 var fn_deleteBottle = function(bottleBarCd){
@@ -844,7 +842,7 @@ $(document).ready(function(){
                     </tr>
                      <tr>                                   
                       <th class="card-footer" width="100">용기 바코드</th>
-                      <th colspan=3><input type="text" class="form-control" id="chBottleBarCd" name="chBottleBarCd" placeholder="용기 바코드" ></th>
+                      <th colspan=3><input type="text" class="form-control" id="chBottleBarCd" name="chBottleBarCd"  readonly ></th>
                     </tr>
                     <tr>
                       <th class="card-footer">상태</th>

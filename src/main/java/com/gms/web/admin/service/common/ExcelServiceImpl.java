@@ -263,7 +263,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                
 	                bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
 	                bottle.setMemberCompSeq(Integer.valueOf(PropertyFactory.getProperty("common.Member.Comp.num")));
-	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getUpdateId "+ bottle.getUpdateId());
+//	                logger.debug("$$$$$$$$$$$$$$ ExcelService bottle.getUpdateId "+ bottle.getUpdateId());
 	                for(int k=0 ; k < bottlelist.size() ; k++) {
 	                	if(bottle.getBottleBarCd().equals(bottlelist.get(k).getBottleBarCd())) {
 	                		
@@ -272,6 +272,8 @@ public class ExcelServiceImpl implements ExcelService {
 	                			updateFlag = true;
 	                		}
 
+	                		if(bottlelist.get(k).getDeleteYn().equals("Y")) updateFlag= true;
+	                		
 	                		if( !bottle.getBottleCapa().equals(bottlelist.get(k).getBottleCapa()) ) updateFlag = true;
 	                		
 	                		if(bottle.getBottleChargeDt()!=null && bottlelist.get(k).getBottleChargeDt() !=null && !bottle.getBottleChargeDt().equals(bottlelist.get(k).getBottleChargeDt()) ) updateFlag = true;
