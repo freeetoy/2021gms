@@ -203,7 +203,7 @@ public class ProductController {
 			ProductPriceVO[] priceVo = new ProductPriceVO[priceCount] ;
 						
 			int listIndex=0;
-			int Max_Product_Count = 50 ;
+			int Max_Product_Count = 100 ;
 			//int lastPriceSeq=0;
 			for(int i =0 ; i < priceCount ; i++ ) {
 				ProductPriceVO priceVo1 = new ProductPriceVO();
