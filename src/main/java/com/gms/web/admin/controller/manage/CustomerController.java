@@ -108,6 +108,12 @@ public class CustomerController {
 		//Map<String, Object> map1 = productService.getProductList();
 		model.addAttribute("productList", productService.getProductList());
 		
+		List<CodeVO> codeList = codeService.getCodeList(PropertyFactory.getProperty("common.code.period.cd"));
+		model.addAttribute("codeList", codeList);
+		
+		//결제주기 추가 20240927
+		List<CodeVO> codeList1 = codeService.getCodeList(PropertyFactory.getProperty("common.code.settlementperiod.cd"));
+		model.addAttribute("codeList1", codeList1);
 					
 		return "gms/customer/write";
 	}
@@ -173,6 +179,10 @@ public class CustomerController {
 			
 			List<CodeVO> codeList = codeService.getCodeList(PropertyFactory.getProperty("common.code.period.cd"));
 			model.addAttribute("codeList", codeList);
+			
+			//결제주기 추가 20240927
+			List<CodeVO> codeList1 = codeService.getCodeList(PropertyFactory.getProperty("common.code.settlementperiod.cd"));
+			model.addAttribute("codeList1", codeList1);
 			
 			UserVO param = new UserVO();
 			param.setUserPartCd(PropertyFactory.getProperty("common.user.SALES"));

@@ -82,4 +82,7 @@ public class CustomerVO extends AbstractSearchVO implements Serializable {
 	
 	/**Ln2_Period */
 	private int ln2Period;
+	
+	/**Settlement_Period_Cd */
+	private String settlementPeriodCd;
 }

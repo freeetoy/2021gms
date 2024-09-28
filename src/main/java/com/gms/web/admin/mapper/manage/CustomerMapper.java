@@ -116,4 +116,6 @@ public interface CustomerMapper {
 	
 	public List<CustomerLn2AlarmVO> selectCustomerLn2ListToday();
 	
+	public List<CustomerProductVO> selectRecentOrderList(Map<String, Object> map);
+	
 }

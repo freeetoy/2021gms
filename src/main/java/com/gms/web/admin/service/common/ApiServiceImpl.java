@@ -537,5 +537,10 @@ public class ApiServiceImpl implements ApiService {
 		return customerService.getLn2CustomerList(salesId);
 	}
 
+	@Override
+	public List<CustomerProductVO> recentOrderList(CustomerVO param) {
+		return customerService.getRecentOrderList(param);
+	}
+
 
 }

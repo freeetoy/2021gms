@@ -110,4 +110,5 @@ public interface CustomerService {
 	
 	public List<CustomerLn2AlarmVO> getLn2CustomerListToday();
 	
+	public List<CustomerProductVO> getRecentOrderList(CustomerVO param);
 }

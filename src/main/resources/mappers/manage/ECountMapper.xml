@@ -25,10 +25,11 @@
 			TC.ECount_CD Customer_EID, TC.Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, 
 			WB.Product_Price_Seq,PP.Product_Capa,ECount_Spec, ECount_User_CD Sales_Nm, WB.Bottle_Sale_YN,
 			WB.Order_Count, WB.Product_Price-WB.Gas_Price Product_Price, WB.Gas_Price, WB.Order_Count*(WB.Product_Price-WB.Gas_Price) Supply_Price,
-			WB.Order_Count*(WB.Product_Price-WB.Gas_Price) * 0.1 VAT,Bottle_Work_Cd,GAS_CD,Agency_Yn, Multi_YN, Charge_Volumn
+			WB.Order_Count*(WB.Product_Price-WB.Gas_Price) * 0.1 VAT,Bottle_Work_Cd,GAS_CD,Agency_Yn, Multi_YN, Charge_Volumn, Work_Etc Etc
 		FROM 
 			(
-				SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq,TB.Create_ID,Bottle_Sale_YN, Product_Price, Gas_Price,Bottle_Work_Cd,GAS_CD, Multi_YN, Charge_Volumn
+				SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq,TB.Create_ID,
+				Bottle_Sale_YN, Product_Price, Gas_Price,Bottle_Work_Cd,GAS_CD, Multi_YN, Charge_Volumn, TB.Work_Etc
 				FROM TB_Work_Bottle TB, TB_Work_Report TW
 				WHERE Bottle_Work_Cd in ('0308','0309','0314', '0316')
 				AND TB.Work_Report_Seq = TW.Work_Report_Seq

@@ -256,7 +256,7 @@ public class ECountController {
 		        //적요	
 		        cell = row.createCell(k++);
 		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(vo.getSummary());
+		        cell.setCellValue(vo.getEtc());
 		        
 		        // 단가(VAT포함)	
 		        cell = row.createCell(k++);

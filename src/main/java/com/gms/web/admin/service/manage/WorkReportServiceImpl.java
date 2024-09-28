@@ -279,6 +279,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					String strBottleSaleYn ="";
 					String strIncomeYn = "N";
 					String strOutYn = "N";
+					
 					for(int k=0 ; k < orderProductList.size() ; k++) {
 						OrderProductVO orderProduct = orderProductList.get(k);
 						
@@ -306,7 +307,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 						workBottle.setAgencyYn(param.getAgencyYn());
 						workBottle.setWorkSeq(workSeq++);	
 						workBottle.setBottleType(param.getBottleType());
-				
+						
+						workBottle.setWorkEtc(param.getReportEtc());
+						logger.debug("########### WorkReportServiceImpl registerWorkReportNoOrder workBottle.setWorkEtc =" + workBottle.getWorkEtc());
 						if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {	
 							workBottle.setBottleSaleYn("Y");
 							
@@ -432,6 +435,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					workBottle.setBottleSaleYn(newOrderProduct.getBottleSaleYn());
 					workBottle.setBottleWorkCd(param.getBottleWorkCd());
 					workBottle.setBottleType(param.getBottleType());
+					workBottle.setWorkEtc(param.getReportEtc());
 					//20201220
 					workBottle.setAgencyYn(param.getAgencyYn());
 					
@@ -877,7 +881,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 					workBottle.setSearchDt(param.getSearchDt());
 					workBottle.setWorkReportSeq(workReportSeq);
 					workBottle.setBottleType(param.getBottleType());
-					workBottle.setWorkSeq(workSeq++);			
+					workBottle.setWorkSeq(workSeq++);
+					//20240927 대여/판매 등 비고 추가
+					workBottle.setWorkEtc(param.getReportEtc());
 					//20201220
 					
 					workBottle.setAgencyYn(param.getAgencyYn());
@@ -973,7 +979,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				
 				for(int k=0; k < workBottleList.size() ; k++) { 
 					orderTotalAmount += workBottleList.get(k).getProductPrice();
-					//logger.debug("WorkReportServiceImpl registerWorkReportNoOrder workBottleList.get(k).getProductPrice() =" + workBottleList.get(k).getProductPrice());
+					
 				}
 				order.setOrderTotalAmount(orderTotalAmount);				
 				

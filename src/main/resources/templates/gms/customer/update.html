@@ -424,6 +424,25 @@ $(function() {
                       <th  th:unless="${customerLn2 !=null}"><input type="text" class="form-control" id="workDt" name="workDt" ></th>
                     </tr>
                     
+                    <tr>
+                      <th class="card-footer">결제주기</th>
+                      <th>
+                       <select id="periodCd" name="settlementPeriodCd" class="form-control">
+                        <option value="">주기</option>
+                      	<option th:each="row : ${codeList1}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}"
+					               th:if="${customer !=null && customer.settlementPeriodCd ==row.cdId}" selected>
+					     </option>	
+					     <option th:each="row : ${codeList1}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}"
+					               th:unless="${customer !=null && customer.settlementPeriodCd ==row.cdId}">
+					     </option>		
+					    </select>	                      
+						</th>   
+                    </tr> 
+                    
                     <tr>                                   
                       <th class="card-footer">소유용기</th>
                       <td>

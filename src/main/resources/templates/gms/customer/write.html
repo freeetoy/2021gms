@@ -232,10 +232,43 @@ $(document).ready(function(){
 					    </select>	                      
 						</th>   
                     </tr>         
+                    <!-- 
                     <tr>                                   
                       <th class="card-footer">액체질소주기</th>
                       <th><input type="text" class="form-control" id="ln2Period" name="ln2Period" value="0"></th>
                     </tr>
+                     -->                    
+                    <tr>
+                      <th class="card-footer">new액체질소주기1</th>
+                      <th>
+                       <select id="periodCd" name="periodCd" class="form-control">
+                        <option value="">주기</option>
+                      	<option th:each="row : ${codeList}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}">
+					     </option>						    
+					    </select>	                      
+						</th>   
+                    </tr>    
+                    
+                    <tr>                                   
+                      <th class="card-footer">Ln2납품예정일</th>
+                      <th  th:if="${customerLn2 !=null}"><input type="text" class="form-control" id="workDt" name="workDt" th:value="${#dates.format(customerLn2.workDt, 'yyyy-MM-dd')}"></th>
+                      <th  th:unless="${customerLn2 !=null}"><input type="text" class="form-control" id="workDt" name="workDt" ></th>
+                    </tr>
+                    
+                    <tr>
+                      <th class="card-footer">결제주기</th>
+                      <th>
+                       <select id="periodCd" name="settlementPeriodCd" class="form-control">
+                        <option value="">주기</option>
+                      	<option th:each="row : ${codeList1}"
+					                th:text="${row.cdNm}"
+					                th:value="${row.cdId}">
+					     </option>	
+					    </select>	                      
+						</th>   
+                    </tr> 
                   </thead>
                 </table>             
             </div>

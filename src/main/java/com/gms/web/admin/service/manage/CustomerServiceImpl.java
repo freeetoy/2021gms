@@ -48,6 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CacheManager cacheManager;
 
+
 	@Override	
 	public Map<String, Object> getCustomerList(CustomerVO param) {
 		
@@ -797,5 +798,29 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<CustomerLn2AlarmVO> getLn2CustomerListToday() {
 		return customerMapper.selectCustomerLn2ListToday();
+	}
+	//20240928 거래처별 최신거래 내역
+	@Override
+	public List<CustomerProductVO> getRecentOrderList(CustomerVO param) {
+		// TODO Auto-generated method stub 
+		
+		int currentPage = param.getCurrentPage();
+		int ROW_PER_PAGE = 5;
+		
+		int startPageNum =1;		
+		int lastPageNum = ROW_PER_PAGE;
+		
+		if(currentPage > (ROW_PER_PAGE/2)) {
+			lastPageNum += (startPageNum-1);
+		}
+
+		int startRow = (currentPage-1) * ROW_PER_PAGE;
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		map.put("customerId", param.getCustomerId());
+		map.put("startRow", startRow);
+		map.put("rowPerPage", ROW_PER_PAGE);	
+		
+		return customerMapper.selectRecentOrderList(map);
 	}
 }

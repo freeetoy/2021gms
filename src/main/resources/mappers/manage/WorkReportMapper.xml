@@ -73,6 +73,7 @@
 		 , Received_Amount
 		 , Income_Way
 		 , Bottle_Type
+		 , Report_Etc
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -89,6 +90,7 @@
 		 , Received_Amount
 		 , Income_Way
 		 , Bottle_Type
+		 , Report_Etc
 		 , Create_ID        
 		 , Create_Dt        
 		 , Update_ID        
@@ -160,6 +162,7 @@
 			, #{receivedAmount}		
 			, #{incomeWay}		
 			, #{bottleType}
+			, #{reportEtc}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
 			, #{searchDt}	
@@ -248,6 +251,9 @@
 			, Work_CD			= #{workCd}
 			, Work_Product_NM	= #{workProductNm}
 			, Work_Product_Capa	= #{workProductCapa}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(reportEtc)">
+			, Report_Etc		= #{reportEtc}
+			</if>
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -271,6 +277,9 @@
 			, Work_Product_NM	= #{workProductNm}
 			, Work_Product_Capa	= #{workProductCapa}
 			, Work_CD			= #{workCd}
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(reportEtc)">
+			, Report_Etc		= #{reportEtc}
+			</if>
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -421,11 +430,13 @@
 		SELECT
 			Work_Report_Seq , User_ID , TW.Customer_ID , Customer_Nm, Order_ID , 
 			Work_Product_NM , Work_Product_Capa , Work_CD , Work_Dt , Received_Amount, Income_Way,
-			Bottle_Type , TW.Create_ID , TW.Create_Dt , TW.Update_ID , TW.Update_Dt ,
+			Bottle_Type ,Report_Etc, TW.Create_ID , TW.Create_Dt , TW.Update_ID , TW.Update_Dt ,
 			CASE WHEN Taxinvoice_Type = 'M' THEN '월말' 
 			WHEN Taxinvoice_Type = 'C' THEN '건별' 
 			WHEN Taxinvoice_Type = 'R' THEN '요청' 
-			ELSE '' END AS Taxinvoice_Type 
+			ELSE '' END AS Taxinvoice_Type ,
+			(SELECT  tco.CD_NM FROM tb_customer tc1 Left Join tb_code tco on tc1.Settlement_Period_CD  = tco.CD_ID
+			WHERE tco.CD_GRP_ID = '0700' AND tc1.Customer_ID = tc.Customer_ID) Settlement_Period_Nm
 		FROM
 			TB_Work_Report TW, tb_customer TC
 		WHERE

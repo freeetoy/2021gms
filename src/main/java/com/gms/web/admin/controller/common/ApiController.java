@@ -6,12 +6,15 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gms.web.admin.common.config.PropertyFactory;
@@ -22,6 +25,7 @@ import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CustomerLn2AlarmVO;
 import com.gms.web.admin.domain.manage.CustomerProductVO;
+import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
 import com.gms.web.admin.domain.manage.OrderVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
@@ -54,10 +58,10 @@ public class ApiController {
 	
 	@RequestMapping(value = "/api/controlAction.do")
 	@ResponseBody
-	public String controlAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd)	{	
+	public String controlAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd,String workEtc)	{	
 		Long startTime = System.currentTimeMillis();		
 		logger.info("=======================================================================================");
-		logger.info("<<<< controlAction  userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm);
+		logger.info("<<<< controlAction  userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm+" : workEtc ="+workEtc);
 		
 		boolean phoneCall = true;
 		int result = 0;		
@@ -72,7 +76,8 @@ public class ApiController {
 			
 			workReport.setCreateId(userId);		
 			workReport.setUserId(userId);
-			workReport.setUpdateId(userId);		
+			workReport.setUpdateId(userId);	
+			workReport.setReportEtc(workEtc);
 			
 			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
@@ -719,5 +724,16 @@ public class ApiController {
 //		}
 		
 		return customerList;
+	}
+	
+	
+	@RequestMapping(value = "/api/customer/recentOrderList.do")
+	@ResponseBody
+	public List<CustomerProductVO> recentOrderList(CustomerVO param) {
+		logger.debug("recentOrderList " + param.getCustomerId());
+		List<CustomerProductVO> productList = null;
+		productList = apiService.recentOrderList(param);
+		
+		return productList;
 	}
 }

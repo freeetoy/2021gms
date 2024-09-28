@@ -50,6 +50,4 @@ public class AbstractSearchVO extends AbstractVO implements Serializable{
         this.rowPerPage = 15;
     }
 	
-	
-	
 }
