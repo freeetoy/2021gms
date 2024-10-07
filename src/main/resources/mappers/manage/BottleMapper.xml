@@ -548,7 +548,7 @@
 	</select>
 	
 	<select id="selectBottleDetailForBarCd" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
-		SELECT A.*, IFNULL(C.Customer_NickNm,'/') Customer_Nm
+		SELECT A.*, IFNULL(TC2.Customer_Nm,'/') Owner_Customer_Nm
 		FROM (
 			SELECT
 				Bottle_ID
@@ -576,7 +576,8 @@
 				, Bottle_Work_DT
 				, CD_NM Bottle_Work_CD_NM
 				, DateDiff(Bottle_Charge_Dt, now()) menuType
-				, B.Customer_NickNm Owner_Customer_Nm
+				, B.Customer_NickNm Customer_Nm
+				, Owner_Customer_ID
 			FROM
 				TB_CODE TC, TB_Product TG,TB_Bottle TB  LEFT OUTER JOIN TB_Customer B on B.Customer_ID = TB.Owner_customer_id
 			WHERE
@@ -588,7 +589,7 @@
 			AND 
 				TB.Product_ID = TG.Product_Id
 			Limit 0,1
-		) A LEFT OUTER JOIN TB_Customer C on C.Customer_ID = A.Customer_id
+		) A LEFT OUTER JOIN TB_Customer TC2 on TC2.Customer_ID = A.Owner_customer_id
 	</select>
 	
 	<select id="selectBottleDetails" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
@@ -639,6 +640,7 @@
 				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer TOC
 			WHERE
 				TB.Delete_YN = 'N'
+			AND TB.Dummy_YN not in ('Y','X')
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
 			AND	TB.Customer_Id = #{ownCustomerId}
 			</if>
@@ -689,11 +691,44 @@
 		SELECT A.*, B.Customer_Nm
 		FROM (
 			SELECT
-				<include refid="BottleSelectColumns" />
+				Bottle_ID
+				, Bottle_BarCd
+				, TB.Product_ID
+				, TB.Product_Price_Seq
+				, TB.Gas_ID	
+				, Gas_CD
+				, Product_Nm
+				, Bottle_Capa
+				, Charge_Capa
+				, Bottle_Create_Dt	
+				, Bottle_Charge_Dt	
+				, Bottle_Volumn
+				, Bottle_Charge_Prss	
+				, Bottle_Own_YN	
+				, Own_Customer_ID	
+				, Bottle_Work_CD
+				, Bottle_Work_ID
+				, TB.Customer_ID
+				, TB.Member_Comp_Seq	
+				, Order_ID
+				, Order_Product_Seq	
+				, Bottle_Type
+				, Bottle_Work_DT
+				, Dummy_YN
+				, TB.Delete_YN
+				, Bottle_Etc
+				, Owner_Customer_ID
+				, CU.Customer_Nm Owner_Customer_Nm
+				, TB.CREATE_ID
+				, TB.CREATE_DT
+				, TB.UPDATE_ID
+				, TB.UPDATE_DT
+				, CD_NM Bottle_Work_CD_NM
 			FROM
-				TB_Bottle TB, TB_CODE TC, TB_Product TG
+				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer CU
 			WHERE
 				TB.Delete_YN = 'N'
+			AND TB.Dummy_YN not in ('Y','X')
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 			AND Customer_Id = #{ownCustomerId}
 			</if>
@@ -717,6 +752,7 @@
 			</if>			
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
+			AND TB.Owner_Customer_ID = CU.Customer_ID 
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC
 	</select>
@@ -729,6 +765,7 @@
 			TB_Bottle
 		WHERE
 			Delete_YN = 'N'
+		AND Dummy_YN not in ('Y','X')
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
 		AND	Customer_Id = #{ownCustomerId}
 		</if>
@@ -785,7 +822,8 @@
 			FROM
 				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
 			WHERE
-				Bottle_BarCd=#{bottleBarCd}
+				Bottle_BarCd = #{bottleBarCd}
+			AND TB.Delete_Yn != 'X'	
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
@@ -920,6 +958,7 @@
 			TB_Bottle_Hist
 		WHERE
 			Delete_YN = 'N'
+		AND Dummy_YN not in ('Y','X')
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 		AND Customer_Id = #{ownCustomerId}
 		</if>	
@@ -949,6 +988,7 @@
 				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
 			WHERE
 				TB.Delete_YN = 'N'
+			AND TB.Dummy_YN not in ('Y','X')
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
 			AND Customer_Id = #{ownCustomerId}
 			</if>	
@@ -1033,4 +1073,14 @@
 		AND
 			Dummy_YN != 'N'
 	</update>
+	
+	<update id="deleteBottleHistOne" parameterType="com.gms.web.admin.domain.manage.BottleHistoryVO">
+		UPDATE TB_BOttle_Hist BH
+		SET
+			 Delete_YN		= #{deleteYn}
+			, BH.UPDATE_ID 	= #{updateId}
+			, BH.UPDATE_DT 	= NOW()
+		WHERE Bottle_BarCd = #{bottleBarCd}
+		AND	Bottle_Hist_Seq = #{bottleHistSeq}
+	</update>	
 </mapper>

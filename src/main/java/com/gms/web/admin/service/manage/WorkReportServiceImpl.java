@@ -1391,7 +1391,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 				insertFlag = true;
 				
 				result = workMapper.insertWorkReport(param);
-				workReportSeq = getWorkReportSeqForCustomerToday(param);
+				
+				if(param.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.charge")) )
+					workReportSeq = getWorkReportSeqForUserToday(param);
+				else
+					workReportSeq = getWorkReportSeqForCustomerToday(param);
 			}else {
 				workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 			}
@@ -1788,6 +1792,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 		return workMapper.selectWorkReportSeqForCustomerToday(param);
 	}
 
+	@Override
+	public int getWorkReportSeqForUserToday(WorkReportVO param) {		
+		return workMapper.selectWorkReportSeqForUserToday(param);
+	}
 	
 	private List<BottleVO> getBottleList(WorkReportVO param){
 		BottleVO bottle = new BottleVO();

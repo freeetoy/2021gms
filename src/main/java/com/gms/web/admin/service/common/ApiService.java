@@ -18,6 +18,8 @@ public interface ApiService {
 	public int registerWorkReportForSale(WorkReportVO param);
 		
 	public int registerWorkReportForChangeCd(WorkReportVO param);
+	
+	public int registerWorkReportForCharge(WorkReportVO param);
 
 	public int registerWorkReportNoGas(WorkBottleVO param);
 	

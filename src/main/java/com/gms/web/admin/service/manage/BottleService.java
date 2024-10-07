@@ -91,4 +91,6 @@ public interface BottleService {
 	public int registerBottlesHistory(List<BottleVO> param);	
 	
 	public int deleteProductDummyBottle(ProductVO param);
+	
+	public int deleteBottleHistOne(BottleHistoryVO param);
 }

@@ -160,6 +160,57 @@ public class ApiServiceImpl implements ApiService {
 		return result;
 	}
 
+	@Override
+	public int registerWorkReportForCharge(WorkReportVO param) {
+		
+		int result = 0;
+		UserVO user = userService.getUserDetails(param.getUserId());
+		
+		if(user != null) {
+			//사용자 최종접속일 정보 업데이트
+			LoginUserVO loginUser = new LoginUserVO();
+			loginUser.setUserId(user.getUserId());
+			param.setCarCustomerId(user.getCarCustomerId());
+			param.setMemberCompSeq(user.getMemberCompSeq());
+			
+			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
+				result = loginService.modifyLastConnect(loginUser);
+			
+			List<String> list = null;				
+			BottleVO bottle = new BottleVO();
+			
+			bottle.setBottleWorkCd(param.getBottleWorkCd());
+			bottle.setBottleType(param.getBottleType());		
+			bottle.setBottleWorkId(param.getCreateId());
+			bottle.setCreateId(param.getCreateId());
+			bottle.setUpdateId(param.getCreateId());
+					
+			if(param.getBottlesIds()!=null && param.getBottlesIds().length() > 0) {
+				//bottleIds= request.getParameter("bottleIds");
+				list = StringUtils.makeForeach(param.getBottlesIds(), ","); 		
+				bottle.setBottList(list);
+			}			
+			
+			List<BottleVO> bottleList = bottleService.getBottleDetails(bottle);
+/*			
+			
+			bottle.setCustomerId(customer.getCustomerId());
+			param.setCustomerId(customer.getCustomerId());
+			//20201220
+			param.setAgencyYn(customer.getAgencyYn());
+	*/		
+			
+			param.setUserId(param.getCreateId());
+			param.setWorkCd(param.getBottleWorkCd());
+			result = workService.registerWorkReportByBottle(param, bottleList);
+			if(result <= 0) return result;
+			
+			result =  bottleService.changeWorkCdsAndHistory(bottle, bottleList);
+		}else {
+			return USER_NOT_EXIST;
+		}
+		return result;
+	}
 	
 	private CustomerVO getCustomer(String customerNm) {				
 		return customerService.getCustomerDetailsByNm(customerNm);

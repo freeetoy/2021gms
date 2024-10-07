@@ -322,7 +322,7 @@ $(document).ready(function(){
 	   
 	    var newRow1 = $("<tr>");
 	    var cols1 = "";	
-	    cols1 += '<td>용기코드</td>';
+	    cols1 += '<td>실린더번호</td>';
 	    cols1 += '<td>용기바코드</td>';
 	    cols1 += '<td>가스</td>';
 	    cols1 += '<td>충전기한</td>';
@@ -878,7 +878,7 @@ $(document).ready(function(){
 									<table id="myTable" class="table order-info">
 									<thead>
 										<tr>
-											<td class="card-footer">용기검색<br>(용기코드/바코드)</td>
+											<td class="card-footer">용기검색<br>(실린더번호/바코드)</td>
 											<td  colspan=4><input type="text" class="form-control" id="selbottleId"  name="selbottleId"> </td>
 											<td><a class="btn_bottle_search btn btn-success btn-sm" href="#"><i class="fas fa-search"></i>검색</a></td>
 										</tr>
@@ -932,7 +932,7 @@ $(document).ready(function(){
 										<div>
 											<table id="myTable" class="table mod-doc-list1">
 												<tr>
-												<td>용기코드</td>
+												<td>실린더번호</td>
 												<td>용기바코드</td>
 												<td>가스</td>
 												<td>충전기한</td>
@@ -1246,7 +1246,7 @@ $(document).ready(function(){
         </div>
     	<div class="row">
            	<div class="col-1">
-           		<label>용기코드</label>               		
+           		<label>실린더번호</label>               		
             </div>               
             <div class="col-2">              
                <input type="text" id="searchBottleId" name="searchBottleId" class="form-control"  th:value="${searchBottleId}">
@@ -1318,7 +1318,7 @@ $(document).ready(function(){
                   <thead>
                     <tr style="font-size:14px;">
                       <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll();"/></th>
-                      <th>용기코드</th>
+                      <th>실린더번호</th>
                       <th>바코드</th>
                       <th>가스</th>
                       <th>용량</th>

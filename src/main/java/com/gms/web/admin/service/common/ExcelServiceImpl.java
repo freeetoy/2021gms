@@ -106,7 +106,7 @@ public class ExcelServiceImpl implements ExcelService {
             
             boolean isRegisteFlag = false;
             StringBuffer sb = new StringBuffer();
-            
+            logger.debug("$$$$$$$$$$$$$$ ExcelService uploadBottleExcelFile sheet.getLastRowNum() "+sheet.getLastRowNum());
             for(int i=1; i<sheet.getLastRowNum() + 1; i++) {
             	
             	isRegisteFlag = true;
@@ -234,6 +234,7 @@ public class ExcelServiceImpl implements ExcelService {
 	                		}
 	                		bottle.setBottleEtc(colValue);	
 	                	}
+//	                	logger.debug("$$$$$$$$$$$$$$ ExcelService colValue "+ colValue);
 	                	bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.new"));
 	                }
             	}
@@ -242,7 +243,7 @@ public class ExcelServiceImpl implements ExcelService {
                 productTotal.setProductNm(productNm);
                 productTotal.setProductCapa(productCapa);
                 //productTotal = productService.getProductTotalDetails(productTotal);
-               
+                logger.debug("$$$$$$$$$$$$$$ ExcelService i="+i +" productNm "+ productNm +" productCapa "+productCapa);
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
                 	   
@@ -254,7 +255,7 @@ public class ExcelServiceImpl implements ExcelService {
                 }
                 
                 if(productTotal != null && productTotal.getProductId() != null && productTotal.getProductId() > 0) {
-	                
+                	logger.debug("$$$$$$$$$$$$$$ ExcelService productTotal.getProductId()="+productTotal.getProductId());
 	                bottle.setProductId(productTotal.getProductId());
 	                bottle.setProductPriceSeq(productTotal.getProductPriceSeq());
 	                bottle.setGasId(productTotal.getGasId());

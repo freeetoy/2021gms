@@ -3,14 +3,14 @@ package com.gms.web.admin.domain.manage;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.gms.web.admin.common.domain.AbstractVO;
+import com.gms.web.admin.common.domain.AbstractSearchVO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BottleHistoryVO extends AbstractVO implements Serializable {
+public class BottleHistoryVO extends AbstractSearchVO implements Serializable {
 	
 	private static final long serialVersionUID = 3234009822300528104L;
 		
@@ -99,5 +99,19 @@ public class BottleHistoryVO extends AbstractVO implements Serializable {
 	/** 삭제여부  Delete_YN*/
 	private String deleteYn;
 	
+	/** 검색용			*/
+	/** SearchBottleiId	*/
+	private String  searchBottleId;
 	
+	/** SearchBottle_BarCd	*/
+	private String searchBottleBarCd;
+	
+	/** SearchGasId		*/
+	private String  searchGasId;
+	
+	/** SearchProductId		*/
+	private String  searchProductId;
+	
+	/** searchDt	*/
+	private String  searchDt;
 }

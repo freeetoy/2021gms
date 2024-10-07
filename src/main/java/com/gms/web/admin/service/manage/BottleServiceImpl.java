@@ -980,6 +980,12 @@ public class BottleServiceImpl implements BottleService {
 	public int deleteProductDummyBottle(ProductVO param) {
 		return bottleMapper.deleteProductDummyBottle(param);
 	}
+
+	@Override
+	public int deleteBottleHistOne(BottleHistoryVO param) {
+		param.setDeleteYn("X");
+		return bottleMapper.deleteBottleHistOne(param);
+	}
 	
 
 }

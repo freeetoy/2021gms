@@ -512,8 +512,7 @@
 	<select id="selectWorkReportSeq" resultType="int">
 		SELECT IFNULL(A.Work_Report_Seq, 0)+1
 		FROM 
-		(
-			SELECT max(Work_Report_Seq) Work_Report_Seq
+		(	SELECT max(Work_Report_Seq) Work_Report_Seq
 			FROM TB_Work_Report   ) A
 	</select>
 	
@@ -1078,4 +1077,19 @@
 		ORDER BY Inventory_Dt,TC.Product_ID  , TC.Product_Price_Seq 
 	</select>
 	 -->
+	 <select id="selectWorkReportSeqForUserToday" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" resultType="int">
+		SELECT IFNULL(max(Work_Report_Seq), 0) Work_Report_Seq
+		FROM 
+			TB_Work_Report
+		WHERE 
+			User_ID = 	#{userId}	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
+			AND  DATE_FORMAT(Work_Dt,'%Y/%m/%d') = #{searchDt}	
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
+			AND DATE_FORMAT(Work_Dt,'%Y/%m/%d') = DATE_FORMAT(curdate(),'%Y/%m/%d')	
+		</if>	
+		AND 
+			Delete_YN = 'N'	
+	</select>	
 </mapper>

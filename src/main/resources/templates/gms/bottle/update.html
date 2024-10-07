@@ -13,6 +13,13 @@ $(document).ready(function(){
 		}
 	});
 	
+	
+	$("table.doc-list").on("click", ".ibtnDelMod", function (event) {
+		console.log("doc-list");
+		
+	
+        $(this).closest("tr").remove();       
+    });
 });
 // 리스트 페이지 이동
 var goList = function(){
@@ -31,7 +38,7 @@ var validation = function(){
 	}
 	*/
 	var result = (
-				isValid(bottleId, "용기코드", null, null)
+				isValid(bottleId, "실린더번호", null, null)
 			&& isValid(bottleBarCd, "용기 바코드", null, null)
 			&& isValid(bottleCreateDt, "제조일", null, null)			
 			&& isValid(bottleChargeDt, "충전 기한", null, null)
@@ -185,11 +192,11 @@ var goList = function(){
 			 })
 			.done(function(data){	           
 			  
-				console.log(data);     				
+				//console.log(data);     				
 		    	var i=0;
 		    	$('#productPriceSeq').find('option').remove(); 
 				for(i=0; i< data.length;i++) {
-					console.log(data[i]);      
+				//	console.log(data[i]);      
 					$('#productPriceSeq').append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')				
 				}			
 			})
@@ -201,6 +208,27 @@ var goList = function(){
 		
 	});
 	
+	
+	var fn_deleteBottle = function(bottleBarCd, bottleHistSeq){
+		
+		if(confirm("삭제하시겠습니까?")){	
+			
+			$.ajax({
+				url: '/gms/bottle/hdelete.do',
+				type: 'POST',
+				data: 'bottleBarCd='+ bottleBarCd +'&bottleHistSeq='+bottleHistSeq,
+			 })
+			.done(function(data){	           
+					console.log(data);
+				if(data == 1){
+					alert("용기이력이 삭제되었습니다");
+				}
+			})
+			.fail(function(){
+				console.log("fail");
+			 });
+		}                  		
+	}	
 </script>
 
    <div class="content-wrapper">
@@ -234,7 +262,7 @@ var goList = function(){
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th class="card-footer">용기 코드</th>
+                      <th class="card-footer">실린더번호</th>
                       <th><input type="text" class="form-control" id="bottleId" name="bottleId" th:value="${bottle.bottleId}"></th>
                     </tr>
                      <tr>                                   
@@ -242,7 +270,7 @@ var goList = function(){
                       <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" th:value="${bottle.bottleBarCd}" readonly></th>
                     </tr>
                     <tr>
-                      <th class="card-footer">가스코드</th>
+                      <th class="card-footer">가스 조성</th>
                       <th><input type="text" class="form-control" id="gasCd" name="gasCd" th:value="${bottle.gasCd}"></th>
                     </tr>
                     <tr>
@@ -367,12 +395,12 @@ var goList = function(){
               <div class="card-footer">      		
                  <a href="#" th:onclick="history.back()"  class="btn btn-secondary float-left">취소</a>
 		          <input type="button" value="저장" onclick="javascript:goWrite()" class="btn btn-success float-right">                  		
-            	</form>   
+            	
            		 </div>
             </div>
            <div class="col-md-8">
             	<div class="card">   
-            	<table class="table table-hover">	         	
+            	<table class="table doc-list">	         	
 	         		<thead>
                     <tr>
                       <th>번호</th>
@@ -381,6 +409,7 @@ var goList = function(){
                       <th>거래처</th>
                       <th>작업자</th>
                       <th>등록일</th>
+                      <th>삭제</th>
                     </tr>
                   	</thead>
                   	<tbody>
@@ -392,12 +421,14 @@ var goList = function(){
                       <td th:text="${row.customerNm}"></td>
                       <td th:text="${row.bottleWorkId}"></td>
                       <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>
+                      <td><input type="button" class="ibtnDelMod btn btn-md btn-danger" th:onclick="fn_deleteBottle([[ ${row.bottleBarCd} ]],[[ ${row.bottleHistSeq} ]])" id="addrow" value="삭제" />
+      				</td>
                     </tr>
                   	</tbody>
                	</table>   
                </div>
             </div>
-            
+            </form>   
             
       <!-- /.container-fluid -->
       </div>

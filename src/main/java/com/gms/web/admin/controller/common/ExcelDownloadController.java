@@ -260,12 +260,9 @@ public class ExcelDownloadController {
 			        else
 			        	cell.setCellValue("");
 			        
-			        cell = row.createCell(k++);
+			        cell = row.createCell(k++);	//소유주
 			        cell.setCellStyle(bodyStyle);
-			        if(vo.getBottleWorkDt() !=null) 
-			        	cell.setCellValue(DateUtils.convertDateFormat(vo.getBottleWorkDt(),"yyyy-MM-dd : hh:mm:ss"));
-			        else
-			        	cell.setCellValue("");
+			        cell.setCellValue(vo.getOwnerCustomerNm());
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);

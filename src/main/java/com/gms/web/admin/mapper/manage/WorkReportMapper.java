@@ -95,5 +95,7 @@ public interface WorkReportMapper {
 	
 	public List<WorkReportVO> selectCustomerWorkReportOnlyListAll(CustomerSalesVO param);
 	
+	public int selectWorkReportSeqForUserToday(WorkReportVO param) ;
+	
 //	public List<CarInventoryVO> selectCarInventoryList(WorkReportVO param);	
 }

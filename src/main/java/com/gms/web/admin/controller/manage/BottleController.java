@@ -1091,6 +1091,56 @@ public class BottleController {
 		return bottleList;
 		//return null;
 	}
+	/*
+	@RequestMapping(value = "/gms/bottle/hdelete.do", method = RequestMethod.POST)
+	public ModelAndView deleteBottleHistOne(HttpServletRequest request
+			, HttpServletResponse response, BottleHistoryVO param)	{
+				
+//		return bottleService.deleteBottleHistOne(param);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		RequestUtils.initUserPrgmInfo(request, param);
+		
+		String searchProductId = "";	
+		int  result = 0;
+		try {
+			
+			logger.debug("******params.deleteBottleHistOne *****===*"+param.getBottleBarCd()+" bottleHistSeq = "+param.getBottleHistSeq());
+			
+			result = bottleService.deleteBottleHistOne(param);
+			
+			mav.addObject("searchProductId", param.getSearchProductId());
+			mav.addObject("searchBottleId", param.getSearchBottleId());
+			mav.addObject("searchCDt", param.getSearchDt());
+			mav.addObject("currentPage", param.getCurrentPage());
+			
+			if (result < 0) {
+				logger.debug(" deleteBottle error");
+				String alertMessage = "용기중 오류가 발생하였습니다.";
+				RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/update.do?bottleBarCd="+param.getBottleBarCd()+"&currentPage="+param.getCurrentPage()+"&searchBottleId="+param.getSearchBottleId()+"&searchDt="+param.getSearchDt()+"&searchProductId="+param.getSearchProductId());
+			}
+		} catch (DataAccessException e) {
+			logger.error(" deleteBottle Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(" deleteBottle Exception==="+e.toString());
+			e.printStackTrace();
+		}
 	
-	
+		if(result > 0){
+			String alertMessage = "용기이력정보가 삭제 되었습니다.";
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/bottle/update.do?bottleBarCd="+param.getBottleBarCd()+"&currentPage="+param.getCurrentPage()+"&searchBottleId="+param.getSearchBottleId()+"&searchDt="+param.getSearchDt()+"&searchProductId="+param.getSearchProductId());
+		}
+//		return "gms/bottle/update";
+		return null;
+	}
+	*/
+	@RequestMapping(value = "/gms/bottle/hdelete.do")
+	@ResponseBody
+	public int deleteBottleHistOne(HttpServletRequest request
+			, HttpServletResponse response, BottleHistoryVO param)	{
+				
+		return bottleService.deleteBottleHistOne(param);
+	}
 }

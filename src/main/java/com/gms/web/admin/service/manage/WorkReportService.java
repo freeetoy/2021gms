@@ -39,6 +39,8 @@ public interface WorkReportService {
 	
 	public int getWorkReportSeqForCustomerToday(WorkReportVO param) ;
 	
+	public int getWorkReportSeqForUserToday(WorkReportVO param) ;
+	
 	public int getWorkReportSeqForCustomer(WorkReportVO param) ;
 	
 	public int registerWorkReportByBottle(WorkReportVO param, List<BottleVO> bottleList);

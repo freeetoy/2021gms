@@ -89,7 +89,7 @@ public class ApiController {
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.charge"))) {		//충전
 				
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.charge"));
-				result = apiService.registerWorkReportForChangeCd(workReport);
+				result = apiService.registerWorkReportForCharge(workReport);
 			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.sales"))) {		//판매
 				
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));			

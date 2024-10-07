@@ -23,7 +23,7 @@ var goList = function(){
 var validation = function(){
 	
 	var result = (
-				isValid(bottleId, "용기코드", null, null)
+				isValid(bottleId, "실린더번호", null, null)
 			&& isValid(bottleBarCd, "용기 바코드", null, null)
 			&& isValid(bottleCreateDt, "제조일", null, null)			
 			&& isValid(bottleChargeDt, "충전 기한", null, null)
@@ -204,7 +204,7 @@ $(document).ready(function(){
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th class="card-footer">용기 코드</th>
+                      <th class="card-footer">실린더번호</th>
                       <th><input type="text" class="form-control" id="bottleId" name="bottleId" placeholder="용기 코드"></th>
                     </tr>
                      <tr>                                   
@@ -212,7 +212,7 @@ $(document).ready(function(){
                       <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" placeholder="용기 바코드"></th>
                     </tr>
                     <tr>
-                      <th class="card-footer">가스코드</th>
+                      <th class="card-footer">가스 조성</th>
                       <th><input type="text" class="form-control" id="gasCd" name="gasCd" placeholder="가스CD "></th>
                     </tr>
                     <tr>
