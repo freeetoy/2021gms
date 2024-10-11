@@ -477,7 +477,7 @@
 	<select id="selectWorkReportListAll" resultType="com.gms.web.admin.domain.manage.WorkBottleVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">		
 		SELECT Product_Count,Work_Report_Seq, AA.Customer_ID,Customer_nm  
 			, AA.Product_ID  ,Product_NM , AA.Product_Price_Seq ,Product_Capa    
-			, Bottle_work_Cd, CD_NM Bottle_work_Cd_NM,GAS_ID
+			, Bottle_work_Cd, CD_NM Bottle_work_Cd_NM, GAS_ID, Work_Etc
 			, AA.Order_Id, Order_Total_Amount,AA.Product_Price, AA.Bottle_Sale_YN,
 			CASE
 				WHEN AA.Bottle_Type = 'F'
@@ -490,7 +490,7 @@
 			TB_CODE TC, TB_Customer TS, TB_Product TP, TB_Product_Price TPP, 
 			(
 				SELECT Count(TB.Product_Price_Seq) Product_Count, TB.Work_Report_Seq, TB.Customer_ID, TB.Product_ID, TB.Product_Price_Seq, 
-					Bottle_work_Cd,	Product_Price, Order_Id, Bottle_Sale_YN,TB.Bottle_Type, Charge_Volumn
+					Bottle_work_Cd,	Product_Price, Order_Id, Bottle_Sale_YN,TB.Bottle_Type, Charge_Volumn, Work_Etc
 				FROM TB_Work_Bottle TB, TB_Work_Report TW
 				WHERE TB.Work_Report_Seq  = TW.Work_Report_Seq
 				AND User_id = #{searchUserId}

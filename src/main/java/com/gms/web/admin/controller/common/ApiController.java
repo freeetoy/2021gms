@@ -58,7 +58,7 @@ public class ApiController {
 	
 	@RequestMapping(value = "/api/controlAction.do")
 	@ResponseBody
-	public String controlAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd,String workEtc)	{	
+	public String controlAction(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd, String workEtc )	{	
 		Long startTime = System.currentTimeMillis();		
 		logger.info("=======================================================================================");
 		logger.info("<<<< controlAction  userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm+" : workEtc ="+workEtc);
@@ -168,6 +168,118 @@ public class ApiController {
 		//return null;
 	}
 
+	@RequestMapping(value = "/api/v2/controlAction.do")
+	@ResponseBody
+	public String controlActionV2(String userId, String bottles, String customerNm, String bottleType, String bottleWorkCd,String workEtc, String workDt )	{	
+		Long startTime = System.currentTimeMillis();		
+		logger.info("=======================================================================================");
+		logger.info("<<<< controlAction  userId="+userId+" : bottles ="+bottles +": bottleType ="+ bottleType + ": bottleWorCd ="+bottleWorkCd+" : customerNm ="+customerNm+" : workEtc ="+workEtc+" : workDt ="+workDt);
+		
+		boolean phoneCall = true;
+		int result = 0;		
+		
+		try {
+			WorkReportVO workReport = new WorkReportVO();	
+			
+			workReport.setBottleType(bottleType);
+			workReport.setBottlesIds(bottles);		//BottleBarCd 모음
+			workReport.setCustomerNm(customerNm);		
+			workReport.setPhoneFlag(phoneCall);
+			
+			workReport.setCreateId(userId);		
+			workReport.setUserId(userId);
+			workReport.setUpdateId(userId);	
+			workReport.setReportEtc(workEtc);
+			workReport.setSearchDt(workDt);
+			
+			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+				result = apiService.registerWorkReportForSale(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.out"))) {		//출고
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.out"));
+				result = apiService.registerWorkReportForSale(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.incar"))) {		// 상차
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.incar"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.charge"))) {		//충전
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.charge"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.sales"))) {		//판매
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));			
+				result = apiService.registerWorkReportForSale(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.rental"))) {		//대여
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));			
+				result = apiService.registerWorkReportForSale(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.back"))) {			//회수
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+																		
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.freeback"))) {			//무료회수
+//				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.freeback"));
+				//20221101 처리
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.back"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.buyback"))) {			//매입
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.buyback"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.chargeDt"))) {			//충전기한확인
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.chargeDt"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.vacuum"))) {			//진공배기
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.vacuum"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.hole"))) {			//누공확인
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.hole"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.freechange"))) {			//무상교체
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.freechange"));
+				result = apiService.registerWorkReportForChangeCd(workReport);
+				
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.salesgas"))) {			//가스판매
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesgas"));			
+				result = apiService.registerWorkReportForSale(workReport);			
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.salesBack"))) {			//판매회수
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.salesBack"));			
+				result = apiService.registerWorkReportForChangeCd(workReport);
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.agencyRent"))) {			//공장대여
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.agencyRent"));			
+				result = apiService.registerWorkReportForSale(workReport);			
+			}else if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.agencyBack"))) {			//대여회수
+				
+				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.agencyBack"));			
+				result = apiService.registerWorkReportForChangeCd(workReport);				
+			}
+		} catch (Exception e) {		
+			logger.error("controlAction ", e.toString());
+			return "fail";
+		}
+		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =userId="+userId+" : bottles ="+bottles +" "+(endTime-startTime)+" millis");
+		if(result > 0)
+			return "success";
+		if(result == USER_NOT_EXIST)
+			return "noUser";
+		else
+			return "fail";
+		//return null;
+	}
 	
 	@RequestMapping(value = "/api/controlActionNoGas.do")
 	@ResponseBody
@@ -175,7 +287,7 @@ public class ApiController {
 		Long startTime = System.currentTimeMillis();			
 //		logger1.info("<<<< controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
 		logger.info("=======================================================================================");
-		logger.info("<<<<  controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount());
+		logger.info("<<<<  controlActionNoGas userId="+param.getUserId()+" : productId ="+param.getProductId() +": productPriceSeq ="+ param.getProductPriceSeq() + " : customerNm ="+param.getCustomerNm() + " : productCount ="+param.getProductCount()+ " : workEtc ="+param.getWorkEtc());
 		
 		boolean phoneCall = true;
 		int result = 1;		
@@ -222,6 +334,29 @@ public class ApiController {
 		//return null;
 	}
 	
+	@RequestMapping(value = "/api/v2/controlCashFlow.do")
+	@ResponseBody
+	public String manageCashFlowV2(CashFlowVO param )	{	
+		Long startTime = System.currentTimeMillis();	
+		
+		logger.info("=======================================================================================");
+		logger.info("<<<<manageCashFlowV2 userId="+param.getCreateId()+" : incomeAmount ="+param.getIncomeAmount() +": receivableAmount ="+ param.getReceivableAmount() + " : customerNm ="+param.getCustomerNm() + " : incomeWay ="+param.getIncomeWay());
+	
+		int result = 0;
+		
+		result = apiService.registerCashFlowV2(param);
+		
+		Long endTime = System.currentTimeMillis();
+		logger.info("afterCompletion!! =" +(endTime-startTime)+" millis");
+		if(result > 0)
+			return "success";
+		if(result == USER_NOT_EXIST)
+			return "noUser";
+		else
+			return "fail";
+		
+		//return null;
+	}
 	
 	@RequestMapping(value = "/api/controlTank.do")
 	@ResponseBody

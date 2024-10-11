@@ -113,8 +113,8 @@ public class CashFlowServiceImpl implements CashFlowService {
 			searchCreateDtEnd = searchCreateDt.substring(13, searchCreateDt.length()) ;
 			
 			map.put("searchCreateDt", searchCreateDt);	
-			map.put("searchCreateDtFrom", searchCreateDtFrom+" 00");	
-			map.put("searchCreateDtEnd", searchCreateDtEnd+ " 23");					
+			map.put("searchCreateDtFrom", searchCreateDtFrom);	
+			map.put("searchCreateDtEnd", searchCreateDtEnd);					
 		}
 		
 		int sCount = 0;

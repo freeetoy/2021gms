@@ -244,6 +244,65 @@ public class ApiServiceImpl implements ApiService {
 				workReport.setCustomerId(customer.getCustomerId());
 				workReport.setUserId(param.getCreateId());
 				workReport.setCreateId(param.getCreateId());
+				
+				int workReportSeq = workService.getWorkReportSeqForCustomerToday(workReport);
+				
+				if(workReportSeq <= 0) {
+					workReportSeq = workService.getWorkReportSeq();		
+					workReport.setWorkReportSeq(workReportSeq);					
+					workReport.setUserId(param.getCreateId());
+					workReport.setReceivedAmount(param.getIncomeAmount());
+					workReport.setIncomeWay(param.getIncomeWay());
+					workReport.setWorkCd(PropertyFactory.getProperty("common.bottle.status.0312"));
+					
+					workService.registerWorkReportOnly(workReport);
+					
+				}else {
+					workReport.setUpdateId(user.getUserId());					
+					workReport.setReceivedAmount(param.getIncomeAmount());
+					workReport.setIncomeWay(param.getIncomeWay());
+					workReport.setWorkReportSeq(workReportSeq);
+			
+					result = workService.modifyWorkReportReceivedAmount(workReport);
+				}			
+				
+				result = cashService.registerCashFlow(param);		
+			}else {
+				return CUSOTMER_NOT_EXIST;
+			}
+		}else {
+			return USER_NOT_EXIST;
+		}	
+		return result;
+	}
+	
+	@Override
+	public int registerCashFlowV2(CashFlowVO param) {
+		int result = 0;	
+		UserVO user = userService.getUserDetails(param.getCreateId());
+		
+		if(user != null) {
+			//사용자 최종접속일 정보 업데이트
+			LoginUserVO loginUser = new LoginUserVO();
+			loginUser.setUserId(user.getUserId());
+			
+			if(!DateUtils.convertDateFormat(user.getLastConnectDt(),"yyyy-MM-dd").equals(DateUtils.getDate("yyyy-MM-dd")) )
+				result = loginService.modifyLastConnect(loginUser);
+			
+			//Customer 정보가져
+			CustomerVO customer = getCustomer(param.getCustomerNm());
+			
+			if(customer!=null) {
+				
+				param.setCustomerId(customer.getCustomerId());
+				// 수금액 정보 업데이트
+				
+				WorkReportVO workReport = new WorkReportVO();
+				workReport.setCustomerId(customer.getCustomerId());
+				workReport.setUserId(param.getCreateId());
+				workReport.setCreateId(param.getCreateId());
+				workReport.setSearchDt(param.getSearchCreateDt());
+				
 				int workReportSeq = workService.getWorkReportSeqForCustomerToday(workReport);
 				
 				if(workReportSeq <= 0) {

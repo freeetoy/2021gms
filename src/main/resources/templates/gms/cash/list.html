@@ -412,17 +412,18 @@ $(function() {
                 	
                     <tr style="font-size:14px;">
                       <th>순번</th>                      
-                      <th>등록일</th>
                       <th>거래처</th>
-                      <th>미수금</th>
-                      <th>입금</th>
-                      <th>입금방법</th>                      
+                      <th align="right">미수금</th>
+                      <th align="right">입금</th>
+                      <th>입금방법</th>
+                      <th>등록자</th>
+                      <th>등록일</th>                    
                       <th>관리</th>                      
                     </tr>
                   </thead>
                   	<tr th:if="${not #lists.isEmpty( list )}" th:each="row : ${list}"  style="font-size:14px;">
                       <td th:text="${totalCount-((currentPage-1) * rowPerPage) - list.indexOf(row)}"></td>
-                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd HH:mm' )}"></td>
+                      
                       <th th:text="${row.customerNm}" >거래처</th>
                       <td align="right" th:if="${row.receivableAmount> 0 && row.receivableAmount*100%100 > 0}"  th:text="${#numbers.formatDecimal(row.receivableAmount, 3, 'COMMA' ,2,'POINT')}"></td> 
                       <td align="right" th:if="${row.receivableAmount> 0 && row.receivableAmount*100%100 == 0}"  th:text="${#numbers.formatInteger(row.receivableAmount, 3, 'COMMA')}"></td> 
@@ -437,6 +438,8 @@ $(function() {
                       <td th:if="${row.incomeWay==null}">    
                       <td th:if="${row.incomeWay==''}">                 
                       </td>
+                      <td th:text="${row.userNm}" >거래처</td>
+                      <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd HH:mm' )}"></td>
                       <td> 
                       <a class="btn_select_process btn btn-info btn-xs" th:cashFlowSeq="${row.cashFlowSeq}" data-toggle="modal" data-target="#modal-default"  href="#"><i class="fas fa-check-circle"></i>수정 </a>
                       <!---->   <a class="btn btn-danger btn-xs" href="#" th:onclick="fn_delete([[ ${row.cashFlowSeq} ]])"> 

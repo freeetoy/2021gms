@@ -103,6 +103,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 			WorkReportViewVO temp = new WorkReportViewVO();
 			temp.setWorkReportSeq(reportList.get(i).getWorkReportSeq());
 			temp.setReceivedAmount(reportList.get(i).getReceivedAmount());
+			
+			temp.setUpdateDt(reportList.get(i).getUpdateDt());	//20241010 수정일 추가
+			
 			if(reportList.get(i).getIncomeWay()!=null && reportList.get(i).getIncomeWay().equals("CASH")) 
 				temp.setIncomeWay("(현금)");
 			else if(reportList.get(i).getIncomeWay()!=null && reportList.get(i).getIncomeWay().equals("CARD")) 
@@ -147,6 +150,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 					temp.setCustomerId(workBottle.getCustomerId());
 					temp.setCustomerNm(workBottle.getCustomerNm());					
 					
+					//비고 추가
+					if(workBottle.getWorkEtc() != null && workBottle.getWorkEtc().length() > 0 ) {
+						temp.setReportEtc(workBottle.getWorkEtc());
+					}
 					// 회수
 					if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.back"))
 							|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.freeback"))
@@ -626,9 +633,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 			//if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) orderTemp = orderService.getLastOrderForCustomer(param.getCustomerId());
 			orderTemp = orderService.getLastOrderForCustomer(param.getCustomerId());
-//			if(orderTemp != null ) {
-//				logger.debug("registerWorkReportNoOrderorderTemp.getSalesId() =="+orderTemp.getSalesId());
-//			}
+
 //			if(orderTemp != null && (orderTemp.getSalesId() ==null || (orderTemp.getSalesId() != null && orderTemp.getSalesId().equals(param.getCreateId()) )  ) ){
 			if(orderTemp != null ) {
 				param.setOrderId(orderTemp.getOrderId());
@@ -1708,6 +1713,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					addWorkBottle.setUpdateId(param.getCreateId());
 					addWorkBottle.setSearchDt(param.getSearchDt());
 
+					addWorkBottle.setWorkEtc(param.getWorkEtc());
 					addWorkBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
 					addWorkBottle.setCreateId(param.getCreateId());
 					
@@ -1744,9 +1750,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 						addWorkBottle.setProductCapa(productTotal.getProductCapa());
 						addWorkBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
 						addWorkBottle.setBottleSaleYn("N");
+						addWorkBottle.setWorkEtc(param.getWorkEtc());
+						
 						addWorkBottle.setCreateId(param.getCreateId());
 						addWorkBottle.setUpdateId(param.getCreateId());			
 						addWorkBottle.setSearchDt(param.getSearchDt());
+						
 	//					logger.debug(" registerWorkNoBottle  getSearchDt=" + param.getSearchDt() );
 	//					logger.debug(" registerWorkNoBottle addWorkBottle getSearchDt=" + addWorkBottle.getSearchDt() );
 						workBottleList.add(addWorkBottle);
@@ -1949,6 +1958,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					addWorkBottle.setProductCapa(productTotal.getProductCapa());
 					addWorkBottle.setBottleSaleYn("N");
 					addWorkBottle.setChargeVolumn(param.getProductCount());
+					addWorkBottle.setWorkEtc(param.getWorkEtc());
 					
 					if(param.getUserId()!=null && param.getUserId().length() > 0) 
 						addWorkBottle.setCreateId(param.getUserId());
@@ -1987,6 +1997,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 						}
 						addWorkBottle.setProductCapa(productTotal.getProductCapa());
 						addWorkBottle.setBottleSaleYn("N");
+						addWorkBottle.setWorkEtc(param.getWorkEtc());
+						
 						if(param.getUserId()!=null && param.getUserId().length() > 0) 
 							addWorkBottle.setCreateId(param.getUserId());
 						else
@@ -2064,7 +2076,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setWorkSeq(workSeq);
 		workBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.0312"));		
 		workBottle.setCustomerId(param.getCustomerId());				
-		workBottle.setCreateId(param.getCreateId());			
+		workBottle.setCreateId(param.getCreateId());
+		if(param.getSearchDt() != null && param.getSearchDt().length() >0) {
+			workBottle.setSearchDt(param.getSearchDt());
+		}
 		
 		result =  workMapper.insertWorkReport(param);
 		if(result > 0)

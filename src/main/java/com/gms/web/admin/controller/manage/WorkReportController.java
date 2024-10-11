@@ -306,11 +306,12 @@ public class WorkReportController {
 		}
 		
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
+		double totalReceivedAmount = 0;
 		for(int i=0; i < workList.size() ; i++) {
 			WorkReportViewVO workReport = workList.get(i);
 			workReport.setSeqNumber(Integer.toString(i+1));
 			StringBuffer sf = new StringBuffer();
-
+			totalReceivedAmount += workReport.getReceivedAmount();
 			for(int j=0; j < workReport.getSalesBottles().size() ; j++) {
 				WorkBottleVO workBottle = workReport.getSalesBottles().get(j);
 				if(j > 0) sf.append("\n");
@@ -343,7 +344,6 @@ public class WorkReportController {
 	
 //		logger.debug("WorkReportController getWorkReportList start ");	
 		try(
-	    		
 	    		InputStream is = WorkReportController.class.getResourceAsStream("report_template.xls")){
 		        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
 		        response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes(),"ISO8859_1") + ".xls");
@@ -351,6 +351,7 @@ public class WorkReportController {
         		Context context = new Context();
         		context.putVar("workList", workList);
         		context.putVar("searchDt", params.getSearchDt());
+        		context.putVar("totalAmount", totalReceivedAmount);
 	            JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
 	       
 	    }

@@ -24,6 +24,8 @@ public interface ApiService {
 	
 	public int registerCashFlow(CashFlowVO param);
 	
+	public int registerCashFlowV2(CashFlowVO param);
+	
 	public List<SimpleBottleVO> getCustomerSimpleBottleList(String customerNm);	
 	
 	public int registerWorkReportGasAndBottle(WorkReportVO param);
