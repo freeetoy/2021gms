@@ -180,6 +180,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		double totalAmount=0;
 		for(int i=0;i<viewList.size() ; i++) {
 			totalAmount = 0;
+			if(viewList.get(i).getReportEtc() != null) {
+				viewList.get(i).setReportEtc("["+viewList.get(i).getReportEtc()+"]");
+			}else {
+				viewList.get(i).setReportEtc("");
+			}
 			
 			for(int j=0;j<viewList.get(i).getSalesBottles().size();j++) {
 				totalAmount +=viewList.get(i).getSalesBottles().get(j).getProductPrice()*viewList.get(i).getSalesBottles().get(j).getProductCount();
