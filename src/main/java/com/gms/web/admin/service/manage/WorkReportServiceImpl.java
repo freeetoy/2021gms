@@ -1,6 +1,7 @@
 package com.gms.web.admin.service.manage;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,6 +122,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			temp.setBackBottles(tempBottle);
 			temp.setSalesBottles(tempBottle1);
+			
+			if(reportList.get(i).getReceivedAmount() > 0) {
+				DecimalFormat df = new DecimalFormat("###,###");
+				String formatMoney = df.format(reportList.get(i).getReceivedAmount());
+				temp.setReceivedAmountSt(formatMoney);
+			}
+			
 			viewList.add(temp);			
 			
 			receivedAmountToday += reportList.get(i).getReceivedAmount();
@@ -196,11 +204,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 			for(int j=0;j<viewList.get(i).getBackBottles().size();j++) {
 				//logger.debug("WorkReportServiceImpl getWorkReportList viewList.get(i).getBackBottles().size() .getProductId= "+ viewList.get(i).getBackBottles().get(j).getProductNm());
 			}
+
 		}
 
 		if(viewList.size() > 0 ) {
 			viewList.get(0).setOrderAmountToday(orderAmountToday);
 //			logger.debug("WorkReportServiceImpl getWorkReportListAll orderAmountToday = "+ orderAmountToday);
+			
 			viewList.get(0).setReceivedAmountToday(receivedAmountToday);
 		}
 		

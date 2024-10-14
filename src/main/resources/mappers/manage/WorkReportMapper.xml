@@ -478,7 +478,7 @@
 		SELECT Product_Count,Work_Report_Seq, AA.Customer_ID,Customer_nm  
 			, AA.Product_ID  ,Product_NM , AA.Product_Price_Seq ,Product_Capa    
 			, Bottle_work_Cd, CD_NM Bottle_work_Cd_NM, GAS_ID, Work_Etc
-			, AA.Order_Id, Order_Total_Amount,AA.Product_Price, AA.Bottle_Sale_YN,
+			, AA.Order_Id, Order_Total_Amount, AA.Product_Price, AA.Bottle_Sale_YN,
 			CASE
 				WHEN AA.Bottle_Type = 'F'
 				THEN '실병'
