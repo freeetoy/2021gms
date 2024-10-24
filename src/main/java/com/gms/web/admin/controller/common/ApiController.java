@@ -414,9 +414,11 @@ public class ApiController {
 			BottleVO bottle =  bottleService.getBottleDetailForBarCd(bottleBarCd);			
 			
 			if(bottle!=null) {
+//				logger.info("########### bottle.getBottleChargeDt="+bottle.getBottleChargeDt()+"bottle.getMenuType="+bottle.getMenuType());
 				if(bottle.getBottleCapa() == null || (bottle.getBottleCapa()!=null && bottle.getBottleCapa().length() == 0)) {
 					bottle.setBottleCapa("-");
 					bottle.setChargeCapa("-");
+					
 				}
 				
 				bottle.setSuccess(true);

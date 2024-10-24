@@ -113,7 +113,7 @@
 		, Bottle_Capa
 		, Charge_Capa
 		, Bottle_Create_Dt	
-		, Bottle_Charge_Dt	
+		, Bottle_Charge_Dt			
 		, Bottle_Volumn
 		, Bottle_Charge_Prss	
 		, Bottle_Own_YN	
@@ -155,6 +155,7 @@
 		, Own_Customer_ID	
 		, Bottle_Work_CD
 		, Bottle_Work_ID
+		, TU.User_Nm Bottle_Work_Nm
 		, TB.Customer_ID
 		, TB.Member_Comp_Seq	
 		, Order_ID
@@ -337,6 +338,8 @@
 			, Dummy_YN			= #{dummyYn}
 			, Bottle_Etc		= #{bottleEtc}
 			, Owner_Customer_ID	= #{ownerCustomerId}
+			, Bottle_Work_ID 	= #{updateId}
+			, Bottle_Work_DT 	= NOW()
 			, UPDATE_ID 		= #{updateId}
 			, UPDATE_DT 		= NOW()
 		WHERE
@@ -562,6 +565,7 @@
 				, Charge_Capa
 				, Bottle_Create_Dt	
 				, Bottle_Charge_Dt	
+				, DATE_FORMAT(Bottle_Charge_Dt,'%Y-%m') Bottle_Charge_Dt_Str
 				, Bottle_Volumn
 				, Bottle_Charge_Prss	
 				, Bottle_Own_YN	
@@ -579,7 +583,7 @@
 				, B.Customer_NickNm Customer_Nm
 				, Owner_Customer_ID
 			FROM
-				TB_CODE TC, TB_Product TG,TB_Bottle TB  LEFT OUTER JOIN TB_Customer B on B.Customer_ID = TB.Owner_customer_id
+				TB_CODE TC, TB_Product TG,TB_Bottle TB  LEFT OUTER JOIN TB_Customer B on B.Customer_ID = TB.Customer_id
 			WHERE
 				Bottle_BarCd = #{bottleBarCd}
 			AND
@@ -637,7 +641,7 @@
 			SELECT
 				<include refid="BottleSelectColumnsNew" />
 			FROM
-				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer TOC
+				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer TOC, TB_User TU
 			WHERE
 				TB.Delete_YN = 'N'
 			AND TB.Dummy_YN not in ('Y','X')
@@ -664,10 +668,14 @@
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 			AND Bottle_Work_CD =  #{searchWorkCd}
-			</if>			
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleType)">
+			AND Bottle_Type =  #{searchBottleType}
+			</if>
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
 			AND TB.Owner_Customer_ID = TOC.Customer_ID
+			AND TB.Bottle_Work_ID = TU.User_Id
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC
 		Limit #{startRow}, #{rowPerPage}
@@ -708,6 +716,7 @@
 				, Own_Customer_ID	
 				, Bottle_Work_CD
 				, Bottle_Work_ID
+				, TU.User_NM Bottle_Work_Nm
 				, TB.Customer_ID
 				, TB.Member_Comp_Seq	
 				, Order_ID
@@ -725,7 +734,7 @@
 				, TB.UPDATE_DT
 				, CD_NM Bottle_Work_CD_NM
 			FROM
-				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer CU
+				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer CU, TB_User TU
 			WHERE
 				TB.Delete_YN = 'N'
 			AND TB.Dummy_YN not in ('Y','X')
@@ -753,6 +762,7 @@
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
 			AND TB.Owner_Customer_ID = CU.Customer_ID 
+			AND TB.Bottle_Work_ID = TU.User_ID
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC
 	</select>
@@ -789,6 +799,9 @@
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 		AND Bottle_Work_CD =  #{searchWorkCd}
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleType)">
+		AND Bottle_Type =  #{searchBottleType}
 		</if>	
 	</select>
 	
@@ -976,16 +989,19 @@
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 		AND Bottle_Work_CD =  #{searchWorkCd}
-		</if>	
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleType)">
+		AND Bottle_Type =  #{searchBottleType}
+		</if>
 	</select>
 	
 	<select id="selectBottleHisListOfCustomer" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
 		SELECT A.*, B.Customer_Nm
 		FROM (
 			SELECT
-				<include refid="BottleSelectColumns" />
+				<include refid="BottleSelectColumnsNew" />
 			FROM
-				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+				TB_Bottle TB, TB_CODE TC, TB_Product TG, TB_Customer TOC, TB_User TU
 			WHERE
 				TB.Delete_YN = 'N'
 			AND TB.Dummy_YN not in ('Y','X')
@@ -1006,9 +1022,14 @@
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 			AND Bottle_Work_CD =  #{searchWorkCd}
-			</if>			
+			</if>
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleType)">
+			AND Bottle_Type =  #{searchBottleType}
+			</if>	
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
+			AND TB.Owner_Customer_ID = TOC.Customer_ID
+			AND TB.Bottle_Work_ID = TU.User_Id
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC
 		Limit #{startRow}, #{rowPerPage}

@@ -60,6 +60,9 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	/** Bottle_Charge_Dt	*/
 	private Date bottleChargeDt;
 	
+	/** Bottle_Charge_Dt_Str	*/
+	private String bottleChargeDtStr;
+	
 	/** Bottle_Volumn	*/
 	private String bottleVolumn;
 
@@ -208,4 +211,7 @@ public class BottleVO extends AbstractSearchVO implements Serializable {
 	private String  searchDtEnd;
 	
 	int printCount =1;
+	
+	/** searchBottleType	*/
+	private String  searchBottleType;
 }

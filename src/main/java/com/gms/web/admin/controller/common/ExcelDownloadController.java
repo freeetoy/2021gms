@@ -174,7 +174,7 @@ public class ExcelDownloadController {
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);
-			        cell.setCellValue(vo.getUpdateId());
+			        cell.setCellValue(vo.getBottleWorkNm());
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);
@@ -266,7 +266,7 @@ public class ExcelDownloadController {
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);
-			        cell.setCellValue(vo.getBottleWorkId());
+			        cell.setCellValue(vo.getBottleWorkNm());
 			        
 			        cell = row.createCell(k++);
 			        cell.setCellStyle(bodyStyle);

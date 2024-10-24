@@ -86,7 +86,11 @@ public class ExcelServiceImpl implements ExcelService {
         List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
         
         List<ProductTotalVO> productList = productService.getProductTotalDetailList();
+        BottleVO tempBottle = new BottleVO();
+        RequestUtils.initUserPrgmInfo(request, tempBottle);
         
+        logger.error("$$$$$$$$$$$$$$ tempBottle sb "+ tempBottle.getCreateId());
+                
         int result = 0;
         int COLUMN_COUNT  = 13;
         int updateCount = 0;
@@ -112,6 +116,7 @@ public class ExcelServiceImpl implements ExcelService {
             	isRegisteFlag = true;
             	
                 BottleVO bottle = new BottleVO();
+                bottle.setCreateId(tempBottle.getCreateId());
                 XSSFRow row = sheet.getRow(i);
                 // 행이 존재하기 않으면 패스
                 if(null == row) {
@@ -243,7 +248,7 @@ public class ExcelServiceImpl implements ExcelService {
                 productTotal.setProductNm(productNm);
                 productTotal.setProductCapa(productCapa);
                 //productTotal = productService.getProductTotalDetails(productTotal);
-                logger.debug("$$$$$$$$$$$$$$ ExcelService i="+i +" productNm "+ productNm +" productCapa "+productCapa);
+//                logger.debug("$$$$$$$$$$$$$$ ExcelService i="+i +" productNm "+ productNm +" productCapa "+productCapa);
                 for(int k=0;k<productList.size();k++) {
                 	ProductTotalVO productTemp = productList.get(k);
                 	   
@@ -255,7 +260,7 @@ public class ExcelServiceImpl implements ExcelService {
                 }
                 
                 if(productTotal != null && productTotal.getProductId() != null && productTotal.getProductId() > 0) {
-                	logger.debug("$$$$$$$$$$$$$$ ExcelService productTotal.getProductId()="+productTotal.getProductId());
+//                	logger.debug("$$$$$$$$$$$$$$ ExcelService productTotal.getProductId()="+productTotal.getProductId());
 	                bottle.setProductId(productTotal.getProductId());
 	                bottle.setProductPriceSeq(productTotal.getProductPriceSeq());
 	                bottle.setGasId(productTotal.getGasId());
@@ -342,6 +347,7 @@ public class ExcelServiceImpl implements ExcelService {
             map.put("insertCount", insertCount);
             map.put("updateCount", updateCount);
             map.put("exception",sb.toString());
+            if(list.size() <= 0 && updateList.size() <= 0) result = 1;
             map.put("result", result);
             
             workbook.close();
@@ -564,6 +570,11 @@ public class ExcelServiceImpl implements ExcelService {
         
         List<BottleVO> bottlelist = bottleService.getBottleListAll();
         
+        BottleVO tempBottle = new BottleVO();
+        RequestUtils.initUserPrgmInfo(request, tempBottle);
+        
+        logger.error("$$$$$$$$$$$$$$ tempBottle sb "+ tempBottle.getCreateId());
+        
         List<CustomerSimpleVO> customerList = customerService.searchCustomerSimpleList("");
         
         List<ProductTotalVO> productList = productService.getProductTotalDetailList();
@@ -587,6 +598,7 @@ public class ExcelServiceImpl implements ExcelService {
             	isRegisteFlag = true;
             	
                 BottleVO bottle = new BottleVO();
+                bottle.setCreateId(tempBottle.getCreateId());
                 XSSFRow row = sheet.getRow(i);
                 
                 // 행이 존재하기 않으면 패스

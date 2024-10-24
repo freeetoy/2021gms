@@ -203,7 +203,7 @@ function fn_deleteBottles()
 
 function fn_deleteAll()
 {		
-	if(confirm("정말로 삭제 하시겠습니까?")){
+	if(confirm("전체삭제 하시겠습니까? ")){
 
 		var form = document.createElement("form");
 		form.setAttribute("charset","UTF-8");
@@ -1370,7 +1370,22 @@ $(document).ready(function(){
             <div class="col-7">              
                <input type="text" class="form-control" name="searchDt" th:value="${searchDt}"/>			
             </div>               
-            <div align=right class="col-4">               
+            <div class="col-2"> 
+            <select id="searchBottleType" name="searchBottleType" class="form-control">
+            		<option value="">용기타입</option>	
+                    <option th:each="row : ${bottleTypeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:if="${searchBottleType ==row.cdId}" selected>					             
+			        </option>	
+			        <option th:each="row : ${bottleTypeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:unless="${searchBottleType ==row.cdId}">					             
+			        </option>			    
+                 </select>              
+            </div>
+            <div align=right class="col-2"> 
             </div>
          </div>
          <div class="row">	
@@ -1458,6 +1473,7 @@ $(document).ready(function(){
                       <th>가스</th>
                       <th>용량</th>
                       <th>작업</th>
+                      <th>타입</th>
                       <th>소유주</th>
                       <th>거래처</th>
                       <th>작업자</th>
@@ -1477,9 +1493,11 @@ $(document).ready(function(){
                       <td th:text="${row.productNm}"></td>
                       <td th:text="${row.chargeCapa}"></td>
                       <td th:text="${row.bottleWorkCdNm}"></td>
+                      <td th:if="${row.bottleType=='F'}">실병</td>
+                      <td th:unless="${row.bottleType=='F'}">공병</td>
                       <td th:text="${row.ownerCustomerNm}"></td>
                       <td th:text="${row.CustomerNm}"></td>
-                      <td th:text="${row.updateId}"></td>
+                      <td th:text="${row.bottleWorkNm}"></td>
                       <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>  
                       <td>                      
 						<a class="btn_select_process btn btn-info btn-xs" th:bottleId="${row.bottleId}" data-toggle="modal" data-target="#modal-default"  href="#"><i class="fas fa-check-circle"></i>상태변경 </a>
@@ -1503,14 +1521,10 @@ $(document).ready(function(){
         <!-- /.row -->
         
          <div class="row">		
-         	<div class="col-2">
-         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteBottles()"><i class="fas fa-trash"></i>선택삭제</a>
-         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteAll()"><i class="fas fa-trash"></i>삭제</a>    
-         		<a id="select_del" class="btn_select_order btn-primary btn-sm" data-toggle="modal" data-target="#process-modal6"  href="#"><i class="fas fa-check-circle"></i>진행</a>         	
-         	</div>						
-			<div class="col-8">
+
+			<div class="col-12">
 				<div class="pagination justify-content-center m-0" id="example2_paginate">
-					<ul class="pagination" style="font-size:14px;">
+					<ul class="pagination" style="font-size:13px;">
 						<li th:if="${currentPage > 1}" class="paginate_button page-item previous" id="example2_previous">
 							<a href="#" th:onclick="gotoPage([[ ${currentPage -1} ]])"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">이전</a>
 						</li>
@@ -1538,13 +1552,31 @@ $(document).ready(function(){
         			</ul>
 				</div>
 			</div>
+		</div>
+		<div class="row">		
+         	<div th:if="${session.LoginUser.userAuthority=='99'}" class="col-6" style="font-size:12px;" align='left'>
+         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteBottles()"><i class="fas fa-trash"></i>선택삭제</a>
+         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteAll()"><i class="fas fa-trash"></i>전체삭제</a>    
+         	  	<a id="select_del" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#process-modal6"  href="#"><i class="fas fa-check-circle"></i>진행</a>					
 			
-			<div th:if="${session.LoginUser.userAuthority=='99'}" class="col-2" align='right'>
+			</div>	
+			<div th:unless="${session.LoginUser.userAuthority=='99'}" class="col-6" style="font-size:12px;" align='left'>
+         		<a id="select_del" class="btn btn-danger btn-sm" href="#" th:onclick="fn_deleteBottles()"><i class="fas fa-trash"></i>선택삭제</a>
+         	  	<a id="select_del" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#process-modal6"  href="#"><i class="fas fa-check-circle"></i>진행</a>					
+			
+			</div>	
+			<div th:if="${session.LoginUser.userAuthority=='99'}" class="col-6" align='right'>
 				 <a class="btn_select_process1 btn btn-success btn-sm"  data-toggle="modal" data-target="#process-modal1" href="#"><i class="fas fa-check-circle"></i>용기변경</a> 
             	<a class="btn_select_process2 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal2" href="#"><i class="fas fa-upload"></i>엑셀등록</a>
             	
-			<div th:unless="${session.LoginUser.userAuthority=='99'}" class="col-1" align='right'>
+			<div th:unless="${session.LoginUser.userAuthority=='99'}" class="col-6" align='right'>
 		</div>
+		<div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
 		<!-- 
 		<div th:if="${session.LoginUser.userAuthority=='99'}"  class="row">		
          	<div class="col-12">

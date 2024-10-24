@@ -15,11 +15,33 @@ $(document).ready(function(){
 	
 	
 	$("table.doc-list").on("click", ".ibtnDelMod", function (event) {
-		console.log("doc-list");
 		
-	
-        $(this).closest("tr").remove();       
+		var row =  $(this).closest("tr");
+		var bottleHistSeq = row.data("value");
+		var bottleBarCd = $('#bottleBarCd').val();	
+		console.log(bottleHistSeq);
+		if(confirm("삭제하시겠습니까?")){	
+			
+			$.ajax({
+				url: '/gms/bottle/hdelete.do',
+				type: 'POST',
+				data: 'bottleBarCd='+ bottleBarCd +'&bottleHistSeq='+bottleHistSeq,
+			 })
+			.done(function(data){	           
+					console.log(data);
+				if(data == 1){
+					alert("용기이력이 삭제되었습니다");
+					row.remove();   
+				}   
+			})
+			.fail(function(){
+				console.log("fail");
+			 });
+		}         
+		//alert(value);   
+		
     });
+	
 });
 // 리스트 페이지 이동
 var goList = function(){
@@ -205,7 +227,30 @@ var goList = function(){
 			 });
 		} 
 
+		$("#btn_com_search").click(function()  
+	  	{    	
 		
+		  var searchCustomerNm = $("#searchCustomerNm").val();
+		
+		   $.ajax({
+		           url: '/gms/common/customerList.do',
+		           type: 'POST',
+		           data: 'searchCustomerNm='+ searchCustomerNm,
+		           dataType: 'json',
+		
+		      })
+		      .done(function(data){
+		    	$('#ownerCustomerId').find('option').remove();        
+		    	  for(i=0; i< data.length;i++) {
+		  			//console.log(data[i]);      
+		  			$('#ownerCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'_'+ data[i].businessRegId+'</option>')
+		  			
+		  		}
+		      })
+		      .fail(function(){
+		         console.log("fail");
+		      });
+		 });
 	});
 	
 	
@@ -223,6 +268,7 @@ var goList = function(){
 				if(data == 1){
 					alert("용기이력이 삭제되었습니다");
 				}
+				$(this).closest("tr").remove();       
 			})
 			.fail(function(){
 				console.log("fail");
@@ -263,19 +309,19 @@ var goList = function(){
                   <thead>
                     <tr>
                       <th class="card-footer">실린더번호</th>
-                      <th><input type="text" class="form-control" id="bottleId" name="bottleId" th:value="${bottle.bottleId}"></th>
+                       <th colspan=3> <input type="text" class="form-control" id="bottleId" name="bottleId" th:value="${bottle.bottleId}"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">용기 바코드</th>
-                      <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" th:value="${bottle.bottleBarCd}" readonly></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" th:value="${bottle.bottleBarCd}" readonly></th>
                     </tr>
                     <tr>
                       <th class="card-footer">가스 조성</th>
-                      <th><input type="text" class="form-control" id="gasCd" name="gasCd" th:value="${bottle.gasCd}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="gasCd" name="gasCd" th:value="${bottle.gasCd}"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">가스</th>
-                      <th>
+                      <th colspan=3>
                       <select id="productId" name="productId" class="form-control">
                           <option value="0">가스선택</option>				    
 					        <option th:each="row : ${productList}"
@@ -293,7 +339,7 @@ var goList = function(){
                     </tr>
                     <tr>
                       <th class="card-footer">가스 용량</th>
-                      <th>
+                      <th colspan=3>
                       <select id="productPriceSeq" name="productPriceSeq" class="form-control" >
 	                        <option th:each="row : ${productPriceList}"
 					                th:text="${row.productCapa}"
@@ -309,27 +355,27 @@ var goList = function(){
                     </tr>
                     <tr>
                       <th class="card-footer">충전용량</th>
-                      <th><input type="text" class="form-control" id="chargeCapa" name="chargeCapa" th:value="${bottle.chargeCapa}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="chargeCapa" name="chargeCapa" th:value="${bottle.chargeCapa}"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">제조일</th>
-                      <th><input type="text" class="form-control" id="bottleCreateDt" name="bottleCreateDt" th:value="${#calendars.format( bottle.bottleCreateDt, 'yyyy/MM/dd' )}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleCreateDt" name="bottleCreateDt" th:value="${#calendars.format( bottle.bottleCreateDt, 'yyyy/MM/dd' )}"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">충전 기한</th>
-                      <th><input type="text" class="form-control" id="bottleChargeDt" name="bottleChargeDt" th:value="${#calendars.format( bottle.bottleChargeDt, 'yyyy/MM/dd' )}"> </th>   
+                      <th colspan=3><input type="text" class="form-control" id="bottleChargeDt" name="bottleChargeDt" th:value="${#calendars.format( bottle.bottleChargeDt, 'yyyy/MM/dd' )}"> </th>   
                     </tr>
                     <tr>
                       <th class="card-footer">용기 체적</th>
-                      <th><input type="text" class="form-control" id="bottleVolumn" name="bottleVolumn" th:value="${bottle.bottleVolumn}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleVolumn" name="bottleVolumn" th:value="${bottle.bottleVolumn}"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">충전 압력</th>
-                      <th><input type="text" class="form-control" id="bottleChargePrss" name="bottleChargePrss" th:value="${bottle.bottleChargePrss}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleChargePrss" name="bottleChargePrss" th:value="${bottle.bottleChargePrss}"></th>
                     </tr>
                     <tr>
                       <th th:text="${bottle.ownCustomerId}" class="card-footer">용기 소유</th>
-                      <th>
+                      <th colspan=3>
 						<select id="ownCustomerId" name="ownCustomerId" class="form-control">
                           	<option value="0">소유대리점</option>				    
 					        <option th:each="row : ${agencyList}"
@@ -348,32 +394,32 @@ var goList = function(){
 					  </th>   
                     </tr>  
                     <tr>
-                      <th th:text="${bottle.ownCustomerId}" class="card-footer">용기 소유자</th>
+                      <th th:text="${bottle.ownerCustomerId}" class="card-footer">용기 소유자</th>
                       <th>
-						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control">
-                          	<option value="0">소유자</option>				    
-					        <option th:each="row : ${agencyList}"
+						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control">                          		    
+					        <option th:each="row : ${ownerCustomer}"
 					                th:text="${row.customerNm}"
 					                th:value="${row.customerId}"
 					                th:if="${#strings.equals(bottle.ownerCustomerId,row.customerId)}" selected>	
-					        </option>	
-					        <option th:each="row : ${agencyList}"
-					                th:text="${row.customerNm}"
-					                th:value="${row.customerId}"
-					                th:unless="${#strings.equals(bottle.ownerCustomerId,row.customerId)}">						               
-					        </option>					
+					        </option>
+					       		
                         </select>      
                       	<!-- <input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="N" checked=""> 자사                                   
                       	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
-					  </th>   
+					  </th>  
+					  <td ><input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+					  </td>
+            		  <td >
+                		 <input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+                	</td> 
                     </tr>  
                      <tr>                                   
                       <th class="card-footer">비고</th>
-                      <th><input type="text" class="form-control" id="bottleEtc" name="bottleEtc" th:value="${bottle.bottleEtc}"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleEtc" name="bottleEtc" th:value="${bottle.bottleEtc}"></th>
                     </tr>                 
                     <tr>
                       <th class="card-footer">더미여부</th>
-                      <th>      
+                      <th colspan=3>      
                       	<select id="dummyYn" name="dummyYn" class="form-control">
                           <option value='N' th:if="${#strings.equals(bottle.dummyYn,'N')}" selected>NO
                           <option value='N' th:unless="${#strings.equals(bottle.dummyYn,'N')}">NO
@@ -413,15 +459,17 @@ var goList = function(){
                     </tr>
                   	</thead>
                   	<tbody>
-                  	<tr th:if="${not #lists.isEmpty( historyList )}" th:each="row : ${historyList}">
+                  	<tr th:if="${not #lists.isEmpty( historyList )}" th:each="row : ${historyList}" th:data-value="${row.bottleHistSeq}">
                       <td th:text="${historyList.indexOf(row)+1}"></td>
                       <td th:text="${row.bottleWorkCdNm}"></td>
                       <td th:if="${row.bottleType=='E'}" th:text="공병"></td>
                        <td th:unless="${row.bottleType=='E'}" th:text="실병"></td>
                       <td th:text="${row.customerNm}"></td>
                       <td th:text="${row.bottleWorkId}"></td>
-                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>
-                      <td><input type="button" class="ibtnDelMod btn btn-md btn-danger" th:onclick="fn_deleteBottle([[ ${row.bottleBarCd} ]],[[ ${row.bottleHistSeq} ]])" id="addrow" value="삭제" />
+                      <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd' )}"></td>
+                      <td>
+                      <a class="btn btn-danger btn-xs ibtnDelMod" href="#"  value="삭제">
+      				<i class="fas fa-trash"></i>삭제</a>
       				</td>
                     </tr>
                   	</tbody>

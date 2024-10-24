@@ -1232,10 +1232,22 @@ $(document).ready(function(){
             <div class="col-7">              
                <input type="text" class="form-control" name="searchDt" th:value="${searchDt}"/>			
             </div>               
-            <div align=right class="col-4">               
-          <!--   <a class="btn_select_process5 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal5" href="#"><i class="fas fa-upload"></i>선택바코드엑셀</a>&nbsp;   
-            <a class="btn_select_process4 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal4" href="#"><i class="fas fa-upload"></i>바코드엑셀</a>   
-             -->
+            <div class="col-2"> 
+            <select id="searchBottleType" name="searchBottleType" class="form-control">
+            		<option value="">용기타입</option>	
+                    <option th:each="row : ${bottleTypeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:if="${searchBottleType ==row.cdId}" selected>					             
+			        </option>	
+			        <option th:each="row : ${bottleTypeList}"
+			                th:text="${row.cdNm}"
+			                th:value="${row.cdId}"
+			                th:unless="${searchBottleType ==row.cdId}">					             
+			        </option>			    
+                 </select>              
+            </div>
+            <div align=right class="col-2"> 
             </div>
          </div>
          <div class="row">	
@@ -1323,6 +1335,7 @@ $(document).ready(function(){
                       <th>가스</th>
                       <th>용량</th>
                       <th>작업</th>
+                      <th>타입</th>
                       <th>거래처</th>
                       <th>작업자</th>
                       <th>처리일</th>
@@ -1342,8 +1355,10 @@ $(document).ready(function(){
                       <td th:text="${row.productNm}"></td>
                       <td th:text="${row.chargeCapa}"></td>
                       <td th:text="${row.bottleWorkCdNm}"></td>
+                      <td th:if="${row.bottleType=='F'}">실병</td>
+                      <td th:unless="${row.bottleType=='F'}">공병</td>
                       <td th:text="${row.CustomerNm}"></td>
-                      <td th:text="${row.updateId}"></td>
+                      <td th:text="${row.bottleWorkNm}"></td>
                       <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>  
                       <td>                      
 						<a class="btn_select_process btn btn-info btn-xs" th:bottleId="${row.bottleId}" data-toggle="modal" data-target="#modal-default"  href="#"><i class="fas fa-check-circle"></i>상태변경 </a>

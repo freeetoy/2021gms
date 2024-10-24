@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.manage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.gms.web.admin.domain.manage.CustomerVO;
 import com.gms.web.admin.domain.manage.GasVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductVO;
+import com.gms.web.admin.domain.manage.WorkBottleVO;
 import com.gms.web.admin.service.common.CodeService;
 import com.gms.web.admin.service.manage.BottleService;
 import com.gms.web.admin.service.manage.CustomerService;
@@ -133,6 +135,7 @@ public class BottleController {
 		model.addAttribute("ownerCustomerList", ownerCustomerList);	
 		model.addAttribute("searchCustomerNm1", params.getSearchCustomerNm1());
 		model.addAttribute("searchOwnerCustomerNm", params.getSearchOwnerCustomerNm());
+		model.addAttribute("searchBottleType", params.getSearchBottleType());
 		if(params.getOwnCustomerId() !=null && params.getOwnCustomerId().length() > 0 ) 
 			model.addAttribute("ownCustomerId", Integer.parseInt(params.getOwnCustomerId()) );
 		
@@ -149,6 +152,18 @@ public class BottleController {
 		
 		List<CustomerVO> carList = customerService.searchCustomerListCar();
 		model.addAttribute("carList", carList);		
+		
+		// 용기타입 추가 20241021
+		List<CodeVO> bottleTypeList = new ArrayList<CodeVO>();	
+		CodeVO code1 = new CodeVO();
+		code1.setCdId("E");
+		code1.setCdNm("공병");
+		bottleTypeList.add(code1);
+		CodeVO code2 = new CodeVO();
+		code2.setCdId("F");
+		code2.setCdNm("실병");
+		bottleTypeList.add(code2);
+		model.addAttribute("bottleTypeList", bottleTypeList);
 		
 		//검색어 셋팅
 		model.addAttribute("searchBottleId", params.getSearchBottleId());
@@ -222,12 +237,25 @@ public class BottleController {
 		List<CustomerVO> carList = customerService.searchCustomerListCar();
 		model.addAttribute("carList", carList);		
 		
+		// 용기타입 추가 20241021
+		List<CodeVO> bottleTypeList = new ArrayList<CodeVO>();	
+		CodeVO code1 = new CodeVO();
+		code1.setCdId("E");
+		code1.setCdNm("공병");
+		bottleTypeList.add(code1);
+		CodeVO code2 = new CodeVO();
+		code2.setCdId("F");
+		code2.setCdNm("실병");
+		bottleTypeList.add(code2);
+		model.addAttribute("bottleTypeList", bottleTypeList);
+		
 		//검색어 셋팅
 		model.addAttribute("searchBottleId", params.getSearchBottleId());
 		model.addAttribute("searchBottleBarCd", params.getSearchBottleBarCd());
 		model.addAttribute("searchChargeDt", params.getSearchChargeDt());	
 		model.addAttribute("searchDt", params.getSearchDt());	
-		model.addAttribute("searchWorkCd", params.getSearchWorkCd() );		
+		model.addAttribute("searchWorkCd", params.getSearchWorkCd() );
+		model.addAttribute("searchBottleType", params.getSearchBottleType());
 		
 		model.addAttribute("currentPage", map.get("currentPage"));
 		model.addAttribute("lastPage", map.get("lastPage"));
@@ -489,19 +517,28 @@ public class BottleController {
 		// 대리점 정보 불러오기
 		List<CustomerSimpleVO> agencyList = customerService.getAgencyCustomerList();
 		model.addAttribute("agencyList", agencyList);
+		
+		
 					
 		return "gms/bottle/write";
 	}
 	
-	@RequestMapping(value = "/gms/bottle/CheckBottleId.do")
+	@RequestMapping(value = "/gms/bottle/CheckBottleBarCd.do")
 	@ResponseBody
-	public Object checkBottleId(BottleVO param){
+	public Object checkBottleBarCd(BottleVO param){
 		
 		Map<String, Object> result = bottleService.checkBottleIdDuplicate(param);
 		  
 		return result;
 	}
-	
+	@RequestMapping(value = "/gms/bottle/CheckBottleId.do")
+	@ResponseBody
+	public Object checkBottleId(BottleVO param){
+		
+		Map<String, Object> result = bottleService.checkBottleDuplicate(param);
+		  
+		return result;
+	}
 	
 	@RequestMapping(value = "/gms/bottle/register.do", method = RequestMethod.POST)
 	public ModelAndView registerBottle(HttpServletRequest request
@@ -572,6 +609,9 @@ public class BottleController {
 			// 대리점 정보 불러오기
 			List<CustomerSimpleVO> agencyList = customerService.getAgencyCustomerList();
 			model.addAttribute("agencyList", agencyList);
+			
+			CustomerVO ownerCustomer = customerService.getCustomerDetails(bottle.getOwnerCustomerId());
+			model.addAttribute("ownerCustomer", ownerCustomer);
 			
 			model.addAttribute("bottle", bottle);
 			model.addAttribute("currentPage", params.getCurrentPage());
@@ -1141,6 +1181,7 @@ public class BottleController {
 	public int deleteBottleHistOne(HttpServletRequest request
 			, HttpServletResponse response, BottleHistoryVO param)	{
 				
+		RequestUtils.initUserPrgmInfo(request, param);
 		return bottleService.deleteBottleHistOne(param);
 	}
 }

@@ -76,6 +76,8 @@ public interface BottleService {
 	
 	public Map<String, Object> checkBottleIdDuplicate(BottleVO param);
 	
+	public Map<String, Object> checkBottleDuplicate(BottleVO param);
+	
 	public List<BottleHistoryVO> selectBottleHistoryList(String bottleId);
 	
 	public BottleVO getLastBottleHist(String bottleId);

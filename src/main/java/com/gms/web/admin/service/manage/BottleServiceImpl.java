@@ -124,6 +124,12 @@ public class BottleServiceImpl implements BottleService {
 			map.put("ownerCustomerId", ownerCustomerId);
 			logger.debug("****** getBottleList *****getOwnerCustomerId===*"+param.getOwnerCustomerId());
 		}
+		
+		if(param.getSearchBottleType() !=null) {
+			ownerCustomerId = param.getOwnerCustomerId();
+			map.put("searchBottleType", param.getSearchBottleType());
+			logger.debug("****** getBottleList *****param.getSearchBottleType()===*"+param.getSearchBottleType());
+		}
 		int bottleCount = 0;
 
 //		if(param.getSearchWorkCd() != null && param.getSearchWorkCd().length() > 0) {
@@ -248,7 +254,10 @@ public class BottleServiceImpl implements BottleService {
 			map.put("ownCustomerId", ownCustomerId);
 			map.put("ownCustomerIdYn", "Y");
 		}
-	
+		if(param.getSearchBottleType() !=null) {
+			map.put("searchBottleType", param.getSearchBottleType());
+			logger.debug("****** getBottleList *****param.getSearchBottleType()===*"+param.getSearchBottleType());
+		}
 		int bottleCount = 0;
 		bottleCount = bottleMapper.selectBottleHistCountOfCustomer(map);
 		
@@ -684,6 +693,25 @@ public class BottleServiceImpl implements BottleService {
 	public Map<String, Object> checkBottleIdDuplicate(BottleVO param) {		
 		// 중복체크
 		int count = bottleMapper.selectBottleBarCdCheck(param);
+		// 결과 변수
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		if(count > 0){
+			result.put("result", "fail");
+			result.put("message", "용기바코드가 존재 합니다. 확인 후 입력해 주세요.");
+			return result;
+		}
+		
+		result.put("result", "success");
+		
+		return result;	
+	}
+	
+	// 용기코드 (실린더번호) 중복체크
+	@Override
+	public Map<String, Object> checkBottleDuplicate(BottleVO param) {		
+		// 중복체크
+		int count = bottleMapper.selectBottleIdCheck(param);
 		// 결과 변수
 		Map<String, Object> result = new HashMap<String, Object>();
 		

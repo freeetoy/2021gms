@@ -13,6 +13,12 @@ $(document).ready(function(){
 		}
 	});
 	
+	
+	$("#bottleId").on("focusout", function(){
+		if($(this).val() != ""){
+			checkBottleId();
+		}
+	});
 });
 // 리스트 페이지 이동
 var goList = function(){
@@ -46,7 +52,7 @@ var checkName = function(){
 
 	var ajaxInfo ={
 		type:"POST",
-		url:"/gms/bottle/CheckBottleId.do",
+		url:"/gms/bottle/CheckBottleBarCd.do",
 		data:{
 			bottleBarCd : bottleBarCd
 		},
@@ -142,7 +148,29 @@ var goWrite = function(){
 		      $(this).val('');
 		  });
 	});
+	//서버에 버전 데이터 존재 여부 확인 요청
+	var checkBottleId = function(){
+		var bottleId = $("#bottleId").val();
 
+		var ajaxInfo ={
+			type:"POST",
+			url:"/gms/bottle/CheckBottleId.do",
+			data:{
+				bottleId : bottleId
+			},
+			dataType: "json",
+		};
+		ajax = callAjax(ajaxInfo);
+		ajax.done(function(data){
+			if(data.result == "fail"){
+				alert(data.message);
+				$("#bottleId").val("");
+				$("#bottleId").focus();
+				isOkay = false;
+				return;
+			}
+		});
+	};	
 
 $(document).ready(function(){ 
 	
@@ -174,6 +202,32 @@ $(document).ready(function(){
 			console.log("fail");
 		 });
 	} 	
+	
+	$("#btn_com_search").click(function()  
+  	{    	
+	  var searchCustomerNm = $("#searchCustomerNm").val();
+	
+	   $.ajax({
+	           url: '/gms/common/customerList.do',
+	           type: 'POST',
+	           data: 'searchCustomerNm='+ searchCustomerNm,
+	           dataType: 'json',
+	
+	      })
+	      .done(function(data){
+	    	$('#ownerCustomerId').find('option').remove();        
+	    	  for(i=0; i< data.length;i++) {
+	  			//console.log(data[i]);      
+	  			$('#ownerCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'_'+ data[i].businessRegId+'</option>')
+	  			
+	  		}
+	      })
+	      .fail(function(){
+	         console.log("fail");
+	      });
+	 });
+	
+	
 });
 
 </script>
@@ -205,19 +259,19 @@ $(document).ready(function(){
                   <thead>
                     <tr>
                       <th class="card-footer">실린더번호</th>
-                      <th><input type="text" class="form-control" id="bottleId" name="bottleId" placeholder="용기 코드"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleId" name="bottleId" placeholder="실린더번호"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">용기 바코드</th>
-                      <th><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" placeholder="용기 바코드"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleBarCd" name="bottleBarCd" placeholder="용기 바코드"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">가스 조성</th>
-                      <th><input type="text" class="form-control" id="gasCd" name="gasCd" placeholder="가스CD "></th>
+                      <th colspan=3><input type="text" class="form-control" id="gasCd" name="gasCd" placeholder="가스CD "></th>
                     </tr>
                     <tr>
                       <th class="card-footer">상품</th>
-                      <th>
+                      <th colspan=3>
                       <select id="productId" name="productId" class="form-control">
                           <option value="0">상품선택</option>				    
 					        <option th:each="row : ${productList}"
@@ -230,7 +284,7 @@ $(document).ready(function(){
                     </tr>
                     <tr>
                       <th class="card-footer">가스 용량</th>
-                      <th>
+                      <th colspan=3>
                       <select id="productPriceSeq" name="productPriceSeq" class="form-control" >
 	                        <option value="0">옵션</option>			                      	
 					   </select>	                       
@@ -238,27 +292,27 @@ $(document).ready(function(){
                     
                     <tr>
                       <th class="card-footer">충전용량</th>
-                      <th><input type="text" class="form-control" id="chargeCapa" name="chargeCapa" placeholder="충전용량 "></th>
+                      <th colspan=3><input type="text" class="form-control" id="chargeCapa" name="chargeCapa" placeholder="충전용량 "></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">제조일</th>
-                      <th><input type="text" class="form-control" id="bottleCreateDt" name="bottleCreateDt" placeholder="제조일"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleCreateDt" name="bottleCreateDt" placeholder="제조일"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">충전 기한</th>
-                      <th><input type="text" class="form-control" id="bottleChargeDt" name="bottleChargeDt" placeholder="충전 기한"> </th>   
+                      <th colspan=3><input type="text" class="form-control" id="bottleChargeDt" name="bottleChargeDt" placeholder="충전 기한"> </th>   
                     </tr>
                     <tr>
                       <th class="card-footer">용기 체적</th>
-                      <th><input type="text" class="form-control" id="bottleVolumn" name="bottleVolumn" placeholder="용기 체적"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleVolumn" name="bottleVolumn" placeholder="용기 체적"></th>
                     </tr>
                      <tr>                                   
                       <th class="card-footer">충전 압력</th>
-                      <th><input type="text" class="form-control" id="bottleChargePrss" name="bottleChargePrss" placeholder="충전 압력"></th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleChargePrss" name="bottleChargePrss" placeholder="충전 압력"></th>
                     </tr>
                     <tr>
                       <th class="card-footer">용기 소유</th>
-                      <th>      
+                      <th colspan=3>      
                       	<select id="ownCustomerId" name="ownCustomerId" class="form-control">
                           <option value="0">소유거래처</option>				    
 					        <option th:each="row : ${agencyList}"
@@ -267,13 +321,33 @@ $(document).ready(function(){
 					               >
 					        </option>					
                         </select>       
-                      	<!-- <input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="N" checked=""> 자사                                   
-                      	<input type="radio" name="bottleOwnYn" id="bottleOwnYn" value="Y"> 타사      -->
 					  </th>   
-                    </tr>                   
+                    </tr>
+                   <tr>
+                      <th  class="card-footer">용기 소유자</th>
+                      <th>
+						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control">
+                          	<option value="0">소유자</option>				    
+					        <option th:each="row : ${agencyList}"
+					                th:text="${row.customerNm}"
+					                th:value="${row.customerId}" >					                	
+					        </option>
+					        	
+                        </select>
+					  </th>   
+					  <td ><input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+					  </td>
+            		  <td >
+                		 <input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
+                	</td>
+                    </tr>  
+                     <tr>                                   
+                      <th class="card-footer">비고</th>
+                      <th colspan=3><input type="text" class="form-control" id="bottleEtc" name="bottleEtc"  placeholder="비고"></th>
+                    </tr>   
                     <tr>
                       <th class="card-footer">더미여부</th>
-                      <th>      
+                      <th colspan=3>      
                       	<select id="dummyYn" name="dummyYn" class="form-control">
                           <option value="N">No</option>				    
 					      <option value="Y">기본더미</option>	
