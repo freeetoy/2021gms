@@ -10,8 +10,12 @@ public interface StatisticsBottleService {
 	
 	public List<StatisticsBottleVO> getMontlylStatisticsBottleList(StatisticsBottleVO param);	
 	
+	public List<StatisticsBottleVO> getDailylStatisticsBottleListNew(StatisticsBottleVO param);
+	
 	public int registerDailyStatisticsBottle();
 
 	public int registerMonthlyStatisticsBottle();
+	
+	public int registerDailyStatisticsBottleNew();
 
 }

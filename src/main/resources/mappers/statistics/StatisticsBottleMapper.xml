@@ -24,6 +24,16 @@
 		 , Create_ID        
 		 , Create_Dt
 	</sql>
+	
+	<sql id="StatisticsBottleNewColumns">
+		 Stat_Dt  
+		 , Product_ID    
+		 , Product_Price_Seq 	 
+		 , Bottle_work_Cd    
+		 , Bottle_Count    
+		 , Create_ID        
+		 , Create_Dt
+	</sql>
 
 	<insert id="inserDailyStatisticsBottle">
 		INSERT INTO TB_Daily_Stat_Bottle(
@@ -94,5 +104,37 @@
 		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
 		</if>
 		ORDER BY Create_Dt DESC 
+	</select>
+	
+	<insert id="inserDailyStatisticsBottleNew">
+		INSERT INTO TB_Daily_Stat_Bottle_New(
+			<include refid="StatisticsBottleNewColumns" />
+		)
+		SELECT DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'),,Product_ID,Product_Price_Seq, bottle_work_cd ,count(Bottle_BarCd), 'admin',now()
+		FROM TB_Bottle 
+		WHERE  Delete_yn='N'
+		AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		Group By DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')  , Product_ID,Product_Price_Seq, bottle_work_cd 
+	</insert>
+	<select id="selectDailylStatisticsBottleListNew" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">		
+		SELECT Stat_Dt,
+		    SUM(CASE WHEN Bottle_work_cd = '0388' THEN Bottle_Count ELSE 0 END) AS Bottle_Input_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0305' THEN Bottle_Count ELSE 0 END) AS Bottle_Charge_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0308' THEN Bottle_Count ELSE 0 END) AS Bottle_Sales_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0309' OR Bottle_work_cd = '0316' THEN Bottle_Count ELSE 0 END) AS Bottle_Rental_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0310' OR Bottle_work_cd = '0311' OR Bottle_work_cd = '0312' OR Bottle_work_cd = '0315' OR Bottle_work_cd = '0317' THEN Bottle_Count ELSE 0 END) AS Bottle_Back_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0399' THEN Bottle_Count ELSE 0 END) AS Bottle_Discard_Count
+		FROM
+			TB_Daily_Stat_Bottle_New
+		WHERE
+			0 = 0
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProduct)">
+			AND Product_Id = #{searchProductId}	
+			AND Product_Price_Seq = #{productPriceSeq}		
+		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+			AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		GROUP BY Stat_Dt
 	</select>
 </mapper>

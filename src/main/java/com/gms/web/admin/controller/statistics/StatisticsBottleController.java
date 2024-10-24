@@ -22,7 +22,9 @@ import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
+import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.statistics.StatisticsBottleVO;
+import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.statistics.StatisticsBottleService;
 
 @Controller
@@ -36,6 +38,8 @@ public class StatisticsBottleController {
 	@Autowired
 	private StatisticsBottleService statService;
 	
+	@Autowired
+	private ProductService productService;
 	
 	@RequestMapping(value = "/gms/statistics/bottle/daily.do")
 	public ModelAndView getStatisticsBottleDaily(StatisticsBottleVO params) {
@@ -85,6 +89,62 @@ public class StatisticsBottleController {
 		return mav;
 	}
 	
+	@RequestMapping(value = "/gms/statistics/bottle/dailynew.do")
+	public ModelAndView getStatisticsBottleDailyNew(StatisticsBottleVO params) {
+
+//		logger.info("StatisticsBottleContoller getStatisticsBottleDailyNew");
+//		logger.debug("StatisticsBottleContoller getProductPriceSeq "+ params.getProductPriceSeq());
+
+		ModelAndView mav = new ModelAndView();
+		
+		//Integer searchBottleId = params.getSearchBottleId();
+				
+		String searchStatDt = params.getSearchStatDt();	
+		
+		String searchStatDtFrom = null;
+		String searchStatDtEnd = null;
+				
+		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+			
+			params.setSearchStatDtFrom(searchStatDtFrom);
+			params.setSearchStatDtEnd(searchStatDtEnd);			
+		}else {				
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
+			
+			params.setSearchStatDtFrom(searchStatDtFrom);
+			params.setSearchStatDtEnd(searchStatDtEnd);
+			
+			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+		}		
+		params.setSearchStatDt(searchStatDtFrom);
+		
+		mav.addObject("searchProductId", params.getSearchProductId());	
+		if(params.getProductPriceSeq() !=null)
+			mav.addObject("productPriceSeq", params.getProductPriceSeq());	
+		else 
+			mav.addObject("productPriceSeq", "0");
+		
+		
+		List<ProductVO> productList = productService.getProductList();
+		
+		mav.addObject("productList", productList);
+		
+		List<StatisticsBottleVO> statBottleList = statService.getDailylStatisticsBottleListNew(params);
+		
+		mav.addObject("statList", statBottleList);	
+		
+		//검색어 셋팅
+		mav.addObject("searchStatDt", searchStatDt);		
+		
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.stat_bottle"));	 		
+		
+		mav.setViewName("gms/statistics/bottle/dailynew");
+		
+		return mav;
+	}
 	
 	@RequestMapping(value = "/gms/statistics/bottle/monthly.do")
 	public ModelAndView getStatisticsBottleMonthly(StatisticsBottleVO params) {

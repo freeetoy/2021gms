@@ -42,5 +42,13 @@ public class StatisticsBottleVO extends AbstractVO implements Serializable {
 	
 	/** searchStatDtEnd	*/
 	private String  searchStatDtEnd;
+	
+	/**Product_ID   */
+	private Integer productId ;
+	
+	/**Product_Price_Seq  */
+	private Integer productPriceSeq ;
+	
+	private Integer searchProductId;
 
 }

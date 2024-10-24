@@ -27,7 +27,7 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		Map<String, Object> map = new HashMap<String, Object>();		
 		map.put("searchProductId", param.getSearchProductId());		
 		map.put("productPriceSeq", param.getProductPriceSeq());	
-		
+//		logger.debug("****** getDailylStatisticsProductList *****productPriceSeq===*"+param.getProductPriceSeq());
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
 //			logger.debug("****** getDailylStatisticsProductList *****getSearchStatDt===*"+param.getSearchStatDt());
