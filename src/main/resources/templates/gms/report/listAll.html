@@ -1133,6 +1133,7 @@ $(document).ready(function(){
                       <th>수금액</th>
                       <th>계산서</th>
                       <th>수정일</th>
+                      <th>비고</th>
                       <th>삭제</th>
                     </tr>
                   </thead>
@@ -1165,7 +1166,8 @@ $(document).ready(function(){
 		     		  <td align="right" th:if="${row.receivedAmount == 0 }" th:text="${row.receivedAmount} +  ${row.incomeWay} "></td>	
 		     		  </td>
 		     		  <td th:text="${row.taxinvoiceType}"></td>	
-		     		  <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>	
+		     		  <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>
+		     		  <td th:text="${row.reportEtc}"></td>	
 		     		  <td><a class="btn_select_delete btn btn-danger btn-xs" th:workReportSeq="${row.workReportSeq}" th:customerNm1="${row.customerNm}"   href="#"><i class="fas fa-trash"></i>삭제</a></td>    
                  
                     </tr>

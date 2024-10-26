@@ -1141,6 +1141,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setBottleWorkCd(param.getBottleWorkCd());
 				workBottle.setAgencyYn(param.getAgencyYn());
 				workBottle.setSearchDt(param.getSearchDt());
+				
+				//20240927 대여/판매 등 비고 추가
+				workBottle.setWorkEtc(param.getReportEtc());
+				
 				if(i==0) {
 					orderProductNm = tempBottle.getProductNm();
 					orderProductCapa = tempBottle.getBottleCapa();
