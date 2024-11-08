@@ -9,9 +9,9 @@ $(document).ready(function(){
 
 	 var searchProductId =  $('#searchProductId').val();
 	 
-	 if('[[${productPriceSeq}]]' > 0) {
+	 //if('[[${productPriceSeq}]]' > 0) {
 		 getProductPriceList(searchProductId,2);
-	 }
+	 //}
 
 	// 품명 선택 변경
     $('#searchProductId').change( function(){
@@ -57,6 +57,7 @@ function getProductPriceList(searchProductId, type){
     	var i=0;
     	$('#productPriceSeq' ).find('option').remove(); 
 		//$('#productCapa_' + sel_pid).find('option').remove(); 
+		$('#productPriceSeq' ).append('<option value=0 selected>용량선택</option>')
 		for(i=0; i< data.length;i++) {
 			if(type==2 && '[[${productPriceSeq}]]' == data[i].productPriceSeq )
 				$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+' selected>'+data[i].productCapa+'</option>')
@@ -78,7 +79,7 @@ function getProductPriceList(searchProductId, type){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>상품 판매 현황</h1>
+            <h1>용기  현황</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -134,8 +135,8 @@ function getProductPriceList(searchProductId, type){
             <div class="col-1">
                 <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
               </div>  
-              <div class="col-2"  align=right>
-               		<a th:href="@{/gms/statistics/product/excelDown.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},productPriceSeq=${productPriceSeq},periodType=1)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
+              <div class="col-4"  align=right>
+               		<a th:href="@{/gms/statistics/bottle/excelDailyNew.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},productPriceSeq=${productPriceSeq},periodType=1)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
             </div>
               </form>  
          </div>       
@@ -155,10 +156,11 @@ function getProductPriceList(searchProductId, type){
                   <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-one-home-tab" href="/gms/statistics/product/daily.do" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">일별</a>
                   </li>
+                  <!-- 
                   <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-one-profile-tab"  href="/gms/statistics/product/monthly.do" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">월별</a>
                   </li>
-                 
+                  -->
                 </ul>
               </div>
               <div class="card-body">
@@ -179,6 +181,7 @@ function getProductPriceList(searchProductId, type){
                     </tr>
                   </thead>
                   <tbody>
+                  
                   	<tr th:if="${not #lists.isEmpty( statList )}" th:each="row : ${statList}" style="font-size:14px;">
                      <td th:text="${row.statDt}"></td>
                      <td align="center" th:text="${row.bottleInputCount}"></td>                      
@@ -186,6 +189,14 @@ function getProductPriceList(searchProductId, type){
                      <td align="center" th:text="${row.bottleSalesCount}"></td>
                      <td align="center" th:text="${row.bottleRentalCount}"></td>
                      <td align="center" th:text="${row.bottleBackCount}"></td>
+                   </tr>
+                   <tr th:if="${not #lists.isEmpty( statToday )}" style="font-size:14px;">
+                     <td th:text="${statToday.statDt}"></td>
+                     <td align="center" th:text="${statToday.bottleInputCount}"></td>                      
+                     <td align="center" th:text="${statToday.bottleChargeCount}"></td>
+                     <td align="center" th:text="${statToday.bottleSalesCount}"></td>
+                     <td align="center" th:text="${statToday.bottleRentalCount}"></td>
+                     <td align="center" th:text="${statToday.bottleBackCount}"></td>
                    </tr>
                    <tr th:unless="${not #lists.isEmpty( statList )}">
 					<td colspan="6">조회된 결과가 없습니다.</td>

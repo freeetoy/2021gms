@@ -1468,6 +1468,7 @@ $(document).ready(function(){
                   <thead>
                     <tr style="font-size:14px;">
                       <th><input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll();"/></th>
+                      <th>순번</th>
                       <th>실린더번호</th>
                       <th>바코드</th>
                       <th>가스</th>
@@ -1483,9 +1484,11 @@ $(document).ready(function(){
                   </thead>
                   <tbody>
                   <form name="checkForm" id="checkForm">
-                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row : ${bottleList}" style="font-size:13.5px;">
+                  	<tr th:if="${not #lists.isEmpty( bottleList )}" th:each="row, iterator: ${bottleList}" style="font-size:13.5px;">
                       <td>
                       <input class="IdCheckbox"  name="check_id" type="checkbox" th:value="${row.bottleBarCd}"></td>
+                      <th th:text="${totalCount-( ((currentPage - 1) * 15) + iterator.index)}"></th>
+                      
                       <th th:text="${row.bottleId}"></th>
                       <th>
                       <a href="#" th:onclick="goUpdate([[ ${row.bottleBarCd} ]])" th:text="${row.bottleBarCd}"></a>   
@@ -1498,7 +1501,7 @@ $(document).ready(function(){
                       <td th:text="${row.ownerCustomerNm}"></td>
                       <td th:text="${row.CustomerNm}"></td>
                       <td th:text="${row.bottleWorkNm}"></td>
-                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>  
+                      <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd' )}"></td>  
                       <td>                      
 						<a class="btn_select_process btn btn-info btn-xs" th:bottleId="${row.bottleId}" data-toggle="modal" data-target="#modal-default"  href="#"><i class="fas fa-check-circle"></i>상태변경 </a>
 						<a class="btn btn-danger btn-xs" href="#" th:onclick="fn_deleteBottle([[ ${row.bottleBarCd} ]])">

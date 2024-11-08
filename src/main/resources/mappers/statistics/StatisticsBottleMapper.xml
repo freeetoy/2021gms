@@ -110,11 +110,11 @@
 		INSERT INTO TB_Daily_Stat_Bottle_New(
 			<include refid="StatisticsBottleNewColumns" />
 		)
-		SELECT DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d'),,Product_ID,Product_Price_Seq, bottle_work_cd ,count(Bottle_BarCd), 'admin',now()
+		SELECT DATE_FORMAT(bottle_work_dt,'%Y/%m/%d'), Product_ID, Product_Price_Seq, Bottle_Work_Cd ,Count(Bottle_BarCd), 'admin', now()
 		FROM TB_Bottle 
 		WHERE  Delete_yn='N'
-		AND DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')=  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
-		Group By DATE_FORMAT(bottle_work_dt,'%Y/%m/%d')  , Product_ID,Product_Price_Seq, bottle_work_cd 
+		AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d') =  DATE_FORMAT(date_sub(curdate(), interval 1 day),'%Y/%m/%d')
+		Group By DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')  , Product_ID,Product_Price_Seq, bottle_work_cd 
 	</insert>
 	<select id="selectDailylStatisticsBottleListNew" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">		
 		SELECT Stat_Dt,
@@ -130,11 +130,63 @@
 			0 = 0
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProduct)">
 			AND Product_Id = #{searchProductId}	
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductPreiceSeq)">
 			AND Product_Price_Seq = #{productPriceSeq}		
+			</if>
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
 			AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
 		</if>
 		GROUP BY Stat_Dt
 	</select>
+	<select id="selectTodayStatisticsBottleListNew" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">
+		SELECT 
+		    DATE_FORMAT(CURDATE(), '%Y/%m/%d') AS STAT_DT,
+		    SUM(CASE WHEN Bottle_work_cd = '0388' THEN 1 ELSE 0 END) AS Bottle_Input_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0305' THEN 1 ELSE 0 END) AS Bottle_Charge_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0308' THEN 1 ELSE 0 END) AS Bottle_Sales_Count,
+		    SUM(CASE WHEN Bottle_work_cd IN ('0309', '0316') THEN 1 ELSE 0 END) AS Bottle_Rental_Count,
+		    SUM(CASE WHEN Bottle_work_cd IN ('0310', '0311', '0312', '0315', '0317') THEN 1 ELSE 0 END) AS Bottle_Back_Count,
+		    SUM(CASE WHEN Bottle_work_cd = '0399' THEN 1 ELSE 0 END) AS Bottle_Discard_Count
+		FROM 
+		    TB_Bottle
+		WHERE 
+		    Delete_yn = 'N'
+		    AND DATE_FORMAT(Bottle_Work_Dt, '%Y/%m/%d') = DATE_FORMAT(CURDATE(), '%Y/%m/%d')
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProduct)">
+			AND Product_Id = #{searchProductId}	
+			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductPreiceSeq)">
+			AND Product_Price_Seq = #{productPriceSeq}		
+			</if>
+		</if>		
+	</select>
+	<!--  select id="selectTodayStatisticsBottleListNew" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO">
+		SELECT DATE_FORMAT(curdate(),'%Y/%m/%d') STAT_DT, IFNULL(Bottle_Input_Count,0) Bottle_Input_Count, IFNULL(Bottle_Charge_Count,0) Bottle_Charge_Count,
+		IFNULL(Bottle_Sales_Count,0) Bottle_Sales_Count, IFNULL(Bottle_Rental_Count,0) Bottle_Rental_Count, IFNULL(Bottle_Back_Count,0) Bottle_Back_Count, IFNULL(Bottle_Discard_Count,0) Bottle_Discard_Count
+		From 
+		(	
+		SELECT count(Bottle_BarCd) Bottle_Input_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd ='0388' AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')= DATE_FORMAT(curdate(),'%Y/%m/%d') ) a,
+		(	
+			SELECT count(Bottle_BarCd) Bottle_Charge_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd ='0305' AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')=  DATE_FORMAT(curdate(),'%Y/%m/%d') ) b,
+		(	
+			SELECT count(Bottle_BarCd) Bottle_Sales_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd ='0308' AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')=  DATE_FORMAT(curdate(),'%Y/%m/%d')) c,
+		(	
+			SELECT count(Bottle_BarCd) Bottle_Rental_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd in ('0309', '0316') AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')=  DATE_FORMAT(curdate(), '%Y/%m/%d') ) d,
+		(	
+			SELECT count(Bottle_BarCd) Bottle_Back_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd in ('0310', '0311','0312','0315','0317') AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')=  DATE_FORMAT(curdate(),'%Y/%m/%d') ) e,
+		(	
+			SELECT count(Bottle_BarCd) Bottle_Discard_Count 
+			FROM TB_Bottle 
+			WHERE Delete_yn='N' AND Bottle_work_cd ='0399' AND DATE_FORMAT(Bottle_Work_Dt,'%Y/%m/%d')= DATE_FORMAT(curdate(), '%Y/%m/%d') ) f
+	</select>-->
 </mapper>

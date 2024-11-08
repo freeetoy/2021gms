@@ -16,6 +16,8 @@ public interface StatisticsBottleMapper {
 	
 	public List<StatisticsBottleVO> selectDailylStatisticsBottleListNew(Map<String, Object> map);	
 	
+	public StatisticsBottleVO selectTodayStatisticsBottleListNew(Map<String, Object> map);	
+	
 	public int inserDailyStatisticsBottle();
 
 	public int inserMonthlyStatisticsBottle();

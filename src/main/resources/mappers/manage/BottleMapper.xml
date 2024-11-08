@@ -101,7 +101,7 @@
 		, UPDATE_ID
 		, UPDATE_DT
 	</sql>
-	
+
 	<sql id="BottleSelectColumns">
 		  Bottle_ID
 		, Bottle_BarCd
@@ -481,11 +481,7 @@
 	</update>
 	
 	<update id="deleteBottle" parameterType="com.gms.web.admin.domain.manage.BottleVO">
-		UPDATE TB_Bottle
-		SET
-			Delete_YN = 'Y'
-			, UPDATE_ID = #{updateId}
-			, UPDATE_DT = NOW()
+		DELETE From TB_Bottle		
 		WHERE
 			Bottle_BarCD = #{bottleBarCd}
 	</update>
@@ -501,11 +497,7 @@
 	</update>
 	
 	<update id="deleteBottles" parameterType="com.gms.web.admin.domain.manage.BottleVO">
-		UPDATE TB_Bottle
-		SET
-			Delete_YN = 'Y'
-			, UPDATE_ID = #{updateId}
-			, UPDATE_DT = NOW()
+		DELETE From TB_Bottle		
 		WHERE
 			Bottle_BarCD in  
 			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
@@ -664,7 +656,7 @@
 			AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
 			</if>		
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
-			AND date_format(TB.UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+			AND date_format(TB.Bottle_Work_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 			AND Bottle_Work_CD =  #{searchWorkCd}
@@ -675,10 +667,10 @@
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
 			AND TB.Owner_Customer_ID = TOC.Customer_ID
-			AND TB.Bottle_Work_ID = TU.User_Id
-		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
-		ORDER BY Bottle_Work_DT DESC
-		Limit #{startRow}, #{rowPerPage}
+			AND TB.Bottle_Work_ID = TU.User_Id 
+		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID
+		ORDER BY Bottle_Work_DT DESC,Bottle_BarCd DESC
+			Limit #{startRow}, #{rowPerPage}										
 	</select>
 	
 	<select id="selectBottleListAll" resultType="com.gms.web.admin.domain.manage.BottleVO" >
@@ -693,6 +685,13 @@
 			AND TB.Product_ID = TG.Product_Id
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Bottle_Work_DT DESC 		
+	</select>
+	
+	<select id="selectBottleOnlyListAll" resultType="com.gms.web.admin.domain.manage.BottleVO" >
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle TB		
 	</select>
 	
 	<select id="selectBottleListToExcel" resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="java.util.Map">
@@ -795,7 +794,7 @@
 		AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
 		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
-		AND date_format(UPDATE_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
+		AND date_format(Bottle_Work_DT,'%Y/%m/%d')  between  #{searchDtFrom} AND  #{searchDtEnd} 
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchWorkCd)">
 		AND Bottle_Work_CD =  #{searchWorkCd}
@@ -1103,5 +1102,75 @@
 			, BH.UPDATE_DT 	= NOW()
 		WHERE Bottle_BarCd = #{bottleBarCd}
 		AND	Bottle_Hist_Seq = #{bottleHistSeq}
+	</update>	
+	
+	<select id="selectBottleInfo" parameterType="String" resultType="com.gms.web.admin.domain.manage.BottleVO">
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle TB
+		WHERE			
+			Bottle_BarCd = #{bottleBarCd}
+	</select>
+	<update id="deleteBottleInfo" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		DELETE From TB_Bottle
+		WHERE
+			Bottle_BarCd = #{bottleBarCd}
+	</update>
+	<update id="deleteBottleHist" parameterType="com.gms.web.admin.domain.manage.BottleHistoryVO">
+		UPDATE TB_BOttle_Hist BH
+		SET
+			 Delete_YN		= #{deleteYn}
+			, BH.UPDATE_ID 	= #{updateId}
+			, BH.UPDATE_DT 	= NOW()
+		WHERE Bottle_BarCd = #{bottleBarCd}
+	</update>
+	<update id="deleteBottlesHist" parameterType="com.gms.web.admin.domain.manage.BottleVO">
+		UPDATE TB_BOttle_Hist BH
+		SET
+			 Delete_YN		= #{deleteYn}
+			, BH.UPDATE_ID 	= #{updateId}
+			, BH.UPDATE_DT 	= NOW()
+		WHERE
+			Bottle_BarCD in  
+			<foreach collection="bottList" item="item" index="index" open="(" separator="," close=")">
+				#{item} 
+			</foreach>
+	</update>
+	<update id="updateBottleFromHist" parameterType="com.gms.web.admin.domain.manage.BottleHistoryVO">
+		UPDATE TB_Bottle tb, TB_BOttle_Hist th
+		SET 
+			tb.Bottle_ID = th.Bottle_ID, 
+			tb.Member_Comp_Seq = th.Member_Comp_Seq, 
+			tb.Order_ID = th.Order_ID, 
+			tb.Order_Product_Seq = th.Order_Product_Seq, 
+			tb.Gas_ID = th.Gas_ID, 
+			tb.Gas_Cd = th.Gas_Cd, 
+			tb.Product_ID = th.Product_ID, 
+			tb.Product_Price_Seq = th.Product_Price_Seq, 
+			tb.Bottle_Capa = th.Bottle_Capa, 
+			tb.Charge_Capa = th.Charge_Capa, 
+			tb.Bottle_Charge_Dt = th.Bottle_Charge_Dt, 
+			tb.Bottle_Create_Dt = th.Bottle_Create_Dt, 
+			tb.Bottle_Volumn = th.Bottle_Volumn, 
+			tb.Bottle_Charge_Prss = th.Bottle_Charge_Prss, 
+			tb.Bottle_Own_YN = th.Bottle_Own_YN, 
+			tb.Own_Customer_ID = th.Own_Customer_ID, 
+			tb.Bottle_Work_CD = th.Bottle_Work_CD, 
+			tb.Bottle_Work_ID = th.Bottle_Work_ID, 
+			tb.Bottle_Work_Dt = th.Bottle_Work_Dt, 
+			tb.Customer_ID = th.Customer_ID, 
+			tb.Customer_ID = th.Customer_ID, 
+			tb.Delete_YN = th.Delete_YN, 
+			tb.Dummy_YN = th.Dummy_YN, 
+			tb.Bottle_Etc = th.Bottle_Etc, 
+			tb.Owner_Customer_ID = th.Owner_Customer_ID, 
+			tb.Create_ID = th.Create_ID, 
+			tb.Create_Dt = th.Create_Dt, 
+			tb.Update_ID = th.Update_ID, 
+			tb.Update_Dt = th.Update_Dt
+		WHERE tb.Bottle_BarCd = #{bottleBarCd}
+		AND tb.Bottle_BarCd = th.Bottle_BarCd
+		AND th.Bottle_Hist_Seq = #{bottleHistSeq}
 	</update>	
 </mapper>

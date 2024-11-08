@@ -449,30 +449,32 @@
               </li>
               
               <li th:if="${menuId=='sbottle'}" class="nav-item">
-                <a href="/gms/statistics/bottle/daily.do" class="nav-link active">
+                <a href="/gms/statistics/bottle/dailynew.do" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>용기 현황</p>
                 </a>
               </li>
               <li th:unless="${menuId=='sbottle'}" class="nav-item">
-                <a href="/gms/statistics/bottle/daily.do" class="nav-link">
+                <a href="/gms/statistics/bottle/dailynew.do" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>용기 현황</p>
                 </a>
               </li>
-              
+              <!-- 
                <li th:if="${menuId=='sagency'}" class="nav-item">
                 <a href="/gms/statistics/agency/daily.do" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>대리점 현황</p>
                 </a>
               </li>
+              
               <li th:unless="${menuId=='sagency'}" class="nav-item">
                 <a href="/gms/statistics/agency/daily.do" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>대리점 현황</p>
                 </a>
               </li>
+               -->
             </ul>
           </li>
           <li th:unless="${menuId=='sorder' || menuId=='ssales' || menuId=='sproduct' || menuId=='scustomer' ||  menuId=='scbottle' ||  menuId=='sbottle' || menuId=='sagency'}" class="nav-item has-treeview">
@@ -515,17 +517,19 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/gms/statistics/bottle/daily.do" class="nav-link">
+                <a href="/gms/statistics/bottle/dailynew.do" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>용기 현황</p>
                 </a>
               </li>
+              <!-- 
               <li class="nav-item">
                 <a href="/gms/statistics/agency/daily.do" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>대리점 현황</p>
                 </a>
               </li>
+               -->
             </ul>
           </li>
           <!--  사용자관리 메뉴  시작 -->

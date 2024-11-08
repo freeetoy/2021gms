@@ -31,7 +31,7 @@ var validation = function(){
 	var result = (
 				isValid(bottleId, "실린더번호", null, null)
 			&& isValid(bottleBarCd, "용기 바코드", null, null)
-			&& isValid(bottleCreateDt, "제조일", null, null)			
+		//	&& isValid(bottleCreateDt, "제조일", null, null)			
 			&& isValid(bottleChargeDt, "충전 기한", null, null)
 	);
 	
@@ -247,7 +247,7 @@ $(document).ready(function(){
     <section class="content">   
         
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-8">
             <div class="card">
               
              <!-- general form elements -->                        
@@ -325,8 +325,8 @@ $(document).ready(function(){
                     </tr>
                    <tr>
                       <th  class="card-footer">용기 소유자</th>
-                      <th>
-						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control">
+                      <th >
+						<select id="ownerCustomerId" name="ownerCustomerId" class="form-control" style="width:300px">
                           	<option value="0">소유자</option>				    
 					        <option th:each="row : ${agencyList}"
 					                th:text="${row.customerNm}"

@@ -304,6 +304,10 @@ public class BottleServiceImpl implements BottleService {
 		return bottleMapper.selectBottleListAll();
 	}
 	
+	@Override
+	public List<BottleVO> getBottleOnlyListAll() {
+		return bottleMapper.selectBottleOnlyListAll();
+	}
 	
 	@Override
 	public List<BottleVO> getBottleListToExcel(BottleVO param) {
@@ -490,6 +494,22 @@ public class BottleServiceImpl implements BottleService {
 		param.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
 		//param.setBottleCapa(productPrice1.getProductCapa());
 		
+		BottleVO bottle = bottleMapper.selectBottleInfo(param.getBottleBarCd());
+		
+		
+		// 이전 등록 용기 정보 확인 후 삭제 처리 후 등록
+		int result1 = 0;
+		if(bottle != null) {
+			result1 = bottleMapper.deleteBottleInfo(bottle);
+			
+			BottleHistoryVO bhistory = new BottleHistoryVO();
+			bhistory.setDeleteYn("X");
+			bhistory.setUpdateId(param.getUpdateId());
+			bhistory.setBottleBarCd(param.getBottleBarCd());
+			
+			result1 = bottleMapper.deleteBottleHist(bhistory);
+		}
+		
 		result =  bottleMapper.insertBottle(param);		
 		if(result > 0 ) result = bottleMapper.insertBottleHistory(param);
 		
@@ -664,9 +684,17 @@ public class BottleServiceImpl implements BottleService {
 	public int deleteBottle(BottleVO param) {
 		
 		int result = 0;
-		result =   bottleMapper.deleteBottle(param);
 		
-		if(result > 0 ) result = bottleMapper.insertBottleHistory(param);
+		
+//		if(result > 0 ) result = bottleMapper.insertBottleHistory(param);
+		BottleHistoryVO bhistory = new BottleHistoryVO();
+		bhistory.setDeleteYn("X");
+		bhistory.setUpdateId(param.getUpdateId());
+		bhistory.setBottleBarCd(param.getBottleBarCd());
+		
+		result = bottleMapper.deleteBottleHist(bhistory);
+		
+		result =   bottleMapper.deleteBottle(param);
 		
 		return result;
 		
@@ -685,6 +713,11 @@ public class BottleServiceImpl implements BottleService {
 	@Override
 	@Transactional
 	public int deleteBottles(BottleVO param) {
+		//20241105 완전삭제로 벼경
+		int result = 0;
+		param.setDeleteYn("X");
+		result = bottleMapper.deleteBottlesHist(param);
+		
 		return bottleMapper.deleteBottles(param);
 	}
 
@@ -1011,6 +1044,24 @@ public class BottleServiceImpl implements BottleService {
 
 	@Override
 	public int deleteBottleHistOne(BottleHistoryVO param) {
+		
+		int result = 0;
+		logger.debug(" deleteBottleHistOne getBottleHistSeq= "+ param.getBottleHistSeq());
+		//20241106 마지막 히스토리 삭제시 이전 상태로 변경 필요
+		// 용기 이력 정보 불러오기		
+		List<BottleHistoryVO> historyList = selectBottleHistoryList(param.getBottleBarCd());
+		BottleHistoryVO bHistory = null;
+		BottleHistoryVO oHistory = null;
+		if(historyList.size() > 1) {
+			bHistory = historyList.get(0);
+			oHistory = historyList.get(1);
+			logger.debug(" deleteBottleHistOne bHistory.getBottleHistSeq= "+ bHistory.getBottleHistSeq());
+			logger.debug(" deleteBottleHistOne oHistory.getBottleHistSeq= "+ oHistory.getBottleHistSeq());
+			if(bHistory.getBottleHistSeq() - param.getBottleHistSeq() == 0) {	//이전 이력정보로 업데이트 필요
+				result = bottleMapper.updateBottleFromHist(oHistory);
+			}
+		}
+		
 		param.setDeleteYn("X");
 		return bottleMapper.deleteBottleHistOne(param);
 	}

@@ -19,6 +19,8 @@ public interface BottleMapper {
 	
 	public List<BottleVO> selectBottleListAll();	
 	
+	public List<BottleVO> selectBottleOnlyListAll();
+	
 	public List<BottleVO> selectBottleListToExcel(Map<String, Object> map);
 	
 	public List<BottleVO> selectCustomerBottleList(Integer customerId);	
@@ -102,4 +104,14 @@ public interface BottleMapper {
 	public int deleteProductDummyBottle(ProductVO param);
 	
 	public int deleteBottleHistOne(BottleHistoryVO param);
+	
+	public BottleVO selectBottleInfo(String bottleBarCd);
+	
+	public int deleteBottleInfo(BottleVO param);
+	
+	public int deleteBottleHist(BottleHistoryVO param);
+	
+	public int deleteBottlesHist(BottleVO param);
+	
+	public int updateBottleFromHist(BottleHistoryVO param);
 }

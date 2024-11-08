@@ -70,7 +70,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 			result = statOrderService.registerDailyStatisticsOrder();
 			
 			//TB_Daily_Stat_Bottle_New
-//			result = statBottleService.registerDailyStatisticsBottleNew();
+			result = statBottleService.registerDailyStatisticsBottleNew();
 			
 		} catch (DataAccessException e) {
 			// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달

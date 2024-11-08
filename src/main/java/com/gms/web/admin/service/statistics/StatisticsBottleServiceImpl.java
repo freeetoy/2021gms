@@ -84,6 +84,9 @@ public class StatisticsBottleServiceImpl implements StatisticsBottleService {
 		if(param.getSearchProductId() !=null && param.getSearchProductId() > 0) map.put("searchProduct", "Y");
 		else map.put("searchProduct", "");
 		
+		if(param.getProductPriceSeq() !=null && param.getProductPriceSeq() > 0) map.put("searchProductPreiceSeq", "Y");
+		else map.put("searchProductPreiceSeq", "");
+		
 		if(param.getSearchStatDt() != null) {
 			map.put("searchStatDt", param.getSearchStatDt());
 //			logger.debug("****** getDailylStatisticsBottleList *****getSearchStatDt===*"+param.getSearchStatDt());
@@ -120,6 +123,40 @@ public class StatisticsBottleServiceImpl implements StatisticsBottleService {
 	public int registerDailyStatisticsBottleNew() {
 		// TODO Auto-generated method stub
 		return statMapper.inserDailyStatisticsBottleNew();
+	}
+
+	@Override
+	public StatisticsBottleVO getTodayStatisticsBottleListNew(StatisticsBottleVO param) {
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		map.put("searchProductId", param.getSearchProductId());		
+		map.put("productPriceSeq", param.getProductPriceSeq());	
+		
+		if(param.getSearchProductId() !=null && param.getSearchProductId() > 0) {
+			map.put("searchProduct", "Y");
+			map.put("searchProductId", param.getSearchProductId());
+		}
+		else map.put("searchProduct", "");
+		
+		if(param.getProductPriceSeq() !=null && param.getProductPriceSeq() > 0) {
+			map.put("searchProductPreiceSeq", "Y");
+			map.put("productPriceSeq", param.getProductPriceSeq());
+		}
+		else map.put("searchProductPreiceSeq", "");
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}
+		
+		return statMapper.selectTodayStatisticsBottleListNew(map);
 	}
 
 }

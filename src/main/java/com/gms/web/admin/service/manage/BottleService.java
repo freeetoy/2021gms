@@ -18,6 +18,8 @@ public interface BottleService {
 	
 	public List<BottleVO> getBottleListAll();
 	
+	public List<BottleVO> getBottleOnlyListAll();
+	
 	public List<BottleVO> getBottleListToExcel(BottleVO params);
 	
 	public List<BottleVO> getCustomerBottleList(Integer customerId);

@@ -1,5 +1,7 @@
 package com.gms.web.admin.controller.manage;
 
+import java.beans.PropertyEditorSupport;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +67,23 @@ public class BottleController {
 	@Autowired
 	private CustomerService customerService;
 	
-	
+	@InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Date.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                if (text == null || text.isEmpty()) {
+                    setValue(null);
+                } else {
+                    try {
+                        setValue(new SimpleDateFormat("yyyy/MM/dd").parse(text));
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException("Invalid date format. Please use yyyy/MM/dd");
+                    }
+                }
+            }
+        });
+    }
 	@RequestMapping(value = "/gms/bottle/list.do")
 	public String getBottleList(BottleVO params, Model model) {
 
@@ -1071,7 +1091,7 @@ public class BottleController {
 		
 		RequestUtils.initUserPrgmInfo(request, params);
 		ModelAndView mav = new ModelAndView();
-		
+		logger.info(" deleteAll "+params.getUpdateId());
 		//검색조건 셋팅
 		String bottleIds = null;	
 		
