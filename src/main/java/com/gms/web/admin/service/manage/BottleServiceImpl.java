@@ -1057,6 +1057,7 @@ public class BottleServiceImpl implements BottleService {
 			oHistory = historyList.get(1);
 			logger.debug(" deleteBottleHistOne bHistory.getBottleHistSeq= "+ bHistory.getBottleHistSeq());
 			logger.debug(" deleteBottleHistOne oHistory.getBottleHistSeq= "+ oHistory.getBottleHistSeq());
+			logger.debug(" deleteBottleHistOne bHistory.getBottleHistSeq() - param.getBottleHistSeq()= "+ (bHistory.getBottleHistSeq() - param.getBottleHistSeq()));
 			if(bHistory.getBottleHistSeq() - param.getBottleHistSeq() == 0) {	//이전 이력정보로 업데이트 필요
 				result = bottleMapper.updateBottleFromHist(oHistory);
 			}

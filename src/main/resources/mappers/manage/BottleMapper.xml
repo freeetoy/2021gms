@@ -1160,7 +1160,7 @@
 			tb.Bottle_Work_ID = th.Bottle_Work_ID, 
 			tb.Bottle_Work_Dt = th.Bottle_Work_Dt, 
 			tb.Customer_ID = th.Customer_ID, 
-			tb.Customer_ID = th.Customer_ID, 
+			tb.Bottle_Type = th.Bottle_Type, 
 			tb.Delete_YN = th.Delete_YN, 
 			tb.Dummy_YN = th.Dummy_YN, 
 			tb.Bottle_Etc = th.Bottle_Etc, 
