@@ -86,7 +86,7 @@ public class LoginController {
 				cookie.setMaxAge(60*60*3);
 				
 				response.addCookie(cookie);
-				logger.info("LoginContollern loginUser.getUserId() ",loginUser.getUserId());	
+				logger.info("LoginContollern loginUser.getUserId() "+loginUser.getUserId());
 				//RequestUtils.responseWriteException(response, alertMessage, "/gms/start");
 			}else {
 				//alertMessage = "비밀번호를 확인해주세요";	
@@ -148,7 +148,7 @@ public class LoginController {
 		String result = "";
 		boolean res=false;
 		
-		logger.info("LoginContoller /api/loginEncodeAction Start");		
+		logger.info("LoginContoller /api/loginEncodeAction Start id="+id);		
 		
 		LoginUserVO param = new LoginUserVO();	
 		

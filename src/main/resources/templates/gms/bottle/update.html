@@ -463,7 +463,7 @@ var goList = function(){
                       <td th:if="${row.bottleType=='E'}" th:text="공병"></td>
                        <td th:unless="${row.bottleType=='E'}" th:text="실병"></td>
                       <td th:text="${row.customerNm}"></td>
-                      <td th:text="${row.bottleWorkId}"></td>
+                      <td th:text="${row.bottleWorkName}"></td>
                       <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd' )}"></td>
                       <td>
                       <a class="btn btn-danger btn-xs ibtnDelMod" href="#"  value="삭제">

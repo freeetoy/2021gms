@@ -193,6 +193,7 @@
 		, Own_Customer_ID	
 		, Bottle_Work_CD
 		, Bottle_Work_ID
+		, TU.User_Nm Bottle_Work_Name
 		, TB.Customer_ID
 		, TB.Member_Comp_Seq	
 		, Order_ID
@@ -771,12 +772,12 @@
 		SELECT
 			Count(Bottle_id)
 		FROM
-			TB_Bottle
+			TB_Bottle TB, TB_Product TG, TB_Customer TOC, TB_User TU
 		WHERE
-			Delete_YN = 'N'
+			TB.Delete_YN = 'N'
 		AND Dummy_YN not in ('Y','X')
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerId)">
-		AND	Customer_Id = #{ownCustomerId}
+		AND	TB.Customer_Id = #{ownCustomerId}
 		</if>
 		<if test ="ownerCustomerId !=null and  !ownerCustomerId.equals('')">
 			AND	Owner_Customer_Id = #{ownerCustomerId}
@@ -788,7 +789,7 @@
 		AND Bottle_BarCd	 LIKE CONCAT('%', CONCAT(#{searchBottleBarCd}, '%'))
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchProductId)">
-			AND Product_ID=  #{searchProductId}
+			AND TB.Product_ID=  #{searchProductId}
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchChargeDt)">
 		AND date_format(Bottle_Charge_Dt,'%Y/%m/%d')  between  #{searchChargeDtFrom} AND  #{searchChargeDtEnd} 
@@ -801,7 +802,10 @@
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleType)">
 		AND Bottle_Type =  #{searchBottleType}
-		</if>	
+		</if>
+		AND TB.Product_ID = TG.Product_Id
+		AND TB.Owner_Customer_ID = TOC.Customer_ID
+		AND TB.Bottle_Work_ID = TU.User_Id	
 	</select>
 	
 	<select id="selectBottleIdCheck" parameterType="com.gms.web.admin.domain.manage.BottleVO" resultType="int">
@@ -832,12 +836,13 @@
 			SELECT
 				<include refid="BottleHistorySelectColumns" />
 			FROM
-				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG
+				TB_Bottle_Hist TB, TB_CODE TC, TB_Product TG, TB_USER TU
 			WHERE
 				Bottle_BarCd = #{bottleBarCd}
 			AND TB.Delete_Yn != 'X'	
 			AND TB.Bottle_Work_CD = TC.CD_ID	
 			AND TB.Product_ID = TG.Product_Id
+			ANd TB.Bottle_Work_ID = TU.User_ID
 		) A left outer join TB_Customer B on A.Customer_ID = B.Customer_ID														
 		ORDER BY Update_Dt DESC 
 	</select>

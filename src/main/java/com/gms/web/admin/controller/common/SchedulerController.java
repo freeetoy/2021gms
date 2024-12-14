@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
+import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.service.common.SchedulerService;
 import com.gms.web.admin.service.manage.OrderService;
 
@@ -73,5 +75,11 @@ public class SchedulerController {
 		}
 		return null;
 	}
-	
+	@RequestMapping(value = "/gms/statistics/manualCreate.do")
+	@ResponseBody
+	public int manualCreate(HttpServletRequest request
+			, HttpServletResponse response)	{
+				
+		return  scheduleService.registerCarInventoryEwha();		
+	}
 }

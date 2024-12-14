@@ -128,6 +128,7 @@ public class WorkReportController {
 		mav.addObject("totalYesterStockCountList", resultMap.get("totalYesterStockCountList"));	
 		mav.addObject("totalStockCountTodayList", resultMap.get("totalStockCountTodayList"));	
 		mav.addObject("addedCnt", resultMap.get("addedCnt"));
+		mav.addObject("carNm", "차량운행일지 ["+resultMap.get("carNm")+"]");	
 		
 		mav.addObject("searchDt", params.getSearchDt());	
 		mav.addObject("searchUserId", params.getSearchUserId());			

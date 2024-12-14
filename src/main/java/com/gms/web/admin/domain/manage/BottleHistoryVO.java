@@ -74,6 +74,9 @@ public class BottleHistoryVO extends AbstractSearchVO implements Serializable {
 	
 	/** Bottle_Work_ID	*/
 	private String bottleWorkId;
+	
+	/** Bottle_Work_Name	*/
+	private String bottleWorkName;
 
 	/** Bottle_Work_Dt	*/
 	private Date bottleWorkDt;

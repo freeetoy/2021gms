@@ -72,8 +72,10 @@ $(document).ready(function(){
     
 	$("#save").on("click", function () {
 
-		var cuid = $("#customerId").val()
-		if($("#customerId").val() != undefined && $("#customerId").val() != null  && cuid.lengh > 0){
+		var cuid = $("#customerId").val();
+		console.log("cuid "+cuid);
+	
+		if(cuid != undefined && cuid != null  && cuid.length > 0){
 			for(i=0 ; i < totalCount ; i++){ 
 		    	if($("#productId_"+i).val() == "0"  || $("#productCapa_0").val() == "0"  ){
 		    		//alert("document.mainForm.customerId.value== "+document.mainForm.customerId.value );

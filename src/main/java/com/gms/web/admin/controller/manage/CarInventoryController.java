@@ -62,8 +62,10 @@ public class CarInventoryController {
 		logger.debug("CarInventoryController getCarInventoryUpdate param getSearchStatDt= "+param.getSearchStatDt());	
 		
 		mav.addObject("workReport", param);
-		if(customer !=null)
+		if(customer !=null) {
 			mav.addObject("customerId", customer.getCustomerId());
+			logger.debug("CarInventoryController getCarInventoryUpdate customer.getCustomerId()= "+customer.getCustomerId());	
+		}
 		mav.addObject("searchUserId", param.getUserId());
 		mav.addObject("dayFlag", dayFlag);	 	
 		if(request.getParameter("action") != null) mav.addObject("action", request.getParameter("action"));
