@@ -77,7 +77,7 @@
 			, TU.Update_Dt 
 			, Customer_ID CarCustomerId
 		FROM
-			TB_USER TU Left Join TB_CUSTOMER TC On TU.User_ID  =TC.Sales_ID 
+			TB_USER TU Left Join TB_CUSTOMER TC On TU.User_ID  =TC.Sales_ID  AND TC.Car_YN ='Y'
 		WHERE
 			delete_yn = 'N'
 		AND
