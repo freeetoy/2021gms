@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.manage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -233,15 +234,15 @@ public class CustomerController {
 				
 			}else {
 				firstFlag = true;
-				searchChargeDtFrom = DateUtils.getDate("yyyy/MM/dd");				
-				searchChargeDtEnd = DateUtils.getDate("yyyy/MM/dd");
+				searchChargeDtFrom = DateUtils.getDate("yyyy-MM-dd");			
+				searchChargeDtEnd = searchChargeDtFrom;// DateUtils.addTime(searchChargeDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
 				
-				searchChargeDt = searchChargeDtFrom+" - "+searchChargeDtEnd;
+				searchChargeDt = searchChargeDtFrom+" - "+searchChargeDtFrom;
 				
 				bottle.setSearchChargeDt(searchChargeDt);				
 			}
-			bottle.setSearchChargeDtFrom(searchChargeDtFrom);
-			bottle.setSearchChargeDtEnd(searchChargeDtEnd);
+			bottle.setSearchChargeDtFrom(searchChargeDtFrom+" 00:00:00");
+			bottle.setSearchChargeDtEnd(DateUtils.addTime(searchChargeDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			
 			model.addAttribute("searchChargeDt",searchChargeDt);
 			
@@ -249,10 +250,10 @@ public class CustomerController {
 			if(bottleList.size()==0 && firstFlag) {
 				BottleVO recentBottle = bottleService.getCustomerBottleRecent(customerId);
 				if(recentBottle !=null) {
-					bottle.setSearchChargeDtFrom(DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy/MM/dd"));
-					bottle.setSearchChargeDtEnd(DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy/MM/dd"));		
+					bottle.setSearchChargeDtFrom(DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy-MM-d") +" 00:00:00");
+					bottle.setSearchChargeDtEnd(DateUtils.addTime(DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy-MM-d"), "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");		
 					
-					searchChargeDt = DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy/MM/dd")+" - "+DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy/MM/dd");
+					searchChargeDt = DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy-MM-dd")+" - "+DateUtils.convertDateFormat(recentBottle.getUpdateDt(),"yyyy-MM-dd");
 					bottle.setSearchChargeDt(searchChargeDt); 
 					
 					bottleList = bottleService.getCustomerBottleListDate(bottle);
@@ -682,17 +683,17 @@ public class CustomerController {
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);			
+			params.setSearchStatDtFrom(searchStatDtFrom +" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");			
 		}else {				
-			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
 			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
 			
-			searchStatDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			searchStatDtEnd = DateUtils.getNextDate(0,"yyyy-MM-dd");
 			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);
+			params.setSearchStatDtFrom(searchStatDtFrom +" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
 			params.setSearchStatDt(searchStatDt);
@@ -732,14 +733,14 @@ public class CustomerController {
 			searchDtFrom = searchDt.substring(0, 10) ;			
 			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
 			
-			param.setSearchStatDtFrom(searchDtFrom);
-			param.setSearchStatDtEnd(searchDtEnd);			
+			param.setSearchStatDtFrom(searchDtFrom +" 00:00:00");
+			param.setSearchStatDtEnd(searchDtEnd +" 00:00:00");			
 		}else {				
-			searchDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-			searchDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			searchDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
+			searchDtEnd = DateUtils.getNextDate(0,"yyyy-MM-dd");
 			
 			param.setSearchStatDtFrom(searchDtFrom);
-			param.setSearchStatDtEnd(searchDtEnd);
+			param.setSearchStatDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			
 			searchDt = searchDtFrom +" - "+ searchDtEnd;
 		}
@@ -774,14 +775,14 @@ public class CustomerController {
 			searchDtFrom = searchDt.substring(0, 10) ;			
 			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
 			
-			param.setSearchStatDtFrom(searchDtFrom);
-			param.setSearchStatDtEnd(searchDtEnd);			
+			param.setSearchStatDtFrom(searchDtFrom +" 00:00:00");
+			param.setSearchStatDtEnd(searchDtEnd +" 00:00:00");			
 		}else {				
-			searchDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-			searchDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
+			searchDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
+			searchDtEnd = DateUtils.getNextDate(0,"yyyy-MM-dd");
 			
 			param.setSearchStatDtFrom(searchDtFrom);
-			param.setSearchStatDtEnd(searchDtEnd);
+			param.setSearchStatDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			
 			searchDt = searchDtFrom +" - "+ searchDtEnd;
 		}

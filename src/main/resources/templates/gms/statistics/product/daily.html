@@ -21,7 +21,6 @@ $(document).ready(function(){
 		getProductPriceList(productId,1);
 		
 	});
-		
 });
 	
 	
@@ -43,31 +42,99 @@ $(function() {
 	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');
 	  });	
-	
+	  
+	  
+	$(".btn_select_process1").click(function()  
+	{		
+		let searchProductId = $("#searchProductId").val();
+		let productPriceSeq = $("#productPriceSeq").val();
+		
+		var searchDt = $(this).attr('searchDt'); 
+		var sType = $(this).attr('sType'); 
+		
+			$("table.mod-doc-list1").find('tr').remove();			
+			
+			var newRowlist = $("<tr>");	
+			var colslist1 = "";
+		
+			colslist1 += '<th>거래처명</th>';
+			colslist1 += '<th>건수</th>';
+			colslist1 += '<th>작업</th>';
+			colslist1 += '</tr>';
+			
+			newRowlist.append(colslist1);
+			$("table.mod-doc-list1").append(newRowlist);		
+
+			var ajaxInfo ={
+				type:"POST",
+				data:{
+					searchProductId : searchProductId,
+					productPriceSeq : productPriceSeq,
+					gubunType : 1,
+					searchDt : searchDt,
+					sType : sType
+				},
+				url:"/gms/statistics/product/detailList.do",			
+				dataType: "json",
+			};
+				
+			ajax = callAjax(ajaxInfo);
+			
+			ajax.done(function(data){
+				for(i=0; i< data.length;i++) {
+					var newRowlist1 = $("<tr>");	
+					var colslist = "";
+				
+					colslist += '<td>'+ data[i].customerNm +'</td>';
+					colslist += '<td>'+ data[i].statCount +'</td>';
+					colslist += '<td>'+ data[i].workCdNm +'</td>';
+				//	colslist += '<td>'+ data[i].bottleWorkCdNm +'</td>';
+				//	colslist += '<td>'+ data[i].bottleWorkNm +'</td>';
+					colslist += '</tr>';
+					
+					newRowlist1.append(colslist);
+					$("table.mod-doc-list1").append(newRowlist1);
+				}	
+			})
+		       .fail(function(){
+			  console.log("fail");
+		});
+	});
+	  
+	  function callAjax(ajaxInfo){
+			var dfd = $.Deferred();
+			$.ajax(ajaxInfo).done(function(data){
+				dfd.resolve(data);
+			});
+			
+			return dfd.promise();
+		}
 });	
 
-function getProductPriceList(searchProductId, type){   
-	$.ajax({
-		url: '/gms/product/priceList.do',
-		type: 'POST',
-		data: 'productId='+ searchProductId ,
-		dataType: 'json',
-
-	 })
-	.done(function(data){	           
-    	var i=0;
-    	$('#productPriceSeq' ).find('option').remove(); 
-		//$('#productCapa_' + sel_pid).find('option').remove(); 
-		for(i=0; i< data.length;i++) {
-			if(type==2 && '[[${productPriceSeq}]]' == data[i].productPriceSeq )
-				$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+' selected>'+data[i].productCapa+'</option>')
-			else
-				$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')					
-		}
-		
-	})
-	.fail(function(){
-		console.log("fail");
+	
+	
+	function getProductPriceList(searchProductId, type){   
+		$.ajax({
+			url: '/gms/product/priceList.do',
+			type: 'POST',
+			data: 'productId='+ searchProductId ,
+			dataType: 'json',
+	
+		 })
+		.done(function(data){	           
+	    	var i=0;
+	    	$('#productPriceSeq' ).find('option').remove(); 
+			//$('#productCapa_' + sel_pid).find('option').remove(); 
+			for(i=0; i< data.length;i++) {
+				if(type==2 && '[[${productPriceSeq}]]' == data[i].productPriceSeq )
+					$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+' selected>'+data[i].productCapa+'</option>')
+				else
+					$('#productPriceSeq' ).append('<option value='+data[i].productPriceSeq+'>'+data[i].productCapa+'</option>')					
+			}
+			
+		})
+		.fail(function(){
+			console.log("fail");
 	 });
 } 
 
@@ -87,6 +154,73 @@ function getProductPriceList(searchProductId, type){
   
     <section class="content">
     
+    <!--  process modat1 start -->  
+		<div class="modal modal-info fade" id="process-modal1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+		             	<h4 class="modal-title">상품판매상세현황</h4>
+		              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                <span aria-hidden="true">&times;</span>
+		              	</button>
+		            </div>
+		
+					<div class="modal-body">
+					<div class="clearfix"></div>
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12" >
+							<div class="x_panel">
+								
+								<div class="x_content">
+								<br />
+								<div  class="card-body">
+									<div class="form-group">
+										<label >주문정보</label>
+										<div>
+											<table id="myTable" class="table mod-doc-list1">
+												<tr>
+												<td>거래처명</td>
+												<td>건수</td>
+												<td>작업</td>
+												<!--
+												<th>가스</th>
+												<th>용량</th>
+												<th>충전기한</th>
+												 -->
+												</tr>
+												<tr>
+													<td  style="padding-left: 0px;"></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<!--
+													<td></td>
+													<td></td>
+													<td></td> -->
+												</tr>
+											</table>
+										</div>
+									</div>
+									
+									<div class="ln_solid"></div>
+									<div id="view_button" >
+										<div align="center">
+											<button type="button"  class="close" data-dismiss="modal" >Close</button>
+										</div>
+									</div>
+									
+									<div id="test_char">
+									</div>
+								</div>
+							</div> <!-- X_content end -->
+						</div>
+					</div> <!-- /.x_panel end -->
+				</div> <!-- / .col -->
+			</div>
+		</div> <!-- / . modal body -->
+		</div>
+		</div>
+		<!-- /.modal -->
       <div class="container-fluid">
         
         <div class="row">
@@ -170,31 +304,46 @@ function getProductPriceList(searchProductId, type){
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover" >
                   <thead>
-                    <tr style="font-size:13px;">
+                    <tr style="font-size:15px;">
                       <td>날짜</td>
                       <td align="right">판매건수</td>
-                      <td align="right">판매금액</td>
                       <td align="right">대여건수</td>
+                      <td align="right">건수</td>
+                      <!-- 
+                      <td align="right">판매금액</td>
                       <td align="right">대여금액</td>
+                       -->
                     </tr>
                   </thead>
                   <tbody>
-                  	<tr th:if="${not #lists.isEmpty( statProductList )}" th:each="row : ${statProductList}" style="font-size:14px;">
+                  	<tr th:if="${not #lists.isEmpty( statProductList )}" th:each="row : ${statProductList}" style="font-size:15px;">
                       <td th:text="${row.statDt}"></td>
-                      <td align="right" th:text="${row.saleCount}"></td>
+                      <td align="right" th:if="${row.saleCount == 0}" th:text="${row.saleCount}">
+                      <td align="right" th:if="${row.saleCount > 0}">
+                      <a class="btn_select_process1" data-toggle="modal" data-target="#process-modal1" th:searchDt="${row.statDt}" th:sType="1" href='#'  th:text="${row.saleCount}">
+                      </td>
+                      <!-- 
                       <td align="right" th:if="${row.saleAmount > 0 && row.saleAmount * 100 % 100 == 0 }" th:text="${#numbers.formatDecimal(row.saleAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.saleAmount > 0 && row.saleAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.saleAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.saleAmount == 0 }" th:text="${row.saleAmount}">
                       </td>
-                      <td align="right" th:text="${row.rentCount}"></td>
+                      -->
+                      <td align="right" th:if="${row.rentCount == 0}" th:text="${row.rentCount}">
+                      <td align="right" th:if="${row.rentCount > 0}">
+                      <a class="btn_select_process1" data-toggle="modal" data-target="#process-modal1" th:searchDt="${row.statDt}" th:sType="2"  href='#'  th:text="${row.rentCount}">
+                      </td>
+                      <!-- 
                       <td align="right" th:if="${row.rentAmount > 0 && row.rentAmount * 100 % 100 == 0 }" th:text="${#numbers.formatDecimal(row.rentAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.rentAmount > 0 && row.rentAmount * 100 % 100 > 0 }" th:text="${#numbers.formatDecimal(row.rentAmount, 3, 'COMMA', 2,'POINT')}">
                       <td align="right" th:if="${row.rentAmount == 0 }" th:text="${row.rentAmount}">
                       </td>
+                      -->
+                      <td align="right"  >
+                      	<a class="btn_select_process1" data-toggle="modal" data-target="#process-modal1" th:searchDt="${row.statDt}" th:sType="0"  href='#' th:text='${row.saleCount+row.rentCount}'>
                       </td>                      
                     </tr>
                     <tr th:unless="${not #lists.isEmpty( statProductList )}">
-						<td colspan="5">조회된 결과가 없습니다.</td>
+						<td colspan="4">조회된 결과가 없습니다.</td>
 					</tr>
 					
                   </tbody>
@@ -203,15 +352,12 @@ function getProductPriceList(searchProductId, type){
               <!-- /.card-body --> 
                   </div>
                   
-                  
                 </div>
               </div>
               <!-- /.card -->
             </div>
           
             <div class="card">
-             
-              
               
             </div>
             <!-- /.card -->

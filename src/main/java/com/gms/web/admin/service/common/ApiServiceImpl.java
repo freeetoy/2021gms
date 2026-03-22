@@ -1,6 +1,7 @@
 package com.gms.web.admin.service.common;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -561,9 +562,17 @@ public class ApiServiceImpl implements ApiService {
 
 	@Override
 	public List<OrderVO> getOrderList(OrderVO param) {
-		param.setSearchOrderDtFrom(param.getSearchOrderDt());
-		param.setSearchOrderDtEnd(param.getSearchOrderDt());
+		String searchOrderDt = "";
 		
+		if(param.getSearchOrderDt() != null ) {
+			searchOrderDt = param.getSearchOrderDt().replace("/","-");
+		}else {
+			searchOrderDt = DateUtils.getDate("yyyy-MM-dd");
+		}
+		param.setSearchOrderDtFrom(param.getSearchOrderDt()+" 00:00:00");
+		param.setSearchOrderDtEnd(DateUtils.addTime(searchOrderDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+//		param.setSearchOrderDtEnd(param.getSearchOrderDt());
+
 		Map<String, Object> map = orderService.getOrderList(param);
 		List<OrderVO> orderList = (List<OrderVO>) map.get("list");
 		

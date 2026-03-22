@@ -14,15 +14,12 @@ function checkAll(){
 	        $("input[name=check_id]").prop("checked", false);	
 	}
 }
-
 	
 function validationOfForm(form) {	
 	
 	return ture;
 }
 	
-
-
 function fn_modifyBottleWorkCd(){				
 		
 		var form = $("#chForm");	
@@ -72,7 +69,6 @@ function callAjax(ajaxInfo){
 
 
 var fn_ChangeBottleWorkCd = function(bottleBarCd){
-
 	//$("table.table-hover").find('tr').remove();
 	
 	var ajaxInfo ={
@@ -150,12 +146,12 @@ $(function() {
       language: "kr",
       locale: {
     	  cancelLabel: 'Clear',
-          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
+          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
       }	  	
   });
 
   $('input[name="searchDt"]').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
   });
 
   $('input[name="searchDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -194,8 +190,6 @@ function fn_deleteBottles()
 		return false;
 		
 	}
-	console.log("chki="+chki);	
-	console.log("checkeValue="+checkedValue);		
 	
 	if(confirm("정말로 삭제 하시겠습니까?")){
 
@@ -260,7 +254,6 @@ $(document).ready(function(){
 	
 	 $(".btn_select_process").click(function()  
 	{
-		
 		$("#view_custom").hide();
 		var bottleId = $(this).attr('bottleId'); 
 		
@@ -316,17 +309,14 @@ $(document).ready(function(){
 	         					console.log(data[i]);      
 	         					$('#carCustomerId').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
 	         				}			
-	         				
 	         		})
 	         		       .fail(function(){
 	         			  console.log("fail");
 	         		});
-				
 			}
 			$("#view_custom").show();
 		}else
 			$("#view_custom").hide();
-			
 	});
 
 	 
@@ -349,19 +339,15 @@ $(document).ready(function(){
 	    newRow1.append(cols1);
 		$("table.mod-doc-list1").append(newRow1);		
 	  
-		//console.log("start btn_select_process1}");	
-	
    });
    
    $(".btn_select_process2").click(function()  
 	{
 		console.log("start btn_select_process2}");
-
   	});		   
 	    
    $("#btn_search").click(function()  
 	{
-	
 	 	var strCustomerNm = $("#strCustomerNm").val();		
 		var ajaxInfo ={
 			type:"POST",
@@ -378,18 +364,15 @@ $(document).ready(function(){
 					//console.log(data[i]);      
 					$('#customerId1').append('<option value='+data[i].customerId+'>'+data[i].customerNm+'</option>')					
 				}			
-				
 		})
 		       .fail(function(){
 			  console.log("fail");
 		});
-	
 	  });
 			    
 	    
 	$(".btn_bottle_search").click(function()  
  	{
-  		
   		//$("#mcustomerNm").val
   		var bottleId = $("#selbottleId").val(); 
   		
@@ -610,7 +593,6 @@ $(document).ready(function(){
 	        
 	        form.submit();			
 		}
-      
 	});
 	
 	
@@ -640,12 +622,17 @@ $(document).ready(function(){
 
     
     $(".btn-navbar").click(function()  
-    {
-		var form = document.mainForm;	
-		$("#currentPage").val(1);  
-		mainForm.action="/gms/bottle/list.do";
-		form.submit();
-      
+    {			
+    	var searchDtVal = $('#searchDt').val();	
+    	if(searchDtVal){
+    		var form = document.mainForm;	
+    		$("#currentPage").val(1);  
+    		mainForm.action="/gms/bottle/list.do";
+    		form.submit();
+    	}else { 
+    		alert("처리일자을 입력하세요");
+    		return;
+    	}
     });
     
     $("#btn_com_search1").click(function()  
@@ -1210,7 +1197,7 @@ $(document).ready(function(){
                		<label>처리일자</label> 
             </div>               
             <div class="col-7">              
-               <input type="text" class="form-control" name="searchDt" th:value="${searchDt}"/>			
+               <input type="text" class="form-control" name="searchDt" id="searchDt" th:value="${searchDt}"/>			
             </div>               
             <div align=right class="col-4">               
             <a class="btn_select_process5 btn btn-primary btn-sm"  data-toggle="modal" data-target="#process-modal5" href="#"><i class="fas fa-upload"></i>선택바코드엑셀</a>&nbsp;   

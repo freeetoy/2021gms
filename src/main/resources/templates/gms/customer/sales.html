@@ -4,6 +4,28 @@
 
 <th:block layout:fragment="content"> 
 <script type="text/javascript">
+
+function filterOptions() {
+    let input = document.getElementById('searchCustomerNm');
+    let filter = input.value.toUpperCase(); // 대소문자 구분 없이 검색
+    let select = document.getElementById('searchCustomerId');
+    let options = select.getElementsByTagName('option');
+    let checkBit = 0;
+
+    for (let i = 0; i < options.length; i++) {
+        let txtValue = options[i].text;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            options[i].style.display = ""; // 검색어 포함 시 표시
+            if(checkBit == 0) checkBit = i;
+        } else {
+            options[i].style.display = "none"; // 포함하지 않으면 숨김
+        }
+    }
+    
+    if(checkBit > 0) options[checkBit].selected = true;
+}
+
+
 $(document).ready(function(){ 
 	 $("#searchStatDt").val('[[${searchStatDt}]]' );
 	 
@@ -30,6 +52,18 @@ $(document).ready(function(){
 	         console.log("fail");
 	      });
 	 });
+	
+	$(".btn-navbar").click(function()  
+    {			
+    	var searchDtVal = $('#searchStatDt').val();	
+    	if(searchDtVal){
+    		var form = document.mainForm;	
+    		form.submit();
+    	}else { 
+    		alert("기간을 입력하세요");
+    		return;
+    	}
+    });
 
 });
 	
@@ -46,7 +80,7 @@ $(function() {
 	  });
 	
 	  $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 	
 	  $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -97,7 +131,7 @@ $(function() {
 			    </select>	                      
             </div>  
             <div class="col-2">    
-            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" onkeyup="filterOptions()">
 			</div>	            		  
 			<div class="col-1">
 	        	<input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
@@ -122,7 +156,7 @@ $(function() {
                <input type="text" class="form-control" id="searchStatDt" name="searchStatDt" value=""/>			
             </div>               
             <div class="col-1">
-                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+                <button class="btn btn-navbar" type="button"><i class="fas fa-search"></i></button>           
               </div>  
               <div class="col-2" align=right>
               <a th:href="@{/gms/customer/excelDownSales.do(searchStatDt=${searchStatDt},searchCustomerId=${searchCustomerId})}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>

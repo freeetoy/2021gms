@@ -43,13 +43,33 @@ public class LoginController {
 	
 	@Autowired
 	private UserService userService;
-	
+	@RequestMapping(value="/order")
+	public String order(Model model,HttpServletRequest req){
+		model.addAttribute("message",req.getServletContext());
 		
+		HttpSession session = req.getSession();
+		String Referer = req.getHeader("referer");
+		model.addAttribute("returnUrl", Referer);
+		//logger.info("LoginContoller Referer-"+Referer);		
+		 return "gms/order";
+	}
+	
+	@RequestMapping(value="/sorder")
+	public String sOrder(Model model,HttpServletRequest req){
+		model.addAttribute("message",req.getServletContext());
+		
+		HttpSession session = req.getSession();
+		String Referer = req.getHeader("referer");
+		model.addAttribute("returnUrl", Referer);
+		//logger.info("LoginContoller Referer-"+Referer);		
+		 return "gms/sorder";
+	}
+	
 	@RequestMapping(value="/login")
 	public String loginByGet(Model model,HttpServletRequest req){
 		model.addAttribute("message",req.getServletContext());
 		
-		HttpSession session = req.getSession();
+//		HttpSession session = req.getSession();
 		String Referer = req.getHeader("referer");
 		model.addAttribute("returnUrl", Referer);
 		//logger.info("LoginContoller Referer-"+Referer);		

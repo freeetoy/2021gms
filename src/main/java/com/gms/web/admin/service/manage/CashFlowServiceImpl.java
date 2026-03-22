@@ -70,7 +70,11 @@ public class CashFlowServiceImpl implements CashFlowService {
 		
 		WorkReportVO workReport = new WorkReportVO();
 		workReport.setCustomerId(param.getCustomerId());
-		workReport.setCreateDt(param.getCreateDt());
+		String createDtStr = DateUtils.convertDateFormat(param.getCreateDt(), "yyyy-MM-dd");
+		workReport.setSearchDt(createDtStr +" 00:00:00");		
+		workReport.setSearchEndDt(DateUtils.addTime(createDtStr,"yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+//		workReport.setCreateDt(param.getCreateDt());
+//		workReport.setSearchEndDt(DateUtils.addTime(DateUtils.convertDateFormat(param.getCreateDt(), "yyyy-MM-dd"),"yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");		
 		
 		int workReportSeq = workService.getWorkReportSeqForCustomer(workReport);		
 		
@@ -113,8 +117,17 @@ public class CashFlowServiceImpl implements CashFlowService {
 			searchCreateDtEnd = searchCreateDt.substring(13, searchCreateDt.length()) ;
 			
 			map.put("searchCreateDt", searchCreateDt);	
-			map.put("searchCreateDtFrom", searchCreateDtFrom);	
-			map.put("searchCreateDtEnd", searchCreateDtEnd);					
+			map.put("searchCreateDtFrom", searchCreateDtFrom +" 00:00:00");	
+			map.put("searchCreateDtEnd", DateUtils.addTime(searchCreateDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)  +" 00:00:00");					
+		}else {
+			searchCreateDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchCreateDtEnd = DateUtils.addTime(searchCreateDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchCreateDtFrom);		
+			
+			map.put("searchCreateDtFrom", searchCreateDtFrom+" 00:00:00");
+			map.put("searchCreateDtEnd", searchCreateDtEnd  +" 00:00:00");
+			
+			map.put("searchCreateDt", searchCreateDtFrom + " - " + searchCreateDtFrom);
 		}
 		
 		int sCount = 0;

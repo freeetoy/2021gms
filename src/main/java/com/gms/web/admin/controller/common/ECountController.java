@@ -1,5 +1,6 @@
 package com.gms.web.admin.controller.common;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.ExcelStyle;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.ECountVO;
@@ -36,7 +38,10 @@ public class ECountController {
 	   try {			   
 		   
 		   String searchDt = workReport.getSearchDt();
-		  
+		   if(searchDt != null || searchDt.length() > 9) {			
+			   workReport.setSearchDt(searchDt +" 00:00:00");
+			   workReport.setSearchEndDt(DateUtils.addTime(searchDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+			}
 		   // 가스 정보 불러오기
 			List<ECountVO> eList = eService.getECountList(workReport); 
 			List<ECountVO> eMList = eService.getECountMinusList(workReport); 

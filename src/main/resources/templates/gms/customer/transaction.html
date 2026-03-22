@@ -16,7 +16,7 @@ $(function() {
 	  });
 
   $('input[name="searchStatDt"]').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
   });
 
   $('input[name="searchStatDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -31,9 +31,14 @@ $(function() {
 	function goSearch(){	
 		
 		var form = document.mainForm;	
-		
-		$("#currentPage").val(1);  
-		mainForm.submit();
+		var searchDt = $('#searchStatDt').val();
+		if(searchDt){
+			$("#currentPage").val(1);  
+			mainForm.submit();
+		}else {
+			alert("기간을 입력하세요");
+			return;
+		}
 	};
 
 
@@ -64,15 +69,27 @@ $(function() {
 $(document).ready(function(){ 
 	$(".btn_print").click(function()  
     {
- 	   var searchDt = $('#searchDt').val();
+ 	   var searchDt = $('#searchStatDt').val();
  	   var customerId = $('#customerId').val();
  	   
-       $.popupWindow('/gms/customer/print.do?searchDt='+searchDt+"&customerId="+customerId, {
+       $.popupWindow('/gms/customer/print.do?searchStatDt='+searchDt+"&customerId="+customerId, {
     	   width: 1000,
            height: 700,
            center: 'screen',          
            scrollbars: 'true'
           });
+    });
+	
+	$(".btn-navbar").click(function()  
+    {			
+    	var searchDtVal = $('#searchStatDt').val();	
+    	if(searchDtVal){
+    		var form = document.mainForm;	
+    		form.submit();
+    	}else { 
+    		alert("기간을 입력하세요");
+    		return;
+    	}
     });
 });
 </script>
@@ -128,7 +145,7 @@ $(document).ready(function(){
             </div>               
          
             <div class="col-3">         
-            	<button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>        
+            	<button class="btn btn-navbar" type="button"><i class="fas fa-search"></i></button>        
             </div>
 
             <div class="col-1" align=right>
@@ -173,24 +190,24 @@ $(document).ready(function(){
                   </thead>
                   <tbody>
                   	<tr th:if="${not #lists.isEmpty( workList )}" th:each="row : ${workList}" style="text-align:center;font-size:13px;">
-                      <th  width="15%" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">일자</th>
-                      <th  align="left" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">
+                      <td  width="15%" th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}">일자</td>
+                      <td  align="left" th:if="${row.productCount > 0 }" th:text="${row.productNm} + ' ' + ${row.productCapa}+ '  (' + ${row.bottleWorkCdNm} +') / ' + ${row.productCount} + ' * ' + ${row.productPrice} ">
                       <td th:unless="${row.productCount > 0}" "">
-                      </th>
-                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.OrderTotalAmount,3,'POINT',2,'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.OrderTotalAmount == 0 }" th:text="${row.OrderTotalAmount}"> 
-                      </th>
-                      <th  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivedAmount, 3, 'COMMA')} +''+${row.incomeWay}">
-                      <th  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivedAmount, 3, 'POINT', 2,'COMMA') +''+${row.incomeWay} }">
-                      <th  width="15%" align="right" th:if="${row.ReceivedAmount == 0 }">
-                      </th>
-                      <th  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
-                      <th  width="15%" align="right" th:if="${row.ReceivableAmount == 0 }" >
-                      </th>
+                      </td>
+                      <td  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.OrderTotalAmount, 3, 'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.OrderTotalAmount > 0 && row.OrderTotalAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.OrderTotalAmount,3,'POINT',2,'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.OrderTotalAmount == 0 }" th:text="${row.OrderTotalAmount}"> 
+                      </td>
+                      <td  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivedAmount, 3, 'COMMA')} +''+${row.incomeWay}">
+                      <td  width="15%" align="right" th:if="${row.ReceivedAmount > 0 && row.ReceivedAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivedAmount, 3, 'POINT', 2,'COMMA') +''+${row.incomeWay} }">
+                      <td  width="15%" align="right" th:if="${row.ReceivedAmount == 0 }">
+                      </td>
+                      <td  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.ReceivableAmount > 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 == 0 }" th:text="${#numbers.formatInteger(row.ReceivableAmount, 3, 'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.ReceivableAmount < 0 && row.ReceivableAmount*100%100 > 0 }" th:text="${#numbers.formatDecimal(row.ReceivableAmount, 3, 'POINT', 2,'COMMA')}">
+                      <td  width="15%" align="right" th:if="${row.ReceivableAmount == 0 }" >
+                      </td>
                     </tr>
                     <tr style="text-align:center;font-size:14px;">
                       <th colspan=2  align="center" >누 계</th>

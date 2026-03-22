@@ -48,4 +48,7 @@ public class CashFlowVO extends AbstractSearchVO implements Serializable {
 	
 	/** User_Nm	*/
 	private String  userNm;
+	
+	/** searchCreateDtEnd	*/
+	private String  searchCustomerNm;
 }

@@ -201,4 +201,68 @@
 		WHERE Sale_Count  = 0
 		AND Rent_Count  = 0
 	</update>
+	<!-- 
+	<select id="selectWorkBottleListOfProductStat"  resultType="com.gms.web.admin.domain.manage.BottleVO" parameterType="com.gms.web.admin.domain.manage.BottleVO">		
+		SELECT TWB.Bottle_ID
+				, TWB.Bottle_BarCd
+				, TWB.Product_ID
+				, TWB.Product_Price_Seq
+				, TWB.Gas_ID
+				, TWB.Bottle_Work_Cd
+				, TWB.Create_ID Bottle_Work_ID				
+				, User_Nm Bottle_Work_Nm
+				, TWB.Customer_ID
+				, Customer_NM
+				, TW.Order_ID
+				, TWB.Bottle_Type
+				, TWB.Create_DT Bottle_Work_DT
+				, TW.CREATE_ID
+				, TW.CREATE_DT
+				, TW.UPDATE_ID
+				, TW.UPDATE_DT
+				, CD_NM Bottle_Work_CD_NM
+				, TW.Received_Amount
+				, Charge_Volumn start_Row
+			FROM 
+				TB_Work_Bottle TWB,TB_Work_Report TW, TB_CODE TC,TB_User TU,TB_Customer TCU
+			WHERE
+				TWB.Work_Report_Seq = TW.Work_Report_Seq
+			AND TW.Delete_YN = 'N'	
+			AND	twb.Product_ID = #{searchProductId}	
+			AND twb.Product_Price_Seq = #{productPriceSeq}	 
+			AND twb.Customer_ID = TCU.Customer_ID 
+			AND twb.Bottle_Work_Cd in ('0309','0316','0308','0314') 
+			AND twb.Bottle_Work_Cd = TC.CD_ID 
+			AND TC.CD_GRP_ID ='0300'			
+			AND	TW.User_ID= TU.User_ID
+			AND TW.Work_Dt &gt;= #{searchDtFrom}
+			AND TW.Work_Dt &lt; #{searchDtEnd}
+	</select>
+	 -->
+	<select id="selectWorkBottleListOfProductStat"  resultType="com.gms.web.admin.domain.statistics.StatisticsProuctCustomerCountVO" parameterType="com.gms.web.admin.domain.statistics.StatisticsProuctCustomerCountVO">	
+	SELECT  COUNT(*) AS statCount,
+        TCU.Customer_NM,
+        TC.CD_NM AS Work_CD_NM
+		FROM (
+		        SELECT  TWB.Customer_ID,
+		                TWB.Bottle_Work_Cd
+		        FROM TB_Work_Report TW
+		        JOIN TB_Work_Bottle TWB
+		            ON TW.Work_Report_Seq = TWB.Work_Report_Seq
+		        WHERE TW.Delete_YN = 'N'
+		          AND TW.Work_Dt &gt;= #{searchDtFrom}
+		          AND TW.Work_Dt  &lt; #{searchDtEnd}
+		          AND TWB.Product_ID = #{searchProductId}	
+		          AND TWB.Product_Price_Seq = #{productPriceSeq}
+		          AND TWB.Bottle_Work_Cd IN  
+		          <foreach collection="codeList" item="item" index="index" open="(" separator="," close=")">
+					#{item} 
+				  </foreach>
+		     ) X
+		JOIN TB_Customer TCU ON X.Customer_ID = TCU.Customer_ID
+		JOIN TB_CODE TC 
+		     ON X.Bottle_Work_Cd = TC.CD_ID
+		    AND TC.CD_GRP_ID = '0300'
+		GROUP BY X.Customer_ID, X.Bottle_Work_Cd
+	</select>
 </mapper>

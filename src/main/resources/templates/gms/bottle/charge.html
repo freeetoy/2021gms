@@ -105,12 +105,12 @@ var fn_deleteBottle = function(bottleId){
 	      language: "kr",
 	      locale: {
 	    	  cancelLabel: 'Clear',
-	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
+	          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
 	      }
 	  });
 	
 	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 	
 	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -171,10 +171,23 @@ var fn_deleteBottle = function(bottleId){
 		}else{
 			return false;
 		}
-
 	}
-	
-	</script>
+	$(document).ready(function(){	
+		$(".btn-navbar").click(function()  
+	    {			
+	    	var searchChargeDtVal = $('#searchChargeDt').val();	
+	    	if(searchChargeDtVal){
+	    		var form = document.mainForm;	
+	    		$("#currentPage").val(1);  
+	    		mainForm.action="/gms/bottle/charge.do";
+	    		form.submit();
+	    	}else { 
+	    		alert("충전기한을 입력하세요");
+	    		return;
+	    	}
+	    });
+	});
+</script>
    <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -195,10 +208,10 @@ var fn_deleteBottle = function(bottleId){
                		<label>충전기한</label> 
             </div>               
             <div class="col-3">
-              <form id="mainForm" name=""mainForm""  method="post">
+              <form id="mainForm" name="mainForm"  method="post">
               <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
               <input type="hidden" id="bottleBarCd" name="bottleBarCd" value="">
-               <input type="text" class="form-control" name="searchChargeDt" th:value="${searchChargeDt}"/>			
+               <input type="text" class="form-control" name="searchChargeDt" id="searchChargeDt" th:value="${searchChargeDt}"/>			
             </div>               
             <div class="col-5">               
             </div>
@@ -233,7 +246,7 @@ var fn_deleteBottle = function(bottleId){
 			        
               </div>                   
               <div class="col-2">
-                <button class="btn btn-navbar" type="submit">
+                <button class="btn btn-navbar" type="button">
 		            <i class="fas fa-search"></i>
 		          </button>
 		           </form>

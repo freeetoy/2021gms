@@ -626,18 +626,20 @@
 	<select id="selectOrderList" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="java.util.Map">		
 		SELECT
 			<include refid="OrderSelectColumns" />
-		FROM
-			TB_Order A, TB_Customer B, TB_Code C, TB_User D
-		WHERE
-			A.Customer_Id = B.Customer_ID		
-		AND Order_Process_CD !='0299'
-		AND A.Order_Process_Cd = C.CD_ID
-		AND A.Create_Id = D.User_ID
+		FROM TB_Order A
+		JOIN TB_Customer B
+		    ON A.Customer_ID = B.Customer_ID
+		JOIN TB_Code C
+		    ON A.Order_Process_CD = C.CD_ID
+		JOIN TB_User D
+		    ON A.Create_ID = D.User_ID
+		WHERE Order_Process_CD !='0299'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
 		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND A.Delivery_Req_Dt &gt;= #{searchOrderDtFrom} 
+		AND A.Delivery_Req_Dt &lt;  #{searchOrderDtEnd} 
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
 		AND Order_Process_CD  =  #{searchOrderProcessCd}
@@ -647,28 +649,29 @@
 	</select>
 	
 	<select id="selectOrderListToExcel" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="java.util.Map">		
-		SELECT
-			<include refid="OrderSelectColumns" />
-		FROM
-			TB_Order A, TB_Customer B, TB_Code C, TB_User D
-		WHERE
-			A.Customer_Id = B.Customer_ID		
-		AND Order_Process_CD !='0299'
-		AND A.Order_Process_Cd = C.CD_ID
-		AND A.Create_Id = D.User_ID
-		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
-		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
-		</if>		
+		SELECT 
+   			<include refid="OrderSelectColumns" />
+		FROM TB_Order A
+		JOIN TB_Customer B 
+		    ON A.Customer_Id = B.Customer_ID
+		JOIN TB_Code C 
+		    ON A.Order_Process_Cd = C.CD_ID
+		JOIN TB_User D 
+		    ON A.Create_Id = D.User_ID
+		WHERE A.Order_Process_CD != '0299'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND A.Delivery_Req_Dt &gt;= #{searchOrderDtFrom} 
+		AND A.Delivery_Req_Dt &lt;  #{searchOrderDtEnd} 
 		</if>
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
+		AND Customer_Nm	 LIKE CONCAT(#{searchCustomerNm}, '%')
+		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
 		AND Order_Process_CD  =  #{searchOrderProcessCd}
 		</if>
-		ORDER BY A.Create_Dt DESC 
+		ORDER BY A.Create_Dt DESC
 	</select>
-	
-	
+	<!-- 
 	<select id="selectOrderProductList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
 		SELECT
 			<include refid="OrderProductSelectColumns" />
@@ -689,7 +692,39 @@
 		AND A.Product_Price_Seq = C.Product_Price_Seq								
 		ORDER BY A.Create_Dt DESC 
 	</select>
-	
+	 -->
+	<select id="selectOrderProductList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">
+		SELECT
+		     <include refid="OrderProductSelectColumns" />
+		FROM TB_Order_Product A
+		JOIN TB_Product B
+		    ON A.Product_ID = B.Product_ID
+		JOIN TB_Product_Price C
+		    ON A.Product_ID = C.Product_ID
+		    AND A.Product_Price_Seq = C.Product_Price_Seq
+		LEFT JOIN (
+		    SELECT
+		        TB.Product_ID,
+		        TB.Product_Price_Seq,
+		        TB.Bottle_Sale_YN,
+		        COUNT(*) AS Registered_Count
+		    FROM TB_Work_Bottle TB
+		    JOIN TB_Work_Report WR
+		        ON TB.Work_Report_Seq = WR.Work_Report_Seq
+		    WHERE WR.Delete_YN = 'N'
+		      AND WR.Order_ID =  #{orderId}	
+		    GROUP BY
+		        TB.Product_ID,
+		        TB.Product_Price_Seq,
+		        TB.Bottle_Sale_YN
+		) TW
+		ON A.Product_ID = TW.Product_ID
+		AND A.Product_Price_Seq = TW.Product_Price_Seq
+		AND A.Bottle_Sale_YN = TW.Bottle_Sale_YN
+		WHERE A.Order_ID =  #{orderId}	
+		ORDER BY A.Create_Dt DESC
+	</select>
+	<!-- 
 	<select id="selectOrderProductListNew" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
 		SELECT
 			Order_ID         
@@ -732,7 +767,63 @@
 		AND A.Product_Price_Seq = C.Product_Price_Seq								
 		ORDER BY A.Order_Product_Seq DESC 
 	</select>
-	
+	 -->
+	<select id="selectOrderProductListNew" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">	
+		SELECT
+		    A.Order_ID,
+		    A.Order_Product_Seq,
+		    A.Product_ID,
+		    B.Product_Nm,
+		    A.Product_Price_Seq,
+		    C.Product_Capa,
+		    A.Order_Count,
+		    A.Order_Product_ETC,
+		    A.Bottle_Change_YN,
+		    A.Bottle_Sale_YN,
+		    A.Bottle_Work_Cd,
+		    A.Retrieved_YN,
+		    A.AS_YN,
+		    A.INCOME_YN,
+		    A.OUT_YN,
+		    A.Order_Amount,
+		    A.Bottle_BarCD,
+		    B.GAS_ID,
+		    A.Order_Count - IFNULL(TW.Registered_Count,0) AS Sales_Count,
+		    A.Create_ID,
+		    A.Create_Dt,
+		    A.Update_ID,
+		    A.Update_Dt
+		FROM TB_Order_Product A
+		JOIN TB_Product B
+		    ON A.Product_ID = B.Product_ID
+		JOIN TB_Product_Price C
+		    ON A.Product_ID = C.Product_ID
+		    AND A.Product_Price_Seq = C.Product_Price_Seq
+		
+		LEFT JOIN (
+		    SELECT 
+		        TB.Product_ID,
+		        TB.Product_Price_Seq,
+		        TB.Bottle_Sale_YN,
+		        TB.Bottle_Work_Cd,
+		        COUNT(*) AS Registered_Count
+		    FROM TB_Work_Bottle TB
+		    JOIN TB_Work_Report TWR
+		        ON TB.Work_Report_Seq = TWR.Work_Report_Seq
+		    WHERE TWR.Delete_YN = 'N'
+		      AND TWR.Order_ID = #{orderId}	
+		    GROUP BY 
+		        TB.Product_ID,
+		        TB.Product_Price_Seq,
+		        TB.Bottle_Sale_YN,
+		        TB.Bottle_Work_Cd
+		) TW
+		ON A.Product_ID = TW.Product_ID
+		AND A.Product_Price_Seq = TW.Product_Price_Seq
+		AND A.Bottle_Work_Cd = TW.Bottle_Work_Cd
+		WHERE A.Order_ID = #{orderId}	
+		ORDER BY A.Order_Product_Seq DESC
+	</select>
 	<select id="selectOrderProductSimpleList" resultType="com.gms.web.admin.domain.manage.OrderProductVO" parameterType="Integer">		
 		SELECT
 			<include refid="OrderProductColumns" />
@@ -798,19 +889,19 @@
 	<select id="selectOrderCount" resultType="int" parameterType="java.util.Map">
 		SELECT
 			Count(Order_id)
-		FROM
-			TB_Order A, TB_Customer B, TB_Code C
-		WHERE
-			A.Customer_Id = B.Customer_ID
-		AND 
-			Order_Process_CD !='0299'
-		AND 
-			A.Order_Process_Cd = C.CD_ID
+		FROM TB_Order A
+		JOIN TB_Customer B
+		    ON A.Customer_ID = B.Customer_ID
+		JOIN TB_Code C
+		    ON A.Order_Process_CD = C.CD_ID
+		JOIN TB_User D
+		    ON A.Create_ID = D.User_ID
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
 		</if>
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND A.Delivery_Req_Dt &gt;= #{searchOrderDtFrom} 
+		AND A.Delivery_Req_Dt &lt;  #{searchOrderDtEnd} 
 		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
 		AND Order_Process_CD  =  #{searchOrderProcessCd}
@@ -924,25 +1015,41 @@
 	</select>
 	
 	<select id="selectOrderReqDtTomorrow" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="com.gms.web.admin.domain.manage.OrderVO">		
-		SELECT
-			Order_ID , A.Member_Comp_Seq , Order_Type_CD , Delivery_Req_Dt , Delivery_Req_AmPm , Order_Etc , 
-			Order_Product_Nm , Order_Product_Capa , A.Customer_ID , Order_Process_CD , Order_Total_Amount , 
-			Order_Delivery_Dt , Deposit_Check_Dt , Deposit_Amount , Deposit_Bank_Cd , A.Sales_ID , 
-			A.Create_ID , A.Create_Dt , A.Update_ID , A.Update_Dt 
-		FROM
-			TB_Order A, TB_Customer B
-		WHERE 
-			A.Customer_ID = B.Customer_ID		
+		SELECT 
+		    Order_ID , 
+		    A.Member_Comp_Seq , 
+		    Order_Type_CD , 
+		    Delivery_Req_Dt , 
+		    Delivery_Req_AmPm , 
+		    Order_Etc , 
+			Order_Product_Nm , 
+			Order_Product_Capa , 
+			A.Customer_ID , 
+			Order_Process_CD , 
+			Order_Total_Amount , 
+			Order_Delivery_Dt ,
+			 Deposit_Check_Dt , 
+			 Deposit_Amount , 
+			 Deposit_Bank_Cd , 
+			 A.Sales_ID , 
+			A.Create_ID , A.Create_Dt , A.Update_ID , A.Update_Dt
+		FROM TB_Order A
+		JOIN TB_Customer B 
+		    ON A.Customer_Id = B.Customer_ID
+		JOIN TB_Code C 
+		    ON A.Order_Process_Cd = C.CD_ID
+		JOIN TB_User D 
+		    ON A.Create_Id = D.User_ID
+		WHERE A.Order_Process_CD != '0299'
+		AND A.Delivery_Req_Dt &gt;= #{searchOrderDtFrom} 
+		AND A.Delivery_Req_Dt &lt;  #{searchOrderDtEnd} 
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_Nm	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
 		</if>
-		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
-		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderProcessCd)">
 		AND Order_Process_CD  =  #{searchOrderProcessCd}
-		</if>		
-		ORDER BY Order_Id desc
+		</if>
+		ORDER BY A.Create_Dt DESC
 	</select>
 	
 	<select id="selectOrderListExcel" resultType="com.gms.web.admin.domain.manage.OrderVO" parameterType="com.gms.web.admin.domain.manage.OrderVO">		
@@ -991,7 +1098,8 @@
 		AND b.Product_ID = D.Product_ID
 		AND B.Product_Price_Seq = D.Product_Price_Seq
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchOrderDt)">
-		AND date_format(A.Delivery_Req_Dt,'%Y/%m/%d')  between  #{searchOrderDtFrom} AND  #{searchOrderDtEnd} 
+		AND A.Delivery_Req_Dt &gt;= #{searchOrderDtFrom} 
+		AND A.Delivery_Req_Dt &lt;  #{searchOrderDtEnd}
 		</if>		
 		ORDER BY A.Create_Dt DESC 
 	</select>

@@ -444,7 +444,8 @@ public class ApiController {
 		WorkReportVO workReport = new WorkReportVO();
 		
 		workReport.setSearchUserId(userId);
-		workReport.setSearchDt(DateUtils.getDate("yyyy/MM/dd"));
+		workReport.setSearchDt(DateUtils.getDate("yyyy-MM-dd")+" 00:00:00");
+		workReport.setSearchEndDt(DateUtils.addTime(DateUtils.getDate("yyyy-MM-dd"), "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 		
 		return apiService.getWorkReportList(workReport);
 	}

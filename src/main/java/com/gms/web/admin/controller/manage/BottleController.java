@@ -68,10 +68,10 @@ public class BottleController {
 	@RequestMapping(value = "/gms/bottle/list.do")
 	public String getBottleList(BottleVO params, Model model) {
 
-//		logger.debug("getBottleList");
+		logger.debug("getBottleList");
 		
 		String searchChargeDt = params.getSearchChargeDt();	
-		
+		/*
 		String searchChargeDtFrom = null;
 		String searchChargeDtEnd = null;
 				
@@ -81,19 +81,39 @@ public class BottleController {
 			
 			params.setSearchChargeDtFrom(searchChargeDtFrom);
 			params.setSearchChargeDtEnd(searchChargeDtEnd);			
+		}else {
+			searchChargeDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			logger.debug("****** getBottleList else *****searchChargeDtFrom===*"+searchChargeDtFrom);			
+			searchChargeDtEnd = DateUtils.addTime(searchChargeDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+			logger.debug("****** getBottleList else *****searchChargeDtEnd===*"+searchChargeDtEnd);
+			
+			params.setSearchChargeDtFrom(searchChargeDtFrom+" 00:00:00");
+			params.setSearchChargeDtEnd(searchChargeDtEnd+" 00:00:00");
+			
+			params.setSearchChargeDt(searchChargeDtFrom + " - " + searchChargeDtEnd);
+			
 		}
-		
+		*/
 		String searchDt = params.getSearchDt();	
 		
 		String searchDtFrom = null;
 		String searchDtEnd = null;
 				
 		if(searchDt != null && searchDt.length() > 20) {
-			searchDtFrom = searchDt.substring(0, 10) ;			
+			searchDtFrom = searchDt.substring(0, 10) ;				
 			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
 			
-			params.setSearchDtFrom(searchDtFrom);
-			params.setSearchDtEnd(searchDtEnd);			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");			
+		}else {
+			searchDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchDtEnd = DateUtils.addTime(searchDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
+			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(searchDtEnd+" 00:00:00");
+			
+			params.setSearchDt(searchDtFrom + " - " + searchDtFrom);
 		}
 		
 		//params.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
@@ -179,7 +199,7 @@ public class BottleController {
 		}else {		
 			
 			// Date 로 구하기
-		    SimpleDateFormat fm1 = new SimpleDateFormat("yyyy/MM/dd");
+		    SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
 		    String fromDate = fm1.format(new Date());
 		    //logger.debug("현재시간 년월일 = " + fromDate);
 
@@ -194,8 +214,8 @@ public class BottleController {
 		    
 		    params.setSearchChargeDt(searchChargeDt);
 			
-			params.setSearchChargeDtFrom(fromDate);
-			params.setSearchChargeDtEnd(endDate); 
+			params.setSearchChargeDtFrom(fromDate +" 00:00:00");
+			params.setSearchChargeDtEnd(endDate +" 00:00:00"); 
 			
 		}		
 		
@@ -254,8 +274,29 @@ public class BottleController {
 			
 			params.setSearchChargeDtFrom(searchChargeDtFrom);
 			params.setSearchChargeDtEnd(searchChargeDtEnd);
-			
 		}		
+		
+		String searchDt = params.getSearchDt();	
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {
+			searchDtFrom = searchDt.substring(0, 10) ;				
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");			
+		}else {
+			searchDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchDtEnd = DateUtils.addTime(searchDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
+			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(searchDtEnd+" 00:00:00");
+			
+			params.setSearchDt(searchDtFrom + " - " + searchDtFrom);
+		}
 		
 		params.setSearchWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));		
 		
@@ -283,6 +324,7 @@ public class BottleController {
 		//검색어 셋팅
 		model.addAttribute("searchBottleId", params.getSearchBottleId());	
 		model.addAttribute("searchChargeDt", searchChargeDt);	
+		model.addAttribute("searchDt", params.getSearchDt());	
 		
 		model.addAttribute("currentPage", map.get("currentPage"));
 		model.addAttribute("lastPage", map.get("lastPage"));
@@ -313,6 +355,29 @@ public class BottleController {
 			params.setSearchChargeDtEnd(searchChargeDtEnd);
 			
 		}
+		
+		String searchDt = params.getSearchDt();	
+		
+		String searchDtFrom = null;
+		String searchDtEnd = null;
+				
+		if(searchDt != null && searchDt.length() > 20) {
+			searchDtFrom = searchDt.substring(0, 10) ;				
+			searchDtEnd = searchDt.substring(13, searchDt.length()) ;
+			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");			
+		}else {
+			searchDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchDtEnd = DateUtils.addTime(searchDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
+			
+			params.setSearchDtFrom(searchDtFrom+" 00:00:00");
+			params.setSearchDtEnd(searchDtEnd+" 00:00:00");
+			
+			params.setSearchDt(searchDtFrom + " - " + searchDtFrom);
+		}
+		
 		//params.setSearchSalesYn("Y");
 		//params.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));
 		params.setSearchWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));
@@ -337,6 +402,7 @@ public class BottleController {
 		//검색어 셋팅
 		model.addAttribute("searchBottleId", params.getSearchBottleId());	
 		model.addAttribute("searchChargeDt", searchChargeDt);	
+		model.addAttribute("searchDt", params.getSearchDt());	
 		
 		model.addAttribute("currentPage", map.get("currentPage"));
 		model.addAttribute("lastPage", map.get("lastPage"));

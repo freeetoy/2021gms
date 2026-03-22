@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
@@ -209,8 +210,8 @@ public class BottleServiceImpl implements BottleService {
 				searchDtFrom = searchDt.substring(0, 10) ;			
 				searchDtEnd = searchDt.substring(13, searchDt.length()) ;
 				
-				param.setSearchDtFrom(searchDtFrom);
-				param.setSearchDtEnd(searchDtEnd);			
+				param.setSearchDtFrom(searchDtFrom +" 00:00:00");
+				param.setSearchDtEnd(DateUtils.addTime(searchDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 				map.put("searchDtFrom", param.getSearchDtFrom());
 				map.put("searchDtEnd", param.getSearchDtEnd());
 			}
@@ -230,7 +231,7 @@ public class BottleServiceImpl implements BottleService {
 		}else {
 			if(param.getMenuType()==2) {		// 용기충전
 				// Date 로 구하기
-			    SimpleDateFormat fm1 = new SimpleDateFormat("yyyy/MM/dd");
+			    SimpleDateFormat fm1 = new SimpleDateFormat("yyyy-MM-dd");
 			    String fromDate = fm1.format(new Date());
 			    //logger.debug("현재시간 년월일 = " + fromDate);
 
@@ -246,8 +247,8 @@ public class BottleServiceImpl implements BottleService {
 			    param.setSearchChargeDt(searchChargeDt);
 			    map.put("searchChargeDt", param.getSearchChargeDt());
 				
-				param.setSearchChargeDtFrom(fromDate);
-				param.setSearchChargeDtEnd(endDate); 
+			    param.setSearchChargeDtFrom(fromDate +" 00:00:00");
+			    param.setSearchChargeDtEnd(endDate +" 00:00:00"); 
 			}
 		}
 		

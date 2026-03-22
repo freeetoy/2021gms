@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.manage.CashFlowVO;
 import com.gms.web.admin.domain.manage.CashSumVO;
@@ -122,7 +123,7 @@ public class CashFlowController {
 	@RequestMapping(value = "/gms/cash/list.do")
 	public ModelAndView getCashFlowList(CashFlowVO param) {
 
-		logger.debug("CashFlowController getCashFlowList");
+		logger.debug("CashFlowController getCashFlowList" + param.getSearchCustomerNm() + "id ="+param.getCustomerId());
 		
 		ModelAndView mav = new ModelAndView();		
 				
@@ -133,7 +134,12 @@ public class CashFlowController {
 			mav.addObject("customerId", param.getCustomerId());	
 	
 		String searchCreateDt = param.getSearchCreateDt();	
-		mav.addObject("searchCreateDt", param.getSearchCreateDt());		
+		if(searchCreateDt != null && searchCreateDt.length() > 20) {			
+			mav.addObject("searchCreateDt", param.getSearchCreateDt());	
+		}else {
+			mav.addObject("searchCreateDt", DateUtils.getDate("yyyy-MM-dd") + " - " + DateUtils.getDate("yyyy-MM-dd"));	
+		}
+			
 		
 		/*
 		CashSumVO cashSum = cashService.getCashFlowSum(param);
@@ -146,9 +152,13 @@ public class CashFlowController {
 		mav.addObject("cashSum", cashSum);
 		*/
 		// 주문 타입 불러오기
-		Map<String, Object> map1 = customerService.searchCustomerList("");
-		mav.addObject("customerList", map1.get("list"));		
-		
+		if(param.getSearchCustomerNm() !=null) {
+			Map<String, Object> map1 = customerService.searchCustomerList(param.getSearchCustomerNm());
+			mav.addObject("customerList", map1.get("list"));
+			mav.addObject("customerId", param.getCustomerId());
+			mav.addObject("searchCustomerNm", param.getSearchCustomerNm());
+		}
+				
 		mav.addObject("currentPage", map.get("currentPage"));
 		mav.addObject("lastPage", map.get("lastPage"));
 		mav.addObject("startPageNum", map.get("startPageNum"));

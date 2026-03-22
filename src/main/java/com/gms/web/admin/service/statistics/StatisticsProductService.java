@@ -3,6 +3,7 @@ package com.gms.web.admin.service.statistics;
 import java.util.List;
 
 import com.gms.web.admin.domain.statistics.StatisticsProductVO;
+import com.gms.web.admin.domain.statistics.StatisticsProuctCustomerCountVO;
 
 public interface StatisticsProductService {
 	
@@ -14,6 +15,7 @@ public interface StatisticsProductService {
 
 	public int registerMonthlyStatisticsProduct();
 	
+	public List<StatisticsProuctCustomerCountVO> getWorkBottleListOfProductStat(StatisticsProuctCustomerCountVO param);
 //	public int deleteDailyStatProduct();
 	
 }

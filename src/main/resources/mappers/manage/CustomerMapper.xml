@@ -433,12 +433,12 @@
 	</select>
 	
 	<select id="searchCustomerList" resultType="com.gms.web.admin.domain.manage.CustomerVO" parameterType="String">
-		SELECT
-			<include refid="CustomerColumns" />
-		FROM
-			TB_CUSTOMER A  Left Join  TB_USER B On A.Sales_ID = B.User_ID
-		WHERE
-			Customer_Status != '0'
+		SELECT 
+		    <include refid="CustomerColumns" />
+		FROM TB_CUSTOMER A
+		LEFT JOIN TB_USER B 
+		    ON A.Sales_ID = B.User_ID
+		WHERE A.Customer_Status &lt;&gt; '0'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_NM	 LIKE CONCAT('%', CONCAT(#{searchCustomerNm}, '%'))
 		</if>
@@ -619,13 +619,20 @@
 	</select>
 	
 	<select id="selectCustomerProductList" resultType="com.gms.web.admin.domain.manage.CustomerProductVO" parameterType="Integer">
-		SELECT a.Product_ID, b.Product_Nm, a.Product_Price_Seq, c.Product_Capa, Bottle_Own_Count, Bottle_Rent_Count
-		FROM 
-			TB_CUSTOMER_PRODUCT a, TB_PRODUCT b, TB_PRODUCT_PRICE c
+		 SELECT 
+		    a.Product_ID,
+		    b.Product_Nm,
+		    a.Product_Price_Seq,
+		    c.Product_Capa,
+		    a.Bottle_Own_Count,
+		    a.Bottle_Rent_Count
+		FROM TB_CUSTOMER_PRODUCT a
+		JOIN TB_PRODUCT b
+		    ON a.Product_ID = b.Product_ID
+		JOIN TB_PRODUCT_PRICE c
+		    ON a.Product_ID = c.Product_ID
+		   AND a.Product_Price_Seq = c.Product_Price_Seq
 		WHERE a.Customer_ID = #{customerId}
-		AND   a.Product_ID = b.Product_ID
-		AND   b.Product_ID = c.Product_ID
-		AND   a.Product_Price_Seq = c.Product_Price_Seq			
 	</select>
 	
 	<insert id="insertCustomerProduct" parameterType="com.gms.web.admin.domain.manage.CustomerProductVO">
@@ -637,7 +644,7 @@
 			, #{productPriceSeq}
 			, #{bottleOwnCount}
 			, #{bottleRentCount}
-			, #{createId}			
+			, #{createId}
 			, NOW()
 			, NULL
 			, NOW()
@@ -725,18 +732,33 @@
 	
 	<select id="selectCustomerSalesList" resultType="com.gms.web.admin.domain.manage.CustomerSalesVO" parameterType="java.util.Map">		
 		SELECT
-			wb.Product_ID, wb.Product_Price_Seq,count(wb.Product_ID) salesCount,wb.Product_Price,Product_Nm,Product_Capa,CD_NM
-		FROM TB_Work_Bottle wb, TB_Product tp, TB_Product_Price pp, TB_Code TC
-		WHERE Customer_ID = #{searchCustomerId}	
-		AND Bottle_Work_Cd in ('0308','0309','0314', '0316')
-		AND Bottle_Work_Cd = CD_ID
+		    wb.Product_ID,
+		    wb.Product_Price_Seq,
+		    COUNT(wb.Product_ID) salesCount,
+		    wb.Product_Price,
+		    tp.Product_Nm,
+		    pp.Product_Capa,
+		    TC.CD_NM
+		FROM TB_Work_Bottle wb
+		JOIN TB_Product tp 
+		    ON wb.Product_ID = tp.Product_ID
+		JOIN TB_Product_Price pp 
+		    ON wb.Product_ID = pp.Product_ID
+		   AND wb.Product_Price_Seq = pp.Product_Price_Seq
+		JOIN TB_Code TC 
+		    ON wb.Bottle_Work_Cd = TC.CD_ID
+		WHERE wb.Customer_ID = #{searchCustomerId}	
+		AND wb.Bottle_Work_Cd in ('0308','0309','0314','0316')
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
-		AND date_format(wb.Create_Dt,'%Y/%m/%d') between #{searchStatDtFrom} AND #{searchStatDtEnd}
+		AND wb.Create_Dt &gt;= #{searchStatDtFrom}
+  		AND wb.Create_Dt &lt;  #{searchStatDtEnd} 
 		</if>
-		AND wb.Product_ID = tp.Product_ID
-		AND wb.Product_ID = pp.Product_ID
-		AND wb.Product_Price_Seq = pp.Product_Price_Seq
-		Group By Customer_ID,wb.Product_ID, wb.Product_Price_Seq,wb.Product_Price,Bottle_Work_Cd
+		GROUP BY 
+		    wb.Customer_ID,
+		    wb.Product_ID,
+		    wb.Product_Price_Seq,
+		    wb.Product_Price,
+		    wb.Bottle_Work_Cd
 	</select>
 	
 	<select id="selectLn2CustomerList" resultType="com.gms.web.admin.domain.manage.CustomerLn2AlarmVO" parameterType="String">		
@@ -782,6 +804,32 @@
 	</select>
 	
 	<select id="selectRecentOrderList" resultType="com.gms.web.admin.domain.manage.CustomerProductVO"  parameterType="java.util.Map">
+		SELECT  
+		    tc.Customer_ID,
+		    twb.Product_ID,
+		    tp.Product_Nm,
+		    twb.Product_Price_Seq,
+		    tpp.Product_Capa,
+		    DATE_FORMAT(MAX(twb.Create_Dt), '%Y/%m/%d') AS Last_Create_Dt
+		FROM TB_Customer tc
+		JOIN TB_Work_Bottle twb 
+		    ON tc.Customer_ID = twb.Customer_ID
+		JOIN TB_Product tp 
+		    ON twb.Product_ID = tp.Product_ID
+		JOIN TB_Product_Price tpp 
+		    ON twb.Product_ID = tpp.Product_ID 
+		   AND twb.Product_Price_Seq = tpp.Product_Price_Seq
+		WHERE tc.Customer_ID = #{customerId}
+		GROUP BY 
+		    tc.Customer_ID, 
+		    twb.Product_ID, 
+		    twb.Product_Price_Seq
+		ORDER BY 
+		    MAX(twb.Create_Dt) DESC
+		Limit #{startRow}, #{rowPerPage}
+	</select>
+	<!-- 
+	<select id="selectRecentOrderList" resultType="com.gms.web.admin.domain.manage.CustomerProductVO"  parameterType="java.util.Map">
 		SELECT 	tc.Customer_ID, twb.Product_ID, tp.Product_Nm, twb.Product_Price_Seq, tpp.Product_Capa, Max(DATE_FORMAT(twb.Create_Dt ,'%Y/%m/%d'))
 		FROM 	TB_Customer tc , TB_Work_Bottle twb ,TB_Product tp ,TB_Product_Price tpp 
 		WHERE 	tc.Customer_ID = #{customerId}	
@@ -793,4 +841,5 @@
 		Order By max(DATE_FORMAT(twb.Create_Dt ,'%Y/%m/%d')) DESC
 		Limit #{startRow}, #{rowPerPage}
 	</select>
+	 -->
 </mapper>

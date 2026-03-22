@@ -55,7 +55,26 @@ $(function() {
 	  });	
 	
 });	
+function filterOptions() {
+	console.log("filterOptions1");
+    let input = document.getElementById('searchCustomerNm');
+    let filter = input.value.toUpperCase(); // 대소문자 구분 없이 검색
+    let select = document.getElementById('searchCustomerId');
+    let options = select.getElementsByTagName('option');
+    let checkBit = 0;
 
+    for (let i = 0; i < options.length; i++) {
+        let txtValue = options[i].text;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            options[i].style.display = ""; // 검색어 포함 시 표시
+            if(checkBit == 0) checkBit = i;
+        } else {
+            options[i].style.display = "none"; // 포함하지 않으면 숨김
+        }
+    }
+    
+    if(checkBit > 0) options[checkBit].selected = true;
+}
 </script>
 
    <div class="content-wrapper">
@@ -98,7 +117,7 @@ $(function() {
 			    </select>	                      
             </div>  
             <div class="col-2">    
-            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" onkeyup="filterOptions()">
 			</div>	            		  
 			<div class="col-1">
 	        	<input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />

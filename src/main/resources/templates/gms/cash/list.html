@@ -162,6 +162,20 @@ $(document).ready(function(){
 		$("#customerNm2").val(customerNm);
  	});	
 	
+	
+	$(".btn-navbar").click(function()  
+    {			
+    	var searchDtVal = $('#searchCreateDt').val();	
+    	if(searchDtVal){
+    		var form = document.mainForm;	
+    		$("#currentPage").val(1);  
+    		mainForm.action="/gms/cash/list.do";
+    		form.submit();
+    	}else { 
+    		alert("기간을 입력하세요");
+    		return;
+    	}
+    });
 });
 
 
@@ -172,12 +186,12 @@ $(function() {
 	      startDate: new Date(),
 	      locale: {
 	    	  cancelLabel: 'Clear',
-	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
+	          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
 	      }
 	  });
 	
 	  $('input[name="searchCreateDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 	
 	  $('input[name="searchCreateDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -357,7 +371,7 @@ $(function() {
 			    </select>	                      
             </div>  
             <div class="col-2">    
-            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" >
+            	<input type="text" class="form-control" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">
 			</div>	            		  
 			<div class="col-1">
 	        	<input type="button" class="btn btn-default btn-success" id="btn_com_search" value="검색" />
@@ -380,7 +394,7 @@ $(function() {
                <input type="text" class="form-control" id="searchCreateDt" name="searchCreateDt" value=""/>			
             </div>               
             <div class="col-2">
-                <button class="btn btn-navbar" type="submit"><i class="fas fa-search"></i></button>           
+                <button class="btn btn-navbar" type="button"><i class="fas fa-search"></i></button>           
               </div>               
               </form>  
               <div align=right class="col-5">
@@ -424,7 +438,7 @@ $(function() {
                   	<tr th:if="${not #lists.isEmpty( list )}" th:each="row : ${list}"  style="font-size:14px;">
                       <td th:text="${totalCount-((currentPage-1) * rowPerPage) - list.indexOf(row)}"></td>
                       
-                      <th th:text="${row.customerNm}" >거래처</th>
+                      <td th:text="${row.customerNm}" >거래처</td>
                       <td align="right" th:if="${row.receivableAmount> 0 && row.receivableAmount*100%100 > 0}"  th:text="${#numbers.formatDecimal(row.receivableAmount, 3, 'COMMA' ,2,'POINT')}"></td> 
                       <td align="right" th:if="${row.receivableAmount> 0 && row.receivableAmount*100%100 == 0}"  th:text="${#numbers.formatInteger(row.receivableAmount, 3, 'COMMA')}"></td> 
                       <td align="right" th:if="${row.receivableAmount == 0 }"  th:text="${row.receivableAmount}"></td>

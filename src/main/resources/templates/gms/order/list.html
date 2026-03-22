@@ -87,12 +87,12 @@ $(function() {
 	      language: "kr",
 	      locale: {
 	    	  cancelLabel: 'Clear',
-	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
+	          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
 	      }	  	
 	  });
 	
 	  $('input[name="searchOrderDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 	
 	  $('input[name="searchOrderDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -479,9 +479,16 @@ $(document).ready(function(){
 	$(".btn-navbar").click(function()  
     {
 		var form = document.mainForm;	
-		$("#currentPage").val(1);  
-		mainForm.action="/gms/order/list.do";
-		form.submit();
+		var searchDtVal = $('#searchOrderDt').val();	
+    	if(searchDtVal){
+    		$("#currentPage").val(1);  
+    		mainForm.action="/gms/order/list.do";
+    		form.submit();
+    	}else { 
+    		alert("납품요청일을 입력하세요");
+    		return;
+    	}
+		
       
     });
 
@@ -695,7 +702,7 @@ $(document).ready(function(){
         <div class="modal-dialog modal-sm">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Primary Modal</h4>
+              <h4 class="modal-title">접수목록  프린트</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
             </div>
@@ -815,26 +822,27 @@ $(document).ready(function(){
                       <input class="IdCheckbox"  name="check_id" type="checkbox" th:value="${row.orderId}"></td>                     
                       <td th:text="${totalCount-((currentPage-1)*rowPerPage) - orderList.indexOf(row)}"></td>
                       <th><a th:href="@{/gms/customer/update.do( customerId=${row.customerId})}" th:text="${row.CustomerNm}"></a></th>
-                      <th th:text="${row.orderProductNm}"></th>
+                      <td th:text="${row.orderProductNm}"></td>
                       <td th:text="${row.orderProductCapa}"></td>
                       <td align="right" th:if="${row.orderTotalAmount > 999 && row.orderTotalAmount*100%100 > 0}" th:text="${#numbers.formatDecimal(row.orderTotalAmount,3,'COMMA',2,'POINT')}"></td>
                       <td align="right" th:if="${row.orderTotalAmount > 999 && row.orderTotalAmount*100%100 == 0}" th:text="${#numbers.formatInteger(row.orderTotalAmount,3,'COMMA')}"></td>
                       <td align="right" th:unless="${row.orderTotalAmount > 999}" th:text="${row.orderTotalAmount}"></td>
                       <td th:text="|${row.createNm}(${row.createId})|"></td>
-                      <th th:if="${row.orderProcessCd=='0210'}" ><h6><span class="badge badge-danger">주문접수</span></h6>
-                      <th th:if="${row.orderProcessCd=='0220'}" ><h6><span class="badge badge-danger">주문접수완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0230'}" ><h6><span class="badge badge-secondary">생산완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0240'}" ><h6><span class="badge badge-primary">납품완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0250'}" ><h6><span class="badge badge-success">판매완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0260'}" ><h6><span class="badge badge-warning">거래명세서완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0270'}" ><h6><span class="badge badge-warning">세금계산완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0280'}" ><h6><span class="badge badge-warning">입금완료</span></h6>
-                      <th th:if="${row.orderProcessCd=='0290'}" ><h6><span class="badge badge-info">거래완료</span> </h6>
+                      <td th:if="${row.orderProcessCd=='0210'}" ><h6><span class="badge badge-danger">주문접수</span></h6>
+                      <td th:if="${row.orderProcessCd=='0220'}" ><h6><span class="badge badge-danger">주문접수완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0230'}" ><h6><span class="badge badge-secondary">생산완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0240'}" ><h6><span class="badge badge-primary">납품완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0250'}" ><h6><span class="badge badge-success">판매완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0260'}" ><h6><span class="badge badge-warning">거래명세서완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0270'}" ><h6><span class="badge badge-warning">세금계산완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0280'}" ><h6><span class="badge badge-warning">입금완료</span></h6>
+                      <td th:if="${row.orderProcessCd=='0290'}" ><h6><span class="badge badge-info">거래완료</span> </h6>
                       <!-- 
                       <th th:if="${row.orderProcessCd=='0210'|| row.orderProcessCd=='0220'}" style="color: red"  th:text="${row.orderProcessCdNm}"><
                       <th th:unless="${row.orderProcessCd=='0210' || row.orderProcessCd=='0220'}" th:text="${row.orderProcessCdNm}">
                       </th>
                        -->
+                       </td>
                       <td th:text="${#calendars.format( row.deliveryReqDt, 'yyyy-MM-dd' )}"></td>
 		     		  <td th:text="${#calendars.format( row.createDt, 'yyyy-MM-dd' )}"></td>  
                       <td>                      

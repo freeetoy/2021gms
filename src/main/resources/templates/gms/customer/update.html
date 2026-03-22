@@ -133,9 +133,15 @@ var goDelete = function(){
 
 var getBottle = function(){
 
-	var form = $("#mainForm");	
-	
-	form.submit();
+	var searchDt = $('#searchChargeDt').val();
+	if(searchDt){
+		var form = $("#mainForm");	
+		
+		form.submit();
+	}else {
+		alert("기간을 입력하세요");
+		return;
+	}
 }
 
 $(document).ready(function(){ 
@@ -175,7 +181,7 @@ $(function() {
 	  });
 
 	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 
 	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -535,7 +541,7 @@ $(function() {
 	              	<input type="hidden" id="customerId" name="customerId" th:value="${customer.customerId}">
                 	<input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
                 	<input type="hidden" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">	
-	               <input type="text" class="form-control" name="searchChargeDt" th:value="${searchChargeDt}"/>			
+	               <input type="text" class="form-control" name="searchChargeDt" id="searchChargeDt" th:value="${searchChargeDt}"/>			
 	            </div>               
 	            <div class="col-5">     
 	            	<button class="btn btn-navbar" type="button" onclick="javascript:getBottle()" >

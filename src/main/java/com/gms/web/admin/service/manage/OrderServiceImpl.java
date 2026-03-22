@@ -1,6 +1,7 @@
 package com.gms.web.admin.service.manage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,11 +141,11 @@ public class OrderServiceImpl implements OrderService {
 		}		
 		
 		if(param.getSearchOrderDtFrom() != null) {
-			map.put("searchOrderDtFrom", param.getSearchOrderDtFrom());			
+			map.put("searchOrderDtFrom", param.getSearchOrderDtFrom()  +" 00:00:00");			
 		}
 		
 		if(param.getSearchOrderDtEnd() != null) {
-			map.put("searchOrderDtEnd", param.getSearchOrderDtEnd());			
+			map.put("searchOrderDtEnd", DateUtils.addTime(param.getSearchOrderDtEnd(), "yyyy-MM-dd", Calendar.DATE, 1)   +" 00:00:00");			
 		}	
 				
 		map.put("searchCustomerNm", param.getSearchCustomerNm());	

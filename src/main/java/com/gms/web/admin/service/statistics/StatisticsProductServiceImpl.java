@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.statistics.StatisticsProductVO;
+import com.gms.web.admin.domain.statistics.StatisticsProuctCustomerCountVO;
 import com.gms.web.admin.mapper.statistics.StatisticsProductMapper;
 
 @Service
@@ -94,6 +96,12 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 	@Override
 	public int registerMonthlyStatisticsProduct() {
 		return statMapper.inserMonthlyStatisticsProduct();
+	}
+
+	@Override
+	public List<StatisticsProuctCustomerCountVO> getWorkBottleListOfProductStat(StatisticsProuctCustomerCountVO param) {
+		// TODO Auto-generated method stub
+		return statMapper.selectWorkBottleListOfProductStat(param); 
 	}
 	
 }

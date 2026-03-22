@@ -166,13 +166,19 @@
 		AND Parent_Customer_ID is null
 	</select> 
 	<select id="selectTodayStatisticsAgencyCustomerList1" resultType="com.gms.web.admin.domain.manage.CustomerVO">		
-		SELECT TP.Customer_ID, TC.Customer_Nm, Parent_Customer_Id
-		FROM TB_Customer_Product TP, TB_Customer TC
-		WHERE TC.Agency_YN =  'Y'
-		AND TP.Customer_ID = TC.Customer_ID		
-		AND (TP.Bottle_Own_Count !=0 OR TP.Bottle_Rent_Count !=0 )
-		AND Parent_Customer_ID is null
-		GROUP By TP.Customer_ID 
+		SELECT
+		    TC.Customer_ID,
+		    TC.Customer_Nm,
+		    TC.Parent_Customer_Id
+		FROM TB_Customer TC
+		WHERE TC.Agency_YN = 'Y'
+		AND TC.Parent_Customer_ID IS NULL
+		AND EXISTS (
+		    SELECT 1
+		    FROM TB_Customer_Product TP
+		    WHERE TP.Customer_ID = TC.Customer_ID
+		    AND (TP.Bottle_Own_Count &lt;&gt; 0 OR TP.Bottle_Rent_Count &lt;&gt; 0)
+		)
 	</select>
 	
 	<select id="selectTodayStatisticsAgencyChildeList" resultType="com.gms.web.admin.domain.statistics.StatisticsAgencyVO">

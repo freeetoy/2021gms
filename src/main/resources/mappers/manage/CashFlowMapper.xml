@@ -88,82 +88,75 @@
 		AND
 			Delete_YN 	= 'N'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
-		AND date_format(Create_Dt,'%Y/%m/%d')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
+		AND Create_DT &gt;= #{searchCreateDtFrom}
+		AND Create_DT &lt;  #{searchCreateDtEnd} 
 		</if>			
 	</select>
 	
 	<select id="selectCashFlowList" resultType="com.gms.web.admin.domain.manage.CashFlowVO" parameterType="java.util.Map">
-		SELECT
-			Cash_Flow_Seq         
-			 , TF.Customer_ID  
-			 , Customer_Nm
-			 , Income_Amount    
-			 , Receivable_Amount 		  
-			 , Income_Way		   
-			 , TF.Delete_YN
-			 , TF.Create_ID        
-			 , TF.Create_Dt        
-			 , TF.Update_ID        
-			 , TF.Update_Dt   
-		FROM
-			TB_Cash_Flow TF, TB_Customer TC
-		WHERE
-			TF.Customer_ID =  #{customerId}	
-		AND
-			TF.Customer_Id  = TC.Customer_Id
-		AND
-			Delete_YN 	= 'N'		
+		SELECT 
+		    TF.Cash_Flow_Seq,
+		    TF.Customer_ID,
+		    TC.Customer_Nm,
+		    TF.Income_Amount,
+		    TF.Receivable_Amount,
+		    TF.Income_Way,
+		    TF.Delete_YN,
+		    TF.Create_ID,
+		    TF.Create_Dt,
+		    TF.Update_ID,
+		    TF.Update_Dt
+		FROM TB_Cash_Flow TF
+		JOIN TB_Customer TC 
+		    ON TF.Customer_Id = TC.Customer_Id
+		WHERE TF.Customer_ID = #{customerId}	
+		AND TF.Delete_YN = 'N'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
-		AND date_format(TF.Create_Dt,'%Y/%m/%d')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
-		</if>		
-		ORDER BY Cash_Flow_Seq DESC 
+		AND TF.Create_DT &gt;= #{searchCreateDtFrom}
+		AND TF.Create_DT &lt;  #{searchCreateDtEnd} 
+		</if>	
+		ORDER BY TF.Cash_Flow_Seq DESC
 		Limit #{startRow}, #{rowPerPage}
 	</select>
 	
 	<select id="selectAllCashFlowCount" parameterType="java.util.Map" resultType="int">
 		SELECT
 			count(Cash_Flow_Seq)
-		FROM
-			TB_Cash_Flow TF, TB_Customer TC
-		WHERE
-			TF.Customer_Id  = TC.Customer_Id
-		AND
-			TF.Delete_YN 	= 'N'	
-		AND
-			Customer_Status = 2
-		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
-		AND date_format(TF.Create_Dt,'%Y/%m/%d  %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
-		</if>			
+		FROM TB_Cash_Flow TF
+		JOIN TB_Customer TC 
+		    ON TF.Customer_Id = TC.Customer_Id
+		    AND TC.Customer_Status = 2
+		JOIN TB_User TU 
+		    ON TF.Create_ID = TU.User_ID
+		WHERE TF.Delete_YN = 'N'
+		AND  TF.Create_DT &gt;= #{searchCreateDtFrom}
+		AND TF.Create_DT &lt;  #{searchCreateDtEnd} 		
 	</select>
 	
 	<select id="selectAllCashFlowList" resultType="com.gms.web.admin.domain.manage.CashFlowVO" parameterType="java.util.Map">
-		SELECT
-			Cash_Flow_Seq         
-		 , TF.Customer_ID  
-		 , Customer_Nm
-		 , Income_Amount    
-		 , Receivable_Amount 		  
-		 , Income_Way		   
-		 , TF.Delete_YN
-		 , TF.Create_ID
-		 , TU.User_Nm  
-		 , TF.Create_Dt        
-		 , TF.Update_ID        
-		 , TF.Update_Dt   
-		FROM
-			TB_Cash_Flow TF, TB_Customer TC, TB_User TU
-		WHERE
-			TF.Customer_Id  = TC.Customer_Id
-		AND
-			TF.Delete_YN 	= 'N'		
-		AND
-			Customer_Status = 2
-		AND
-			TF.Create_ID  = TU.User_ID 
-		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCreateDt)">
-		AND date_format(TF.Create_Dt,'%Y/%m/%d %H')  between  #{searchCreateDtFrom} AND  #{searchCreateDtEnd} 
-		</if>		
-		ORDER BY Cash_Flow_Seq DESC 
+		SELECT 
+		    TF.Cash_Flow_Seq,
+		    TF.Customer_ID,
+		    TC.Customer_Nm,
+		    TF.Income_Amount,
+		    TF.Receivable_Amount,
+		    TF.Income_Way,
+		    TF.Delete_YN,
+		    TF.Create_ID,
+		    TU.User_Nm,
+		    TF.Create_Dt,
+		    TF.Update_ID,
+		    TF.Update_Dt
+		FROM TB_Cash_Flow TF
+		JOIN TB_Customer TC 
+		    ON TF.Customer_Id = TC.Customer_Id
+		    AND TC.Customer_Status = 2
+		JOIN TB_User TU 
+		    ON TF.Create_ID = TU.User_ID
+		WHERE TF.Delete_YN = 'N'
+		AND  TF.Create_DT &gt;= #{searchCreateDtFrom}
+		AND TF.Create_DT &lt;  #{searchCreateDtEnd} 
+		ORDER BY TF.Cash_Flow_Seq DESC
 		Limit #{startRow}, #{rowPerPage}
 	</select>
 	

@@ -19,7 +19,7 @@
 		<result property="gasCd"			column="Gas_CD"				/>
 	</resultMap>	
 
-
+<!--  
 	 <select id="selectECount" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >		
 		SELECT 
 			TC.ECount_CD Customer_EID, TC.Customer_ID,Customer_NM, WB.Product_ID, PP.ECount_CD, PP.ECount_CDS,WB.Product_Id, PT.Product_Nm, 
@@ -33,7 +33,8 @@
 				FROM TB_Work_Bottle TB, TB_Work_Report TW
 				WHERE Bottle_Work_Cd in ('0308','0309','0314', '0316')
 				AND TB.Work_Report_Seq = TW.Work_Report_Seq
-				AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')=  #{searchDt}
+				AND TW.Work_Dt &gt;=  #{searchDt}
+				AND TW.Work_Dt &lt;  #{searchEndDt}
 				<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
 				AND TB.Create_ID =  #{searchUserId}
 				</if>	
@@ -55,13 +56,69 @@
 			WB.Create_ID = TU.User_Id
 		Order By WB.Work_Report_Seq desc
 	</select>
-	
+	-->
+	<select id="selectECount" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >		
+		SELECT 
+		    TC.ECount_CD AS Customer_EID,
+		    TC.Customer_ID,
+		    TC.Customer_NM,
+		    WB.Product_ID,
+		    PP.ECount_CD,
+		    PP.ECount_CDS,
+		    PT.Product_Nm,
+		    WB.Product_Price_Seq,
+		    PP.Product_Capa,
+		    PT.ECount_Spec,
+		    TU.ECount_User_CD AS Sales_Nm,
+		    WB.Bottle_Sale_YN,
+		    COUNT(WB.Work_Seq) AS Order_Count,
+		    WB.Product_Price - WB.Gas_Price AS Product_Price,
+		    WB.Gas_Price,
+		    COUNT(WB.Work_Seq) * (WB.Product_Price - WB.Gas_Price) AS Supply_Price,
+		    COUNT(WB.Work_Seq) * (WB.Product_Price - WB.Gas_Price) * 0.1 AS VAT,
+		    WB.Bottle_Work_Cd,
+		    WB.GAS_CD,
+		    TC.Agency_Yn,
+		    WB.Multi_YN,
+		    WB.Charge_Volumn,
+		    WB.Work_Etc AS Etc
+		FROM TB_Work_Report WR
+		JOIN TB_Work_Bottle WB
+		    ON WR.Work_Report_Seq = WB.Work_Report_Seq
+		JOIN TB_Product PT
+		    ON WB.Product_ID = PT.Product_ID
+		JOIN TB_Product_Price PP
+		    ON WB.Product_ID = PP.Product_ID
+		    AND WB.Product_Price_Seq = PP.Product_Price_Seq
+		JOIN TB_Customer TC
+		    ON WR.Customer_ID = TC.Customer_ID
+		JOIN TB_User TU
+		    ON WB.Create_ID = TU.User_ID
+		WHERE WR.Delete_YN = 'N'
+		AND WR.Work_Dt &gt;=  #{searchDt}
+		AND WR.Work_Dt &lt;  #{searchEndDt}
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
+		AND WB.Create_ID =  #{searchUserId}
+		</if>	
+		AND WB.Bottle_Work_Cd IN ('0308','0309','0314','0316')
+		GROUP BY
+		WR.Work_Report_Seq,
+		WB.Product_ID,
+		WB.Product_Price_Seq,
+		WB.Create_ID,
+		WB.Bottle_Sale_YN,
+		WB.Product_Price,
+		WB.Bottle_Work_Cd,
+		WB.GAS_CD
+		ORDER BY WR.Work_Report_Seq DESC;
+	</select>
 	<select id="selectECountMinus" resultType="com.gms.web.admin.domain.manage.ECountVO" parameterType="com.gms.web.admin.domain.manage.WorkReportVO" >
 		SELECT count(Work_Seq) Order_Count,TB.Work_Report_Seq,Product_ID, Product_Price_Seq, Bottle_Work_Cd,TB.Customer_ID
 		FROM TB_Work_Bottle TB, TB_Work_Report TW
 		WHERE Bottle_Work_Cd in ('0310','0315')
 		AND TB.Work_Report_Seq = TW.Work_Report_Seq
-		AND DATE_FORMAT(Work_Dt,'%Y/%m/%d')=  #{searchDt}
+		AND TW.Work_Dt &gt;=  #{searchDt}
+		AND TW.Work_Dt &lt;  #{searchEndDt}
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchUserId)">
 		AND TB.Create_ID =  #{searchUserId}
 		</if>

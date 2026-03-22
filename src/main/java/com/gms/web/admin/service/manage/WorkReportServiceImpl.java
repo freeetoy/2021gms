@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,7 +75,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 		if(param.getSearchDt() == null || param.getSearchDt().length() == 0) {						
 			
-			param.setSearchDt(DateUtils.getDate("yyyy/MM/dd"));
+			param.setSearchDt(DateUtils.getDate("yyyy-MM-dd"));
 		}
 		
 		return workMapper.selectWorkReportList(param);
@@ -88,8 +89,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 		List<WorkReportViewVO> viewList = new ArrayList<WorkReportViewVO>();
 						
 		if(param.getSearchDt() == null || param.getSearchDt().length() == 0) {			
-			param.setSearchDt(DateUtils.getDate("yyyy/MM/dd"));
-		}		
+			param.setSearchDt(DateUtils.getDate("yyyy-MM-dd") +" 00:00:00");
+			param.setSearchEndDt(DateUtils.addTime(DateUtils.getDate("yyyy-MM-dd"), "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		} else {
+			param.setSearchDt(param.getSearchDt() +" 00:00:00");
+			param.setSearchEndDt(DateUtils.addTime(param.getSearchDt(), "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		}
 		//날짜 비교
 		List<WorkBottleVO> workBottleList = null;
 		
@@ -139,7 +144,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			WorkBottleVO workBottle = workBottleList.get(i);
 			//logger.debug("WorkReportServiceImpl getWorkReportListAll workBottle.getProductCapa().indexOf(Kg) "+ workBottle.getProductCapa().indexOf("Kg"));
 			//if(workBottle.getProductCapa().indexOf("Kg") < 0) workBottle.setProductCapa(workBottle.getProductCapa() +"L");
-			if(workBottle.getGasId() > 0) {
+			if(workBottle.getGasId() !=null && workBottle.getGasId() > 0) {
 				if(workBottle.getProductCapa().indexOf("Kg") < 0) workBottle.setProductCapa(workBottle.getProductCapa() +"L");
 			}
 			//20211123 Charge_Volumn 컬럼 추가
@@ -186,7 +191,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		}
 		//logger.debug("WorkReportServiceImpl getWorkReportListAll viewList.size= "+ viewList.size());
 		double totalAmount=0;
-		for(int i=0;i<viewList.size() ; i++) {
+		for(int i=0; i < viewList.size() ; i++) {
 			totalAmount = 0;
 			if(viewList.get(i).getReportEtc() != null) {
 				viewList.get(i).setReportEtc("["+viewList.get(i).getReportEtc()+"]");
@@ -665,6 +670,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				boolean registerFlag = false;
 				int workSeq=1;
 				int workReportSeq = 0;
+				logger.debug("########### WorkReportServiceImpl registerWorkReportNoOrder param.getSearchDt =" + param.getSearchDt());
 				
 				//if(param.getAgencyYn().equals("N") || !param.getUserId().equals("factory") ) workReportSeq = getWorkReportSeqForCustomerToday(param);
 				workReportSeq = getWorkReportSeqForCustomerToday(param); //20210619 재수정
@@ -1292,12 +1298,22 @@ public class WorkReportServiceImpl implements WorkReportService {
 		if(searchChargeDt != null && searchChargeDt.length() > 20) {
 			map.put("searchChargeDt", searchChargeDt);
 			
-			searchChargeDtFrom = searchChargeDt.substring(0, 10) ;			
-			map.put("searchChargeDtFrom", searchChargeDtFrom);
+			searchChargeDtFrom = searchChargeDt.substring(0, 10);			
+			map.put("searchChargeDtFrom", searchChargeDtFrom  +" 00:00:00");
 			
 			searchChargeDtEnd = searchChargeDt.substring(13, searchChargeDt.length()) ;			
-			map.put("searchChargeDtEnd", searchChargeDtEnd);
-		}						
+			map.put("searchChargeDtEnd", DateUtils.addTime(searchChargeDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)  +" 00:00:00");
+		}else {						
+			searchChargeDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchChargeDtEnd = DateUtils.addTime(searchChargeDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
+//			logger.debug("****** getBottleList else *****searchDtEnd===*"+searchDtEnd);
+			
+			map.put("searchChargeDtFrom", searchChargeDtFrom+" 00:00:00");
+			map.put("searchChargeDtEnd", searchChargeDtEnd  +" 00:00:00");
+			
+			map.put("searchChargeDt", searchChargeDtFrom + " - " + searchChargeDtFrom);
+		}
 		
 		int bottleCount = workMapper.selectWorBottleCountTotal(map);		
 		
@@ -1451,6 +1467,14 @@ public class WorkReportServiceImpl implements WorkReportService {
 
 	@Override
 	public int getWorkReportSeqForCustomerToday(WorkReportVO param) {		
+//		logger.debug("########### getWorkReportSeqForCustomerToday registerWorkReportNoOrder param.getSearchDt =" + param.getSearchDt());
+		
+		if(param.getSearchDt() !=null) {
+			param.setSearchEndDt(DateUtils.addTime(param.getSearchDt() , "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		}else {
+			param.setSearchDt(DateUtils.getDate("yyyy-MM-dd") +" 00:00:00");
+			param.setSearchEndDt(DateUtils.addTime(DateUtils.getDate("yyyy-MM-dd") , "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		}
 		return workMapper.selectWorkReportSeqForCustomerToday(param);
 	}
 
@@ -2266,7 +2290,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						// 남은처리 workBottle 처리 
 						if(remainCount > 0) { // 추가			
 							beforeWorkBottle.setManualYn("Y");
-							if(beforeWorkBottle.getGasId() > 0 ) {								
+							if(beforeWorkBottle.getGasId() !=null && beforeWorkBottle.getGasId() > 0 ) {								
 								
 								//beforeWorkBottle.setProductPrice(beforeWorkBottle.getProductPrice()/beforeWorkBottle.getProductCount());								
 								result = addWorkBottle(beforeWorkBottle);	
@@ -2906,7 +2930,13 @@ public class WorkReportServiceImpl implements WorkReportService {
 	@Override
 	public List<WorkBottleVO> getWorkBottleListOfUser(WorkReportVO param) {
 		
-		return workMapper.selectWorkReportListAll(param);
+//		List<WorkBottleVO> workBottleList = workMapper.selectWorkReportListAll(param);
+//		for (int i = 0; i < workBottleList.size(); i++) {
+//            WorkBottleVO workBottle = workBottleList.get(i);
+//            logger.debug("getWorkBottleListOfUser.getCustomerNm() =" + workBottle.getCustomerNm() ); 
+//           
+//        }
+		return  workMapper.selectWorkReportListAll(param);
 	}
 
 	@Override
@@ -4136,7 +4166,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setProductCount(workBottleProductCount*-1);
 				workBottle.setUpdateId(param.getCreateId());
 
-				if(workBottle.getGasId() > 0) {
+				if(workBottle.getGasId() !=null && workBottle.getGasId() > 0) {
 					result = modifyCustomerProduct(workBottle);
 					if(result <=0 ) return -1;
 				}
@@ -4410,7 +4440,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					//OrderProduct / OrderBottle / Order
 					result = orderService.deleteOrderProducts(orderExt.getOrderProduct().get(0));
 					
-					if(workBottle.getGasId() > 0) {
+					if(Objects.nonNull(workBottle.getGasId()) && workBottle.getGasId() > 0) {
 //						logger.debug(" --deleteOrderAndProduct  orderProductCount1=" + orderProductCount );
 						
 						List<OrderBottleVO> orderBottleList = orderService.getOrderBottleListOfProduct(orderExt.getOrderProduct().get(0));
@@ -4445,7 +4475,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 				}else if(orderProductListTotalCount > orderProductListCount) {
 					result = orderService.deleteOrderProductByProduct(orderExt.getOrderProduct().get(idxSel));
-					if(workBottle.getGasId() > 0) {
+					if(Objects.nonNull(workBottle.getGasId()) & workBottle.getGasId() > 0) {
 						List<OrderBottleVO> orderBottleList = orderService.getOrderBottleListOfProduct(orderExt.getOrderProduct().get(idxSel));
 						
 						for ( int i = 0 ; i < orderBottleList.size() ; i++) {
@@ -4699,7 +4729,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		for(int i = 0 ; i < workBottleList.size() ; i++ ) {
 			
 			WorkBottleVO workBottle = workBottleList.get(i);
-			if(workBottle.getGasId() > 0) {
+			if(workBottle.getGasId() !=null && workBottle.getGasId() > 0) {
 				if(workBottle.getProductCapa().indexOf("Kg") < 0) workBottle.setProductCapa(workBottle.getProductCapa() +"L");
 			}
 			if(StringUtils.isTankProduct(workBottle.getProductId()) ){

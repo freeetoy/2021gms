@@ -1,5 +1,7 @@
 package com.gms.web.admin.controller.statistics;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
@@ -27,6 +30,7 @@ import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.statistics.StatisticsProductVO;
+import com.gms.web.admin.domain.statistics.StatisticsProuctCustomerCountVO;
 import com.gms.web.admin.service.manage.ProductService;
 import com.gms.web.admin.service.statistics.StatisticsProductService;
 
@@ -286,5 +290,50 @@ public class StatisticsProductController {
 		}
 	}
 	
+	@RequestMapping(value = "/gms/statistics/product/detailList.do")
+	@ResponseBody
+	public List<StatisticsProuctCustomerCountVO> getStatisticsProductBottleList(StatisticsProuctCustomerCountVO param) {
+
+		logger.info("StatisticsProductContoller getStatisticsProductBottleList");
+//		logger.info("StatisticsProductContoller param.getSearchDt() "+param.getSearchDt());
+//		logger.debug("StatisticsProductContoller sType "+ param.getSType());
+
+		//Integer searchProductId = params.getSearchProductId();				
+		String searchStatDt = param.getSearchDt();	
+		
+		String searchStatDtFrom = null;
+		String searchStatDtEnd = null;
+				
+		if(param.getGubunType() ==1 && searchStatDt != null && searchStatDt.length() > 9) {						
+			searchStatDt = searchStatDt.replace("/","-");
+			param.setSearchDtFrom(searchStatDt+" 00:00:00");
+//			logger.error("****** getStatisticsProductDaily else *****searchStatDtEnd===*"+DateUtils.addTime(searchStatDt, "yyyy-MM-dd", Calendar.DATE, 1));	 
+			param.setSearchDtEnd(DateUtils.addTime(searchStatDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");			
+		}else {		
+			searchStatDt = searchStatDt.replace("/","-");
+			searchStatDt = searchStatDt + "-01";
+			param.setSearchDtFrom(searchStatDt+" 00:00:00");
+//			logger.error("****** getStatisticsProductMonthly *****searchStatDtEnd===*"+DateUtils.addTime(searchStatDt, "yyyy-MM-dd", Calendar.MONTH, 1));	 
+			param.setSearchDtEnd(DateUtils.addTime(searchStatDt, "yyyy-MM-dd", Calendar.MONTH, 1)+" 00:00:00");		
+		}
+		
+		List<String> list = new ArrayList<>();
+		if(param.getSType() == 0) {
+			list.add("0309");
+			list.add("0316");
+			list.add("0308");
+			list.add("0314");
+			
+		} else if(param.getSType() == 1) {
+			list.add("0308");
+			list.add("0314");
+		}else {
+			list.add("0309");
+			list.add("0316");
+		}
+		param.setCodeList(list);
+		
+		return statService.getWorkBottleListOfProductStat(param);
+	}
 
 }

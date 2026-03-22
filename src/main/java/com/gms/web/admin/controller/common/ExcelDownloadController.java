@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.common;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -731,8 +732,8 @@ public class ExcelDownloadController {
 				
 				searchOrderDtEnd = searchOrderDt.substring(13, searchOrderDt.length()) ;
 				
-				param.setSearchOrderDtFrom(searchOrderDtFrom);
-				param.setSearchOrderDtEnd(searchOrderDtEnd);				
+				param.setSearchOrderDtFrom(searchOrderDtFrom +" 00:00:00");
+				param.setSearchOrderDtEnd(DateUtils.addTime(searchOrderDtEnd, "yyyy-MM-dd", Calendar.DATE, 1) +" 00:00:00");				
 			}		
 
 		   // order 정보 불러오기
@@ -1043,17 +1044,17 @@ public class ExcelDownloadController {
 				searchChargeDtEnd = searchChargeDt.substring(13, searchChargeDt.length()) ;
 				
 				bottle.setSearchChargeDt(searchChargeDt);		
-				bottle.setSearchChargeDtFrom(searchChargeDtFrom);
-				bottle.setSearchChargeDtEnd(searchChargeDtEnd);
-				
+				bottle.setSearchChargeDtFrom(searchChargeDtFrom +" 00:00:00");
+				bottle.setSearchChargeDtEnd(DateUtils.addTime(searchChargeDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			}else {
 				
-				searchChargeDtFrom = DateUtils.getDate("yyyy/MM/dd");				
-				searchChargeDtEnd = DateUtils.getDate("yyyy/MM/dd");
+				searchChargeDtFrom = DateUtils.getDate("yyyy-MM-dd");				
+				searchChargeDtEnd = DateUtils.getDate("yyyy-MM-dd");
 				
 				bottle.setSearchChargeDt(searchChargeDtFrom+" - "+searchChargeDtEnd);
-				bottle.setSearchChargeDtFrom(searchChargeDtFrom);
-				bottle.setSearchChargeDtEnd(searchChargeDtEnd);
+				bottle.setSearchChargeDtFrom(searchChargeDtFrom+" 00:00:00");
+//				bottle.setSearchChargeDtEnd(searchChargeDtEnd+" 00:00:00");
+				bottle.setSearchChargeDtEnd(DateUtils.addTime(searchChargeDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			}
 			
 			List<BottleVO> bottleList = bottleService.getCustomerBottleListDate(bottle);	

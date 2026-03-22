@@ -48,12 +48,12 @@ var goUpdate = function(bottleBarCd){
 	      language: "kr",
 	      locale: {
 	    	  cancelLabel: 'Clear',
-	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
+	          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
 	      }	  	
 	  });
 	
 	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
 	  });
 	
 	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -66,9 +66,15 @@ $(document).ready(function(){
 	$(".btn-navbar").click(function()  
     {
 		var form = document.mainForm;	
-		$("#currentPage").val(1);  
-		mainForm.action="/gms/order/monitor.do";
-		mainForm.submit();
+		var searchDtVal = $('#searchChargeDt').val();	
+	    if(searchDtVal){
+			$("#currentPage").val(1);  
+			mainForm.action="/gms/order/monitor.do";
+			mainForm.submit();
+	    }else { 
+    		alert("작업일자를  입력하세요");
+    		return;
+    	}
       
     });
 });
@@ -99,7 +105,7 @@ $(document).ready(function(){
                	<label>작업일자</label>
             </div>               
             <div class="col-4">              
-               <input type="text" class="form-control" name="searchChargeDt" th:value="${searchChargeDt}"/>			
+               <input type="text" class="form-control" name="searchChargeDt" id="searchChargeDt" th:value="${searchChargeDt}"/>			
             </div>               
             <div class="col-3">               
             </div>

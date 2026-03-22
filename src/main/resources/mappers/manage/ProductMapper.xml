@@ -491,17 +491,16 @@
 	
 	<select id="selectCustomerLn2List"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
 		SELECT
-			TPP.Product_ID ,TPP.Product_Price_Seq, concat(Product_Nm , " - " ,Product_Capa) Product_Nm,Product_Capa
-		FROM
-			TB_Product  TP, TB_Product_Price TPP
-		WHERE
-			TP.Product_ID = 60
-		AND
-			TP.Product_ID = TPP.Product_ID		
-		AND 
-			TP.Product_Status  != '0'
-		AND 
-			TPP.Product_Status  != '0'
+		    TPP.Product_ID,
+		    TPP.Product_Price_Seq,
+		    CONCAT(TP.Product_Nm, ' - ', Product_Capa) AS Product_Nm,
+		    Product_Capa
+		FROM TB_Product TP
+		JOIN TB_Product_Price TPP
+		    ON TP.Product_ID = TPP.Product_ID
+		WHERE TP.Product_ID = 60
+		  AND TP.Product_Status > 0
+		  AND TPP.Product_Status > 0
 	</select>
 	
 	<select id="selectTankProductPriceList"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">

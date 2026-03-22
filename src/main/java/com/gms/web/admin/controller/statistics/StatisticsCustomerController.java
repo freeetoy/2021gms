@@ -331,20 +331,19 @@ public class StatisticsCustomerController {
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, 23) ;
 			
-			param.setSearchStatDtFrom(searchStatDtFrom);
-			param.setSearchStatDtEnd(searchStatDtEnd);		
+			param.setSearchStatDtFrom(searchStatDtFrom +" 00:00:00");
+			param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 			
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
 			param.setSearchStatDt(searchStatDt);
 		}else {			
-			searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
-			searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
+			searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy-MM-dd");		
+			searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy-MM-dd");	
 			
-			param.setSearchStatDtFrom(searchStatDtFrom);
-			param.setSearchStatDtEnd(searchStatDtEnd);
+			param.setSearchStatDtFrom(searchStatDtFrom +" 00:00:00");
+			param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 	
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
-			
 			param.setSearchStatDt(searchStatDt);
 		}		
 
@@ -400,7 +399,24 @@ public class StatisticsCustomerController {
 			
 		   String searchStatDtFrom = null;
 		   String searchStatDtEnd = null;
-					
+		
+		   if(searchStatDt != null && searchStatDt.length() > 20) {						
+				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+				
+				param.setSearchStatDtFrom(searchStatDtFrom  +" 00:00:00");
+				param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1) +" 00:00:00");		
+			}else {			
+				searchStatDtFrom = DateUtils.getDate("yyyy-MM-dd");		
+				
+				param.setSearchStatDtFrom(searchStatDtFrom  +" 00:00:00");
+				param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtFrom, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		
+				searchStatDt = searchStatDtFrom +" - "+ searchStatDtFrom;
+				
+				param.setSearchStatDt(searchStatDt);
+			}
+		   /*
 		   if(searchStatDt != null && searchStatDt.length() > 20) {						
 				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
@@ -408,7 +424,7 @@ public class StatisticsCustomerController {
 				param.setSearchStatDtFrom(searchStatDtFrom);
 				param.setSearchStatDtEnd(searchStatDtEnd);			
 		   }else {			
-				searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
+				searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy-MM-dd");		
 				searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
 				
 				param.setSearchStatDtFrom(searchStatDtFrom);
@@ -418,6 +434,7 @@ public class StatisticsCustomerController {
 				
 				param.setSearchStatDt(searchStatDt);
 		   }		
+		   */
 		   String titleDate = searchStatDt.replace("/","");
 		   
 		   if(param.getSearchCustomerId() != null && Integer.parseInt(param.getSearchCustomerId()) > 0) {
@@ -425,7 +442,6 @@ public class StatisticsCustomerController {
 			}else {
 				param.setSearchCustomerId(null);
 			}
-		 logger.debug("StatisticsCustomerContoller searchUserId "+ param.getSearchUserId());
 			List<StatisticsCustomerBottleVO> statCustomerBottleList = statService.getStatisticsCustomerBottleList(param);
 					
 			for(int i =0 ; i < statCustomerBottleList.size() ; i++) {
@@ -635,16 +651,15 @@ public class StatisticsCustomerController {
 				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
 				
-				param.setSearchStatDtFrom(searchStatDtFrom);
-				param.setSearchStatDtEnd(searchStatDtEnd);			
+				param.setSearchStatDtFrom(searchStatDtFrom  +" 00:00:00");
+				param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1) +" 00:00:00");			
 			}else {			
-				searchStatDtFrom = DateUtils.getNextDate(-0,"yyyy/MM/dd");		
-				searchStatDtEnd = DateUtils.getNextDate(-0,"yyyy/MM/dd");	
+				searchStatDtFrom = DateUtils.getDate("yyyy-MM-dd");		
 				
-				param.setSearchStatDtFrom(searchStatDtFrom);
-				param.setSearchStatDtEnd(searchStatDtEnd);
+				param.setSearchStatDtFrom(searchStatDtFrom  +" 00:00:00");
+				param.setSearchStatDtEnd(DateUtils.addTime(searchStatDtFrom, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 		
-				searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+				searchStatDt = searchStatDtFrom +" - "+ searchStatDtFrom;
 				
 				param.setSearchStatDt(searchStatDt);
 			}

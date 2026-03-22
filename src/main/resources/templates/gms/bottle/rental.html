@@ -4,6 +4,26 @@
 
 <th:block layout:fragment="content"> 
 <script type="text/javascript">	
+$(function() {
+
+	  $('input[name="searchDt"]').daterangepicker({
+	      autoUpdateInput: false,
+	      startDate: new Date(),
+	      language: "kr",
+	      locale: {
+	    	  cancelLabel: 'Clear',
+	          "format": 'YYYY-MM-DD'     // 일시 노출 포맷
+	      }	  	
+	  });
+	
+	  $('input[name="searchDt"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+	  });
+	
+	  $('input[name="searchDt"]').on('cancel.daterangepicker', function(ev, picker) {
+	      $(this).val('');
+	  });
+});	
 
 function checkAll(){   
     
@@ -28,7 +48,7 @@ function validationOfForm(form) {
 function fn_modifyBottleWorkCd(){				
 		
 	var form = $("#chForm");	
-   	chForm.action="/gms/bottle/changeWorkCd.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]";
+   	chForm.action="/gms/bottle/changeWorkCd.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]&searchDt=[[ ${searchDt} ]]";
    	chForm.submit();
 }
 	
@@ -39,7 +59,7 @@ var fn_deleteBottle = function(bottleId){
 		var form = document.createElement("form");
 		form.setAttribute("charset","UTF-8");
 		form.setAttribute("method","post");
-		form.setAttribute("action","/gms/bottle/delete.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]");
+		form.setAttribute("action","/gms/bottle/delete.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]&searchDt=[[ ${searchDt} ]]");
 		
 		var hiddenField = document.createElement("input");
         hiddenField.setAttribute("type", "hidden");
@@ -78,7 +98,7 @@ var fn_deleteBottle = function(bottleId){
 	function goSearch(){	
 		
 		var form = document.mainForm;	
-		mainForm.action="/gms/bottle/sales.do";
+		mainForm.action="/gms/bottle/rental.do";
 		form.submit();
 	};
 
@@ -95,26 +115,6 @@ var fn_deleteBottle = function(bottleId){
     	mainForm.submit();
     }
 	
-
-	$(function() {
-	
-	  $('input[name="searchChargeDt"]').daterangepicker({
-	      autoUpdateInput: false,
-	      locale: {
-	    	  cancelLabel: 'Clear',
-	          "format": 'YYYY/MM/DD'     // 일시 노출 포맷
-	      }
-	  });
-	
-	  $('input[name="searchChargeDt"]').on('apply.daterangepicker', function(ev, picker) {
-	      $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
-	  });
-	
-	  $('input[name="searchChargeDt"]').on('cancel.daterangepicker', function(ev, picker) {
-	      $(this).val('');
-	  });
-	
-	});	
 
 	
 	function fn_deleteBottles()
@@ -152,7 +152,7 @@ var fn_deleteBottle = function(bottleId){
 			var form = document.createElement("form");
 			form.setAttribute("charset","UTF-8");
 			form.setAttribute("method","post");
-			form.setAttribute("action","/gms/bottle/deleteChecked.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]");
+			form.setAttribute("action","/gms/bottle/deleteChecked.do?currentPage=[[ ${currentPage} ]]&searchBottleId=[[ ${searchBottleId} ]]&searchProductId=[[ ${searchProductId} ]]&searchChargeDt=[[ ${searchChargeDt} ]]&searchDt=[[ ${searchDt} ]]");
 			
 			var hiddenField = document.createElement("input");
 	        hiddenField.setAttribute("type", "hidden");
@@ -174,11 +174,16 @@ var fn_deleteBottle = function(bottleId){
 $(document).ready(function(){
 	$(".btn-navbar").click(function()  
     {
-		var form = document.mainForm;	
-		$("#currentPage").val(1);  
-		mainForm.action="/gms/bottle/rental.do";
-		mainForm.submit();
-      
+		var searchDtVal = $('#searchDt').val();	
+    	if(searchDtVal){
+    		var form = document.mainForm;	
+    		$("#currentPage").val(1);  
+    		mainForm.action="/gms/bottle/rental.do";
+    		form.submit();
+    	}else { 
+    		alert("처리일자을 입력하세요");
+    		return;
+    	}
     });
 });
 
@@ -203,14 +208,31 @@ $(document).ready(function(){
 	         </table>
 	        </div>
         </div>
+        <div class="row">
+            <div class="col-1">
+               		<label>처리일자</label> 
+            </div>               
+            <div class="col-4">              
+            <form id="mainForm" name=""mainForm""  method="post">
+              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
+              <input type="hidden" id="bottleBarCd" name="bottleBarCd" value="">     
+               <input type="text" class="form-control" name="searchDt" id="searchDt" th:value="${searchDt}"/>			
+            </div>               
+            <div align=right class="col-7">               
+            </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
     	<div class="row">
            	<div class="col-1">
                		<label>용기코드</label> 
             </div>               
             <div class="col-3">   
-            <form id="mainForm" name=""mainForm""  method="post">
-              <input type="hidden" id="currentPage" name="currentPage" th:value="${currentPage}">
-              <input type="hidden" id="bottleBarCd" name="bottleBarCd" value="">           
+                  
                <input type="text" id="searchBottleId" name="searchBottleId" class="form-control" th:value="${searchBottleId}">
             </div>            
             <div class="col-2">
@@ -235,7 +257,7 @@ $(document).ready(function(){
 		           </form>
               </div>
               <div class="col-2">
-              	<a th:href="@{/gms/bottle/excelDownload.do( currentPage=${currentPage} ,searchBottleId=${searchBottleId},searchProductId= ${searchProductId} ,searchChargeDt=${searchChargeDt},menuType=4)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>               
+              	<a th:href="@{/gms/bottle/excelDownload.do( currentPage=${currentPage} ,searchBottleId=${searchBottleId},searchDt=${searchDt},,searchProductId= ${searchProductId} ,searchChargeDt=${searchChargeDt},menuType=4)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>               
               </div>             
          </div>
         <div class="row">	

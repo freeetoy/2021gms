@@ -356,18 +356,18 @@ var goList = function(){
                       <th>용기타입</th>
                       <th>거래처</th>
                       <th>작업자</th>
-                      <th>등록일</th>
+                      <th>등 록 일</th>
                     </tr>
                   	</thead>
                   	<tbody>
                   	<tr th:if="${not #lists.isEmpty( historyList )}" th:each="row : ${historyList}">
                       <td th:text="${historyList.indexOf(row)+1}"></td>
-                      <td th:text="${row.bottleWorkCdNm}"></td>
+                      <td th:text="${row.bottleWorkCdNm}" style="width:70pt;"></td>
                       <td th:if="${row.bottleType=='E'}" th:text="공병"></td>
                        <td th:unless="${row.bottleType=='E'}" th:text="실병"></td>
                       <td th:text="${row.customerNm}"></td>
                       <td th:text="${row.bottleWorkId}"></td>
-                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}"></td>
+                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd' )}" style="width:70pt;"></td>
                     </tr>
                   	</tbody>
                	</table>   

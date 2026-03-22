@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.manage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.common.web.utils.SessionUtil;
@@ -84,8 +86,18 @@ public class OrderController {
 			searchOrderDtFrom = searchOrderDt.substring(0, 10) ;			
 			searchOrderDtEnd = searchOrderDt.substring(13, searchOrderDt.length()) ;
 			
-			params.setSearchOrderDtFrom(searchOrderDtFrom);
-			params.setSearchOrderDtEnd(searchOrderDtEnd);			
+			params.setSearchOrderDtFrom(searchOrderDtFrom +" 00:00:00" );
+			params.setSearchOrderDtEnd(DateUtils.addTime(searchOrderDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00" );			
+		}else {
+			searchOrderDtFrom = DateUtils.getDate("yyyy-MM-dd");
+			searchOrderDtEnd = DateUtils.addTime(searchOrderDtFrom, "yyyy-MM-dd", Calendar.DATE, 1);
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
+//			logger.debug("****** getBottleList else *****searchDtEnd===*"+searchDtEnd);
+			
+			params.setSearchOrderDtFrom(searchOrderDtFrom+" 00:00:00");
+			params.setSearchOrderDtEnd(searchOrderDtEnd+" 00:00:00");
+			
+			params.setSearchOrderDt(searchOrderDtFrom + " - " + searchOrderDtFrom);
 		}
 				
 		Map<String, Object> map = orderService.getOrderList(params);
@@ -126,7 +138,12 @@ public class OrderController {
 		mav.addObject("bottleList", map.get("list"));			
 				
 		//검색어 셋팅
-		mav.addObject("searchChargeDt", params.getSearchChargeDt());	
+		
+		if(params.getSearchChargeDt() != null && params.getSearchChargeDt().length() > 20) {
+			mav.addObject("searchChargeDt", params.getSearchChargeDt());	
+		}else {
+			mav.addObject("searchChargeDt", DateUtils.getDate("yyyy-MM-dd") + " - " + DateUtils.getDate("yyyy-MM-dd"));	
+		}
 		mav.addObject("searchCustomerNm", params.getSearchCustomerNm());	
 		
 		mav.addObject("currentPage", map.get("currentPage"));
@@ -457,8 +474,8 @@ public class OrderController {
 			searchOrderDtFrom = searchOrderDt.substring(0, 10) ;			
 			searchOrderDtEnd = searchOrderDt.substring(13, searchOrderDt.length()) ;
 			
-			param.setSearchOrderDtFrom(searchOrderDtFrom);
-			param.setSearchOrderDtEnd(searchOrderDtEnd);			
+			param.setSearchOrderDtFrom(searchOrderDtFrom +" 00:00:00");
+			param.setSearchOrderDtEnd(DateUtils.addTime(searchOrderDtEnd, "yyyy-MM-dd", Calendar.DATE, 1) +" 00:00:00");			
 		}
 		
 		List<OrderVO> orderList = orderService.getOrderReqDtTomorrow(param);

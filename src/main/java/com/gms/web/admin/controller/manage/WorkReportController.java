@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
@@ -107,10 +108,15 @@ public class WorkReportController {
 		
 		if(params.getSearchUserId() == null && userList.size() > 0) params.setSearchUserId(userList.get(0).getUserId());
 		
+		if(params.getSearchDt() != null && params.getSearchDt().length() > 9) {			
+			mav.addObject("searchDt", params.getSearchDt());
+		}else {
+			mav.addObject("searchDt", DateUtils.getDate("yyyy-MM-dd"));
+		}
+		
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);		
 		
 		mav.addObject("workList", workList);	
-		mav.addObject("searchDt", params.getSearchDt());	
 		mav.addObject("searchUserId", params.getSearchUserId());			
 				
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.diary"));	 	
@@ -259,12 +265,11 @@ public class WorkReportController {
 			HttpServletRequest request
 			, HttpServletResponse response
 			, WorkReportVO params) {
-
 		
 		RequestUtils.initUserPrgmInfo(request, params);		
 		
 		ModelAndView mav = new ModelAndView();		
-		
+		String searchDt = params.getSearchDt();
 		if(params.getSearchUserId()!=null && params.getSearchUserId().length() > 1) {
 			params.setUserId(params.getSearchUserId());
 		}else {
@@ -278,7 +283,7 @@ public class WorkReportController {
 		List<WorkReportViewVO> workList = workService.getWorkReportListAll(params);
 		
 		mav.addObject("workList", workList);	
-		mav.addObject("searchDt", params.getSearchDt());			 
+		mav.addObject("searchDt", searchDt);			 
 		
 		if(workList.size() > 0 ) {
 			mav.addObject("orderAmountToday", new Double(workList.get(0).getOrderAmountToday()));
@@ -295,8 +300,9 @@ public class WorkReportController {
 			, WorkReportVO params) throws Exception {
 		
 		UserVO user = userService.getUserDetails( params.getSearchUserId());
+		String searchDt = params.getSearchDt();
 		String fileName = "업무일지";
-			if(user != null) fileName = fileName + "_"+user.getUserNm()+"_"+params.getSearchDt();
+			if(user != null) fileName = fileName + "_"+user.getUserNm()+"_"+searchDt;
 			
 		if(params.getSearchUserId()!=null && params.getSearchUserId().length() > 1) {
 			params.setUserId(params.getSearchUserId());
@@ -350,7 +356,7 @@ public class WorkReportController {
 		       
         		Context context = new Context();
         		context.putVar("workList", workList);
-        		context.putVar("searchDt", params.getSearchDt());
+        		context.putVar("searchDt", searchDt);
         		context.putVar("totalAmount", totalReceivedAmount);
 	            JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
 	       
