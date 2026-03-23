@@ -4440,7 +4440,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					//OrderProduct / OrderBottle / Order
 					result = orderService.deleteOrderProducts(orderExt.getOrderProduct().get(0));
 					
-					if(Objects.nonNull(workBottle.getGasId()) && workBottle.getGasId() > 0) {
+					if(workBottle.getGasId() !=null &&  workBottle.getGasId() > 0) {
 //						logger.debug(" --deleteOrderAndProduct  orderProductCount1=" + orderProductCount );
 						
 						List<OrderBottleVO> orderBottleList = orderService.getOrderBottleListOfProduct(orderExt.getOrderProduct().get(0));
@@ -4475,7 +4475,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					
 				}else if(orderProductListTotalCount > orderProductListCount) {
 					result = orderService.deleteOrderProductByProduct(orderExt.getOrderProduct().get(idxSel));
-					if(Objects.nonNull(workBottle.getGasId()) & workBottle.getGasId() > 0) {
+					if(workBottle.getGasId() !=null &&  workBottle.getGasId() > 0) {
 						List<OrderBottleVO> orderBottleList = orderService.getOrderBottleListOfProduct(orderExt.getOrderProduct().get(idxSel));
 						
 						for ( int i = 0 ; i < orderBottleList.size() ; i++) {

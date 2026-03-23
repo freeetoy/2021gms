@@ -701,7 +701,7 @@
 		WHERE
 			TB.Delete_YN = 'N'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
-		AND Customer_Id = #{ownCustomerId}
+		AND TB.Customer_Id = #{ownCustomerId}
 		</if>	
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleBarCd)">
 		AND Bottle_BarCd	 LIKE CONCAT(#{searchBottleBarCd}, '%')
@@ -1025,10 +1025,10 @@
 		WHERE
 			TB.Delete_YN = 'N'
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(ownCustomerIdYn)">
-		AND Customer_Id = #{ownCustomerId}
+		AND TB.Customer_Id = #{ownCustomerId}
 		</if>	
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleBarCd)">
-		AND Bottle_BarCd	 LIKE CONCAT(#{searchBottleBarCd}, '%')
+		AND Bottle_BarCd LIKE CONCAT(#{searchBottleBarCd}, '%')
 		</if>		
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchBottleId)">
 		AND Bottle_ID	 LIKE CONCAT(#{searchBottleId}, '%')

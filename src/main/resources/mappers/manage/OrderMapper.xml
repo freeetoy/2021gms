@@ -918,7 +918,7 @@
 		AND 
 			Order_Process_CD !='0299'	
 		AND 
-			Customer_id = #{customerId}
+			A.Customer_id = #{customerId}
 		AND 
 			A.Create_Id = D.User_ID
 		AND 
