@@ -118,7 +118,7 @@ var goUpdate = function(bottleBarCd){
                       <td th:unless="${row.productId >= 65 && row.productId <=71}" th:text="${row.bottleCapa}"></td>
                       <td th:text="${row.bottleWorkCdNm}"></td>   
                       <td th:text="|${row.bottleWorkNm}(${row.bottleWorkId})|"></td>                 
-                      <td th:text="${#calendars.format( row.bottleWorkDt, 'yyyy-MM-dd HH:mm' )}"></td> 
+                      <td th:text="${#calendars.format( row.updateDt, 'yyyy-MM-dd HH:mm' )}"></td> 
                     </tr>
                     <tr th:unless="${not #lists.isEmpty( bottleList )}">
 						<td colspan="9">조회된 결과가 없습니다.</td>

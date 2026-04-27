@@ -78,6 +78,7 @@ public class ApiController {
 			workReport.setUserId(userId);
 			workReport.setUpdateId(userId);	
 			workReport.setReportEtc(workEtc);
+			workReport.setCreateDt(new Date());
 			
 			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
@@ -191,6 +192,7 @@ public class ApiController {
 			workReport.setUpdateId(userId);	
 			workReport.setReportEtc(workEtc);
 			workReport.setSearchDt(workDt);
+			workReport.setCreateDt(new Date());
 			
 			if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.come")) ) {			//입고
 				workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
@@ -294,6 +296,7 @@ public class ApiController {
 		
 		param.setCreateId(param.getUserId());	
 		param.setUpdateId(param.getUserId());
+		param.setCreateDt(new Date());
 		param.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));		
 		
 		//workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
@@ -320,6 +323,7 @@ public class ApiController {
 	
 		int result = 0;
 		
+		param.setCreateDt(new Date());
 		result = apiService.registerCashFlow(param);
 		
 		Long endTime = System.currentTimeMillis();

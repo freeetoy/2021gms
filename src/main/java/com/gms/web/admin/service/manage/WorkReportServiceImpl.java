@@ -3,8 +3,13 @@ package com.gms.web.admin.service.manage;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -1517,6 +1522,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			workReport.setCustomerId(param.getCustomerId());
 			workReport.setWorkCd(param.getBottleWorkCd());
 			workReport.setCreateId(param.getCreateId());
+			workReport.setCreateDt(new Date());;
 			workReport.setSearchDt(param.getSearchDt());		
 			workReport.setUpdateId(param.getCreateId());		
 			if(param.getUserId() !=null && param.getUserId().length() > 0)
@@ -1759,6 +1765,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 					addWorkBottle.setWorkEtc(param.getWorkEtc());
 					addWorkBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));
 					addWorkBottle.setCreateId(param.getCreateId());
+					addWorkBottle.setCreateDt(param.getCreateDt());
 					
 					result = workMapper.insertWorkBottle(addWorkBottle);
 				}else {
@@ -1798,7 +1805,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						addWorkBottle.setCreateId(param.getCreateId());
 						addWorkBottle.setUpdateId(param.getCreateId());			
 						addWorkBottle.setSearchDt(param.getSearchDt());
-						
+						addWorkBottle.setCreateDt(param.getCreateDt());
 	//					logger.debug(" registerWorkNoBottle  getSearchDt=" + param.getSearchDt() );
 	//					logger.debug(" registerWorkNoBottle addWorkBottle getSearchDt=" + addWorkBottle.getSearchDt() );
 						workBottleList.add(addWorkBottle);
@@ -2009,6 +2016,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 						addWorkBottle.setCreateId(param.getCreateId());
 					addWorkBottle.setUpdateId(param.getCreateId());
 					addWorkBottle.setSearchDt(param.getSearchDt());
+					addWorkBottle.setCreateDt(param.getCreateDt());
 					
 					result = workMapper.insertWorkBottle(addWorkBottle);
 				}else {
@@ -2048,6 +2056,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 							addWorkBottle.setCreateId(param.getCreateId());
 						addWorkBottle.setUpdateId(param.getCreateId());
 						addWorkBottle.setSearchDt(param.getSearchDt());
+						addWorkBottle.setCreateDt(param.getCreateDt());
 						workBottleList.add(addWorkBottle);
 					}
 	//				logger.debug("--registerWorkNoBottle  workBottleList.size=" + workBottleList.size() );
@@ -2098,6 +2107,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.0312"));		
 		workBottle.setCustomerId(param.getCustomerId());				
 		workBottle.setCreateId(param.getUserId());			
+		workBottle.setCreateDt(param.getCreateDt());
 		
 		result =  workMapper.updateWorkReportReceivedAmount(param);
 		if(result > 0)
@@ -2120,6 +2130,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.0312"));		
 		workBottle.setCustomerId(param.getCustomerId());				
 		workBottle.setCreateId(param.getCreateId());
+		workBottle.setCreateDt(param.getCreateDt());
+		
 		if(param.getSearchDt() != null && param.getSearchDt().length() >0) {
 			workBottle.setSearchDt(param.getSearchDt());
 		}
@@ -2176,6 +2188,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 				workBottle.setSearchDt(param.getSearchDt());
 				workBottle.setAgencyYn(customer.getAgencyYn());
 				workBottle.setManualYn("Y");
+				
+				workBottle.setCreateDt( makeCreateDt(param.getSearchDt())); // 선택한 날짜에 현재 시간 설정 			
 				boolean rightYn = true;
 //				logger.debug("modifyWorkBottleManual workBottle.setSearchDt==" + workBottle.getSearchDt() ); 
 				if(request.getParameter("bottleWorkCd_"+i) !=null) {
@@ -2710,6 +2724,8 @@ public class WorkReportServiceImpl implements WorkReportService {
 					else addWorkBottle.setProductPrice(productTotal.getProductBottlePrice());		
 					addWorkBottle.setBottleSaleYn("Y");
 					
+					addWorkBottle.setCreateDt(makeCreateDt(workBottle.getSearchDt()));
+					
 					addWorkBottleList.add(addWorkBottle);
 				}else {
 					for(int j=0 ; j < params.get(i).getProductCount() ; j++) {
@@ -2748,6 +2764,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 							else addWorkBottle.setProductPrice(productTotal.getProductBottlePrice());		
 							addWorkBottle.setBottleSaleYn("Y");
 						}
+						addWorkBottle.setCreateDt(makeCreateDt(workBottle.getSearchDt()));
 	//					logger.debug("WorkReportServiceImpl --addWorkBottle getGasCd" + addWorkBottle.getGasCd());
 						addWorkBottleList.add(addWorkBottle);
 					}
@@ -4224,6 +4241,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setBottleWorkCd(bottle.getBottleWorkCd());
 		workBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.FULL"));
 		workBottle.setGasCd(bottle.getGasCd());
+		workBottle.setCreateDt(new Date());
 		
 		return workBottle;		
 	}
@@ -4895,4 +4913,25 @@ public class WorkReportServiceImpl implements WorkReportService {
 		return  resutlMap;
 	}
 
+	
+	public Date makeCreateDt(String dateStr) {
+//		workBottle.setCreateDt(searchDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
+		
+        // 문자열 → LocalDate
+        LocalDate localDate = LocalDate.parse(dateStr);
+
+        // 현재 시간
+        LocalTime currentTime = LocalTime.now();
+
+        // 날짜 + 현재시간 결합
+        LocalDateTime dateTime = LocalDateTime.of(localDate, currentTime);
+
+        // Date 변환
+        Date resultDate = Date.from(
+                dateTime.atZone(ZoneId.systemDefault()).toInstant()
+        );
+        logger.debug("****** makeCreateDt *****resultDate ===*" +resultDate);	
+//        workBottle.setCreateDt(resultDate);
+        return resultDate;
+	}
 }

@@ -165,7 +165,7 @@
 			, #{reportEtc}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
-			, #{searchDt}	
+			, #{createDt}	
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
 			, NOW()	
@@ -198,7 +198,7 @@
 			, #{workEtc}
 			, #{createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
-			, #{searchDt}	
+			, #{createDt}	
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
 			, NOW()	
@@ -233,7 +233,7 @@
 			, #{item.workEtc}
 			, #{item.createId}			
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(item.searchDt)">
-			, #{item.searchDt}	
+			, #{item.createDt}	
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(item.searchDt)">
 			, NOW()	
@@ -384,6 +384,7 @@
 		TB.Product_ID,
 		TB.Product_Price_Seq
 		ORDER BY
+		TB.Work_Seq,
 		TB.Product_ID,
 		TB.Product_Price_Seq
 	</select>
@@ -919,8 +920,8 @@
 		LEFT JOIN TB_Product_Price TPP
 		    ON TWB.Product_ID = TPP.Product_ID
 		    AND TWB.Product_Price_Seq = TPP.Product_Price_Seq
-		WHERE TWB.Create_DT &gt;= #{searchChargeDtFrom}
-		AND TWB.Create_DT &lt;  #{searchChargeDtEnd} 
+		WHERE TW.Work_DT &gt;= #{searchChargeDtFrom}
+		AND TW.Work_DT &lt;  #{searchChargeDtEnd} 
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_Nm	 LIKE CONCAT(#{searchCustomerNm}, '%')
 		</if>
@@ -945,8 +946,8 @@
 		LEFT JOIN TB_Product_Price TPP
 		    ON TWB.Product_ID = TPP.Product_ID
 		    AND TWB.Product_Price_Seq = TPP.Product_Price_Seq
-		WHERE TWB.Create_DT &gt;= #{searchChargeDtFrom}
-		AND TWB.Create_DT &lt;  #{searchChargeDtEnd} 
+		WHERE TW.Work_DT &gt;= #{searchChargeDtFrom}
+		AND TW.Work_DT &lt;  #{searchChargeDtEnd} 
 		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchCustomerNm)">
 		AND Customer_Nm	 LIKE CONCAT(#{searchCustomerNm}, '%')
 		</if>
@@ -1085,7 +1086,7 @@
 		JOIN TB_Work_Report TW
 		    ON TWB.Work_Report_Seq = TW.Work_Report_Seq
 		   AND TW.Delete_YN = 'N'
-		   AND TW.Work_Dt  &gt;= CURDATE()
+		   AND TW.Work_Dt  &gt;= CURDATE() -1
 		   AND TW.Work_Dt  &lt;  CURDATE() + INTERVAL 1 DAY
 		JOIN TB_CODE TC
 		    ON TWB.Bottle_Work_CD = TC.CD_ID
@@ -1445,8 +1446,8 @@
 		  AND twb.Product_ID = 60
 		  AND tc.Sales_ID = #{createId} 
 		  AND tc.Ln2_Period > 0
-		  AND twb.Create_Dt &gt;= DATE_SUB(CURDATE(), INTERVAL tc.Ln2_Period DAY)
-		  AND twb.Create_Dt &lt;  DATE_SUB(CURDATE(), INTERVAL tc.Ln2_Period DAY) + INTERVAL 1 DAY
+		  AND twr.Work_Dt &gt;= DATE_SUB(CURDATE(), INTERVAL tc.Ln2_Period DAY)
+		  AND twr.Work_Dt &lt;  DATE_SUB(CURDATE(), INTERVAL tc.Ln2_Period DAY) + INTERVAL 1 DAY
   	</select>
 	<insert id="insertWorkBottleHist" parameterType="com.gms.web.admin.domain.manage.WorkReportVO">
 		INSERT INTO TB_Work_Bottle_HIST

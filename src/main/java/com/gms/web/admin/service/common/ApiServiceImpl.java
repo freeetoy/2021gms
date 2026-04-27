@@ -2,6 +2,7 @@ package com.gms.web.admin.service.common;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -210,6 +211,7 @@ public class ApiServiceImpl implements ApiService {
 //					param.setProductPriceSeq(productPrice1.getProductPriceSeq());
 				}
 //				logger.debug("****** registerWorkReportNoGas *****="+param.getProductCount());
+				
 				result = workService.registerWorkNoBottle(param);		
 			}else {
 				return CUSOTMER_NOT_EXIST;
@@ -245,7 +247,7 @@ public class ApiServiceImpl implements ApiService {
 				workReport.setCustomerId(customer.getCustomerId());
 				workReport.setUserId(param.getCreateId());
 				workReport.setCreateId(param.getCreateId());
-				
+				workReport.setCreateDt(param.getCreateDt());
 				int workReportSeq = workService.getWorkReportSeqForCustomerToday(workReport);
 				
 				if(workReportSeq <= 0) {
