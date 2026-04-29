@@ -1,6 +1,7 @@
 package com.gms.web.admin.controller.common;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gms.web.admin.common.config.PropertyFactory;
+import com.gms.web.admin.common.utils.DateUtils;
 import com.gms.web.admin.domain.common.CodeVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
@@ -37,7 +39,8 @@ public class startController {
 		logger.debug("startController getStartWorkBottleList");
 
 		ModelAndView mav = new ModelAndView();		
-		
+		params.setSearchDtFrom(DateUtils.getDate("yyyy-MM-dd")+" 00:00:00");
+		params.setSearchDtEnd(DateUtils.addTime(DateUtils.getDate("yyyy-MM-dd"), "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
 		//logger.debug("startController parmas.searchWordCD "+params.getSearchWorkCd());
 		if(params.getSearchWorkCd()== null) params.setSearchWorkCd(PropertyFactory.getProperty("common.bottle.status.rent"));
 		List<BottleVO> bottleList =  workService.getWorkBottleListToday(params);

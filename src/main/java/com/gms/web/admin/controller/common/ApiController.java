@@ -474,7 +474,7 @@ public class ApiController {
 		workReport.setCreateId(userId);		
 		workReport.setUserId(userId);
 		workReport.setUpdateId(userId);		
-		
+		workReport.setCreateDt(new Date());
 		if(bottleWorkCd.equals(PropertyFactory.getProperty("common.bottle.status.title.masssales"))) {		//판매
 			
 			workReport.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.sale"));		

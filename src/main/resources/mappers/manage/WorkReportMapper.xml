@@ -154,7 +154,7 @@
 			, #{workProductCapa}	
 			, #{workCd}	
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchDt)">
-			, #{searchDt}	
+			, #{createDt}	
 			</if>
 			<if test="@com.gms.web.admin.common.utils.StringUtils@isEmpty(searchDt)">
 			, NOW()	
@@ -1086,8 +1086,8 @@
 		JOIN TB_Work_Report TW
 		    ON TWB.Work_Report_Seq = TW.Work_Report_Seq
 		   AND TW.Delete_YN = 'N'
-		   AND TW.Work_Dt  &gt;= CURDATE() -1
-		   AND TW.Work_Dt  &lt;  CURDATE() + INTERVAL 1 DAY
+		   AND TW.Work_Dt  &gt;= #{searchDtFrom}
+		   AND TW.Work_Dt  &lt;  #{searchDtEnd} 
 		JOIN TB_CODE TC
 		    ON TWB.Bottle_Work_CD = TC.CD_ID
 		JOIN TB_User TU

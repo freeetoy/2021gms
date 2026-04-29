@@ -684,6 +684,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 					//workReportSeq = getWorkReportSeq();
 					registerFlag = true;
 					
+					if(param.getSearchDt() !=null) {
+						param.setWorkDt(makeCreateDt(param.getSearchDt()));
+						param.setCreateDt(makeCreateDt(param.getSearchDt()));
+					}
+					
 					result = workMapper.insertWorkReport(param);
 					workReportSeq = getWorkReportSeqForCustomerToday(param);
 					param.setWorkReportSeq(workReportSeq);	
@@ -1094,7 +1099,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		try {			
 			
 			logger.debug(" registerWorkReportByBottle getCreateId =" + param.getCreateId());			
-			
+			logger.debug(" registerWorkReportByBottle getSearchDt =" + param.getSearchDt());	
 			int workReportSeq = 0;
 			int workSeq = 1;
 			if(param.getUserId() != null && param.getUserId().length() > 0)
@@ -1118,6 +1123,10 @@ public class WorkReportServiceImpl implements WorkReportService {
 				//workReportSeq = getWorkReportSeq();
 				insertFlag = true;
 				
+				if(param.getSearchDt() !=null) {
+					param.setWorkDt(makeCreateDt(param.getSearchDt()));
+					param.setCreateDt(makeCreateDt(param.getSearchDt()));
+				}
 				result = workMapper.insertWorkReport(param);
 				workReportSeq = getWorkReportSeqForCustomerToday(param);
 			}else {
@@ -1537,6 +1546,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(workReportSeq <= 0) {
 				//workReportSeq = getWorkReportSeq();
 				registerFlag = true;
+				
+				if(param.getSearchDt() !=null) {
+					workReport.setWorkDt(makeCreateDt(param.getSearchDt()));
+					workReport.setCreateDt(makeCreateDt(param.getSearchDt()));
+				}
 				
 				result = workMapper.insertWorkReport(workReport);
 				workReportSeq = getWorkReportSeqForCustomerToday(workReport);
@@ -2132,6 +2146,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 		workBottle.setCreateId(param.getCreateId());
 		workBottle.setCreateDt(param.getCreateDt());
 		
+		if(param.getSearchDt() !=null) {
+			param.setWorkDt(makeCreateDt(param.getSearchDt()));
+			param.setCreateDt(makeCreateDt(param.getSearchDt()));
+		}
+		
 		if(param.getSearchDt() != null && param.getSearchDt().length() >0) {
 			workBottle.setSearchDt(param.getSearchDt());
 		}
@@ -2601,7 +2620,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 //		logger.debug("WorkReportServiceImpl --minusOrderProduct  param.getOrderCount=" + param.getOrderCount() );
 //		logger.debug("WorkReportServiceImpl --minusOrderProduct  param.getSalesCount=" + param.getSalesCount() );		
 //		logger.debug("WorkReportServiceImpl --minusOrderProduct  orderProductCount=" + orderProductCount );
-		if(param.getGasId() > 0){
+		if(param.getGasId()!=null && param.getGasId() > 0){
 			// OrderBottlte 삭제
 			//param.setSalesCount(param.getSalesCount()*-1);
 			List<OrderBottleVO> orderBottleList = orderService.getOrderBottleListOfProduct(param);
@@ -4394,7 +4413,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			}
 		}
 		
-//		logger.debug(" --deleteWorkReportAndBottle  workBottleListTotalCount=" + workBottleListTotalCount );
+
 		
 		// workBottleListTotalCount workBottleListCount 비교
 		if(workBottleListTotalCount == workBottleListCount) {	// report 삭제 및 workBottle 삭제
@@ -4583,12 +4602,20 @@ public class WorkReportServiceImpl implements WorkReportService {
 			registerFlag = true;
 			workReport.setWorkReportSeq(workReportSeq);
 			
+			if(param.getSearchDt() !=null) {
+				workReport.setWorkDt(makeCreateDt(param.getSearchDt()));
+				workReport.setCreateDt(makeCreateDt(param.getSearchDt()));
+			}else {
+				workReport.setCreateDt(new Date());
+			}
+			
 			result = workMapper.insertWorkReport(workReport);
 			workReportSeq = getWorkReportSeqForCustomerToday(workReport);
 		}else {
 			workSeq = workMapper.selectWorkBottleSeq(workReportSeq);
 		}	
 		
+//		logger.debug(" --registerWorkBottleChargeTank  workReportSeq=" + workReportSeq );
 		BottleVO bottle = new BottleVO();
 		bottle.setProductId(param.getProductId());
 		bottle.setProductPriceSeq(param.getProductPriceSeq());
@@ -4916,8 +4943,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	public Date makeCreateDt(String dateStr) {
 //		workBottle.setCreateDt(searchDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
-		
+		logger.debug("****** makeCreateDt *****dateStr ===*" +dateStr);	
         // 문자열 → LocalDate
+		if(dateStr != null && dateStr.length() > 11  )	dateStr = dateStr.substring(0,10);
+		
+		logger.debug("****** makeCreateDt *****after dateStr ===*" +dateStr);	
         LocalDate localDate = LocalDate.parse(dateStr);
 
         // 현재 시간
