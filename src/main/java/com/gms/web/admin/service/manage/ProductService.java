@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductDummyCountVO;
 import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
@@ -52,6 +54,8 @@ public interface ProductService {
 	
 	public List<ProductPriceVO> getProductPriceList(Integer productId);
 	
+	public List<ProductTotalVO> getProductPriceListOrder(Integer productId);
+	
 	public int getProductProductSeq(Integer productId) ;
 	
 	public List<ProductVO> getProductList();
@@ -80,4 +84,9 @@ public interface ProductService {
 	
 	public List<ProductNewVO> getGasProductListNew();
 	
+	public int getOrderProductCount(OrderProductVO param);
+	
+	public List<ProductDummyCountVO> getProductDummyBottleList();
+	
+	public boolean createProductDummy(ProductPriceVO param);
 }

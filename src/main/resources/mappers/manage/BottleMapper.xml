@@ -926,6 +926,19 @@
 			Dummy_YN = 'Y'
 	</select>
 	
+	<select id="selectProductDummyBottleList" parameterType="Integer" resultType="com.gms.web.admin.domain.manage.BottleVO" >		
+		SELECT
+			<include refid="BottleColumns" />
+		FROM
+			TB_Bottle TB
+		WHERE
+			Product_id =  #{productId}
+		AND
+			TB.Delete_YN = 'N'
+		AND
+			Dummy_YN = 'Y'
+	</select>
+	
 	<select id="selectSimpleDummyBottleList" resultType="com.gms.web.admin.domain.manage.SimpleBottleVO" >		
 		SELECT
 		    TB.Bottle_Id,
@@ -1070,6 +1083,16 @@
 		DELETE FROM TB_Bottle
 		WHERE
 			Product_ID=  #{productId}
+		AND
+			Dummy_YN != 'N'
+	</update>
+	
+	<update id="deleteProductPriceDummyBottle" parameterType="com.gms.web.admin.domain.manage.ProductPriceVO">
+		DELETE FROM TB_Bottle
+		WHERE
+			Product_ID = #{productId}
+		AND
+			Product_Price_Seq = #{productPriceSeq}
 		AND
 			Dummy_YN != 'N'
 	</update>

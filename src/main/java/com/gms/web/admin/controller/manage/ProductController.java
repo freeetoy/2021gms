@@ -21,6 +21,8 @@ import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.common.web.utils.RequestUtils;
 import com.gms.web.admin.domain.common.LoginUserVO;
 import com.gms.web.admin.domain.manage.GasVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductDummyCountVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
@@ -47,6 +49,18 @@ public class ProductController {
 //		LoginUserVO user = (LoginUserVO) session.getAttribute("LoginUser");
 //
 		List<ProductTotalVO> productList = productService.getProductTotalList();
+		model.addAttribute("productList", productList);
+		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));
+
+		return null;
+	}
+	
+	@RequestMapping(value = "/gms/product/dummy.do")
+	public String openProductDummyList(Model model) {
+		
+//		LoginUserVO user = (LoginUserVO) session.getAttribute("LoginUser");
+//
+		List<ProductDummyCountVO> productList = productService.getProductDummyBottleList();
 		model.addAttribute("productList", productList);
 		model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));
 
@@ -151,14 +165,17 @@ public class ProductController {
 			model.addAttribute("product", productVo);
 			
 			//ProductPrice 정보
-			List<ProductPriceVO> productPriceList = productService.getProductPriceList(params.getProductId());
+			List<ProductTotalVO> productPriceList = productService.getProductPriceListOrder(params.getProductId());
 			
 			StringBuffer productPriceSeqs = new StringBuffer();
 			
 			for(int i=0 ; i< productPriceList.size() ; i++) {
 				productPriceSeqs .append(productPriceList.get(i).getProductPriceSeq().toString());
-				productPriceSeqs .append(",");
+				if(i <  productPriceList.size()-1) productPriceSeqs .append(",");
 				
+				if(i == productPriceList.size() -1) {
+					model.addAttribute("productPriceSeqLast", productPriceList.get(i).getProductPriceSeq());
+				}
 			}
 			model.addAttribute("productPriceSeqs", productPriceSeqs.toString());	
 			model.addAttribute("productPriceList", productPriceList);			
@@ -175,6 +192,8 @@ public class ProductController {
 	
 		return "gms/product/update";
 	}
+	
+	
 	
 	@RequestMapping(value = "/gms/product/modify.do", method = RequestMethod.POST)
 	public String modifyProduct(HttpServletRequest req) {
@@ -200,6 +219,10 @@ public class ProductController {
 			Integer lastPriceSeqInt = productPriceList.get(productPriceList.size()-1).getProductPriceSeq();
 			int lastPriceSeq = lastPriceSeqInt.intValue();			
 //			logger.debug("************* modifyProduct priceCount="+priceCount);
+//			logger.debug("************* modifyProduct productPriceSeqs="+req.getParameter("productPriceSeqs"));
+			
+			String[] seqNum = req.getParameter("productPriceSeqs").split(","); // 쉼표(,)를 기준으로 분리
+			
 			ProductPriceVO[] priceVo = new ProductPriceVO[priceCount] ;
 						
 			int listIndex=0;
@@ -210,34 +233,34 @@ public class ProductController {
 				result = false;
 				
 				RequestUtils.initUserPrgmInfo(req, priceVo1);
-				
-				if(req.getParameter("productPriceSeq_"+i) != null) {
-				//priceVo1.setProductId(Integer.valueOf(productId));
+//				logger.debug("******  modify i===*"+seqNum[i]);
+//				logger.debug("******  modify i===*"+req.getParameter("productPriceSeq_"+seqNum[i]));
+				if(req.getParameter("productPriceSeq_"+seqNum[i]) != null) {
 					priceVo1.setProductId(Integer.parseInt(req.getParameter("productId")));					
-					priceVo1.setProductPriceSeq(Integer.parseInt(req.getParameter("productPriceSeq_"+i)));		
-					priceVo1.setProductCapa(req.getParameter("productCapa_"+i));
-					priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+i)));					
-					priceVo1.setECountCd(req.getParameter("eCountCd_"+i));
-					if(req.getParameter("productBottlePrice_"+i)!=null && req.getParameter("productBottlePrice_"+i).length() > 0)
-						priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+i)));		
+					priceVo1.setProductPriceSeq(Integer.parseInt(req.getParameter("productPriceSeq_"+seqNum[i])));		
+					priceVo1.setProductCapa(req.getParameter("productCapa_"+seqNum[i]));
+					priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+seqNum[i])));					
+					priceVo1.setECountCd(req.getParameter("eCountCd_"+seqNum[i]));
+					if(req.getParameter("productBottlePrice_"+seqNum[i])!=null && req.getParameter("productBottlePrice_"+seqNum[i]).length() > 0)
+						priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+seqNum[i])));		
 					else
 						priceVo1.setProductBottlePrice(0);	
-					priceVo1.setECountCdS(req.getParameter("eCountCdS_"+i));
+					priceVo1.setECountCdS(req.getParameter("eCountCdS_"+seqNum[i]));
 					
 					priceVo[listIndex++] = priceVo1;		
-					
+//					logger.debug("******  modify getProductCapa===*"+priceVo1.getProductCapa());
 					//lastPriceSeq = Integer.parseInt(req.getParameter("productPriceSeq_"+i));
 				}else {
 					if(req.getParameter("productPrice_"+i) !=null) {
 						priceVo1.setProductId(Integer.parseInt(req.getParameter("productId")));			
 						priceVo1.setProductPriceSeq(++lastPriceSeq);	
-						priceVo1.setProductCapa(req.getParameter("productCapa_"+i));
-						priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+i)));						
-						priceVo1.setECountCd(req.getParameter("eCountCd_"+i));
-						priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+i)));						
-						priceVo1.setECountCdS(req.getParameter("eCountCdS_"+i));
+						priceVo1.setProductCapa(req.getParameter("productCapa_"+seqNum[i]));
+						priceVo1.setProductPrice(Float.parseFloat(req.getParameter("productPrice_"+seqNum[i])));						
+						priceVo1.setECountCd(req.getParameter("eCountCd_"+seqNum[i]));
+						priceVo1.setProductBottlePrice(Float.parseFloat(req.getParameter("productBottlePrice_"+seqNum[i])));						
+						priceVo1.setECountCdS(req.getParameter("eCountCdS_"+seqNum[i]));
 						priceVo1.setCreateId(params.getCreateId());
-						
+//						logger.debug("****** qqqq modify getProductCapa===*"+priceVo1.getProductCapa());
 						priceVo[listIndex++] = priceVo1;
 					}
 				}
@@ -260,6 +283,8 @@ public class ProductController {
 		return "redirect:/gms/product/list.do";
 	}
 	
+	
+	
 	@RequestMapping(value = "/gms/product/delete.do")
 	public String deleteProduct(@RequestParam(value = "productId", required = false) Integer productId, Model model) {
 
@@ -268,7 +293,6 @@ public class ProductController {
 		try { 
 			
 			boolean result = productService.deleteProduct(productId);
-			
 			
 			List<ProductTotalVO> productList = productService.getProductTotalList();
 			model.addAttribute("productList", productList);
@@ -360,6 +384,46 @@ public class ProductController {
 		
 		return productList;
 		//return null;
+	}
+	
+	@RequestMapping(value = "/gms/product/orderCount.do")
+	@ResponseBody
+	public int getorderProductCount(OrderProductVO param)	{	
+		
+		int result = productService.getOrderProductCount(param);
+		logger.debug("******result is   *****===*"+result); 
+		return result;
+		//return null;
+	}
+	
+	@RequestMapping(value = "/gms/product/createDummy.do")
+	public String createProductDummyBottle(HttpServletRequest request
+			, HttpServletResponse response,
+			ProductPriceVO param, Model model) {
+		
+		RequestUtils.initUserPrgmInfo(request, param);
+		
+		try { 			
+			
+			boolean result = productService.createProductDummy(param);
+			
+			if (result == false) {
+				// TODO => 데이터베이스 처리 과정에 문제가 발생하였다는 메시지를 전달
+			}
+			model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.product"));
+			
+			List<ProductDummyCountVO> productList = productService.getProductDummyBottleList();
+			model.addAttribute("productList", productList);
+			
+		} catch (DataAccessException e) {
+			logger.error(" modifyProductPriceStatus Exception==="+e.toString());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(" modifyProductPriceStatus Exception==="+e.toString());
+			e.printStackTrace();
+		}		
+		
+		return "redirect:/gms/product/dummy.do";
 	}
 	
 	@RequestMapping(value = "/api/ngasProductPriceList.do")

@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.gms.web.admin.domain.manage.BottleVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductDummyCountVO;
 import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
@@ -28,6 +30,8 @@ public interface ProductMapper {
 	public ProductPriceVO selectProductPriceDetailByCapa(ProductPriceVO param) ;
 	
 	public List<ProductPriceVO> selectProductPriceList(Integer productId);
+	
+	public List<ProductTotalVO> selectProductPriceListOrder(Integer productId);
 
 	public int updateProduct(ProductVO param);
 	
@@ -84,4 +88,10 @@ public interface ProductMapper {
 	public List<ProductPriceSimpleVO> selectAllProductPriceSimpleList();
 	
 	public List<ProductNewVO> selectNewGasProductList();
+	
+	public int countOrderProduct(OrderProductVO param);
+	
+	public List<ProductDummyCountVO> selecProductDummyList();
+	
+	public ProductTotalVO selecProductPrice(ProductPriceVO param);
 }

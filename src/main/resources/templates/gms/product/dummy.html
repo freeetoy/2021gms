@@ -1,0 +1,130 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{gms/layout/basic}">
+
+<div class="wrapper">
+
+<th:block layout:fragment="content"> 
+<script type="text/javascript">
+
+	
+	// end of function
+	
+	var fn_modifyProduct = function(productId, productPriceSeq, productStatus){
+			
+			var form = document.createElement("form");
+			form.setAttribute("charset","UTF-8");
+			form.setAttribute("method","post");
+			form.setAttribute("action","/gms/product/createDummy.do");
+			
+			var hiddenField = document.createElement("input");
+	        hiddenField.setAttribute("type", "hidden");
+	        hiddenField.setAttribute("name", "productId");
+	        hiddenField.setAttribute("value", productId);
+	        
+	        var hiddenField1 = document.createElement("input");
+	        hiddenField1.setAttribute("type", "hidden");
+	        hiddenField1.setAttribute("name", "productPriceSeq");
+	        hiddenField1.setAttribute("value", productPriceSeq);
+	        
+	        form.appendChild(hiddenField);
+	        form.appendChild(hiddenField1);
+	        
+	        document.body.appendChild(form);
+
+	        form.submit();			
+	}
+	
+	//Ajax공통 호출
+	function callAjax(ajaxInfo){
+		var dfd = $.Deferred();
+		$.ajax(ajaxInfo).done(function(data){
+			dfd.resolve(data);
+		});
+		
+		return dfd.promise();
+	}
+	
+
+</script>
+
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>상품 목록</h1>
+          </div>
+          
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+  
+    <section class="content">   
+        <div class="row">
+              <div class="col-11">
+              </div>               
+             
+              <div class="col-1">
+               		<a th:if="${session.LoginUser.userAuthority=='99'}" href="/gms/product/write.do"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="far fa-edit"></i>추가</button></a>
+              </div>
+         </div>
+         <div class="row">	
+	        <div class="col-12">
+	        <table class="table table-hover">
+	         </table>
+	        </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+             
+              
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr >
+                      <th>순번</th>
+                      <th>상품명</th>
+                      <th>용량</th>
+                      <th th:if="${session.LoginUser.userAuthority=='99'}" >관리</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr th:if="${not #lists.isEmpty( productList )}" th:each="row : ${productList}" style="font-size:14px;">
+                      <td th:text="${productList.indexOf(row)+1}"></td>
+                      <th >
+                      <a th:href="@{/gms/product/update.do( productId=${row.productId} )}" th:text="${row.ProductNm}"></a>
+                      </th>
+                      <th th:text="${row.productCapa}">
+                      </th>
+                      <td th:if="${row.bottleCount == 0}" > 
+                      <a class="btn btn-success btn-xs" href="#"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]])"><i class="fas fa-ban"></i>생성</a>
+                      <td th:unless="${row.bottleCount==0}" >
+                      </td>
+                    </tr>
+                    <tr th:unless="${not #lists.isEmpty( productList )}">
+						<td colspan="3">조회된 결과가 없습니다.</td>
+					</tr>
+					
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        <!-- /.row -->
+        
+        
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  
+  </th:block>
+  
+
+  

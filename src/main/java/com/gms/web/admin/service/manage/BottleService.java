@@ -7,6 +7,7 @@ import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 
@@ -76,6 +77,8 @@ public interface BottleService {
 	
 	public List<BottleVO> getDummyBottleList();
 	
+	public List<BottleVO> getProductDummyBottleList(Integer productId);
+	
 	public List<BottleVO> getSimpleDummyBottleList();
 	
 	public BottleVO getDummyBottle(BottleVO param);
@@ -85,6 +88,8 @@ public interface BottleService {
 	public int registerBottlesHistory(List<BottleVO> param);	
 	
 	public int deleteProductDummyBottle(ProductVO param);
+	
+	public int deleteProductPriceDummyBottle(ProductPriceVO param);
 	
 	public int getMaxBarcode();
 	

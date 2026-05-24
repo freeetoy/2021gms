@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gms.web.admin.common.config.PropertyFactory;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.GasVO;
+import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductDummyCountVO;
 import com.gms.web.admin.domain.manage.ProductNewVO;
 import com.gms.web.admin.domain.manage.ProductPriceSimpleVO;
 import com.gms.web.admin.domain.manage.ProductPriceVO;
@@ -153,6 +155,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductPriceVO> getProductPriceList(Integer productId) {
 		return productMapper.selectProductPriceList(productId);
+	}
+	
+	@Override
+	public List<ProductTotalVO> getProductPriceListOrder(Integer productId) {
+		return productMapper.selectProductPriceListOrder(productId);
 	}
 
 	@Override
@@ -304,10 +311,12 @@ public class ProductServiceImpl implements ProductService {
 		if (param.getProductId() != null) {
 			
 			productId = param.getProductId();
-		
 			result = productMapper.updateProduct(param);
 			
 			GasVO gas = gasService.getGasDetails(param.getGasId()) ;
+			
+			// dummyBottleList 목록  202605014
+//			List<BottleVO> dummyBottleList = bottleService.getProductDummyBottleList(param.getProductId());
 			
 			if (result > 0) {
 				
@@ -322,7 +331,7 @@ public class ProductServiceImpl implements ProductService {
 					for(int i =0 ; i < param1.length ; i++ ) {
 						pResult = false;
 						priceVo = param1[i];
-												
+//						logger.debug("****** before modifyProduct 2 **priceVo.getProductCapa()***===*" +priceVo.getProductCapa());			
 						String productCapa = priceVo.getProductCapa().replace(",", "").replace("{", "").replace(")", "");
 //						logger.debug("****** before registerProduct param. productCapa *****===*"+productCapa);
 						//pResult = modifyProductPrice(priceVo);
@@ -364,7 +373,6 @@ public class ProductServiceImpl implements ProductService {
 						}
 							
 					}		
-					logger.debug("****** before modifyProduct 3 *****===*");
 					if(insertBottleList.size() > 0 )
 						result = bottleService.registerBottles(insertBottleList);
 					if (pResult == false) {
@@ -372,7 +380,11 @@ public class ProductServiceImpl implements ProductService {
 						successFlag = false;
 					}			
 					successFlag = true;
-				}				
+				}		
+				
+				// 삭제된 상품정보의 dummy 용기 삭제 202605014
+//				int delProductPrice = bottleService.deleteProductDummyBottle(param);
+//				delProductPrice = productMapper.deleteProductPrice(param.getProductId());
 			}
 		} 
 		
@@ -478,6 +490,75 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductNewVO> getGasProductListNew() {
 		return productMapper.selectNewGasProductList();
+	}
+
+	@Override
+	public int getOrderProductCount(OrderProductVO param) {
+		return productMapper.countOrderProduct(param);
+	}
+
+	@Override
+	public List<ProductDummyCountVO> getProductDummyBottleList() {
+		return productMapper.selecProductDummyList();
+	}
+
+	@Override
+	public boolean createProductDummy(ProductPriceVO param) {
+		
+		int result = 0;
+		
+		BottleVO paramBottle = new BottleVO();
+		paramBottle.setProductId(param.getProductId());
+		paramBottle.setProductPriceSeq(param.getProductPriceSeq());
+		
+		ProductTotalVO productDetail = productMapper.selectBottleGasCapa(paramBottle);
+		
+		GasVO gas = gasService.getGasDetails(productDetail.getGasId()) ;
+		
+		List<BottleVO> insertBottleList = new ArrayList<BottleVO>();
+		
+		int delProductPrice = bottleService.deleteProductPriceDummyBottle(param);
+		
+		if(delProductPrice > 0 && productDetail != null) {
+			for(int j=0 ; j < 5 ; j++) {
+				BottleVO bottle = new BottleVO();
+				
+				if(j==0) {
+					bottle.setBottleBarCd("DH"+productDetail.getProductNm()+productDetail.getProductCapa());
+					bottle.setBottleId("DH"+productDetail.getProductNm()+productDetail.getProductCapa());
+					bottle.setDummyYn("Y");
+				}else {
+					
+					bottle.setBottleBarCd("DH"+productDetail.getProductNm()+productDetail.getProductCapa()+"_"+(j));
+					bottle.setBottleId("DH"+productDetail.getProductNm()+productDetail.getProductCapa()+"_"+(j));
+					bottle.setDummyYn("X");
+				}
+				bottle.setMemberCompSeq(1);
+				bottle.setGasId(gas.getGasId());
+				bottle.setGasCd(gas.getGasCd());
+				bottle.setProductId(param.getProductId());
+				bottle.setProductPriceSeq(param.getProductPriceSeq());
+				bottle.setBottleCapa(productDetail.getProductCapa());
+				bottle.setChargeCapa(productDetail.getProductCapa());
+				bottle.setBottleOwnYn("Y");
+				bottle.setBottleWorkCd(PropertyFactory.getProperty("common.bottle.status.come"));
+				bottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.Empty"));
+				Calendar sDate 	= Calendar.getInstance();
+				sDate.set(3000, 0, 0);
+	
+				bottle.setBottleChargeDt(sDate.getTime());
+				bottle.setCreateId(param.getCreateId());
+				
+				insertBottleList.add(bottle);
+			}
+			
+			if(insertBottleList.size() > 0 )
+				result = bottleService.registerBottles(insertBottleList);
+		}
+		if(result > 0)
+			return true;
+		else
+			return false;
 	}
 	
 }

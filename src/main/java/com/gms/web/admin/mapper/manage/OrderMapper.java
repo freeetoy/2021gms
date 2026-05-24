@@ -117,5 +117,5 @@ public interface OrderMapper {
 	public int updateOrderPrintYn(OrderVO param);
 	
 	public int updateOrdersPrintYn(OrderVO param);
-		
+	
 }

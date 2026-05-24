@@ -21,7 +21,7 @@ import com.gms.web.admin.common.utils.StringUtils;
 import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
-import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductTotalVO;
 import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
@@ -791,7 +791,10 @@ public class BottleServiceImpl implements BottleService {
 		return bottleMapper.deleteProductDummyBottle(param);
 	}
 
-
+	@Override
+	public int deleteProductPriceDummyBottle(ProductPriceVO param) {
+		return bottleMapper.deleteProductPriceDummyBottle(param);
+	}
 
 	@Override
 	public int getMaxBarcode() {
@@ -803,6 +806,13 @@ public class BottleServiceImpl implements BottleService {
 	@Override
 	public int updateMaxBarcode(int barcode) {
 		return bottleMapper.updateMaxBarcode(barcode);
+	}
+
+
+
+	@Override
+	public List<BottleVO> getProductDummyBottleList(Integer productId) {
+		return bottleMapper.selectProductDummyBottleList(productId);
 	}
 	
 

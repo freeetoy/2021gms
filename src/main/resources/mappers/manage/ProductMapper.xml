@@ -89,7 +89,7 @@
 			, #{productPrice}
 			, #{productBottlePrice}
 			, #{productCapa}
-			, IFNULL(#{productStatus}, '2')
+			, '2'
 			, #{eCountCd}
 			, #{eCountCdS}
 			, #{createId}			
@@ -291,6 +291,28 @@
 			Product_ID =  #{productId}
 		AND
 			Product_Status > 0
+	</select>
+	
+	<select id="selectProductPriceListOrder" parameterType="integer" resultType="com.gms.web.admin.domain.manage.ProductTotalVO">
+		SELECT
+		      TPP.*
+		    , COALESCE(OP.PRODUCT_ORDER_COUNT, 0) AS PRODUCT_ORDER_COUNT
+		FROM TB_Product_Price TPP
+		
+		LEFT JOIN (
+		    SELECT
+		          Product_ID
+		        , Product_Price_Seq
+		        , COUNT(*) AS PRODUCT_ORDER_COUNT
+		    FROM TB_Order_Product
+		    GROUP BY Product_ID, Product_Price_Seq
+		) OP
+		    ON TPP.Product_ID = OP.Product_ID
+		   AND TPP.Product_Price_Seq = OP.Product_Price_Seq
+		
+		WHERE TPP.Product_ID = #{productId}
+		AND TPP.Product_Status > 0
+		ORDER BY TPP.Product_Price_Seq; 
 	</select>
 	
 	<select id="selectProductTotalList" resultType="com.gms.web.admin.domain.manage.ProductTotalVO">
@@ -555,7 +577,7 @@
 			TP.Product_ID = TPP.Product_ID
 	</select>
 	
-		<select id="selectNewGasProductList"  resultType="com.gms.web.admin.domain.manage.ProductNewVO">
+	<select id="selectNewGasProductList"  resultType="com.gms.web.admin.domain.manage.ProductNewVO">
 		SELECT
 			Product_ID, Product_Nm, A.Gas_ID, B.GAS_CD, Product_Status, A.Member_Comp_Seq
 		FROM
@@ -567,5 +589,40 @@
 		AND
 			DELETE_YN='N'
 	</select>
+	<select id="countOrderProduct" resultType="int" parameterType="com.gms.web.admin.domain.manage.OrderProductVO">		
+		SELECT
+			COUNT(Order_ID)
+		FROM
+			TB_Order_Product
+		WHERE
+			Product_ID 	= #{productId}	
+		AND 
+			Product_Price_Seq = #{productPriceSeq}	
+	</select>
 	
+	<select id="selecProductDummyList"  resultType="com.gms.web.admin.domain.manage.ProductDummyCountVO">
+		SELECT
+		      TP.Product_ID
+		    , TP.Product_Nm
+		    , TPP.Product_Price_Seq
+		    , TPP.Product_Capa
+		    , IFNULL(BT.Bottle_Count, 0) AS Bottle_Count
+		FROM TB_Product TP
+		JOIN TB_Product_Price TPP
+		    ON TP.Product_ID = TPP.Product_ID
+		LEFT JOIN (
+		    SELECT
+		          Product_ID
+		        , Product_Price_Seq
+		        , COUNT(*) AS Bottle_Count
+		    FROM TB_Bottle
+		    WHERE Dummy_YN = 'Y'
+		    GROUP BY Product_ID, Product_Price_Seq
+		) BT
+		    ON TPP.Product_ID = BT.Product_ID
+		   AND TPP.Product_Price_Seq = BT.Product_Price_Seq
+		WHERE TP.Gas_ID > 0
+		AND TP.Product_Status > 0
+		AND TPP.Product_Status > 0
+	</select>
 </mapper>

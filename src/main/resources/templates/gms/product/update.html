@@ -16,7 +16,6 @@ function validationOfForm(form) {
 
    // }
 	
-	
 	var result = (
 			   isValid(form.productNm, "상품명", null, null)
 			&& isValid(form.productPrice_0, "상품가격", null, null)
@@ -39,27 +38,31 @@ function callAjax(ajaxInfo){
 }
 
 function goUpdate(){	
-	
 	form.submit();
 }
 
 
 $(document).ready(function(){ 
 
-	var counter = [[${productPriceList.size()}]]-1;	
+	var counter = [[${productPriceSeqLast}]];	
+	var listCounter = [[${productPriceList.size()}]]-1;	
+	var productPriceSeqs = "[[${productPriceSeqs}]]";
+	var arrProudct = productPriceSeqs.split(",");
 	
+	var orderCount = 0;
 	$("#addrow").on("click", function () {
-        counter++;
-       
-        if (counter > 100){
+        counter++;	//productPriceSeq index
+        listCounter ++;		
+        if (listCounter > 100){
 
           alert('더 이상 추가 할수 없습니다.');
           return false;
 
         }
         var newRow = $("<tr>");
-        var cols = "";
-
+        var colsBefore = '<input type="hidden" id="productPriceSeq_'+ counter + '" name="productPriceSeq_'+ counter + '" value="'+counter+'">';
+        newRow.append(colsBefore);
+        var cols ='';//'<input type="hidden" id="productPriceSeq_'+ counter + '" name="productPriceSeq_'+ counter + '" value="'+counter+'">';
         cols += '<td>';
         cols += '<input type="text" class="form-control" id="productCapa_'+ counter + '" name="productCapa_'+ counter + '" placeholder="상품용량">';
 		cols += '</td><td style="padding-left: 0px;">';
@@ -75,12 +78,19 @@ $(document).ready(function(){
         cols += '</td>';
 
         cols +='</tr>';        
-
         newRow.append(cols);
         
-        $("#priceCount").val(counter+1);
+        arrProudct.push(counter);
+        
+        var seqString =""; 
+        for(let i = 0; i < arrProudct.length; i++) {
+            seqString  += arrProudct[i];
+            if(i < arrProudct.length -1) seqString  += ",";
+    	}
+        $("#productPriceSeqs").val(seqString);
+        
+        $("#priceCount").val(listCounter+1);
         $("table.doc-list").append(newRow);
-     
     });
 
     //수정시 row 추가
@@ -89,11 +99,36 @@ $(document).ready(function(){
     
     // row 삭제
     $("table.doc-list").on("click", ".ibtnDel", function (event) {
-    	//alert("counter "+counter);
+    	// 현재 버튼이 있는 tr
+        let row = $(this).closest("tr");
+
+        // hidden input value 가져오기
+        let delproductPriceSeq = row.find("input[type='hidden']").val();
+
         $(this).closest("tr").remove();       
-        counter -= 1
-      //  alert("counter "+counter);
-        $("#priceCount").val(counter+1);
+       // counter -= 1		// count는 그대로 유지
+        listCounter -= 1
+        
+     // array for문으로 같은 value가 있는지 찾음
+        for(let i = 0; i < arrProudct.length; i++) {
+            if (arrProudct[i]-delproductPriceSeq == 0) {
+            	arrProudct.splice(i, 1);
+            }
+        }
+   
+     	var seqString =""; 
+        for(let i = 0; i < arrProudct.length; i++) {
+            seqString  += arrProudct[i];
+            if(i < arrProudct.length -1) seqString  += ",";
+    	}
+
+        $("#productPriceSeqs").val(seqString);
+        $("#priceCount").val(listCounter+1);
+    });
+    
+ // row 삭제
+    $("table.doc-list").on("click", ".ibtnNoDel", function (event) {
+    	alert("판매이력이 있는 상품입니다. 삭제가 안됩니다.");ㄴ
     });
 
     $("table.mod-doc-list").on("click", ".ibtnDelMod", function (event) {
@@ -101,8 +136,7 @@ $(document).ready(function(){
         mod_counter -= 1
     });
     
-
-
+    
 });
 
 
@@ -185,28 +219,28 @@ $(document).ready(function(){
                          <td>대여ECount</td>
                          <td>판매가격</td>
                          <td>판매ECount</td>
-                         <td></td>
+                         <td><input type="button" class="btn btn-default btn-success" id="addrow"  selected value="추가" /></td>
                        </tr>
                        <tr th:if="${not #lists.isEmpty( productPriceList )}" th:each="row : ${productPriceList}" >
-               			<input type="hidden" th:id="'productPriceSeq_'+${productPriceList.indexOf(row)}" th:name="'productPriceSeq_'+${productPriceList.indexOf(row)}" th:value="${row.productPriceSeq}">
+               			<input type="hidden" th:id="'productPriceSeq_'+${row.productPriceSeq}" th:name="'productPriceSeq_'+${row.productPriceSeq}" th:value="${row.productPriceSeq}">
 	                       <td> 
-	                         <input type="text" class="form-control" th:id="'productCapa_'+${productPriceList.indexOf(row)}" th:name="'productCapa_'+${productPriceList.indexOf(row)}" th:value="${row.productCapa}">
+	                         <input type="text" class="form-control" th:id="'productCapa_'+${row.productPriceSeq}" th:name="'productCapa_'+${row.productPriceSeq}" th:value="${row.productCapa}">
 	                       </td>  
 	                       <td style="padding-left: 0px;">                                           
-	                         <input type="text" class="form-control" th:id="'productPrice_'+${productPriceList.indexOf(row)}" th:name="'productPrice_'+${productPriceList.indexOf(row)}" th:value="${row.productPrice}">
+	                         <input type="text" class="form-control" th:id="'productPrice_'+${row.productPriceSeq}" th:name="'productPrice_'+${row.productPriceSeq}" th:value="${row.productPrice}">
 	                       </td>	                       
 	                       <td> 
-	                         <input type="text" class="form-control" th:id="'eCountCd_'+${productPriceList.indexOf(row)}" th:name="'eCountCd_'+${productPriceList.indexOf(row)}" th:value="${row.eCountCd}">
+	                         <input type="text" class="form-control" th:id="'eCountCd_'+${row.productPriceSeq}" th:name="'eCountCd_'+${row.productPriceSeq}" th:value="${row.eCountCd}">
 	                       </td>   
 	                       <td style="padding-left: 0px;">                                           
-	                         <input type="text" class="form-control" th:id="'productBottlePrice_'+${productPriceList.indexOf(row)}" th:name="'productBottlePrice_'+${productPriceList.indexOf(row)}" th:value="${row.productBottlePrice}">
+	                         <input type="text" class="form-control" th:id="'productBottlePrice_'+${row.productPriceSeq}" th:name="'productBottlePrice_'+${row.productPriceSeq}" th:value="${row.productBottlePrice}">
 	                       </td>	                       
 	                       <td> 
-	                         <input type="text" class="form-control" th:id="'eCountCdS_'+${productPriceList.indexOf(row)}" th:name="'eCountCdS_'+${productPriceList.indexOf(row)}" th:value="${row.eCountCdS}">
+	                         <input type="text" class="form-control" th:id="'eCountCdS_'+${row.productPriceSeq}" th:name="'eCountCdS_'+${row.productPriceSeq}" th:value="${row.eCountCdS}">
 	                       </td>   
 	                       <td th:if="${session.LoginUser.userAuthority=='99'}">
-	                       <input type="button" class="btn btn-default btn-success" id="addrow" th:if="${productPriceList.indexOf(row)==0}" selected value="추가" />
-	                       <input type="button" class="ibtnDel btn btn-md btn-danger" id="addrow" th:unless="${productPriceList.indexOf(row)==0}" selected value="삭제" /> 
+	                       <input th:if="${row.productOrderCount == 0}" type="button" class="ibtnDel btn btn-md btn-danger" id="addrow"  selected value="삭제" /> 
+	                       <input th:unless="${row.productOrderCount == 0}" type="button" class="ibtnNoDel btn btn-md btn-danger" id="addrow"  selected value="삭제" /> 
 	                       <td th:unless="${session.LoginUser.userAuthority=='99'}">
 	                       </td>
                        </tr>

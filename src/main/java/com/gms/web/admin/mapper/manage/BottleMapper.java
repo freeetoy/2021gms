@@ -9,6 +9,7 @@ import com.gms.web.admin.domain.manage.BottleHistoryVO;
 import com.gms.web.admin.domain.manage.BottleVO;
 import com.gms.web.admin.domain.manage.OrderBottleVO;
 import com.gms.web.admin.domain.manage.OrderProductVO;
+import com.gms.web.admin.domain.manage.ProductPriceVO;
 import com.gms.web.admin.domain.manage.ProductVO;
 import com.gms.web.admin.domain.manage.SimpleBottleVO;
 
@@ -80,6 +81,8 @@ public interface BottleMapper {
 	public BottleVO selectDummyBottle(BottleVO param);	
 	
 	public List<BottleVO> selectDummyBottleList();	
+	
+	public List<BottleVO> selectProductDummyBottleList(Integer productId);	
 
 	public List<BottleVO> selectSimpleDummyBottleList();	
 	
@@ -92,6 +95,8 @@ public interface BottleMapper {
 	public int updateBottleAfterDelete(OrderBottleVO param);
 	
 	public int deleteProductDummyBottle(ProductVO param);
+	
+	public int deleteProductPriceDummyBottle(ProductPriceVO param);
 	
 	public int selectMaxBarcode();	
 	
