@@ -237,13 +237,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	@Cacheable(value = "userCache")
 	public Map<String, Object> searchCustomerList(String param) {
-		
 		Map<String, Object> resutlMap = new HashMap<String, Object>();
 		
 		List<CustomerVO> customerList = customerMapper.searchCustomerList(param);
-		
 		
 		resutlMap.put("list",  customerList);
 		resutlMap.put("searchCustomerNm", param);

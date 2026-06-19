@@ -60,7 +60,8 @@ $(document).ready(function(){
 	var totalCount = 1;
     var pdata ;
 	
-	init_add(0);
+//	init_add(0);
+	initPriceList();
 	$("#addrow").on("click", function () {
 
 		//alert("addrow");
@@ -395,9 +396,135 @@ $(document).ready(function(){
 			.fail(function(){
 				console.log("fail");
 			 });	
-
 	});
    
+    
+    
+    function initPriceList() {
+    	$.ajax({
+    		url: '/gms/price/customerList.do',
+    		type: 'POST',
+    		data: 'customerId='+ [[${searchCustomerId}]] ,
+    		dataType: 'json',
+
+    	 })
+    	.done(function(data){	           
+    		var counter = 0;
+            var cols = "";
+            
+    		for(i=0; i< data.length;i++) {
+                $('#productId_' + i).find('option').remove();
+            }			
+
+        	var i=0;
+    		//$('#productCapa_' + sel_pid).find('option').remove(); 
+
+    		if(data.length ==0) {
+    			
+    			$("table.doc-list").find('tr').remove();
+    		 	
+    		 	var newRow = $("<tr>");
+    	        
+    	       	cols += '<td>상품</td>';
+    			cols += '<td>용량</td>';
+    			cols += '<td>대여가격</td>';
+    			cols += '<td>판매(용기+가스)가격</td>';
+    			cols += '<td><input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" /></td></tr>';
+
+    	        newRow.append(cols);
+    	        $("table.doc-list").append(newRow);
+    	        
+    	        totalCount =1 ;
+    	        
+    	        var newRow = $("<tr>");
+    			var cols = "";
+
+    			cols += '<td style="padding-left:0px;">';
+    			cols += '	<select class="form-control" id="productId_0" name="productId" style="width:160px"></select>'; 
+    			cols += '</td><td>';
+    			cols += '	<select class="form-control" id="productPriceSeq_0" name="productPriceSeq" style="width:100px"><option value=0>옵션</option></select> ';
+    			cols += '</td><td>';
+    			cols += '	<input type="number" class="form-control" id="productPrice_0" name="productPrice" value="0">';
+    			cols += '</td><td>';
+    			cols += '	<input type="number" class="form-control" id="productBottlePrice_0" name="productBottlePrice" value="0">';
+    			cols += '</td><td>';  
+    			
+    			//cols += '	<input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';
+    			cols += '</td>';
+    			cols +='</tr>';
+
+    			newRow.append(cols);
+    			$("table.doc-list").append(newRow);
+    			
+    			init_add(counter);
+                
+                init_mod_storage(counter);
+                
+    		}else {
+
+    		 	$("table.doc-list").find('tr').remove();
+    		 	
+    		 	var newRow = $("<tr>");
+    	        
+    	       	cols += '<td style="width:160px">상품</td>';
+    			cols += '<td style="width:100px">용량</td>';
+    			cols += '<td>가격</td>';
+    			cols += '<td>판매가격</td>';
+    			cols += '<td><input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" /></td></tr>';
+
+    	        newRow.append(cols);
+    	        $("table.doc-list").append(newRow);
+
+    	        for(i=0; i< data.length;i++) {
+
+    				var newRow = $("<tr>");
+    		        
+    	            cols = "";
+
+    	            cols += '<td style="padding-left:0px;">';
+    	            cols += '<select class="form-control" id="productId_' + counter +  '" name="productId" style="width:160px">' 
+    	            cols += '<option value="' + data[i].productId +'" selected>' + data[i].productNm + '</option>';
+    	            cols += '</select>';		          
+    	            cols += '</td><td>';
+    	            cols += ' <select class="form-control" id="productPriceSeq_' + counter + '" name="productPriceSeq" style="width:100px">';
+    	            cols += '<option value="' + data[i].productPriceSeq +'" selected>' + data[i].productCapa + '</option>';
+    	            cols  += '</select> ';
+    	            cols += '</td><td>';
+    	            cols += ' <input type="number" id="productPrice_' + counter + '" name="productPrice" class="form-control" value="' + data[i].productPrice + '">';		   
+    	            cols += '</td><td>';
+    	            cols += ' <input type="number" id="productBottlePrice_' + counter + '" name="productBottlePrice" class="form-control" value="' + data[i].productBottlePrice + '">';		                         
+    	            cols += '</td><td>';		           
+
+    	            if (counter < 1){	
+    	             cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';	
+    	             //cols += ' <input type="button" class="ibtnAddMod btn btn-md btn-info" id="mod_addrow" value="추가" />';	
+    	            }else{	
+    	              cols += ' <input type="button" class="ibtnDelMod btn btn-md btn-danger" id="addrow" value="삭제" />';	
+    	            }
+    	            cols += '</td>';
+    	            cols +='</tr>';
+
+    	            newRow.append(cols);
+    	            $("table.doc-list").append(newRow);
+    	            
+    	            init_add(counter);
+    	            
+    	            init_mod_storage(counter);
+
+    	            mod_counter = counter;
+    	            
+    	            totalCount =counter;
+    	            counter++;
+    	            
+    			}
+    			totalCount = data.length;
+    		}
+    	})
+    	.fail(function(){
+    		console.log("fail");
+    	 });	
+
+    }
 });
 
 </script>
@@ -527,11 +654,16 @@ $(document).ready(function(){
               <form id="mainForm" name=""mainForm"" th:action="@{/gms/price/write.do}" method="post">
               <select id="customerId" name="customerId" class="form-control">
 	                      <option value="0">거래처 목록</option>
-	                    	<option th:each="row : ${customerList}"
-				                th:text="${row.customerNm}"
-				                th:value="${row.customerId}"
-				               >
-				     </option>		
+                    	<option th:each="row : ${customerList}"
+			                th:text="${row.customerNm}"
+			                th:value="${row.customerId}"
+			                th:if="${searchCustomerId ==row.customerId}" selected>	
+			     		</option>
+			     		<option th:each="row : ${customerList}"
+			                th:text="${row.customerNm}"
+			                th:value="${row.customerId}"
+			                th:unless="${searchCustomerId ==row.customerId}">	
+			     		</option>
 			    </select>	   
 			   </div>
               <div class="col-2">
@@ -563,7 +695,7 @@ $(document).ready(function(){
               <div class="col-10">
               <form name="writeForm" id="writeForm" class="form-horizontal" th:action="@{/gms/price/register.do}"  method="post" onsubmit="return validationOfForm(this)">
               <input type="hidden" id="priceCount" name="priceCount" value="">
-              <input type="hidden" id="customerId1" name="customerId1" value="">
+              <input type="hidden" id="customerId1" name="customerId1" th:value="${searchCustomerId}">
               <input type="hidden" id="searchCustomerNm" name="searchCustomerNm" th:value="${searchCustomerNm}">
                 <div class="form-group">	
 			        <div class="col-10">

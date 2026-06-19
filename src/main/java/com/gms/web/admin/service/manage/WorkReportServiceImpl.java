@@ -2343,6 +2343,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 							result = minusWorkBottle(beforeWorkBottle);		
 						}
 						// orderProduct처리 -orderBottle도 처리
+						
 					}					
 				}
 				//if(afterWorkBottle.getProductCount() > 0 && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.come")) && !afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.out")) ) {
@@ -2378,8 +2379,12 @@ public class WorkReportServiceImpl implements WorkReportService {
 							|| afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesgas")) ) {
 						orderProduct.setBottleChangeYn("Y");
 						orderProduct.setBottleSaleYn("N");	
-						if(productTotal !=null && productTotal.getCustomerProductPrice() > 0) orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getCustomerProductPrice());
-						else orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getProductPrice());
+						if(productTotal !=null && productTotal.getCustomerProductPrice() > 0) {
+							orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getCustomerProductPrice());
+						}
+						else {
+							orderProduct.setOrderAmount(afterWorkBottle.getProductCount()*productTotal.getProductPrice());
+						}
 						newOrderProductList.add(orderProduct);
 					}else if(afterWorkBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale")) ) {
 						orderProduct.setBottleChangeYn("N");
@@ -2775,7 +2780,9 @@ public class WorkReportServiceImpl implements WorkReportService {
 	//						addWorkBottle.setBottleType(PropertyFactory.getProperty("Bottle.Type.FULL"));
 	//					}
 						
-						if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))) {
+						if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent")) 
+								|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyRent"))
+								|| workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.salesgas"))) {
 							if(productTotal !=null && productTotal.getCustomerProductPrice() > 0) addWorkBottle.setProductPrice(productTotal.getCustomerProductPrice());
 							else addWorkBottle.setProductPrice(productTotal.getProductPrice());
 						}else if(workBottle.getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))) {
@@ -4943,11 +4950,11 @@ public class WorkReportServiceImpl implements WorkReportService {
 	
 	public Date makeCreateDt(String dateStr) {
 //		workBottle.setCreateDt(searchDt, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");
-		logger.debug("****** makeCreateDt *****dateStr ===*" +dateStr);	
+//		logger.debug("****** makeCreateDt *****dateStr ===*" +dateStr);	
         // 문자열 → LocalDate
 		if(dateStr != null && dateStr.length() > 11  )	dateStr = dateStr.substring(0,10);
 		
-		logger.debug("****** makeCreateDt *****after dateStr ===*" +dateStr);	
+//		logger.debug("****** makeCreateDt *****after dateStr ===*" +dateStr);	
         LocalDate localDate = LocalDate.parse(dateStr);
 
         // 현재 시간

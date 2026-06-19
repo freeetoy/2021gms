@@ -381,10 +381,11 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/gms/price/write.do")
 	public ModelAndView openCustomerPriceWrite(@RequestParam(value = "searchCustomerNm", required = false) String searchCustomerNm, Model model) {
-		
+//		logger.info("******openCustomerPriceWrite searchCustomerNm *****===*"+searchCustomerNm);
 		ModelAndView mav = new ModelAndView();
 		//model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer.price"));
 		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer.price"));	
+		mav.addObject("searchCustomerNm", searchCustomerNm);	
 		
 		Map<String, Object> map = customerService.searchCustomerList(searchCustomerNm);
 		//model.addAttribute("customerList", map.get("list"));
@@ -396,15 +397,18 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/gms/price/register.do", method = RequestMethod.POST)
-	public String registerCustomerPrice(HttpServletRequest request
-			, HttpServletResponse response
-			, Model model) {
-		
+	public ModelAndView registerCustomerPrice(HttpServletRequest request
+			, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView();
+		boolean result = false;
 		try {
+//			 logger.info("******customerId *****===*"+request.getParameter("customerId1"));
+//			 logger.info("******searchCustomerNm *****===*"+request.getParameter("searchCustomerNm"));
 			
-			boolean result = false;
-			
-			model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer"));				
+			mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer"));				
+			mav.addObject("customerId1", request.getParameter("customerId1"));
+			mav.addObject("customerId", request.getParameter("customerId1"));
+			mav.addObject("searchCustomerNm", request.getParameter("searchCustomerNm"));
 			
 			String[] productIdArray = request.getParameterValues("productId");
 			String[] productPriceSeqArray = request.getParameterValues("productPriceSeq");
@@ -437,42 +441,13 @@ public class CustomerController {
 				priceVo.setProductPrice(Double.parseDouble(productPriceArray[i]));
 				priceVo.setProductBottlePrice(Double.parseDouble(productBottlePriceArray[i]));
 				
-//				priceVo.setCustomerId(Integer.parseInt(request.getParameter("customerId1")));
-//				priceVo.setProductId(Integer.parseInt(request.getParameter("productId_"+i)));
-//				priceVo.setProductPriceSeq(Integer.parseInt(request.getParameter("productPriceSeq_"+i)));
-//				priceVo.setProductPrice(Float.parseFloat(request.getParameter("productPrice_"+i)));
-//				if(request.getParameter("productBottlePrice_"+i) != null && request.getParameter("productBottlePrice_"+i).length() > 0 )	bottlePrice = request.getParameter("productBottlePrice_"+i);
-//				else bottlePrice = "0";
-//				priceVo.setProductBottlePrice(Float.parseFloat(bottlePrice));
-//					
 				customerPrice[i] = priceVo;				
 			}
 
-			int result1 = 1;
 			if(customerPrice.length == 0 && request.getParameter("customerId1")!=null && request.getParameter("customerId1").length() > 0) {
 				result = customerService.deleteCustomerPrice(Integer.parseInt(request.getParameter("customerId1")));
 			}else {
 				result = customerService.registerCustomerPrice(customerPrice);
-			
-//				List<WorkBottleVO> workBottleList = workService.getWorkBottleListOfCustomerToday(Integer.parseInt(request.getParameter("customerId1")));
-//				for(int i =0 ; i < workBottleList.size() ; i++) {
-//					for(int j=0 ; j < customerPrice.length ; j++) {
-//						if(workBottleList.get(i).getProductId() == customerPrice[j].getProductId() && workBottleList.get(i).getProductPriceSeq() == customerPrice[j].getProductPriceSeq()) {
-//													
-//							if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.sale"))	) {
-//								workBottleList.get(i).setProductPrice(customerPrice[j].getProductBottlePrice());
-//								
-//							}else if(workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.rent"))
-//									|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.title.salesgas")) 
-//									|| workBottleList.get(i).getBottleWorkCd().equals(PropertyFactory.getProperty("common.bottle.status.agencyRent"))  ) {
-//								
-//								workBottleList.get(i).setProductPrice(customerPrice[j].getProductPrice());
-//							}
-//							
-//							result1 = workService.modifyWorkBottlePrice(workBottleList.get(i));
-//						}
-//					}
-//				}			
 			}
 			// 당일 거래 내역 업데이트
 			//if(res)
@@ -484,11 +459,36 @@ public class CustomerController {
 			logger.error(" registerCustomerPrice Exception==="+e.toString());
 			e.printStackTrace();
 		}
-	
-		return "redirect:/gms/price/write.do";
+		if(result){
+			String alertMessage = "저장하였습니다.";
+			RequestUtils.responseWriteException(response, alertMessage, "/gms/price/update.do?customerId="+request.getParameter("customerId1")+"&searchCustomerNm="+request.getParameter("searchCustomerNm"));
+		}
+		return null;
+		
+		
+//		return "redirect:/gms/price/write.do";
 		//return null;
 	}
 	
+	@RequestMapping(value = "/gms/price/update.do")
+	public ModelAndView openCustomerPriceUpdate(CustomerPriceVO param, Model model) {
+		
+		ModelAndView mav = new ModelAndView();
+		//model.addAttribute("menuId", PropertyFactory.getProperty("common.menu.customer.price"));
+		mav.addObject("menuId", PropertyFactory.getProperty("common.menu.customer.price"));	
+		mav.addObject("searchCustomerNm", param.getSearchCustomerNm());	
+		mav.addObject("searchCustomerId", param.getCustomerId());	
+
+		Map<String, Object> map = customerService.searchCustomerList(param.getSearchCustomerNm());
+		//model.addAttribute("customerList", map.get("list"));
+		mav.addObject("customerList", map.get("list"));	
+		
+		//List<CustomerPriceExtVO> customerPriceList = customerService.getCustomerPriceList(param.getCustomerId());
+		//mav.addObject("customerPriceList", customerPriceList);
+		//return "/gms/price/write";
+		mav.setViewName("gms/price/update");
+		return mav;
+	}
 	
 	@RequestMapping(value = "/gms/cbottle/write.do")
 	public ModelAndView openCustomerBottleWrite(@RequestParam(value = "searchCustomerNm", required = false) String searchCustomerNm, Model model) {
