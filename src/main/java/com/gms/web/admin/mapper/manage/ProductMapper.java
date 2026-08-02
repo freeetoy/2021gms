@@ -87,6 +87,8 @@ public interface ProductMapper {
 	
 	public List<ProductPriceSimpleVO> selectAllProductPriceSimpleList();
 	
+	public List<ProductPriceSimpleVO> selectTotalProductPriceSimpleList();
+	
 	public List<ProductNewVO> selectNewGasProductList();
 	
 	public int countOrderProduct(OrderProductVO param);

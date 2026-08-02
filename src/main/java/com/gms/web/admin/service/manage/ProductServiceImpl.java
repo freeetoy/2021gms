@@ -488,6 +488,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public List<ProductPriceSimpleVO> getTotalProductSimpleList() {
+		return productMapper.selectTotalProductPriceSimpleList();
+	}
+	
+	@Override
 	public List<ProductNewVO> getGasProductListNew() {
 		return productMapper.selectNewGasProductList();
 	}

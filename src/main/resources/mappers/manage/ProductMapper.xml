@@ -577,6 +577,15 @@
 			TP.Product_ID = TPP.Product_ID
 	</select>
 	
+	<select id="selectTotalProductPriceSimpleList"  resultType="com.gms.web.admin.domain.manage.ProductPriceSimpleVO">
+		SELECT
+			TP.Product_ID ,Product_Price_Seq,Product_Nm,Product_Capa
+		FROM
+			TB_Product  TP, TB_Product_Price TPP
+		WHERE
+			TP.Product_ID = TPP.Product_ID
+	</select>
+	
 	<select id="selectNewGasProductList"  resultType="com.gms.web.admin.domain.manage.ProductNewVO">
 		SELECT
 			Product_ID, Product_Nm, A.Gas_ID, B.GAS_CD, Product_Status, A.Member_Comp_Seq

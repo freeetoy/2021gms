@@ -128,6 +128,16 @@
 		ORDER BY Create_Dt DESC 
 	</select>
 	
+	<select id="selectDailylStatisticsAllProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
+		SELECT
+			<include refid="StatisticsProductColumns_new" />
+		FROM
+			TB_Daily_Stat_Product_New
+		WHERE
+			Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		ORDER BY Create_Dt DESC , Product_ID, Product_Price_Seq
+	</select>
+	
 	<select id="selectMontlylStatisticsProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
 		SELECT
 			<include refid="StatisticsProductColumns_new" />
@@ -142,6 +152,20 @@
 		ORDER BY Create_Dt DESC 
 	</select>
 	
+	<select id="selectMontlylStatisticsAllProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
+		SELECT
+			ts.Product_ID , ts.Product_Price_Seq , Stat_Dt , Sale_Count , Sale_Amount , Rent_Count , Rent_Amount , ts.Create_ID , ts.Create_Dt 
+		FROM
+			TB_Monthly_Stat_Product_New ts, tb_product tp , tb_product_price tpp 
+		WHERE
+			Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		AND ts.Product_ID = tp.Product_ID 
+		AND ts.Product_ID = tpp.Product_ID 
+		AND ts.Product_Price_Seq = tpp.Product_Price_Seq 
+		AND tp.Product_Status = 2
+		AND tpp.Product_Status = 2	
+		ORDER BY ts.Create_Dt  DESC ,ts.Product_ID, ts.Product_Price_Seq
+	</select>
 	
 	<insert id="inserDailyStatisticsProduct" parameterType="int">
 		INSERT INTO TB_Daily_Stat_Product_New(

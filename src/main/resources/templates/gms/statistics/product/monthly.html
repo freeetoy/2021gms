@@ -267,6 +267,9 @@ function getProductPriceList(searchProductId, type){
               <div class="col-2" align=right>
                		<a th:href="@{/gms/statistics/product/excelDown.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},productPriceSeq=${productPriceSeq},periodType=2)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 엑셀받기</button></a>
             </div>
+            <div class="col-2"  align=right>
+               		<a th:href="@{/gms/statistics/product/newExcelDown.do(searchStatDt=${searchStatDt},searchProductId=${searchProductId},productPriceSeq=${productPriceSeq},periodType=2)}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="far fa-file-excel"></i> 전체상품엑셀받기</button></a>
+            </div>
               </form>  
          </div>       
     	

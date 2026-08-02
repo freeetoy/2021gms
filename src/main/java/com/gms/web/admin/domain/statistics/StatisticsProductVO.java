@@ -4,11 +4,15 @@ import java.io.Serializable;
 
 import com.gms.web.admin.common.domain.AbstractVO;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class StatisticsProductVO extends AbstractVO implements Serializable {
 	
 	private static final long serialVersionUID = 8484003342300538104L;

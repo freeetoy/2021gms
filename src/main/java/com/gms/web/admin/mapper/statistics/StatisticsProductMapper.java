@@ -22,4 +22,8 @@ public interface StatisticsProductMapper {
 	public int deleteDailyStatProduct();
 
 	public List<StatisticsProuctCustomerCountVO> selectWorkBottleListOfProductStat(StatisticsProuctCustomerCountVO param);
+	
+	public List<StatisticsProductVO> selectDailylStatisticsAllProductList(Map<String, Object> map);	
+	
+	public List<StatisticsProductVO> selectMontlylStatisticsAllProductList(Map<String, Object> map);	
 }

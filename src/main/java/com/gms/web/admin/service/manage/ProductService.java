@@ -82,6 +82,8 @@ public interface ProductService {
 	
 	public List<ProductPriceSimpleVO> getAllProductSimpleList();
 	
+	public List<ProductPriceSimpleVO> getTotalProductSimpleList();
+	
 	public List<ProductNewVO> getGasProductListNew();
 	
 	public int getOrderProductCount(OrderProductVO param);

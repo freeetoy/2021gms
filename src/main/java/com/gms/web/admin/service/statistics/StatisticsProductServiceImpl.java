@@ -24,7 +24,7 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 
 	@Override
 	public List<StatisticsProductVO>  getDailylStatisticsProductList(StatisticsProductVO param) {
-		logger.info("****** getDailylStatisticsProductList *****start===*");	
+//		logger.info("****** getDailylStatisticsProductList *****start===*");	
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
 		map.put("searchProductId", param.getSearchProductId());		
@@ -49,10 +49,38 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 				
 		return statList;
 	}
+	
+	@Override
+	public List<StatisticsProductVO>  getDailylStatisticsAllProductList(StatisticsProductVO param) {
+//		logger.info("****** getDailylStatisticsProductList *****start===*");	
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		map.put("searchProductId", param.getSearchProductId());		
+		map.put("productPriceSeq", param.getProductPriceSeq());	
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+//			logger.debug("****** getDailylStatisticsProductList *****getSearchStatDt===*"+param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+//			logger.debug("****** getDailylStatisticsProductList *****getSearchStatDtFrom===*"+param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+//			logger.debug("****** getDailylStatisticsProductList *****getSearchStatDtEnd===*"+param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsProductVO> statList = statMapper.selectDailylStatisticsAllProductList(map);			
+				
+		return statList;
+	}
 
 	@Override
 	public List<StatisticsProductVO>  getMontlylStatisticsProductList(StatisticsProductVO param) {
-		logger.info("****** getMonthlyStatisticsProductList *****start===*");	
+//		logger.info("****** getMonthlyStatisticsProductList *****start===*");	
 		
 		Map<String, Object> map = new HashMap<String, Object>();		
 
@@ -75,6 +103,34 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		}	
 				
 		List<StatisticsProductVO> statList = statMapper.selectMontlylStatisticsProductList(map);			
+				
+		return statList;
+	}
+	
+	@Override
+	public List<StatisticsProductVO> getMontlylStatisticsAllProductList(StatisticsProductVO param) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+
+		map.put("searchProductId", param.getSearchProductId());	
+		map.put("productPriceSeq", param.getProductPriceSeq());	
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+//			logger.debug("****** getMonthlylStatisticsProductList *****getSearchStatDt===*"+param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+//			logger.debug("****** getMonthlylStatisticsProductList *****getSearchStatDtFrom===*"+param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+//			logger.debug("****** getMonthlylStatisticsProductList *****getSearchStatDtEnd===*"+param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsProductVO> statList = statMapper.selectMontlylStatisticsAllProductList(map);			
 				
 		return statList;
 	}
@@ -103,5 +159,7 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		// TODO Auto-generated method stub
 		return statMapper.selectWorkBottleListOfProductStat(param); 
 	}
+
+	
 	
 }
