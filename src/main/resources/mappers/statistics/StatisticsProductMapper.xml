@@ -289,4 +289,130 @@
 		    AND TC.CD_GRP_ID = '0300'
 		GROUP BY X.Customer_ID, X.Bottle_Work_Cd
 	</select>
+	
+	<select id="selectDailyProduct" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
+		SELECT 
+		    DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,
+		    Product_Id,
+		    Product_Price_Seq,
+		    /* Sales */
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                CASE 
+		                    WHEN Product_Id BETWEEN 65 AND 71 
+		                        THEN Charge_Volumn
+		                    ELSE 1
+		                END
+		            ELSE 0
+		        END
+		    ) AS Sales_Count,
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                CASE 
+		                    WHEN Product_Id BETWEEN 65 AND 71 
+		                        THEN Charge_Volumn * Product_Price
+		                    ELSE Product_Price
+		                END
+		            ELSE 0
+		        END
+		    ) AS Sales_Amount,
+		    /* Rent */
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0309', '0316') THEN 1
+		            ELSE 0
+		        END
+		    ) AS Rent_Count,
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0309', '0316') THEN Product_Price
+		            ELSE 0
+		        END
+		    ) AS Rent_Amount
+		FROM TB_Work_Bottle
+		WHERE Bottle_Work_Cd IN ('0308', '0314', '0309', '0316')
+		  AND Create_dt &gt;= #{searchStatDtFrom}
+		  AND Create_dt &lt;  #{searchStatDtEnd} 
+		GROUP BY 
+		    DATE_FORMAT(Create_dt, '%Y/%m/%d'),
+		    Product_Id,
+		    Product_Price_Seq
+		ORDER BY 
+		    Stat_Dt,
+		    Product_Id,
+		    Product_Price_Seq
+		
+		SELECT
+			<include refid="StatisticsProductColumns_new" />
+		FROM
+			TB_Daily_Stat_Product_New
+		WHERE
+			Product_Id = #{searchProductId}	
+		AND Product_Price_Seq = #{productPriceSeq}	
+		<if test="@com.gms.web.admin.common.utils.StringUtils@isNotEmpty(searchStatDt)">
+		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
+		</if>
+		ORDER BY Create_Dt DESC 
+	</select>
+	
+	<select id="selectDailyAllProductList" resultType="com.gms.web.admin.domain.statistics.StatisticsProductVO" parameterType="java.util.Map">		
+		SELECT 
+		    DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,
+		    Product_Id,
+		    Product_Price_Seq,
+		    /* Sales */
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                CASE 
+		                    WHEN Product_Id BETWEEN 65 AND 71 
+		                        THEN Charge_Volumn
+		                    ELSE 1
+		                END
+		            ELSE 0
+		        END
+		    ) AS Sales_Count,
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                CASE 
+		                    WHEN Product_Id BETWEEN 65 AND 71 
+		                        THEN Charge_Volumn * Product_Price
+		                    ELSE Product_Price
+		                END
+		            ELSE 0
+		        END
+		    ) AS Sales_Amount,
+		    /* Rent */
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0309', '0316') THEN 1
+		            ELSE 0
+		        END
+		    ) AS Rent_Count,
+		    SUM(
+		        CASE 
+		            WHEN Bottle_Work_Cd IN ('0309', '0316') THEN Product_Price
+		            ELSE 0
+		        END
+		    ) AS Rent_Amount
+		FROM TB_Work_Bottle
+		WHERE Bottle_Work_Cd IN ('0308', '0314', '0309', '0316')
+		<if test ="searchProductId !=null and  !searchProductId.equals('')">
+			AND	Product_Id = #{searchProductId}	
+			AND Product_Price_Seq = #{productPriceSeq}	
+		</if>
+		  AND Create_dt &gt;= #{searchStatDtFrom}
+		  AND Create_dt &lt;  #{searchStatDtEnd} 
+		GROUP BY 
+		    DATE_FORMAT(Create_dt, '%Y/%m/%d'),
+		    Product_Id,
+		    Product_Price_Seq
+		ORDER BY 
+		    Stat_Dt DESC,
+		    Product_Id,
+		    Product_Price_Seq
+	</select>
 </mapper>

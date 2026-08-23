@@ -13,5 +13,7 @@ public interface StatisticsBottleService {
 	public int registerDailyStatisticsBottle();
 
 	public int registerMonthlyStatisticsBottle();
+	
+	public List<StatisticsBottleVO> getDailyNewBottleList(StatisticsBottleVO param);
 
 }

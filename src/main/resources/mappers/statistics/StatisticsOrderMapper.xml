@@ -162,6 +162,111 @@
 		ORDER BY Create_Dt DESC 
 	</select>
 	
+	
+	<select id="selectDailyOrderList" resultType="com.gms.web.admin.domain.statistics.StatisticsOrderVO" parameterType="java.util.Map">		
+		SELECT
+		    DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,
+		    SUM(
+		        CASE
+		            WHEN order_process_cd !='0299'
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS order_total_count,
+		    SUM(
+		        CASE
+		            WHEN order_process_cd !='0299'
+		                THEN Order_Total_Amount
+		            ELSE 0
+		        END
+		    ) AS order_total_amount,
+		    SUM(
+		        CASE
+		            WHEN order_process_cd in ('0240', '0250', '0260', '0260','0280','0290')
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS order_completed_count,
+		    SUM(
+		        CASE
+		            WHEN order_process_cd in ('0240', '0250', '0260', '0260','0280','0290')
+		                THEN Order_Total_Amount
+		            ELSE 0
+		        END
+		    ) AS order_completed_amount,
+		    SUM(
+		        CASE 
+		            WHEN order_type_cd='0101' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_product_count,
+		     SUM(
+		        CASE 
+		            WHEN order_type_cd='0102' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_cancel_count,
+		    SUM(
+		        CASE 
+		            WHEN order_type_cd='0103' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_auto_count,
+		    SUM(
+		        CASE 
+		            WHEN order_type_cd='0104' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_retrieved_count,
+		    SUM(
+		        CASE 
+		            WHEN order_type_cd='0105' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_check_count,
+		    SUM(
+		        CASE 
+		            WHEN order_type_cd='0106' THEN
+		                CASE 
+		                    WHEN order_process_cd !='0299'
+		                        THEN 1
+		                    ELSE 0
+		                END
+		            ELSE 0
+		        END
+		    ) AS order_etc_count
+		FROM tb_order
+		WHERE Create_dt &gt;= #{searchStatDtFrom}
+		  AND Create_dt &lt;  #{searchStatDtEnd} 
+		GROUP BY DATE_FORMAT(Create_dt, '%Y/%m/%d')
+		ORDER BY Stat_Dt DESC;
+	</select>
+	
 	<insert id="insertDailyStatisticsSales">
 		INSERT INTO TB_Daily_Stat_Sales(
 			<include refid="StatisticsSalesColumns" />
@@ -282,5 +387,76 @@
 		AND Stat_Dt between  #{searchStatDtFrom} AND  #{searchStatDtEnd} 
 		</if>
 		ORDER BY Stat_Dt DESC 
+	</select>
+	
+	<select id="selectDailyNewSalesList" resultType="com.gms.web.admin.domain.statistics.StatisticsSalesVO" parameterType="java.util.Map">		
+		SELECT
+		    BB.Stat_Dt,
+		    BB.Sales_Count,
+		    BB.Sales_Amount,
+		    BB.Rental_Count,
+		    BB.Rental_Amount,
+		    IFNULL(WR.Income_Amount, 0) AS Income_Amount
+		FROM
+		(
+		    SELECT 
+		        DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,
+		        /* Sales Count */
+		        SUM(
+		            CASE 
+		                WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                    CASE 
+		                        WHEN Product_Id BETWEEN 65 AND 71 
+		                            THEN Charge_Volumn
+		                        ELSE 1
+		                    END
+		                ELSE 0
+		            END
+		        ) AS Sales_Count,
+		        /* Sales Amount */
+		        SUM(
+		            CASE 
+		                WHEN Bottle_Work_Cd IN ('0308', '0314') THEN
+		                    CASE 
+		                        WHEN Product_Id BETWEEN 65 AND 71 
+		                            THEN Charge_Volumn * Product_Price
+		                        ELSE Product_Price
+		                    END
+		                ELSE 0
+		            END
+		        ) AS Sales_Amount,
+		        /* Rental Count */
+		        SUM(
+		            CASE 
+		                WHEN Bottle_Work_Cd IN ('0309', '0316') THEN 1
+		                ELSE 0
+		            END
+		        ) AS Rental_Count,
+		        /* Rental Amount */
+		        SUM(
+		            CASE 
+		                WHEN Bottle_Work_Cd IN ('0309', '0316') THEN Product_Price
+		                ELSE 0
+		            END
+		        ) AS Rental_Amount
+		    FROM TB_Work_Bottle
+		    WHERE Bottle_Work_Cd IN ('0308', '0314', '0309', '0316')
+		      AND Create_dt &gt;= #{searchStatDtFrom}
+		  	AND Create_dt &lt;  #{searchStatDtEnd} 
+		    GROUP BY DATE_FORMAT(Create_dt, '%Y/%m/%d')
+		) BB
+		LEFT JOIN
+		(
+		    SELECT
+		        DATE_FORMAT(Work_dt, '%Y/%m/%d') AS Stat_Dt,
+		        SUM(Received_Amount) AS Income_Amount
+		    FROM TB_Work_Report
+		    WHERE Work_dt &gt;= #{searchStatDtFrom}
+		  	AND Work_dt &lt;  #{searchStatDtEnd} 
+		      AND Delete_YN = 'N'
+		    GROUP BY DATE_FORMAT(Work_dt, '%Y/%m/%d')
+		) WR
+		    ON BB.Stat_Dt = WR.Stat_Dt
+		ORDER BY BB.Stat_Dt DESC
 	</select>
 </mapper>

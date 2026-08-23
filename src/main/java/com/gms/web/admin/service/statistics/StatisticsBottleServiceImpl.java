@@ -95,4 +95,27 @@ public class StatisticsBottleServiceImpl implements StatisticsBottleService {
 		return statMapper.inserMonthlyStatisticsBottle();
 	}
 
+	@Override
+	public List<StatisticsBottleVO> getDailyNewBottleList(StatisticsBottleVO param) {
+		logger.debug("****** getDailyNewBottleList *****start===*");	
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsBottleVO> statList = statMapper.selectDailyNewBottleList(map);	
+		
+		return statList;
+	}
+
 }

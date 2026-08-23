@@ -15,6 +15,7 @@ public interface StatisticsOrderService {
 
 	public int registerMonthlyStatisticsOrder();
 	
+	public List<StatisticsOrderVO> getDailyNewOrderList(StatisticsOrderVO param);	
 	
 	public List<StatisticsSalesVO> getDailylStatisticsSalesList(StatisticsSalesVO param);	
 	
@@ -23,4 +24,6 @@ public interface StatisticsOrderService {
 	public int registerDailyStatisticsSales();
 
 	public int registerMonthlyStatisticsSales();
+	
+	public List<StatisticsSalesVO> getDailylNewSalesList(StatisticsSalesVO param);	
 }

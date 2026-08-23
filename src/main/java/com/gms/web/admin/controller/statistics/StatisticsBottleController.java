@@ -1,5 +1,6 @@
 package com.gms.web.admin.controller.statistics;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -53,25 +54,29 @@ public class StatisticsBottleController {
 		String searchStatDtEnd = null;
 				
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDt = searchStatDt.replaceAll("/", "-");
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");		
+		}else {						
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);			
-		}else {				
-			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-			//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-			//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);			
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
+			searchStatDtEnd = DateUtils.getNextDate(0, "yyyy-MM-dd");
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
 			
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+			searchStatDt = searchStatDt.replaceAll("-", "/");
+			params.setSearchStatDt(searchStatDt);
 		}		
 		params.setSearchStatDt(searchStatDtFrom);
 		
-		List<StatisticsBottleVO> statBottleList = statService.getDailylStatisticsBottleList(params);
+//		List<StatisticsBottleVO> statBottleList = statService.getDailylStatisticsBottleList(params);
+		List<StatisticsBottleVO> statBottleList = statService.getDailyNewBottleList(params);
 		
 		mav.addObject("statList", statBottleList);	
 		
@@ -145,11 +150,12 @@ public class StatisticsBottleController {
 			String searchStatDtEnd = null;
 					
 			if(searchStatDt != null && searchStatDt.length() > 20) {						
+				searchStatDt = searchStatDt.replaceAll("/", "-");
 				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
-				
-				params.setSearchStatDtFrom(searchStatDtFrom);
-				params.setSearchStatDtEnd(searchStatDtEnd);			
+
+				params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+				params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
 			}else {			
 				searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
 				//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
@@ -165,7 +171,7 @@ public class StatisticsBottleController {
 				params.setSearchStatDt(searchStatDt);
 			}		
 			
-			List<StatisticsBottleVO> statBottleList = statService.getDailylStatisticsBottleList(params);
+			List<StatisticsBottleVO> statBottleList = statService.getDailyNewBottleList(params);
 		    // 워크북 생성
 	
 		    Workbook wb = new HSSFWorkbook();

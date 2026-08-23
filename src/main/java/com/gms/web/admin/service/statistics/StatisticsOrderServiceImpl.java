@@ -86,6 +86,29 @@ public class StatisticsOrderServiceImpl implements StatisticsOrderService {
 		return statMapper.inserMonthlyStatisticsOrder();
 	}
 
+	
+	@Override
+	public List<StatisticsOrderVO> getDailyNewOrderList(StatisticsOrderVO param) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsOrderVO> statList = statMapper.selectDailyOrderList(map);			
+				
+		return statList;
+	}
+	
 	@Override
 	public List<StatisticsSalesVO> getDailylStatisticsSalesList(StatisticsSalesVO param) {
 		
@@ -146,6 +169,27 @@ public class StatisticsOrderServiceImpl implements StatisticsOrderService {
 	@Override
 	public int registerMonthlyStatisticsSales() {
 		return statMapper.insertMonthlyStatisticsSales();
+	}
+
+	@Override
+	public List<StatisticsSalesVO> getDailylNewSalesList(StatisticsSalesVO param) {
+		Map<String, Object> map = new HashMap<String, Object>();		
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsSalesVO> statList = statMapper.selectDailyNewSalesList(map);			
+				
+		return statList;
 	}
 
 }

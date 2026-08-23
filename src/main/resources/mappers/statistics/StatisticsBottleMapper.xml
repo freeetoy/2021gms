@@ -137,4 +137,56 @@
 		</if>
 		ORDER BY Create_Dt DESC 
 	</select>
+	
+	<select id="selectDailyNewBottleList" resultType="com.gms.web.admin.domain.statistics.StatisticsBottleVO" parameterType="java.util.Map">		
+		SELECT
+		    DATE_FORMAT(Bottle_Work_dt, '%Y/%m/%d') AS Stat_Dt,
+		    /* 0388 */
+		    SUM(
+		        CASE
+		            WHEN Bottle_Work_Cd = '0388'
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS Bottle_Input_Count,
+			/* 0305 */
+		    SUM(
+		        CASE
+		            WHEN Bottle_Work_Cd = '0305'
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS Bottle_Charge_Count,
+		    /* 0308 */
+		    SUM(
+		        CASE
+		            WHEN Bottle_Work_Cd = '0308'
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS Bottle_Sales_Count,
+		    /* 0309, 0316 */
+		    SUM(
+		        CASE
+		            WHEN Bottle_Work_Cd IN ('0309', '0316')
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS Bottle_Rental_Count,
+		    /* 0310, 0311, 0312, 0315, 0317 */
+		    SUM(
+		        CASE
+		            WHEN Bottle_Work_Cd IN ('0310', '0311', '0312', '0315', '0317')
+		                THEN 1
+		            ELSE 0
+		        END
+		    ) AS Bottle_Back_Count
+		FROM TB_Bottle_hist
+		WHERE Bottle_Work_dt &gt;= #{searchStatDtFrom}
+		AND Bottle_Work_dt &lt;  #{searchStatDtEnd} 
+		AND delete_yn='N'
+		GROUP BY DATE_FORMAT(bottle_work_dt, '%Y/%m/%d')
+		ORDER BY Stat_Dt DESC
+	</select>
+	
 </mapper>

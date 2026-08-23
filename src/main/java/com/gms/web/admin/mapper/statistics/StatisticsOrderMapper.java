@@ -23,6 +23,8 @@ public interface StatisticsOrderMapper {
 
 	public int inserMonthlyStatisticsOrder();
 	
+	public List<StatisticsOrderVO> selectDailyOrderList(Map<String, Object> map);	
+	
 	public List<StatisticsSalesVO> selectDailylStatisticsSalesList(Map<String, Object> map);	
 	
 	public List<StatisticsSalesVO> selectMontlylStatisticsSalesList(Map<String, Object> map);	
@@ -34,4 +36,6 @@ public interface StatisticsOrderMapper {
 	public int insertDailyStatisticsSalesOrigin (StatisticsSalesVO param);
 	
 	public int insertMonthlyStatisticsSales();
+	
+	public List<StatisticsSalesVO> selectDailyNewSalesList(Map<String, Object> map);	
 }

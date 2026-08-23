@@ -361,4 +361,28 @@
 		GROUP By wb.Customer_id, wb.Create_ID
 		Order By wb.Work_Report_Seq desc
 	</select>
+	
+	<select id="selectNewDailylCustomerList" resultType="com.gms.web.admin.domain.statistics.StatisticsCustomerVO" parameterType="java.util.Map">		
+		SELECT BB.Customer_id, BB.Stat_Dt, IFNULL(Order_Count,0) Order_Count, IFNULL(Order_Amount,0) Order_Amount, IFNULL(Income_Amount,0) Income_Amount, IFNULL(Receivable_Amount,0) Receivable_Amount
+		from 
+		( 
+			SELECT DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,a.customer_Id, count(Work_Seq) Order_Count, SUM(Product_Price)  Order_Amount
+			FROM 	TB_Work_Bottle A
+			WHERE  	Bottle_Work_Cd in ('0308','0309','0314','0316')
+			AND customer_Id = #{searchCustomerId}
+			AND Create_dt &gt;= #{searchStatDtFrom}
+		  	AND Create_dt &lt;  #{searchStatDtEnd} 
+			GROUP BY Stat_Dt
+		) AA right join 
+		( 		
+			SELECT DATE_FORMAT(Create_dt, '%Y/%m/%d') AS Stat_Dt,B.Customer_id, SUM(Income_Amount) Income_Amount,SUM(Receivable_Amount) Receivable_Amount
+			FROM tb_cash_flow B
+			WHERE customer_Id = #{searchCustomerId}
+			AND Create_dt &gt;= #{searchStatDtFrom}
+		  	AND Create_dt &lt;  #{searchStatDtEnd} 
+			GROUP BY Stat_Dt
+		) BB on BB.Customer_id = AA.Customer_id  and AA.stat_dt = BB.stat_dt
+		WHERE ( Order_Count &gt;  0 OR Income_Amount &gt; 0 OR Receivable_Amount &gt; 0) 
+		ORDER BY BB.Stat_Dt Desc
+	</select>
 </mapper>

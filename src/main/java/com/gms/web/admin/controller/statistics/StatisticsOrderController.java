@@ -1,5 +1,6 @@
 package com.gms.web.admin.controller.statistics;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,28 +52,50 @@ public class StatisticsOrderController {
 		
 		String searchStatDtFrom = null;
 		String searchStatDtEnd = null;
-				
+		//20260818 통계변경		
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDt = searchStatDt.replaceAll("/", "-");
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");		
+		}else {						
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);			
-		}else {				
-			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-			//logger.debug("****** getStatisticsOrderDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);			
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-			//logger.debug("****** getStatisticsOrderDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
+			searchStatDtEnd = DateUtils.getNextDate(0, "yyyy-MM-dd");
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
 			
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
-			
+			searchStatDt = searchStatDt.replaceAll("-", "/");
 			params.setSearchStatDt(searchStatDt);
-		}		
+		}	
 		
-		List<StatisticsOrderVO> statOrderList = statService.getDailylStatisticsOrderList(params);
+//		if(searchStatDt != null && searchStatDt.length() > 20) {						
+//			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+//			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+//			
+//			params.setSearchStatDtFrom(searchStatDtFrom);
+//			params.setSearchStatDtEnd(searchStatDtEnd);			
+//		}else {				
+//			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
+//			//logger.debug("****** getStatisticsOrderDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);			
+//			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
+//			//logger.debug("****** getStatisticsOrderDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
+//			
+//			params.setSearchStatDtFrom(searchStatDtFrom);
+//			params.setSearchStatDtEnd(searchStatDtEnd);
+//			
+//			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
+//			
+//			params.setSearchStatDt(searchStatDt);
+//		}		
+		//20260818 통계변경
+//		List<StatisticsOrderVO> statOrderList = statService.getDailylStatisticsOrderList(params);
+		List<StatisticsOrderVO> statOrderList = statService.getDailyNewOrderList(params);
 		
 		mav.addObject("statList", statOrderList);	
 		
@@ -109,7 +132,7 @@ public class StatisticsOrderController {
 		}else {			
 			searchStatDtFrom = DateUtils.getNextDate(-366,"yyyy/MM");
 			//logger.debug("****** getStatisticsOrderMonthly *****getSearchStatDtFrom===*"+searchStatDtFrom);			
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM");
+			searchStatDtEnd = DateUtils.getNextDate(0,"yyyy/MM");
 			//logger.debug("****** getStatisticsOrderMonthly *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
@@ -144,13 +167,27 @@ public class StatisticsOrderController {
 			
 			String searchStatDtFrom = null;
 			String searchStatDtEnd = null;
-					
+			//20260818 통계변경		
 			if(searchStatDt != null && searchStatDt.length() > 20) {						
-				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
-				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+//				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+//				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+//				
+//				params.setSearchStatDtFrom(searchStatDtFrom);
+//				params.setSearchStatDtEnd(searchStatDtEnd);			
 				
-				params.setSearchStatDtFrom(searchStatDtFrom);
-				params.setSearchStatDtEnd(searchStatDtEnd);			
+				if(params.getPeriodType() == 1) {
+					searchStatDt = searchStatDt.replaceAll("/", "-");
+					searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+					searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+
+					params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+					params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
+				}else {
+					searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+					searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+					params.setSearchStatDtFrom(searchStatDtFrom);
+					params.setSearchStatDtEnd(searchStatDtEnd);	
+				}
 			}else {		
 				searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
 				//logger.debug("****** getStatisticsBottleDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);		
@@ -169,7 +206,8 @@ public class StatisticsOrderController {
 			
 			String fileName="StatisticsOrder";
 			if(params.getPeriodType()==1) {
-				statOrderList= statService.getDailylStatisticsOrderList(params);
+//				statOrderList= statService.getDailylStatisticsOrderList(params);	//20260818 통계변경
+				statOrderList= statService.getDailyNewOrderList(params);
 				fileName +="Daily_"+DateUtils.getDate()+".xls";
 			}else {
 				statOrderList = statService.getMontlylStatisticsOrderList(params);
@@ -281,29 +319,30 @@ public class StatisticsOrderController {
 		String searchStatDtEnd = null;
 				
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDt = searchStatDt.replaceAll("/", "-");
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
-			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);			
+
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");		
 		}else {						
 			
-			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
-//			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
+			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy-MM-dd");
+			searchStatDtEnd = DateUtils.getNextDate(0, "yyyy-MM-dd");
+//			logger.debug("****** getBottleList else *****searchDtFrom===*"+searchDtFrom);		
 			
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
-//			logger.debug("****** getStatisticsSalesDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
-			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
 			
 			searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
-			
+			searchStatDt = searchStatDt.replaceAll("-", "/");
 			params.setSearchStatDt(searchStatDt);
 		}		
 		
-		List<StatisticsSalesVO> statOrderList = statService.getDailylStatisticsSalesList(params);
-		
+		List<StatisticsSalesVO> statOrderList = null;
+		if(searchStatDt != null && searchStatDt.length() > 20)	
+			statOrderList = statService.getDailylNewSalesList(params);
+			
 		mav.addObject("statList", statOrderList);	
 		
 		//검색어 셋팅
@@ -378,11 +417,19 @@ public class StatisticsOrderController {
 			String searchStatDtEnd = null;
 					
 			if(searchStatDt != null && searchStatDt.length() > 20) {						
-				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
-				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
-				
-				params.setSearchStatDtFrom(searchStatDtFrom);
-				params.setSearchStatDtEnd(searchStatDtEnd);			
+				if(params.getPeriodType() == 1) {
+					searchStatDt = searchStatDt.replaceAll("/", "-");
+					searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+					searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+
+					params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+					params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
+				}else {
+					searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+					searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
+					params.setSearchStatDtFrom(searchStatDtFrom);
+					params.setSearchStatDtEnd(searchStatDtEnd);	
+				}
 			}else {						
 					
 				searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
@@ -404,7 +451,7 @@ public class StatisticsOrderController {
 			
 			String fileName="StatisticsSales";
 			if(params.getPeriodType()==1) {
-				statList= statService.getDailylStatisticsSalesList(params);
+				statList= statService.getDailylNewSalesList(params);
 				fileName +="Daily_"+DateUtils.getDate()+".xls";
 			}else {
 				statList = statService.getMontlylStatisticsSalesList(params);

@@ -32,5 +32,7 @@ public interface StatisticsCustomerMapper {
 	public List<StatisticsCustomerBottleVO> selectStatSalesCustomerBottleList(StatisticsCustomerBottleVO param);
 	
 	public List<StatisticsCustomerVO> selectCountSalesCustomer(StatisticsCustomerBottleVO param);
+	
+	public List<StatisticsCustomerVO> selectNewDailylCustomerList(Map<String, Object> map);
 
 }

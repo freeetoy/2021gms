@@ -116,4 +116,29 @@ public class StatisticsCustomerServiceImpl implements StatisticsCustomerService 
 	public List<StatisticsCustomerVO> getStatSalesCustomerCount(StatisticsCustomerBottleVO param) {
 		return statMapper.selectCountSalesCustomer(param);
 	}
+
+	@Override
+	public List<StatisticsCustomerVO> getDailylNewCustomerList(StatisticsCustomerVO param) {
+		Map<String, Object> map = new HashMap<String, Object>();		
+
+		map.put("searchCustomerId", param.getSearchCustomerId());	
+		
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+		}	
+				
+		List<StatisticsCustomerVO> statList = statMapper.selectNewDailylCustomerList(map);	
+		
+				
+		return statList;
+	}
 }

@@ -21,5 +21,5 @@ public interface StatisticsProductService {
 	
 	public List<StatisticsProuctCustomerCountVO> getWorkBottleListOfProductStat(StatisticsProuctCustomerCountVO param);
 //	public int deleteDailyStatProduct();
-	
+	public List<StatisticsProductVO> getProductStatisticsList(StatisticsProductVO param);	
 }

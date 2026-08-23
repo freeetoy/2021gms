@@ -20,4 +20,6 @@ public interface StatisticsCustomerService {
 	public List<StatisticsCustomerBottleVO> getStatSalesCustomerBottleList(StatisticsCustomerBottleVO param);	
 	
 	public List<StatisticsCustomerVO> getStatSalesCustomerCount(StatisticsCustomerBottleVO param);
+	
+	public List<StatisticsCustomerVO> getDailylNewCustomerList(StatisticsCustomerVO param);	
 }

@@ -89,16 +89,17 @@ public class StatisticsCustomerController {
 		String searchStatDtEnd = null;
 				
 		if(searchStatDt != null && searchStatDt.length() > 20) {						
+			searchStatDt = searchStatDt.replaceAll("/", "-");
 			searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 			searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
 			
-			params.setSearchStatDtFrom(searchStatDtFrom);
-			params.setSearchStatDtEnd(searchStatDtEnd);			
+			params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+			params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
 		}else {				
 			searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");
 			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtFrom===*"+searchStatDtFrom);
 			
-			searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");
+			searchStatDtEnd = DateUtils.getNextDate(0,"yyyy/MM/dd");
 			//logger.debug("****** getStatisticsCustomerDaily else *****getSearchStatDtEnd===*"+searchStatDtEnd);
 			
 			params.setSearchStatDtFrom(searchStatDtFrom);
@@ -109,8 +110,9 @@ public class StatisticsCustomerController {
 		}
 		params.setSearchStatDt(searchStatDtFrom);
 		
-		List<StatisticsCustomerVO> statCustomerList = statService.getDailylStatisticsCustomerList(params);
-		
+		List<StatisticsCustomerVO> statCustomerList = null;
+		if(params.getSearchCustomerId() != null && params.getSearchCustomerId() > 0)
+			statCustomerList = statService.getDailylNewCustomerList(params);
 		mav.addObject("statCustomerList", statCustomerList);	
 		
 		//검색어 셋팅
@@ -192,23 +194,19 @@ public class StatisticsCustomerController {
 		   String searchStatDtFrom = null;
 		   String searchStatDtEnd = null;
 					
-			if(searchStatDt != null && searchStatDt.length() > 20) {						
+		   if(params.getPeriodType() == 1) {
+				searchStatDt = searchStatDt.replaceAll("/", "-");
 				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
 				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
-				
+
+				params.setSearchStatDtFrom(searchStatDtFrom+" 00:00:00");
+				params.setSearchStatDtEnd(DateUtils.addTime(searchStatDtEnd, "yyyy-MM-dd", Calendar.DATE, 1)+" 00:00:00");	
+			}else {
+				searchStatDtFrom = searchStatDt.substring(0, 10) ;			
+				searchStatDtEnd = searchStatDt.substring(13, searchStatDt.length()) ;
 				params.setSearchStatDtFrom(searchStatDtFrom);
-				params.setSearchStatDtEnd(searchStatDtEnd);			
-			}else {			
-				searchStatDtFrom = DateUtils.getNextDate(-31,"yyyy/MM/dd");		
-				searchStatDtEnd = DateUtils.getNextDate(-1,"yyyy/MM/dd");	
-				
-				params.setSearchStatDtFrom(searchStatDtFrom);
-				params.setSearchStatDtEnd(searchStatDtEnd);
-		
-				searchStatDt = searchStatDtFrom +" - "+ searchStatDtEnd;
-				
-				params.setSearchStatDt(searchStatDt);
-			}		
+				params.setSearchStatDtEnd(searchStatDtEnd);	
+			}
 			
 			CustomerVO customer = customerService.getCustomerDetails(params.getSearchCustomerId());
 					
@@ -219,7 +217,8 @@ public class StatisticsCustomerController {
 			
 			String fileName="Statistic_"+sheetName;
 			if(params.getPeriodType()==1) {
-				statCustomerList = statService.getDailylStatisticsCustomerList(params);
+//				statCustomerList = statService.getDailylStatisticsCustomerList(params);
+				statCustomerList = statService.getDailylNewCustomerList(params); 
 				fileName +="Daily_"+DateUtils.getDate();
 			}else {
 				statCustomerList = statService.getMontlylStatisticsCustomerList(params);

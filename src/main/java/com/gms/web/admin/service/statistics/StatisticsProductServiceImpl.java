@@ -160,6 +160,31 @@ public class StatisticsProductServiceImpl implements StatisticsProductService {
 		return statMapper.selectWorkBottleListOfProductStat(param); 
 	}
 
+	@Override
+	public List<StatisticsProductVO> getProductStatisticsList(StatisticsProductVO param) {
+		Map<String, Object> map = new HashMap<String, Object>();		
+		map.put("searchProductId", param.getSearchProductId());		
+		map.put("productPriceSeq", param.getProductPriceSeq());	
+		
+		if(param.getSearchStatDt() != null) {
+			map.put("searchStatDt", param.getSearchStatDt());
+//			logger.debug("****** getDailylStatisticsProductList *****getSearchStatDt===*"+param.getSearchStatDt());
+		}		
+		
+		if(param.getSearchStatDtFrom() != null) {
+			map.put("searchStatDtFrom", param.getSearchStatDtFrom());
+//			logger.debug("****** getMonthlylStatisticsProductList *****getSearchStatDtFrom===*"+param.getSearchStatDtFrom());
+		}
+		
+		if(param.getSearchStatDtEnd() != null) {
+			map.put("searchStatDtEnd", param.getSearchStatDtEnd());
+//			logger.debug("****** getMonthlylStatisticsProductList *****getSearchStatDtEnd===*"+param.getSearchStatDtEnd());
+		}	
+		List<StatisticsProductVO> statList = statMapper.selectDailyAllProductList(map);			
+				
+		return statList;
+	}
+
 	
 	
 }

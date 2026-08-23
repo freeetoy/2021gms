@@ -26,4 +26,8 @@ public interface StatisticsProductMapper {
 	public List<StatisticsProductVO> selectDailylStatisticsAllProductList(Map<String, Object> map);	
 	
 	public List<StatisticsProductVO> selectMontlylStatisticsAllProductList(Map<String, Object> map);	
+	
+	public List<StatisticsProductVO> selectDailyProduct(Map<String, Object> map);	
+	
+	public List<StatisticsProductVO> selectDailyAllProductList(Map<String, Object> map);
 }
