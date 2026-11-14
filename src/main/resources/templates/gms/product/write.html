@@ -8,12 +8,11 @@
 
 function validationOfForm(form) {
 
-	 var gasId = document.getElementById('gasId').value;
-	 //form.gasId = gasId.value;
-    
-        /* VALUE */   console.log(gasId.value);
-        /* TEXT */    console.log(gasId.options[gasId.selectedIndex].text);
+    var gasSelect = document.getElementById('gasId');
 
+    //console.log(gasSelect.value);
+    //console.log(gasSelect.options[gasSelect.selectedIndex].text);
+    
 	var result = (
 			   isValid(form.productNm, "상품명", null, null)
 			&& isValid(form.productPrice_0, "상품가격", null, null)
@@ -41,8 +40,7 @@ $(document).ready(function(){
 	
 	var counter = 0;
 	$("#addrow").on("click", function () {
-
-        counter++;
+        
         
         if (counter > 50){
 
@@ -73,7 +71,7 @@ $(document).ready(function(){
                
         $("#priceCount").val(counter+1);
         $("table.doc-list").append(newRow);
-     
+        counter++;
     });
 
 
@@ -93,6 +91,28 @@ $(document).ready(function(){
         mod_counter -= 1
     });
 
+	 
+   // end of function
+
+	$("#save").on("click", function () {
+
+		var  productCapa_0 = $("#productCapa_0").val();
+		var  productPrice_0 = $("#productPrice_0").val();
+		
+		var form = $("#writeForm");	
+		
+		var result = (
+				isEmpty(productCapa_0)
+				|| isEmpty(productPrice_0)
+		);
+
+    	if(result ) {
+    		alert("상품상세정보를 등록하세요");
+    		return false;
+    	} else {
+            form.submit();
+    	}
+    });
 
 });
 
@@ -120,7 +140,7 @@ $(document).ready(function(){
              <!-- general form elements -->                        
               <!-- /.card-header -->
               <div class="col-10">
-              <form class="form-horizontal" th:action="@{/gms/product/register.do}" th:object="${product}" method="post" onsubmit="return validationOfForm(this)">
+              <form name ="writeForm" id ="writeForm" class="form-horizontal" action="/gms/product/register.do" method="post" onsubmit="return validationOfForm(this)">
               <input type="hidden" id="priceCount" name="priceCount" value="1">
                 <table class="table table-hover">
                   <thead>
@@ -143,7 +163,6 @@ $(document).ready(function(){
                       <select id="gasId" name="gasId" class="form-control">
                           <option value="0">가스선택</option>
                           <option value="-1">Tank</option>
-                          <label class="labelWidthExtra">					    
 					        <option th:each="row : ${gasList}"
 					                th:text="${row.gasNm}"
 					                th:value="${row.gasId}"
@@ -164,9 +183,10 @@ $(document).ready(function(){
                          <td>대여ECount</td>
                          <td>판매가격</td>
                          <td>판매ECount</td>
-                         <td></td>
+                         <td><input type="button" class="btn btn-default btn-success" id="addrow" value="추가" /></td>
                        </tr>
                        <tr style="font-size:14px;">
+                       <!-- 
                        <td  style="padding-left:0px;"> 
                          <input type="text" class="form-control" id="productCapa_0" name="productCapa_0" placeholder="상품용량">
                        </td> 
@@ -183,9 +203,9 @@ $(document).ready(function(){
                          <input type="text" class="form-control" id="eCountCdS_0" name="eCountCdS_0" placeholder="판매ECount코드">
                        </td>   
                        <td>
-                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" />
+                       <input type="button" class="btn btn-default btn-success" id="addrow" value="추가" /> 
                        </td>
-                       </tr>
+                       </tr> -->
                      </table>
                      </div>
                  </div>
@@ -195,8 +215,9 @@ $(document).ready(function(){
             <!-- /.card -->
             
             <div class="card-footer">
-                 <a href="/gms/product/list.do" class="btn btn-secondary float-left">취소</a>
-		          <input type="submit" value="저장" class="btn btn-success float-right">
+                 <a href="/gms/product/list.do" class="btn btn-secondary float-left">취소</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<!--         <input type="submit" value="저장" class="btn btn-success float-right"> -->  
+		          <input type="button" id="save" value="저장"  class="btn btn-success">
             </div>		     		
             </form>   
           	

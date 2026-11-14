@@ -108,7 +108,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 		List<WorkReportVO> reportList = workMapper.selectWorkReportOnlyListAll(param);
 		double orderAmountToday = 0.0;
 		double receivedAmountToday = 0.0;
-		
+
 		for(int i = 0 ; i < reportList.size() ; i++ ) {
 			
 			WorkReportViewVO temp = new WorkReportViewVO();
@@ -143,7 +143,7 @@ public class WorkReportServiceImpl implements WorkReportService {
 			
 			receivedAmountToday += reportList.get(i).getReceivedAmount();
 		}		
-		
+
 		for(int i = 0 ; i < workBottleList.size() ; i++ ) {
 			
 			WorkBottleVO workBottle = workBottleList.get(i);
@@ -159,12 +159,16 @@ public class WorkReportServiceImpl implements WorkReportService {
 			if(StringUtils.isTankProduct(workBottle.getProductId()) ){
 				workBottle.setProductCount(workBottle.getChargeVolumn());
 			}
+			
+//			logger.debug("WorkReportServiceImpl workBottleList.get(i).getWorkReportSeq() "+workBottle.getWorkReportSeq());
+//			logger.debug("WorkReportServiceImpl workBottleList.get(i).getWorkReportSeq() "+workBottle.getBottleWorkCd());
 			for(int j=0; j < viewList.size() ; j++) {
 				WorkReportViewVO temp = viewList.get(j);
 				
 				// Work_Report_Seq 동일
 				if((temp.getWorkReportSeq() - workBottle.getWorkReportSeq())==0) {
-					
+//					logger.debug("#### workBottleList.get(i).getWorkReportSeq() "+workBottle.getWorkReportSeq());
+//					logger.debug("#### workBottleList.get(i).getWorkReportSeq() "+workBottle.getBottleWorkCd());
 					temp.setCustomerId(workBottle.getCustomerId());
 					temp.setCustomerNm(workBottle.getCustomerNm());					
 					

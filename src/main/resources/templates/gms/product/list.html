@@ -136,11 +136,10 @@
                       <td th:if="${row.productStatus=='1'}">판매중지
                       <td th:if="${row.productStatus=='0'}">삭제
                       </td>
-                      <td th:if="${session.LoginUser.userAuthority=='99' && row.productStatus=='1'}" > 
+                      <td th:if="${session.LoginUser.userAuthority=='99'}" > 
                       <a class="btn btn-success btn-xs" href="#"  th:if="${row.productStatus=='1'}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]],2)"><i class="fas fa-ban"></i>판매</a>
-                      <td th:unless="${session.LoginUser.userAuthority=='99' && row.productStatus=='1'}" > 
-                      <a class="btn btn-danger btn-xs" href="#"  th:if="${row.productOrderCount==0}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]], 0)"><i class="fas fa-trash"></i>상품삭제</a>
-                      <a class="btn btn-success btn-xs" href="#"  th:unless="${row.productOrderCount==0}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]],1)"><i class="fas fa-ban"></i>판매중지</a>
+                      <a class="btn btn-success btn-xs" href="#"  th:if="${row.productStatus=='2'}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]],1)"><i class="fas fa-ban"></i>판매중지</a>
+                      &nbsp;<a class="btn btn-danger btn-xs" href="#"  th:if="${row.productOrderCount==0}"  th:onclick="fn_modifyProduct([[ ${row.productId} ]],[[ ${row.productPriceSeq} ]], 0)"><i class="fas fa-trash"></i>삭제</a>
                       </td>
                     </tr>
                     <tr th:unless="${not #lists.isEmpty( productList )}">
